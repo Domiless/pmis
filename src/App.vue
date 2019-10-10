@@ -129,7 +129,7 @@
 					</a-layout-content>
 				</a-layout>
 			</a-layout>
-			<a-layout-footer>PMS (V1.2.2_beta（内测版）) ©2019 Created by Changhong Intelligent Manufacturing</a-layout-footer>
+			<a-layout-footer>PMS (V1.2.3_beta（内测版）) ©2019 Created by Changhong Intelligent Manufacturing</a-layout-footer>
 		</a-layout>
 	</a-locale-provider>
 </template>

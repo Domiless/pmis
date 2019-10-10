@@ -30,7 +30,7 @@
 								>
 									<a-icon style="color:#1890ff;" type="delete" />删除
 								</permission-button>
-								<permission-button
+								<!-- <permission-button
 									permCode="workorder_manage_lookup.workorder_manager_init"
 									banType="hide"
 									@click="goIntoOperation"
@@ -61,7 +61,7 @@
 									:disabled="selectedRows.length!=1"
 								>
 									<i class="iconfont" style="color:#1890ff;margin-right:8px;">&#xe6aa;</i>终止
-								</permission-button>
+								</permission-button> -->
 								<permission-button
 									permCode
 									banType="hide"
