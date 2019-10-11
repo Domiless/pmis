@@ -280,5 +280,41 @@ export default new Router({
       },
       children: []
     },
+    {
+      path: '/designmanage',
+      name: 'designmanage',
+      components: require('@/components/xty/designmanage/index'),
+      meta: {
+        requireAuth: true,
+      },
+      children: []
+    },
+    {
+      path: '/orderManage',
+      name: 'orderManage',
+      components: require('@/components/xty/orderManage/index'),
+      meta: {
+        requireAuth: true,
+      },
+      children: []
+    },
+    {
+      path: '/procurement',
+      name: 'procurement',
+      components: require('@/components/xty/procurementManage/index'),
+      meta: {
+        requireAuth: true,
+      },
+      children: []
+    },
+    {
+      path: '/supplierManage',
+      name: 'supplierManage',
+      components: require('@/components/xty/supplierManage/index'),
+      meta: {
+        requireAuth: true,
+      },
+      children: []
+    },
   ]
 })

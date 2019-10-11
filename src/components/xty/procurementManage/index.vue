@@ -1,6 +1,6 @@
 <template>
   <div class="procurementManage">
-    <a-row>
+    <a-row style="line-height:50px;">
       <a-button @click="addVisible=true">
         <a-icon style="color:#1890ff;" type="plus" />新增
       </a-button>
@@ -23,7 +23,7 @@
       </a-col>
       <a-col :span="3">
         <a-input-group>
-          <span>审批状态 :</span>
+          <span>审批状态 : </span>
           <a-select v-model="state" style="width: 100px" optionFilterProp="children">
             <a-select-option :value="-1">全部</a-select-option>
             <a-select-option :value="1">暂存</a-select-option>
@@ -77,7 +77,7 @@
      <a-modal
      title="新增"
      v-model="addVisible"
-     width="1000px"
+     width="1200px"
      :footer="null"
      >
       <add-procurement></add-procurement>
@@ -116,7 +116,7 @@ const columns = [
     dataIndex: "enquiryMsg",
     title: "询价信息",
     key: "enquiryMsg",
-    width: "5%"
+    width: "8%"
   },
   {
     dataIndex: "orderReviewSchedule",
@@ -152,8 +152,9 @@ export default {
 </script>
 <style lang="less" scoped>
 .procurementManage {
+  padding:0 20px;
   .ant-row:nth-child(1) {
-    margin-bottom: 30px;
+    margin-bottom: 10px;
   }
   .ant-row:nth-child(2) {
       margin-bottom: 10px;

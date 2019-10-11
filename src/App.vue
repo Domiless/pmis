@@ -102,7 +102,13 @@
 					collapsible
 					v-model="collapsed"
 				>
-					<a-menu mode="inline" :selectable="false" :style="{ height: '100%', borderRight: 0 }">
+					<a-menu
+						mode="inline"
+						:defaultOpenKeys="['workdesk']"
+						:selectable="false"
+						:style="{ height: '100%', borderRight: 0 }"
+					>
+						<!-- v-if="menu.subMenu.length!==1" -->
 						<a-sub-menu :key="menu.permissionCode" v-for="(menu,index) in menuSource">
 							<span slot="title">
 								<i class="iconfont anticon" v-html="menu.icon"></i>
@@ -178,7 +184,12 @@ import {
 	Tooltip,
 	LocaleProvider
 } from "ant-design-vue";
-import menuSourceMap1 from "./router/routeMap";
+import productionMap from "./router/routeMap";
+import homeMap from "./router/homeMap";
+import designMap from "./router/designMap";
+import projectMap from "./router/projectMap";
+import procurementMap from "./router/procurementMap";
+
 import clone from "clone";
 Vue.component(Layout.name, Layout);
 Vue.component(Layout.Header.name, Layout.Header);
@@ -207,7 +218,7 @@ export default {
 	},
 	data() {
 		return {
-			menuSourceMap: menuSourceMap1,
+			menuSourceMap: [],
 			form: this.$form.createForm(this),
 			changePassword: false,
 			zh_CN,
@@ -246,7 +257,7 @@ export default {
 					title: "项目",
 					icon: "&#xe60a;",
 					key: "project",
-					disable: true
+					disable: false
 				},
 				{
 					title: "设计",
@@ -287,9 +298,19 @@ export default {
 	methods: {
 		getMenu(key) {
 			sessionStorage.menuKey = key;
-			this.menuSourceMap = key == "home" ? menuSourceMap1 : [];
+			this.menuSourceMap =
+				key == "production"
+					? productionMap
+					: key == "home"
+					? homeMap
+					: key == "design"
+					? designMap
+					: key == "project"
+					? projectMap
+					: key == "procurement"
+					? procurementMap
+					: [];
 			this.initPermission();
-			console.log(key);
 		},
 		encryptByDES(message, key) {
 			const keyHex = CryptoJS.enc.Utf8.parse(key);
@@ -476,7 +497,18 @@ export default {
 	},
 	created() {
 		let menuKey = sessionStorage.getItem("menuKey");
-		this.menuSourceMap = menuKey == "home" ? menuSourceMap1 : [];
+		this.menuSourceMap =
+			menuKey == "production"
+				? productionMap
+				: menuKey == "home"
+				? homeMap
+				: menuKey == "design"
+				? designMap
+				: menuKey == "project"
+				? projectMap
+				: menuKey == "procurement"
+				? procurementMap
+				: homeMap;
 		this.initPermission();
 		// this.initHeaderMenu();
 	}

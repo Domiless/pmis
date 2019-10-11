@@ -13,18 +13,18 @@ export default [{
       permissionCode: 'enterprise_lookup',
     }, ]
   },
-  {
-    menu: '默认首页',
-    permissionCode: 'workdesk',
-    icon: '&#xe60a;',
-    defaultDock: true,
-    subMenu: [{
-      menu: '首页',
-      route: '/Dashboard',
-      key: 'dashboard',
-      permissionCode: 'workdesk_desk_lookup',
-    }, ]
-  },
+  // {
+  //   menu: '默认首页',
+  //   permissionCode: 'workdesk',
+  //   icon: '&#xe60a;',
+  //   defaultDock: true,
+  //   subMenu: [{
+  //     menu: '首页',
+  //     route: '/Dashboard',
+  //     key: 'dashboard',
+  //     permissionCode: 'workdesk_desk_lookup',
+  //   }, ]
+  // },
   {
     menu: '工单管理',
     defaultDock: false,

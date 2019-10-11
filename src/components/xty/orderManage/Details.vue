@@ -81,6 +81,9 @@
           <span>{{ data.remark }}</span>
         </a-form-item>
       </a-row>
+      <a-row type="flex" justify="end">
+        <a-button type="primary" @click="closeDetails()">关闭</a-button>
+    </a-row>
     </a-form>
   </div>
 </template>
@@ -94,11 +97,14 @@ export default {
     };
   },
   methods: {
+    closeDetails() {
+      this.$emit('closeDetails',false);
+    },
     getList() {
      console.log("sendid: " + this.sendId)
       this.Axios(
         {
-          url: "/order/getOrder",
+          url: "/api-order/order/getOrder",
           type: "get",
           params: {
             orderId: this.sendId
@@ -117,18 +123,20 @@ export default {
       );
     }
   },
-  mounted() {
+  created() {
       this.getList()
   }
 };
 </script>
 <style lang="less" scoped>
-.details {
-  .ant-form > .ant-row {
-    height: 40px;
+.ant-row {
+  height: 39px;
+  .ant-form-item {
+    height: 15px;
+    line-height: 1;
   }
 }
 .ant-form-item-label {
-  line-height: 20px;
+  line-height: 15px;
 }
 </style>

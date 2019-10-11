@@ -9,7 +9,12 @@ import router from './router';
 import base from "./base.js";
 import Axios from './AxiosRequest';
 import global from './components/global/Global'
-import menuSourceMap from "./router/routeMap";
+import productionMap from "./router/routeMap";
+import homeMap from './router/homeMap'
+import designMap from './router/designMap'
+import projectMap from './router/projectMap'
+import procurementMap from './router/procurementMap'
+
 import permissionPacker from "./PermissionPacker.js"
 import {
   Alert,
@@ -44,6 +49,8 @@ let permissionUrl = [];
 // 登录拦截
 router.beforeEach((to, from, next) => {
   // global.imgPath = sessionStorage.getItem("imgPath");
+  let menuSourceMap = new Array()
+  menuSourceMap = menuSourceMap.concat(productionMap, homeMap, designMap, projectMap, procurementMap)
   if (permissionUrl.length === 0) permissionUrl = JSON.parse(sessionStorage.getItem("permissionUrl") || '[]');
   let isLogin = sessionStorage.getItem('token')
   instance.defaults.headers.common["Authorization"] = "bearer " + isLogin;

@@ -19,28 +19,48 @@
       </a-row>
       <a-row>
         <a-form-item label="项目名称" :labelCol="{span:4}" :wrapperCol="{span:18}" required>
-          <a-input></a-input>
+          <a-input
+							v-decorator="[
+							'projectName',
+							{rules: [{ required: true, message: '请填写项目名称' }]}
+							]"
+						></a-input>
         </a-form-item>
       </a-row>
       <a-row>
         <a-form-item label="部件名称" :labelCol="{span:4}" :wrapperCol="{span:18}" required>
-          <a-input></a-input>
+          <a-input
+							v-decorator="[
+							'partName',
+							{rules: [{ required: true, message: '请填写部件名称' }]}
+							]"
+						></a-input>
         </a-form-item>
       </a-row>
       <a-row>
         <a-form-item label="图号" :labelCol="{span:4}" :wrapperCol="{span:18}">
-          <a-input></a-input>
+          <a-input
+							v-decorator="['bomDrawingNo']"
+						></a-input>
         </a-form-item>
       </a-row>
       <a-row>
         <a-form-item label="需求数量" :labelCol="{span:4}" :wrapperCol="{span:18}">
-          <a-input></a-input>
+          <a-input
+							v-decorator="['number']"
+						></a-input>
         </a-form-item>
       </a-row>
       <a-row>
         <a-form-item label="备注" :labelCol="{span:4}" :wrapperCol="{span:18}">
-          <a-textarea :rows="4" :autosize="{ minRows: 4, maxRows: 4 }"></a-textarea>
+          <a-textarea :rows="4" :autosize="{ minRows: 4, maxRows: 4 }" 	v-decorator="['remake']"></a-textarea>
         </a-form-item>
+      </a-row>
+      <a-row>
+          <a-form-item :wrapper-col="{ span: 20,offset: 2 }" style="text-align:right">
+            <a-button @click="closeAdd" style="margin-right:12px;">关闭</a-button>
+						<a-button type="primary" @click="addDesign()">提交</a-button>
+					</a-form-item>
       </a-row>
     </a-form>
   </div>
@@ -51,6 +71,56 @@ export default {
     return {
       form: this.$form.createForm(this)
     };
+  },
+  methods: {
+    closeAdd() {
+     this.$emit("changeAddOrder", false);
+    },
+    addDesign() {
+       this.form.validateFieldsAndScroll((err, values) => {
+				if (!err) {
+					console.log("Received values of form: ", values);
+					// if (!this.checkedKeys.length) {
+					// 	this.$message.error("请分配角色权限");
+					// 	return false;
+					// }
+					let qs = require("qs");
+					let data = {
+						id: values.id,
+            workOrderId: values.workOrderId,
+            workOrderNo: values.linkPhone,
+            projectName: values.projectName,
+            bomDrawingNo: values.bomDrawingNo,
+            partName: values.partName,
+            number: values.number,
+            remake: values.remake
+          };
+          console.log(data);
+
+					this.Axios(
+						{
+							url: "/api-order/bom/add",
+							params: data,
+							type: "post",
+							option: { successMsg: "添加成功！" },
+							config: {
+								headers: { "Content-Type": "application/json" }
+							}
+						},
+						this
+					).then(
+						result => {
+							if (result.data.code === 200) {
+                console.log(result);
+                this.getList();
+                this.closeAdd();
+							}
+						},
+						({ type, info }) => {}
+					);
+				}
+			});
+    }
   }
 };
 </script>

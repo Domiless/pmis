@@ -2,20 +2,20 @@
   <div class="addOrderMsg">
       <a-form :form="form">
         <a-row>
-          <a-form-item label="合同号" :labelCol="{span:2}" :wrapperCol="{span:22}" required>
+          <a-form-item label="合同号" :labelCol="{span:3}" :wrapperCol="{span:21}" required>
             <a-input v-decorator="['contractNo', { rules: [{ required:'true', message: '请填写合同号'}]}]"></a-input>
           </a-form-item>
         </a-row>
         <a-row>
-          <a-form-item label="项目名称" :labelCol="{span:2}" :wrapperCol="{span:22}" required>
+          <a-form-item label="项目名称" :labelCol="{span:3}" :wrapperCol="{span:21}" required>
             <a-input v-decorator="['contractName', { rules: [{ required:'true', message: '请填写项目名称'}]}]"></a-input>
           </a-form-item>
         </a-row>
         <a-row>
           <a-form-item
             label="订单类别"
-            :labelCol="{span:2}"
-            :wrapperCol="{span:22}"
+            :labelCol="{span:3}"
+            :wrapperCol="{span:21}"
             required
           >
             <a-input-group compact>
@@ -31,8 +31,8 @@
         <a-row>
           <a-form-item
             label="订单编号"
-            :labelCol="{span:2}"
-            :wrapperCol="{span:22}"
+            :labelCol="{span:3}"
+            :wrapperCol="{span:21}"
             required
           >
             <a-input v-decorator="['no', { rules: [{ required:'true', message: '请填写订单编号'}]}]"></a-input>
@@ -42,8 +42,8 @@
         <a-row>
           <a-form-item
             label="承接部门"
-            :labelCol="{span:2}"
-            :wrapperCol="{span:22}"
+            :labelCol="{span:3}"
+            :wrapperCol="{span:21}"
             required
           >
             <a-input v-decorator="['undertakeDep', { rules: [{ required:'true', message: '请填写承接部门'}]}]"></a-input>
@@ -52,59 +52,60 @@
         <a-row>
           <a-form-item
             label="业务员"
-            :labelCol="{span:2}"
-            :wrapperCol="{span:22}"
+            :labelCol="{span:3}"
+            :wrapperCol="{span:21}"
           >
             <a-input v-decorator="['dutyBy']"></a-input>
           </a-form-item>
         </a-row>
         <a-row>
-          <a-form-item label="客户名称" :labelCol="{span:2}" :wrapperCol="{span:22}" required>
+          <a-form-item label="客户名称" :labelCol="{span:3}" :wrapperCol="{span:21}" required>
             <a-input v-decorator="['customerName', { rules: [{ required:'true', message: '请填写客户名称'}]}]"></a-input>
           </a-form-item>
         </a-row>
         <a-row>
-          <a-form-item label="合同金额" :labelCol="{span:2}" :wrapperCol="{span:22}">
-            <a-input v-decorator="['totalMoney']" addonAfter="元"  style="width: 90%"></a-input>
+          <a-form-item label="合同金额" :labelCol="{span:3}" :wrapperCol="{span:21}">
+            <a-input v-decorator="['totalMoney']" addonAfter="元" style="width:90%"></a-input>
           </a-form-item>
         </a-row>
         <a-row>
-          <a-form-item label="计量单位" :labelCol="{span:2}" :wrapperCol="{span:22}" required>
+          <a-form-item label="计量单位" :labelCol="{span:3}" :wrapperCol="{span:21}" required>
             <a-input v-decorator="['measureUnit', { rules: [{ required:'true', message: '请填写计量单位'}]}]"></a-input>
           </a-form-item>
         </a-row>
         <a-row>
-          <a-form-item label="订单数量" :labelCol="{span:2}" :wrapperCol="{span:22}" required>
+          <a-form-item label="订单数量" :labelCol="{span:3}" :wrapperCol="{span:21}" required>
             <a-input v-decorator="['orderQuantity', { rules: [{ required:'true', message: '请填写订单数量'}]}]"></a-input>
           </a-form-item>
         </a-row>
         <a-row>
-          <a-form-item label="运输方式" :labelCol="{span:2}" :wrapperCol="{span:22}">
+          <a-form-item label="运输方式" :labelCol="{span:3}" :wrapperCol="{span:21}">
             <a-input v-decorator="['transportType']"></a-input>
           </a-form-item>
         </a-row>
         <a-row>
-          <a-form-item label="签订时间" :labelCol="{span:2}" :wrapperCol="{span:22}">
+          <a-form-item label="签订时间" :labelCol="{span:3}" :wrapperCol="{span:21}">
             <a-input v-decorator="['gmtSign']"></a-input>
           </a-form-item>
         </a-row>
         <a-row>
-          <a-form-item label="交货地点" :labelCol="{span:2}" :wrapperCol="{span:22}">
+          <a-form-item label="交货地点" :labelCol="{span:3}" :wrapperCol="{span:21}">
             <a-input v-decorator="['deliveryPlace']"></a-input>
           </a-form-item>
         </a-row>
         <a-row>
-          <a-form-item label="交货日期" :labelCol="{span:2}" :wrapperCol="{span:22}" required>
-            <a-date-picker @change="onChange" v-decorator="['gmtDelivery']" format="YYYY/MM/DD"/>
+          <a-form-item label="交货日期" :labelCol="{span:3}" :wrapperCol="{span:21}" required>
+            <a-date-picker @change="onChange" style="width:90%" v-decorator="['gmtDelivery']" format="YYYY/MM/DD"/>
           </a-form-item>
         </a-row>
         <a-row>
-          <a-form-item label="附件" :labelCol="{span:2}" :wrapperCol="{span:22}">
+          <a-form-item label="附件" :labelCol="{span:3}" :wrapperCol="{span:21}">
             <a-upload
              name="file"
-             :multiple="true"
-             listType="picture"
-             action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+             :action="global.apiImg"
+						 :multiple="true"
+						 :fileList="fileList"
+						 @change="handleChange"
             >
               <a-button>
                 <a-icon type="upload" />选择文件
@@ -113,13 +114,13 @@
           </a-form-item>
         </a-row>
         <a-row>
-          <a-form-item label="备注" :labelCol="{span:2}" :wrapperCol="{span:22}">
+          <a-form-item label="备注" :labelCol="{span:3}" :wrapperCol="{span:21}">
             <a-textarea v-decorator="['remark']" :rows="4" :autosize="{ minRows: 4, maxRows: 4}"></a-textarea>
           </a-form-item>
         </a-row>
         <a-row>
           <a-form-item :wrapper-col="{ span: 20,offset: 2 }" style="text-align:right">
-            <a-button @click="confirmCancel">关闭</a-button>
+            <a-button @click="confirmCancel" style="margin-right:12px;">关闭</a-button>
 						<a-button type="primary" @click="addOrder()">提交</a-button>
 					</a-form-item>
         </a-row>
@@ -128,23 +129,48 @@
 </template>
 <script>
 export default {
+  props: ['getlist'],
   data() {
     return {
       form: this.$form.createForm(this),
       orderNo: '',
-      dataValue: ''
+      dataValue: '',
+      fileList: [],
 
     };
   },
   methods: {
+    closeAdd() {
+     this.$emit("changeAddOrder", false);
+    },
     onChange(date, dateString) {
 			console.log(date, dateString);
 			this.dataValue = dateString;
 		},
     confirmCancel() {
 			this.$emit("changeAddOrder", false);
+    },
+    handleChange(info) {
+			console.log(info);
+			let fileList = [...info.fileList];
+
+			// 1. Limit the number of uploaded files
+			//    Only to show two recent uploaded files, and old ones will be replaced by the new
+			// fileList = fileList.slice(-2);
+
+			// 2. read from response and show file link
+			fileList = fileList.map(file => {
+				if (file.response) {
+					// Component will show file.url as link
+					file.url = file.response.url;
+				}
+				return file;
+			});
+
+			this.fileList = fileList;
 		},
     addOrder() {
+      const that = this;
 			this.form.validateFieldsAndScroll((err, values) => {
 				if (!err) {
 					console.log("Received values of form: ", values);
@@ -168,7 +194,7 @@ export default {
 
 					this.Axios(
 						{
-							url: "/order/addOrder",
+							url: "/api-order/order/addOrder",
 							params: data,
 							type: "post",
 							option: { successMsg: "添加成功！" },
@@ -181,7 +207,11 @@ export default {
 						result => {
 							if (result.data.code === 200) {
                 console.log(result);
-								this.$router.back(-1);
+                this.getlist();
+                setTimeout(() => {
+                  this.closeAdd()
+
+                },100) 
 							}
 						},
 						({ type, info }) => {}
@@ -192,7 +222,7 @@ export default {
     getOrderNo() {
       this.Axios(
 				{
-					url: "/order/generateOrderNo",
+					url: "/api-order/order/generateOrderNo",
           type: "get"
 				},
 				this
@@ -225,6 +255,9 @@ export default {
     .ant-row.ant-form-item {
       margin-bottom: 15px;
     }
+    // .ant-calendar-picker {
+    //   width: 750px;
+    // }
   }
 
 </style>
