@@ -163,15 +163,32 @@ export default {
 				// param: this.user.userName,
 				password: pass,
 				client_id: "webApp",
-				client_secret: pass,
+				client_secret:
+					"4+rRL1RN5nsR5yzcCNt9+kyHHrba1Hi0BJiiEv0C9mAC4gKSZbiWLg==",
 				grant_type: "password"
 			});
 			this.$axios
 				.post(this.global.apiSrc + "/uaa/oauth/token", data)
-				.then(response => {
-					console.log(response.data.access_token);
-					sessionStorage.token = response.data.access_token;
-					this.getUserMsg(response.data.access_token);
+				.then(
+					response => {
+						console.log(response);
+						if (response.status === 200) {
+							sessionStorage.token = response.data.access_token;
+							this.getUserMsg(response.data.access_token);
+						}
+					},
+					error => {
+						console.log(error.response.status);
+						if (error.response.status === 400) {
+							this.$message.error("账号或密码错误");
+						} else {
+							this.$message.error(error.response.data.msg);
+						}
+					}
+				)
+				.catch(res => {
+					// console.log(res);
+					// this.$message.error("账号或密码错误");
 				});
 		},
 		getUserMsg(token) {

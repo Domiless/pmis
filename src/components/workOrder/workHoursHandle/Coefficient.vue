@@ -387,6 +387,7 @@ export default {
 							if (result.data.code === 200) {
 								this.editVisible = false;
 								this.getList();
+								this.form.resetFields();
 							}
 						},
 						({ type, info }) => {}

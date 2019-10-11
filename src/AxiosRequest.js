@@ -68,6 +68,16 @@ export default ({
               info: res.data
             });
           }
+        }, error => {
+          if (error.response.status === 401) {
+            message.error(`授权过期，即将跳转至登录页`);
+            window.setTimeout(() => {
+              window.location.href = "login.html"
+            }, 1000);
+          } else {
+            this.$message.error(error.response.data.msg);
+          }
+
         }).catch(res => {
           loadingConfig.done();
           message.error(`网络异常：${res.message}`);
