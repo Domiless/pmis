@@ -1,5 +1,5 @@
 <template>
-  <div class="addProcurement">
+  <div class="editProcurement">
     <a-tabs defaultActiveKey="1">
       <a-tab-pane tab="基础信息" key="1">
         <a-form :form="form">
@@ -44,12 +44,11 @@
           <a-pagination
             style="padding-top:12px;text-align: right;"
             size="small"
-            :defaultCurrent="current"
             :total="total"
-            @change="onChange"
-            @showSizeChange="onShowSizeChange"
             showQuickJumper
             showSizeChanger
+            @change="onChange"
+            @showSizeChange="onShowSizeChange"
             :pageSizeOptions="['10','20','50','100']"
             :showTotal="total => `共 ${total} 条`"
           ></a-pagination>
@@ -97,9 +96,9 @@ const columns = [
     width: 100
   },
   {
-    dataIndex: "orderNum",
+    dataIndex: "supplier",
     title: "订单数量",
-    key: "orderNum",
+    key: "supplier",
     width: 100
   },
   {
@@ -162,10 +161,7 @@ export default {
     return {
       form: this.$form.createForm(this),
       columns,
-      data: [],
-      current: 1,
-      pageSize: 10,
-      total: 0,
+      data: []
     };
   },
   methods: {
