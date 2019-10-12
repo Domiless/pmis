@@ -1,12 +1,12 @@
 <template>
-  <div class="addProcurement">
+  <div class="addProcurementContract">
     <a-tabs defaultActiveKey="1">
       <a-tab-pane tab="基础信息" key="1">
         <a-form :form="form">
           <a-row>
-            <a-form-item label="项目订单" :labelCol="{ span: 3}" :wrapperCol="{ span: 19 }">
+            <a-form-item label="采购单号" :labelCol="{ span: 3}" :wrapperCol="{ span: 19 }">
               <a-select
-                v-decorator="['orderNo', { rules: [{ required:'true', message: '请选择项目订单'}]}]"
+                v-decorator="['procurementNo', { rules: [{ required:'true', message: '请选择采购单号'}]}]"
                 placeholder="请选择"
               >
                 <a-select-option value="1">1</a-select-option>
@@ -14,32 +14,88 @@
             </a-form-item>
           </a-row>
           <a-row>
-            <a-form-item label="设计单号" :labelCol="{ span: 3}" :wrapperCol="{ span: 19 }">
+            <a-form-item label="合同编号" :labelCol="{ span: 3}" :wrapperCol="{ span: 19 }">
+              <a-input
+               v-decorator="['contractNo', { rules: [{ required:'true', message: '请输入合同编号'}]}]"></a-input>
+            </a-form-item>
+          </a-row>
+          <a-row>
+            <a-form-item label="合同模板" :labelCol="{ span: 3}" :wrapperCol="{ span: 19 }">
               <a-select
-                v-decorator="['workOrderNo', { rules: [{ required:'true', message: '请选择设计单号'}]}]"
+                v-decorator="['contractTemplate', { rules: [{ required:'true', message: '请选择合同模板'}]}]"
                 placeholder="请选择"
               >
-                <a-select-option value="2">2</a-select-option>
+                <a-select-option value="1">1</a-select-option>
+              </a-select>
+            </a-form-item>
+          </a-row>
+          <a-form-item>
+            <a-form-item label="供应商" :labelCol="{ span: 3}" :wrapperCol="{ span: 19 }">
+              <a-select
+                v-decorator="['supplier', { rules: [{ required:'true', message: '请选择供应商'}]}]"
+                placeholder="请选择"
+              >
+                <a-select-option value="1">1</a-select-option>
+              </a-select>
+            </a-form-item>
+          </a-form-item>
+          <a-row>
+            <a-form-item label="需求方" :labelCol="{ span: 3}" :wrapperCol="{ span: 19 }">
+              <a-input v-decorator="['demand', { rules: [{ required:'true', message: '请输入需求方'}]}]"></a-input>
+            </a-form-item>
+          </a-row>
+          <a-row>
+            <a-form-item label="业务员" :labelCol="{ span: 3}" :wrapperCol="{ span: 19 }">
+              <a-input v-decorator="['salesman']"></a-input>
+            </a-form-item>
+          </a-row>
+          <a-row>
+            <a-form-item label="总金额" :labelCol="{ span: 3}" :wrapperCol="{ span: 19 }">
+              <a-input v-decorator="['totalMoney']" disabled></a-input>
+            </a-form-item>
+          </a-row>
+          <a-row>
+            <a-form-item label="金额大写" :labelCol="{ span: 3}" :wrapperCol="{ span: 19 }">
+              <a-input v-decorator="['moneyUpper']" disabled></a-input>
+            </a-form-item>
+          </a-row>
+          <a-row>
+            <a-form-item label="签订地点" :labelCol="{ span: 3}" :wrapperCol="{ span: 19 }">
+              <a-input v-decorator="['signPlace']"></a-input>
+            </a-form-item>
+          </a-row>
+          <a-row>
+            <a-form-item label="签订日期" :labelCol="{span:3}" :wrapperCol="{span:21}">
+              <a-date-picker
+                @change="onChangeSign"
+                style="width:90%"
+                v-decorator="['gmtSign']"
+                format="YYYY/MM/DD"
+              />
+            </a-form-item>
+          </a-row>
+          <a-row>
+            <a-form-item label="供货方式" :labelCol="{ span: 3}" :wrapperCol="{ span: 19 }">
+              <a-select
+                v-decorator="['supplyMode']"
+                placeholder="请选择"
+              >
+                <a-select-option value="1">1</a-select-option>
               </a-select>
             </a-form-item>
           </a-row>
           <a-row>
-            <a-form-item label="采购单号" :labelCol="{ span: 3}" :wrapperCol="{ span: 19 }">
-              <a-input v-decorator="['procurementNo', { rules: [{ required:'true'}]}]"></a-input>
-            </a-form-item>
-          </a-row>
-          <a-row>
-            <a-form-item label="备注" :labelCol="{ span: 3}" :wrapperCol="{ span: 19 }">
-              <a-input v-decorator="['remark']"></a-input>
+            <a-form-item label="备注" :labelCol="{span:3}" :wrapperCol="{span:21}">
+              <a-textarea v-decorator="['remark']" :rows="4" :autosize="{ minRows: 4, maxRows: 4}"></a-textarea>
             </a-form-item>
           </a-row>
         </a-form>
       </a-tab-pane>
       <a-tab-pane tab="采购明细" key="2" style="margin-bottom: 20px">
         <a-table :columns="columns" :dataSource="data" :scroll="{ x: 1900, y: 500 }" />
-        <a-col :span="12" style="padding-top: 12px; height: 36px;">
+        <!-- <a-col :span="12" style="padding-top: 12px; height: 36px;">
           <span style="line-height: 12px">合计：</span>
-        </a-col>
+        </a-col> -->
         <a-col :span="12">
           <a-pagination
             style="padding-top:12px;text-align: right;"
@@ -149,12 +205,6 @@ const columns = [
     title: "备注",
     key: "remark",
     width: 100
-  },
-  {
-    dataIndex: "summation",
-    title: "小计",
-    key: "summation",
-    width: 100
   }
 ];
 export default {
@@ -166,9 +216,13 @@ export default {
       current: 1,
       pageSize: 10,
       total: 0,
+      signDate: ""
     };
   },
   methods: {
+    onChangeSign(data, dateString) {
+      this.signDate = dateString;
+    },
     onChange(current, pageNumber) {
       console.log("Page: ", pageNumber);
       console.log("第几页: ", current);
@@ -179,7 +233,7 @@ export default {
       this.pageSize = pageSize;
       this.current = 1;
       this.getList();
-    },
+    }
   }
 };
 </script>
