@@ -14,6 +14,7 @@ import homeMap from './router/homeMap'
 import designMap from './router/designMap'
 import projectMap from './router/projectMap'
 import procurementMap from './router/procurementMap'
+import systemMap from './router/systemMap'
 
 import permissionPacker from "./PermissionPacker.js"
 import {
@@ -50,7 +51,7 @@ let permissionUrl = [];
 router.beforeEach((to, from, next) => {
   // global.imgPath = sessionStorage.getItem("imgPath");
   let menuSourceMap = new Array()
-  menuSourceMap = menuSourceMap.concat(productionMap, homeMap, designMap, projectMap, procurementMap)
+  menuSourceMap = menuSourceMap.concat(productionMap, homeMap, designMap, projectMap, procurementMap, systemMap)
   if (permissionUrl.length === 0) permissionUrl = JSON.parse(sessionStorage.getItem("permissionUrl") || '[]');
   let isLogin = sessionStorage.getItem('token')
   instance.defaults.headers.common["Authorization"] = "bearer " + isLogin;

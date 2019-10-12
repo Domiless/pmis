@@ -316,5 +316,14 @@ export default new Router({
       },
       children: []
     },
+    {
+      path: '/FlowPath',
+      name: 'FlowPath',
+      components: require('@/components/xty/flowPath/index'),
+      meta: {
+        requireAuth: true,
+      },
+      children: []
+    },
   ]
 })

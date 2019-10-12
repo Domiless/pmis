@@ -189,6 +189,7 @@ import homeMap from "./router/homeMap";
 import designMap from "./router/designMap";
 import projectMap from "./router/projectMap";
 import procurementMap from "./router/procurementMap";
+import systemMap from "./router/systemMap";
 
 import clone from "clone";
 Vue.component(Layout.name, Layout);
@@ -309,6 +310,8 @@ export default {
 					? projectMap
 					: key == "procurement"
 					? procurementMap
+					: key == "system"
+					? systemMap
 					: [];
 			this.initPermission();
 		},
