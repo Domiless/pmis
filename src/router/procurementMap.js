@@ -17,6 +17,24 @@ export default [{
       route: '/supplierManage',
       key: 'supplierManage',
       permissionCode: 'workdesk_desk_lookup',
+    },
+    {
+      menu: '采购合同',
+      route: '/procurementContractManage',
+      key: 'procurementContractManage',
+      permissionCode: 'workdesk_desk_lookup',
+    },
+    {
+      menu: '合同管理',
+      route: '/contractManage',
+      key: 'contractManage',
+      permissionCode: 'workdesk_desk_lookup',
+    },
+    {
+      menu: '计量单位',
+      route: '/measureUnit',
+      key: 'measureUnit',
+      permissionCode: 'workdesk_desk_lookup',
     }
   ]
 }, ]

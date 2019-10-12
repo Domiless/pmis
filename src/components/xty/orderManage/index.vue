@@ -91,8 +91,8 @@
           </template>-->
         </a-table>
         <a-row>
-          <a-col :span="8">
-            <span style="color: #999">提示: 项目订单审批通过后，将自动流转到设计部门。</span>
+          <a-col :span="8" style="margin-top: 12px">
+            <span style="color: #999; height: 32px">提示: 项目订单审批通过后，将自动流转到设计部门。</span>
           </a-col>
           <a-pagination
             style="padding-top:12px;text-align: right;"
