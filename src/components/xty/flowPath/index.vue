@@ -4,10 +4,15 @@
 			<a-row>
 				<div style="line-height:50px;">
 					<a-col :span="8">
-						<permission-button permCode banType="hide" @click>
+						<permission-button permCode banType="hide" @click="addVisible=true">
 							<a-icon style="color:#1890ff;" type="plus" />新增
 						</permission-button>
-						<permission-button permCode banType="hide" @click :disabled="selectedRowKeys.length!=1">
+						<permission-button
+							permCode
+							banType="hide"
+							@click="editVisible=true"
+							:disabled="selectedRowKeys.length!=1"
+						>
 							<a-icon style="color:#1890ff;" type="edit" />修改
 						</permission-button>
 						<permission-button permCode banType="hide" :disabled="selectedRowKeys.length!=1" @click>启用/禁用</permission-button>
@@ -44,11 +49,22 @@
 			>
 				<add></add>
 			</a-modal>
+			<a-modal
+				title="修改"
+				:footer="null"
+				width="800px"
+				:visible="editVisible"
+				@cancel="handleCancel(2)"
+				:maskClosable="false"
+			>
+				<edit></edit>
+			</a-modal>
 		</a-col>
 	</div>
 </template>
 <script>
 import add from "./add&&edit/add";
+import edit from "./add&&edit/edit";
 const columns = [
 	{
 		dataIndex: "name",
@@ -72,9 +88,16 @@ const columns = [
 export default {
 	data() {
 		return {
-			addVisible: true,
+			editVisible: false,
+			addVisible: false,
 			columns,
-			data: [],
+			data: [
+				{
+					name: 11,
+					description: 22,
+					state: 33
+				}
+			],
 			current: 1,
 			pageSize: 10,
 			total: 0,
@@ -85,6 +108,9 @@ export default {
 		handleCancel(a) {
 			if (a == 1) {
 				this.addVisible = false;
+			}
+			if (a == 2) {
+				this.editVisible = false;
 			}
 		},
 		onSelectChange(selectedRowKeys) {
@@ -104,7 +130,8 @@ export default {
 		}
 	},
 	components: {
-		add
+		add,
+		edit
 	}
 };
 </script>
