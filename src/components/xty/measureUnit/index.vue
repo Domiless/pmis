@@ -1,5 +1,5 @@
 <template>
-  <div class="contractManage">
+  <div class="measureUnit">
     <a-row style="line-height:50px;">
       <permission-button permCode banType="hide" @click="addVisible=true">
         <a-icon style="color:#1890ff;" type="plus" />新增
@@ -31,27 +31,35 @@
         :showTotal="total => `共 ${total} 条`"
       />
     </a-row>
+    <a-modal
+     title="新增"
+     v-model="addVisible" 
+     width="500px" 
+    :footer="null"
+    >
+    </a-modal>
+    <a-modal
+     title="修改"
+     v-model="editVisible" 
+     width="500px" 
+    :footer="null"
+    >
+    </a-modal>
   </div>
 </template>
 <script>
 const columns = [
   {
-    dataIndex: "contractName",
-    title: "合同名称",
-    key: "contractName",
+    dataIndex: "measureUnit",
+    title: "计量单位",
+    key: "measureUnit",
     width: "60%"
   },
   {
-    dataIndex: "editMan",
-    title: "编辑人",
-    key: "editMan",
-    width: "20%"
-  },
-  {
-    dataIndex: "lastEditTime",
-    title: "最后修改时间",
-    key: "lastEditTime",
-    width: "20%"
+    dataIndex: "remark",
+    title: "备注",
+    key: "remark",
+    width: "40%"
   }
 ];
 export default {
@@ -87,7 +95,7 @@ export default {
 };
 </script>
 <style lang="less" scoped>
-.contractManage {
+.measureUnit {
   padding: 0 20px;
   .ant-row:nth-child(1) {
     margin-bottom: 10px;

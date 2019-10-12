@@ -29,7 +29,7 @@
               </a-select>
             </a-form-item>
           </a-row>
-          <a-form-item>
+          <a-row>
             <a-form-item label="供应商" :labelCol="{ span: 3}" :wrapperCol="{ span: 19 }">
               <a-select
                 v-decorator="['supplier', { rules: [{ required:'true', message: '请选择供应商'}]}]"
@@ -38,7 +38,7 @@
                 <a-select-option value="1">1</a-select-option>
               </a-select>
             </a-form-item>
-          </a-form-item>
+          </a-row>
           <a-row>
             <a-form-item label="需求方" :labelCol="{ span: 3}" :wrapperCol="{ span: 19 }">
               <a-input v-decorator="['demand', { rules: [{ required:'true', message: '请输入需求方'}]}]"></a-input>
@@ -65,10 +65,10 @@
             </a-form-item>
           </a-row>
           <a-row>
-            <a-form-item label="签订日期" :labelCol="{span:3}" :wrapperCol="{span:21}">
+            <a-form-item label="签订日期" :labelCol="{span:3}" :wrapperCol="{span:19}">
               <a-date-picker
                 @change="onChangeSign"
-                style="width:90%"
+                style="width:100%"
                 v-decorator="['gmtSign']"
                 format="YYYY/MM/DD"
               />
@@ -85,7 +85,7 @@
             </a-form-item>
           </a-row>
           <a-row>
-            <a-form-item label="备注" :labelCol="{span:3}" :wrapperCol="{span:21}">
+            <a-form-item label="备注" :labelCol="{span:3}" :wrapperCol="{span:19}">
               <a-textarea v-decorator="['remark']" :rows="4" :autosize="{ minRows: 4, maxRows: 4}"></a-textarea>
             </a-form-item>
           </a-row>
@@ -96,7 +96,7 @@
         <!-- <a-col :span="12" style="padding-top: 12px; height: 36px;">
           <span style="line-height: 12px">合计：</span>
         </a-col> -->
-        <a-col :span="12">
+        <a-col :span="24">
           <a-pagination
             style="padding-top:12px;text-align: right;"
             size="small"

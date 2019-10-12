@@ -325,5 +325,32 @@ export default new Router({
       },
       children: []
     },
+    {
+      path: '/procurementContractManage',
+      name: 'procurementContractManage',
+      components: require('@/components/xty/procurementContractManage/index'),
+      meta: {
+        requireAuth: true,
+      },
+      children: []
+    },
+    {
+      path: '/contractManage',
+      name: 'contractManage',
+      components: require('@/components/xty/contractManage/index'),
+      meta: {
+        requireAuth: true,
+      },
+      children: []
+    },
+    {
+      path: '/measureUnit',
+      name: 'measureUnit',
+      components: require('@/components/xty/measureUnit/index'),
+      meta: {
+        requireAuth: true,
+      },
+      children: []
+    }
   ]
 })

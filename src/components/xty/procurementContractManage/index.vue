@@ -4,13 +4,13 @@
       <a-button @click="addVisible=true">
         <a-icon style="color:#1890ff;" type="plus" />新增
       </a-button>
-      <a-button @click="editVisible=true">
+      <a-button @click="editVisible=true" :disabled="selectedRowKeys.length!=1">
         <a-icon style="color:#1890ff;" type="edit" />修改
       </a-button>
-      <a-button>
+      <a-button :disabled="selectedRowKeys.length!=1">
         <a-icon style="color:#1890ff;" type="submit" />提交审批
       </a-button>
-      <a-button>
+      <a-button :disabled="selectedRowKeys.length<1">
         <a-icon style="color:#1890ff;" type="delete" />删除
       </a-button>
     </a-row>
@@ -77,6 +77,7 @@
     <a-modal
      title="新增"
      v-model="addVisible"
+     style="top:20px"
      width="1200px"
      :footer="null"
      >
@@ -85,6 +86,7 @@
     <a-modal
      title="修改"
      v-model="editVisible"
+     style="top:20px"
      width="1200px"
      :footer="null"
      >
@@ -94,7 +96,7 @@
 </template>
 <script>
 import AddProcurementContract from "./addProcurementContract"
-import EditProcurementcontract from "./editProcurementContract"
+import EditProcurementContract from "./editProcurementContract"
 const columns = [
   {
     dataIndex: "procurementNo",
@@ -164,7 +166,7 @@ export default {
   },
   components: {
     AddProcurementContract,
-    EditProcurementcontract
+    EditProcurementContract
   }
 };
 </script>
