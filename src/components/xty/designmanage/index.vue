@@ -1,7 +1,7 @@
 <template>
   <div class="designManage">
     <div class="design_header">
-      <a-row style="line-height:50px;">
+      <a-row>
         <a-button @click="addVisible=true">
           <a-icon style="color:#1890ff;" type="plus" />新增
         </a-button>
@@ -25,14 +25,14 @@
     <div class="design_content">
       <a-row>
         <a-col :span="5">
-          <span>日期 :</span>
+          <span>日期 : </span>
           <a-date-picker style="width:120px"></a-date-picker>
           <span>~</span>
           <a-date-picker style="width: 120px"></a-date-picker>
         </a-col>
         <a-col :span="3">
           <a-input-group>
-            <span>审批状态 :</span>
+            <span>审批状态 : </span>
             <a-select :defaultValue="-1" style="width: 100px">
               <a-select-option :value="-1">全部</a-select-option>
               <a-select-option :value="1">暂存</a-select-option>
@@ -44,24 +44,29 @@
           </a-input-group>
         </a-col>
         <a-col :span="8">
-          <span>关键词 :</span>
+          <span>关键词 : </span>
           <a-input placeholder="订单编号/项目名称/部件名称/图号" style="width: 250px"></a-input>
           <a-button>搜索</a-button>
         </a-col>
       </a-row>
       <a-row>
-        <a-table :columns="columns" :dataSource="data" :rowSelection="rowSelection"></a-table>
-        <a-pagination
-          style="padding-top:12px;text-align: right;"
-          :total="30"
-          showQuickJumper
-          showSizeChanger
-          :pageSizeOptions="['10','20','30']"
-          :showTotal="total => `共 ${total} 条`"
-        ></a-pagination>
+           <a-table :columns="columns" :dataSource="data" :rowSelection="rowSelection"></a-table>
+           <a-pagination
+            style="padding-top:12px;text-align: right;"
+            :total="30"
+            showQuickJumper
+            showSizeChanger
+            :pageSizeOptions="['10','20','30']"
+            :showTotal="total => `共 ${total} 条`"
+        >
+        </a-pagination>
       </a-row>
-      <a-modal title="新增" v-model="addVisible" width="800px" :footer="null">
-        <add-design-manage @changeAddOrder="cancelAddOrder"></add-design-manage>
+      <a-modal
+        title="新增"
+        v-model="addVisible"
+        width="800px"
+        okText="保存">
+        <add-design-manage></add-design-manage>
       </a-modal>
       <a-modal
         title="导入BOM"
@@ -70,8 +75,7 @@
         okText="提交"
         @ok="addBomVisible=false"
         @cancel="addBomVisible=false"
-        cancelText="取消"
-      >
+        cancelText="取消">
         <import-bom></import-bom>
       </a-modal>
     </div>
@@ -82,33 +86,33 @@ import AddDesignManage from './Add'
 import importBom from './Bom'
 const columns = [
     {
-        dataIndex: 'workOrderNo',
+        dataIndex: 'orderNum',
         title: '订单编号',
-        key: 'workOrderNo',
+        key: 'orderNum',
         width: '10%'
     },
     {
-        dataIndex: 'projectName',
+        dataIndex: 'project_name',
         title: '项目名称',
-        key: 'orderName',
+        key: 'order_name',
         width: '20%'
     },
     {
-        dataIndex: 'partName',
+        dataIndex: 'part_name',
         title: '部件名称',
-        key: 'partName',
+        key: 'part_name',
         width: '20%'
     },
     {
-        dataIndex: 'bomDrawingNo',
+        dataIndex: 'drawNum',
         title: '图号',
-        key: 'bomDrawingNo',
+        key: 'drawNum',
         width: '10%'
     },
     {
-        dataIndex: 'number',
+        dataIndex: 'demandNum',
         title: '需求数量',
-        key: 'number',
+        key: 'demandNum',
         width: '8%'
     },
     {
@@ -124,9 +128,9 @@ const columns = [
         width: '8%'
     },
     {
-        dataIndex: 'remake',
+        dataIndex: 'remark',
         title: '备注',
-        key: 'remake',
+        key: 'remark',
         width: '16%'
     },
 ]
@@ -138,37 +142,6 @@ export default {
             addVisible: false,
             addBomVisible: false
         }
-    },
-    methods: {
-      cancelAddOrder(params) {
-			this.addVisible = params;
-		},
-    //   getList() {
-		// 	this.Axios(
-		// 		{
-		// 			url: "/api-order/bom/importBom",
-    //       type: "get",
-    //      	params: {
-		// 				// page: this.current,
-    //         // size: this.pageSize,
-    //         // state: this.state,
-		// 				// startTime: this.startTime != "" ? this.startTime : null,
-		// 				// endTime: this.endTime != "" ? this.endTime : null
-		// 			},
-		// 			option: { enableMsg: false }
-		// 		},
-		// 		this
-		// 	).then(
-		// 		result => {
-		// 			if (result.data.code === 200) {
-		// 				console.log(result);
-		// 				this.data = result.data.data.content;
-    //         this.total = result.data.data.totalElement;
-		// 			}
-		// 		},
-		// 		({ type, info }) => {}
-		// 	);
-    // },
     },
     computed: {
         rowSelection() {
@@ -198,14 +171,14 @@ export default {
 </script>
 <style lang="less" scoped>
 .designManage {
-  padding:0 20px;
-  .design_header {
-    margin-bottom: 10px;
-  }
-  .design_content {
-    .ant-row:nth-child(1) {
-      margin-bottom: 10px;
+    .design_header {
+        margin-bottom: 30px;
     }
-  }
+    .design_content {
+        .ant-row:nth-child(1) {
+            margin-bottom: 10px;
+        }
+    }
+
 }
 </style>

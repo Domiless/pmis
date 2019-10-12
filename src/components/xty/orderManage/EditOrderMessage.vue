@@ -161,7 +161,7 @@ export default {
           console.log(data);
           this.Axios(
             {
-              url: `/api-order/order/updateOrder/${this.OrderMessageId}`,
+              url: `/order/updateOrder/${this.OrderMessageId}`,
               params: data,
               type: "post",
               option: { successMsg: "修改成功！" },

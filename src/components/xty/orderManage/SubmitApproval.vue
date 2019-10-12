@@ -24,7 +24,7 @@ export default {
     getList() {
       this.Axios(
         {
-          url: "/api-order/order/reviewOrder",
+          url: "/order/reviewOrder",
           type: "post",
           params: {
             orderId: '',
