@@ -1,5 +1,5 @@
 <template>
-	<div class="flow_path_add">
+	<div class="flow_path_edit">
 		<a-form :form="form">
 			<a-form-item :label-col=" { span: 4 }" :wrapper-col="{ span: 18 }" label="流程类型">
 				<a-input
@@ -135,7 +135,7 @@ export default {
 };
 </script>
 <style lang="less">
-.flow_path_add {
+.flow_path_edit {
 	.item_case {
 		.ant-input {
 			position: relative;
