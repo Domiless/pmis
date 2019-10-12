@@ -1,5 +1,5 @@
 <template>
-  <div class="procurementManage">
+  <div class="procurementContractManage">
     <a-row style="line-height:50px;">
       <a-button @click="addVisible=true">
         <a-icon style="color:#1890ff;" type="plus" />新增
@@ -37,7 +37,7 @@
       <a-col :span="8">
         <span>关键词 :</span>
         <a-input placeholder="请输入关键词" style="width: 250px"></a-input>
-        <a-button @click="getList">搜索</a-button>
+        <a-button>搜索</a-button>
       </a-col>
     </a-row>
     <a-row>
@@ -48,11 +48,11 @@
         :pagination="false"
         :rowSelection="{selectedRowKeys:selectedRowKeys,onChange: onSelectChange}"
       >
-        <a
+        <!-- <a
           slot="procurementNo"
           slot-scope="text"
           href="javascript:;"
-        >{{ text }}</a>
+        >{{ text }}</a>-->
         <template slot="orderReviewSchedule" slot-scope="text, record">
           <div>
             <span v-if="text==2" style="font-size:14px;color:#027DB4;">审批中</span>
@@ -73,25 +73,14 @@
           </div>
         </template>
       </a-table>
-       <a-pagination
-            style="padding-top:12px;text-align: right;"
-            showQuickJumper
-            :defaultCurrent="current"
-            :total="total"
-            @change="onChange"
-            showSizeChanger
-            :pageSizeOptions="['10','20','30']"
-            @showSizeChange="onShowSizeChange"
-            :showTotal="total => `共 ${total} 条`"
-          />
     </a-row>
-     <a-modal
+    <a-modal
      title="新增"
      v-model="addVisible"
      width="1200px"
      :footer="null"
      >
-      <add-procurement></add-procurement>
+      <add-procurement-contract></add-procurement-contract>
     </a-modal>
     <a-modal
      title="修改"
@@ -99,42 +88,42 @@
      width="1200px"
      :footer="null"
      >
-      <edit-procurement></edit-procurement>
+      <edit-procurement-contract></edit-procurement-contract>
     </a-modal>
   </div>
 </template>
 <script>
-import EditProcurement from "./editProcurement"
-import AddProcurement from "./addProcurement"
+import AddProcurementContract from "./addProcurementContract"
+import EditProcurementcontract from "./editProcurementContract"
 const columns = [
-  {
-    dataIndex: "orderNo",
-    title: "项目订单编号",
-    key: "orderNo",
-    width: "10%"
-  },
   {
     dataIndex: "procurementNo",
     title: "采购单号",
     key: "procurementNo",
-    scopedSlots: { customRender: "procurementNo" },
     width: "15%"
   },
   {
-    dataIndex: "applicant",
-    title: "申请人",
-    key: "applicant",
-    width: "8%"
+    dataIndex: "contractNo",
+    title: "合同编号",
+    key: "contractNo",
+    scopedSlots: { customRender: "contractNo" },
+    width: "15%"
+  },
+  {
+    dataIndex: "provider",
+    title: "供方",
+    key: "provider",
+    width: "20%"
   },
   {
     dataIndex: "applyDate",
-    title: "申请日期",
+    title: "业务员",
     key: "applyDate",
     width: "10%"
   },
   {
     dataIndex: "enquiryMsg",
-    title: "询价信息",
+    title: "签订日期",
     key: "enquiryMsg",
     width: "8%"
   },
@@ -146,9 +135,15 @@ const columns = [
     width: "8%"
   },
   {
+    dataIndex: "createDate",
+    title: "创建日期",
+    key: "createDate",
+    width: "8%"
+  },
+  {
     dataIndex: "remark",
     title: "备注",
-    key: "remark",
+    key: "remark"
   }
 ];
 export default {
@@ -159,41 +154,28 @@ export default {
       selectedRowKeys: [],
       addVisible: false,
       editVisible: false,
-      current: 1,
-      pageSize: 10,
-      total: 0,
       state: -1
     };
   },
   methods: {
-     onChange(current, pageNumber) {
-      console.log("Page: ", pageNumber);
-      console.log("第几页: ", current);
-      this.current = current;
-      this.getList();
-    },
-    onShowSizeChange(current, pageSize) {
-      this.pageSize = pageSize;
-      this.current = 1;
-      this.getList();
-    },
-    onSelectChange() {},
-    getList() {}
+      onSelectChange() {
+
+      }
   },
   components: {
-      AddProcurement,
-      EditProcurement
+    AddProcurementContract,
+    EditProcurementcontract
   }
 };
 </script>
 <style lang="less" scoped>
-.procurementManage {
-  padding:0 20px;
+.procurementContractManage {
+  padding: 0 20px;
   .ant-row:nth-child(1) {
     margin-bottom: 10px;
   }
   .ant-row:nth-child(2) {
-      margin-bottom: 10px;
+    margin-bottom: 10px;
   }
 }
 </style>
