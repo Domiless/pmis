@@ -81,7 +81,7 @@ import addPeople from "./addPeople";
 export default {
 	data() {
 		return {
-			auditVisible: true,
+			auditVisible: false,
 			form: this.$form.createForm(this),
 			node: [
 				{

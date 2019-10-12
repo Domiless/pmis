@@ -52,7 +52,7 @@ const columns = [
     title: "图号",
     dataIndex: "drawId", 
     key: "drawId", 
-    fixed: "left", 
+    // fixed: "left", 
     width: 100 
   },
   { 
@@ -124,7 +124,7 @@ const columns = [
   {
     title: "操作",
     key: "operation",
-    fixed: "right",
+    // fixed: "right",
     width: 100,
     scopedSlots: { customRender: "action" }
   }
