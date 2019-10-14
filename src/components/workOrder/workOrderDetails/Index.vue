@@ -870,7 +870,7 @@ export default {
 			}
 			if (a == 2) {
 				this.editVisible = false;
-				// this.form.resetFields();
+				this.form.resetFields();
 			}
 			if (a == 3) {
 				this.technologyAddVisible = false;
