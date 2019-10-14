@@ -21,9 +21,14 @@ import "tinymce/plugins/textcolor";
 import "tinymce/plugins/imagetools";
 export default {
 	name: "tinymce",
+	props: {
+		tinymceValue: {
+			default: ""
+		}
+	},
 	data() {
 		return {
-			tinymceHtml: "请输入内容",
+			tinymceHtml: this.tinymceValue,
 			init: {
 				language_url: "/static/tinymce/zh_CN.js",
 				language: "zh_CN",
@@ -73,6 +78,11 @@ export default {
 				.catch(res => {
 					failure("上传失败");
 				});
+		}
+	},
+	watch: {
+		tinymceHtml() {
+			this.$emit("tinymceValue", this.tinymceHtml);
 		}
 	},
 
