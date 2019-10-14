@@ -15,14 +15,12 @@
       </a-button>
     </a-row>
     <a-row>
-      <a-col :span="5">
+      <a-col :span="24">
         <span>日期 :</span>
         <a-date-picker style="width:120px"></a-date-picker>
         <span>~</span>
         <a-date-picker style="width: 120px"></a-date-picker>
-      </a-col>
-      <a-col :span="3">
-        <a-input-group>
+        <a-input-group class="changeDis">
           <span>审批状态 : </span>
           <a-select v-model="state" style="width: 100px" optionFilterProp="children">
             <a-select-option :value="-1">全部</a-select-option>
@@ -33,8 +31,6 @@
             <a-select-option :value="5">已终止</a-select-option>
           </a-select>
         </a-input-group>
-      </a-col>
-      <a-col :span="8">
         <span>关键词 :</span>
         <a-input placeholder="请输入关键词" style="width: 250px"></a-input>
         <a-button @click="getList">搜索</a-button>
@@ -48,11 +44,9 @@
         :pagination="false"
         :rowSelection="{selectedRowKeys:selectedRowKeys,onChange: onSelectChange}"
       >
-        <a
-          slot="procurementNo"
-          slot-scope="text"
-          href="javascript:;"
-        >{{ text }}</a>
+        <template slot="procurementNo" slot-scope="text, record">
+						<a href="javascript:" @click="showDetails(record)">{{text}}</a>
+				</template>
         <template slot="orderReviewSchedule" slot-scope="text, record">
           <div>
             <span v-if="text==2" style="font-size:14px;color:#027DB4;">审批中</span>
@@ -101,6 +95,33 @@
      >
       <edit-procurement></edit-procurement>
     </a-modal>
+    <a-modal
+			title="采购单号详情"
+			:footer="null"
+			width="600px"
+			:visible="detailsVisible"
+			@cancel="handleCancel()"
+			:maskClosable="false"
+		>
+			<a-row>
+				<a-col :span="12" style="margin-bottom:12px;">
+					<span class="label_right">项目订单：</span>
+					<span>{{procurementDetails}}</span>
+				</a-col>
+				<a-col :span="12" style="margin-bottom:12px;">
+					<span class="label_right">设计单号：</span>
+					<span>{{procurementDetails}}</span>
+				</a-col>
+				<a-col :span="12" style="margin-bottom:12px;">
+					<span class="label_right">采购单号：</span>
+					<span>{{procurementDetails}}</span>
+				</a-col>
+				<a-col :span="12" style="margin-bottom:12px;">
+					<span class="label_right">备注：</span>
+					<span>{{procurementDetails}}</span>
+				</a-col>
+			</a-row>
+		</a-modal>
   </div>
 </template>
 <script>
@@ -111,20 +132,20 @@ const columns = [
     dataIndex: "orderNo",
     title: "项目订单编号",
     key: "orderNo",
-    width: "10%"
+    width: "20%"
   },
   {
     dataIndex: "procurementNo",
     title: "采购单号",
     key: "procurementNo",
     scopedSlots: { customRender: "procurementNo" },
-    width: "15%"
+    width: "20%"
   },
   {
     dataIndex: "applicant",
     title: "申请人",
     key: "applicant",
-    width: "8%"
+    width: "10%"
   },
   {
     dataIndex: "applyDate",
@@ -134,16 +155,16 @@ const columns = [
   },
   {
     dataIndex: "enquiryMsg",
-    title: "询价信息",
+    title: "是否询价",
     key: "enquiryMsg",
-    width: "8%"
+    width: "10%"
   },
   {
     dataIndex: "orderReviewSchedule",
     title: "审批状态",
     key: "orderReviewSchedule",
     scopedSlots: { customRender: "orderReviewSchedule" },
-    width: "8%"
+    width: "10%"
   },
   {
     dataIndex: "remark",
@@ -157,8 +178,10 @@ export default {
       columns,
       data: [],
       selectedRowKeys: [],
+      procurementDetails: [],
       addVisible: false,
       editVisible: false,
+      detailsVisible: false,
       current: 1,
       pageSize: 10,
       total: 0,
@@ -166,6 +189,14 @@ export default {
     };
   },
   methods: {
+    handleCancel() {
+      this.detailsVisible = false;
+    },
+    showDetails(row) {
+			this.procurementDetails = row;
+			this.detailsVisible = true;
+			console.log(this.procurementDetails);
+    },
      onChange(current, pageNumber) {
       console.log("Page: ", pageNumber);
       console.log("第几页: ", current);
@@ -194,6 +225,15 @@ export default {
   }
   .ant-row:nth-child(2) {
       margin-bottom: 10px;
+  }
+  .label_right {
+	display: inline-block;
+	width: 120px;
+	text-align: right;
+  }
+  .changeDis {
+    display: inline;
+    margin: 0px 50px 0px 50px;
   }
 }
 </style>

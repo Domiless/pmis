@@ -12,13 +12,11 @@
       </a-button>
     </a-row>
     <a-row>
-        <a-col :span="5">
+        <a-col :span="24">
           <span>日期 :</span>
           <a-date-picker style="width:120px"></a-date-picker>
           <span>~</span>
-          <a-date-picker style="width: 120px"></a-date-picker>
-        </a-col>
-        <a-col :span="8">
+          <a-date-picker style="width: 120px; margin-right: 50px"></a-date-picker>
           <span>关键词 :</span>
           <a-input placeholder="供应商编码/名称/联系人/电话" style="width: 250px"></a-input>
           <a-button>搜索</a-button>

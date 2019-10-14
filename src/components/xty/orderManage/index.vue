@@ -13,7 +13,7 @@
             <a-button @click="submitVisible=true" :disabled="selectedRowKeys.length!=1">
               <a-icon type="submit" style="color: #1890ff" />提交审批
             </a-button>
-            <a-button :disabled="selectedRowKeys.length==0" @click="showDeleteConfirm">
+            <a-button @click="showDeleteConfirm" :disabled="selectedRowKeys.length==0" >
               <a-icon type="delete" style="color: #1890ff" />删除
             </a-button>
           </a-col>
@@ -23,17 +23,12 @@
     <div class="orderManage_content">
       <div class="content_wrap">
         <a-row>
-          <a-col :span="5">
+          <a-col :span="24">
             <span>日期 :</span>
             <a-date-picker style="width:120px"></a-date-picker>
             <span>~</span>
             <a-date-picker style="width: 120px"></a-date-picker>
-          </a-col>
-          <!-- <a-col :span="2" style="text-align: right;line-height: 32px">
-            
-          </a-col>-->
-          <a-col :span="3">
-            <a-input-group>
+            <a-input-group class="changeDis">
               <span>审批状态 : </span>
               <a-select v-model="state" style="width: 100px" optionFilterProp="children">
                 <a-select-option :value="-1">全部</a-select-option>
@@ -44,8 +39,6 @@
                 <a-select-option :value="5">已终止</a-select-option>
               </a-select>
             </a-input-group>
-          </a-col>
-          <a-col :span="8">
             <span>关键词 :</span>
             <a-input placeholder="请输入关键词" style="width: 250px"></a-input>
             <a-button @click="getList">搜索</a-button>
@@ -366,6 +359,10 @@ export default {
     //   width: 100px;
     //   margin: 0 8px 8px 0;
     // }
+  }
+  .changeDis {
+    display: inline;
+    margin: 0px 50px 0px 50px;
   }
 }
 </style>

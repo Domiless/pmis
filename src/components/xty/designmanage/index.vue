@@ -24,14 +24,12 @@
     </div>
     <div class="design_content">
       <a-row>
-        <a-col :span="5">
+        <a-col :span="24">
           <span>日期 : </span>
           <a-date-picker style="width:120px"></a-date-picker>
           <span>~</span>
           <a-date-picker style="width: 120px"></a-date-picker>
-        </a-col>
-        <a-col :span="3">
-          <a-input-group>
+          <a-input-group class="changeDis">
             <span>审批状态 : </span>
             <a-select :defaultValue="-1" style="width: 100px">
               <a-select-option :value="-1">全部</a-select-option>
@@ -42,15 +40,18 @@
               <a-select-option :value="5">已终止</a-select-option>
             </a-select>
           </a-input-group>
-        </a-col>
-        <a-col :span="8">
           <span>关键词 :</span>
           <a-input placeholder="订单编号/项目名称/部件名称/图号" style="width: 250px"></a-input>
           <a-button>搜索</a-button>
-        </a-col>
+      </a-col>
       </a-row>
+      
       <a-row>
-        <a-table :columns="columns" :dataSource="data" :rowSelection="rowSelection"></a-table>
+        <a-table :columns="columns" :dataSource="data" :rowSelection="rowSelection">
+          <template slot="partName" slot-scope="text, record">
+            <a href="javascript:" @click="showDetails(record)">{{text}}</a>
+        </template>
+        </a-table>
         <a-pagination
           style="padding-top:12px;text-align: right;"
           :total="30"
@@ -74,6 +75,41 @@
       >
         <import-bom></import-bom>
       </a-modal>
+      <a-modal
+			title="采购单号详情"
+			:footer="null"
+			width="600px"
+			:visible="detailsVisible"
+			@cancel="handleCancel()"
+			:maskClosable="false"
+		>
+			<a-row>
+				<a-col :span="12" style="margin-bottom:12px;">
+					<span class="label_right">项目订单：</span>
+					<span>{{partDetails}}</span>
+				</a-col>
+				<a-col :span="12" style="margin-bottom:12px;">
+					<span class="label_right">设计单号：</span>
+					<span>{{partDetails}}</span>
+				</a-col>
+				<a-col :span="12" style="margin-bottom:12px;">
+					<span class="label_right">部件名称：</span>
+					<span>{{partDetails}}</span>
+				</a-col>
+        <a-col :span="12" style="margin-bottom:12px;">
+					<span class="label_right">图号：</span>
+					<span>{{partDetails}}</span>
+				</a-col>
+         <a-col :span="12" style="margin-bottom:12px;">
+					<span class="label_right">需求数量：</span>
+					<span>{{partDetails}}</span>
+				</a-col>
+				<a-col :span="12" style="margin-bottom:12px;">
+					<span class="label_right">备注：</span>
+					<span>{{partDetails}}</span>
+				</a-col>
+			</a-row>
+		</a-modal>
     </div>
   </div>
 </template>
@@ -135,14 +171,24 @@ export default {
         return {
             columns,
             data: [],
+            partDetails: [],
             addVisible: false,
-            addBomVisible: false
+            addBomVisible: false,
+            detailsVisible: false
         }
     },
     methods: {
-      cancelAddOrder(params) {
+    handleCancel() {
+      this.detailsVisible = false;
+    },
+    cancelAddOrder(params) {
 			this.addVisible = params;
-		},
+    },
+    showDetails(row) {
+      this.partDetails = row;
+      this.detailsVisible = true;
+      console.log(this.partDetails);
+    },
     //   getList() {
 		// 	this.Axios(
 		// 		{
@@ -206,6 +252,10 @@ export default {
     .ant-row:nth-child(1) {
       margin-bottom: 10px;
     }
+  }
+  .changeDis {
+    display: inline;
+    margin: 0px 50px 0px 50px;
   }
 }
 </style>
