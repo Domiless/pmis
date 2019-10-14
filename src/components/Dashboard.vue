@@ -30,7 +30,27 @@
 								/>
 							</div>
 						</a-tab-pane>
-						<a-tab-pane tab="已办事项" key="2" forceRender>Content of Tab Pane 2</a-tab-pane>
+						<a-tab-pane tab="已办事项" key="2" forceRender>
+							<ul v-if="things>0" class="list_case">
+								<li v-for="(item, index) in things" :key="index" class="list">
+									<a-col :span="3">20191012</a-col>
+									<a-col :span="3">项目订单</a-col>
+									<a-col :span="10">张三发起的项目订单流程审批111111111111111</a-col>
+									<a-col :span="4">2019-10-12 14:23:01</a-col>
+									<a-col :span="4">4天23小时46分</a-col>
+								</li>
+							</ul>
+							<div style="text-align:center;line-height:100px;" v-else>暂无待办事项</div>
+							<div style="text-align:right;">
+								<a-pagination
+									size="small"
+									@change="onChange2"
+									:current="current2"
+									:total="50"
+									:showTotal="total => `共 ${total} 条`"
+								/>
+							</div>
+						</a-tab-pane>
 					</a-tabs>
 				</div>
 				<div class="msg_style">
@@ -108,7 +128,8 @@ export default {
 			msg: "Welcome to Your Dashboard",
 			things: 10,
 			current: 1,
-			current1: 1
+			current1: 1,
+			current2: 1
 		};
 	},
 	methods: {
@@ -120,6 +141,9 @@ export default {
 		},
 		onChange1(current) {
 			this.current1 = current;
+		},
+		onChange2(current) {
+			this.current2 = current;
 		},
 		clickMsg() {
 			// this.msg='I had change Dashboard';
