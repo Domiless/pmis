@@ -66,11 +66,6 @@ export default {
 <style lang="less" scoped>
 .submitApproval {
   height: 200px;
-  .ant-row:nth-child(1) {
-    margin-bottom: 20px;
-  }
-  .ant-form-item-label:nth-child(2) {
-    line-height: 19px;
-  }
+
 }
 </style>

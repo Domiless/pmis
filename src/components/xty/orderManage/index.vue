@@ -51,12 +51,15 @@
           :pagination="false"
           :rowSelection="{selectedRowKeys:selectedRowKeys,onChange: onSelectChange}"
         >
-          <a
+          <!-- <a
             slot="contractName"
             slot-scope="details"
             href="javascript:;"
             @click="sendDetails()"
-          >{{ details }}</a>
+          >{{ details }}</a> -->
+          <template slot="contractName" slot-scope="text, record">
+            <a href="javascript:" @click="showDetails(record)">{{text}}</a>
+          </template>
           <template slot="orderReviewSchedule" slot-scope="text, record">
             <div>
               <span v-if="text==2" style="font-size:14px;color:#027DB4;">审批中</span>
@@ -75,6 +78,12 @@
               </a-popover>
               <span v-if="text==3" style="font-size:14px;color:#10CF0C;">已通过</span>
             </div>
+          </template>
+          <template slot="orderType" slot-scope="text">
+            <span v-if="text==1">贸易类</span>
+            <span v-if="text==2">咨询类</span>
+            <span v-if="text==3">设计制造类</span>
+            <span v-if="text==4">其他</span>
           </template>
           <!-- <template slot="design_apply" slot-scope="text, record, index">
 								<div>
@@ -109,7 +118,7 @@
     </a-modal>
     <a-modal
       title="详情"
-      :visible="showDetails"
+      :visible="detailsVisible"
       width="800px"
       :maskClosable="false"
       :footer="null"
@@ -118,8 +127,9 @@
       <Details :sendId="selectedRowKeys[0]" @closeDetails="cancelDetails"></Details>
     </a-modal>
     <a-modal
-      title="修改工单"
+      title="修改"
       :footer="null"
+      style="top:20px"
       width="1000px"
       :visible="editVisible"
       @cancel="editVisible=false"
@@ -163,6 +173,7 @@ const columns = [
     dataIndex: "orderType",
     title: "订单类别",
     key: "orderType",
+    scopedSlots: { customRender: "orderType" },
     width: "8%"
   },
   {
@@ -204,7 +215,7 @@ export default {
       submitVisible: false,
       editVisible: false,
       applyShow: false,
-      showDetails: false,
+      detailsVisible: false,
       current: 1,
       pageSize: 10,
       total: 0,
@@ -212,6 +223,7 @@ export default {
       endTime: null,
       employeeId: null,
       selectedRowKeys: [],
+      orderDetails: [],
       state: -1,
       value1: ""
     };
@@ -223,14 +235,16 @@ export default {
     // 	this.selectedRowKeys = [];
     // 	this.selectedRows = [];
     // },
-    sendDetails() {
-      this.showDetails = true;
+    showDetails(row) {
+      this.orderDetails = row;
+      this.detailsVisible = true;
+      console.log("row:" +this.orderDetails);
     },
     cancelAddOrder(params) {
       this.addVisible = params;
     },
     cancelDetails(params) {
-      this.showDetails = params;
+      this.detailsVisible = params;
     },
     onSelectChange(selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys;
@@ -242,7 +256,7 @@ export default {
       this.endTime = b[1];
     },
     closeDetails() {
-      this.showDetails = false;
+      this.detailsVisible = false;
     },
     onShowSizeChange(current, pageSize) {
       this.pageSize = pageSize;
@@ -293,8 +307,8 @@ export default {
           url: "/api-order/order/getOrderList",
           type: "get",
           params: {
-            // page: this.current,
-            // size: this.pageSize,
+            page: this.current,
+            size: this.pageSize,
             // state: this.state,
             // startTime: this.startTime != "" ? this.startTime : null,
             // endTime: this.endTime != "" ? this.endTime : null

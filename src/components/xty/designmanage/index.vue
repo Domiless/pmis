@@ -5,7 +5,7 @@
         <a-button @click="addVisible=true">
           <a-icon style="color:#1890ff;" type="plus" />新增
         </a-button>
-        <a-button>
+        <a-button @click="editVisible=true">
           <a-icon style="color:#1890ff;" type="edit" />修改
         </a-button>
         <a-button @click="addBomVisible=true">
@@ -17,7 +17,7 @@
         <a-button>
           <a-icon style="color:#1890ff;" type />提交审批
         </a-button>
-        <a-button>
+        <a-button @click="showDeleteConfirm">
           <a-icon style="color:#1890ff;" type="delete" />删除
         </a-button>
       </a-row>
@@ -63,6 +63,9 @@
       </a-row>
       <a-modal title="新增" v-model="addVisible" width="1200px" :footer="null">
         <add-design-manage @changeAddOrder="cancelAddOrder"></add-design-manage>
+      </a-modal>
+      <a-modal title="修改" v-model="editVisible" width="1200px" :footer="null">
+        <edit-design-manage @changeAddOrder="cancelAddOrder"></edit-design-manage>
       </a-modal>
       <a-modal
         title="导入BOM"
@@ -115,6 +118,7 @@
 </template>
 <script>
 import AddDesignManage from './Add'
+import EditDesignManage from './Edit'
 import importBom from './Bom'
 const columns = [
     {
@@ -173,6 +177,7 @@ export default {
             data: [],
             partDetails: [],
             addVisible: false,
+            editVisible: false,
             addBomVisible: false,
             detailsVisible: false
         }
@@ -215,6 +220,45 @@ export default {
 		// 		({ type, info }) => {}
 		// 	);
     // },
+    onDelete(e) {
+      console.log(this.selectedRowKeys);
+      let qs = require("qs");
+      let data = qs.stringify({
+        orderIds: this.selectedRowKeys.join(",")
+      });
+      this.Axios(
+        {
+          url: "/api-order/order/delOrder",
+          params: data,
+          type: "post",
+          option: { successMsg: "删除成功！" }
+        },
+        this
+      ).then(
+        result => {
+          if (result.data.code === 200) {
+            console.log(result);
+            this.getList();
+            this.selectedRowKeys = [];
+          }
+        },
+        ({ type, info }) => {}
+      );
+    },
+    showDeleteConfirm() {
+      let that = this;
+      this.$confirm({
+        title: "确定删除吗？",
+        content: "",
+        okText: "确定",
+        okType: "danger",
+        cancelText: "取消",
+        onOk: function() {
+          that.onDelete();
+        },
+        onCancel() {}
+      });
+    }
     },
     computed: {
         rowSelection() {
@@ -238,6 +282,7 @@ export default {
     },
     components: {
         AddDesignManage,
+        EditDesignManage,
         importBom
     }
 };

@@ -145,7 +145,7 @@ export default {
       data,
       columns,
       addVisible: false,
-      filelist: []
+      fileList: []
     };
   }
 };
