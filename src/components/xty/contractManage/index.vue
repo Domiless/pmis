@@ -31,9 +31,27 @@
         :showTotal="total => `共 ${total} 条`"
       />
     </a-row>
+    <a-modal
+      title="新增"
+      v-model="addVisible"
+      :maskClosable="false"
+      width="1000px"
+    >
+    <add-contract-manage></add-contract-manage>
+    </a-modal>
+    <a-modal
+      title="修改"
+      v-model="editVisible"
+      :maskClosable="false"
+      width="1000px"
+    >
+    <edit-contract-manage></edit-contract-manage>
+    </a-modal>
   </div>
 </template>
 <script>
+import AddContractManage from "./add"
+import EditContractManage from "./edit"
 const columns = [
   {
     dataIndex: "contractName",
@@ -83,6 +101,10 @@ export default {
       this.selectedRowKeys = selectedRowKeys;
       console.log(this.selectedRowKeys);
     },
+  },
+  components: {
+    AddContractManage,
+    EditContractManage
   }
 };
 </script>

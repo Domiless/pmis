@@ -4,10 +4,10 @@
       <permission-button permCode banType="hide" @click="addVisible=true">
         <a-icon style="color:#1890ff;" type="plus" />新增
       </permission-button>
-      <permission-button permCode banType="hide" @click="editVisible=true">
+      <permission-button permCode banType="hide" @click="editVisible=true" :disabled="selectedRowKeys.length!=1">
         <a-icon style="color:#1890ff;" type="edit" />修改
       </permission-button>
-      <permission-button permCode banType="hide">
+      <permission-button permCode banType="hide" @click="showDeleteConfirm" :disabled="selectedRowKeys.length==0">
         <a-icon style="color:#1890ff;" type="delete" />删除
       </permission-button>
     </a-row>
@@ -32,18 +32,40 @@
       />
     </a-row>
     <a-modal
-     title="新增"
-     v-model="addVisible" 
-     width="500px" 
-    :footer="null"
+      title="新增"
+      v-model="addVisible"
+      :maskClosable="false"
+      width="500px"
+      @cancel="handleCancel(1)"
     >
+      <a-form :form="form">
+        <a-form-item label="计量单位" :labelCol="{span:5}" :wrapperCol="{span:17}" required>
+          <a-input
+            v-decorator="['measureUnit', { rules: [{ required:'true', message: '请填写计量单位'}]}]"
+          ></a-input>
+        </a-form-item>
+        <a-form-item label="备注" :labelCol="{span:5}" :wrapperCol="{span:17}">
+          <a-textarea v-decorator="['remark']" :rows="4" :autosize="{ minRows: 4, maxRows: 4}"></a-textarea>
+        </a-form-item>
+      </a-form>
     </a-modal>
     <a-modal
-     title="修改"
-     v-model="editVisible" 
-     width="500px" 
-    :footer="null"
+      title="修改"
+      v-model="editVisible"
+      :maskClosable="false"
+      width="500px"
+      @cancel="handleCancel(2)"
     >
+      <a-form :form="form">
+        <a-form-item label="计量单位" :labelCol="{span:5}" :wrapperCol="{span:17}" required>
+          <a-input
+            v-decorator="['measureUnit', { rules: [{ required:'true', message: '请填写计量单位'}]}]"
+          ></a-input>
+        </a-form-item>
+        <a-form-item label="备注" :labelCol="{span:5}" :wrapperCol="{span:17}">
+          <a-textarea v-decorator="['remark']" :rows="4" :autosize="{ minRows: 4, maxRows: 4}"></a-textarea>
+        </a-form-item>
+      </a-form>
     </a-modal>
   </div>
 </template>
@@ -65,6 +87,7 @@ const columns = [
 export default {
   data() {
     return {
+      form: this.$form.createForm(this),
       columns,
       data: [],
       selectedRowKeys: [],
@@ -91,6 +114,52 @@ export default {
       this.selectedRowKeys = selectedRowKeys;
       console.log(this.selectedRowKeys);
     },
+    handleCancel(num) {
+      if (num == 1) {
+        this.addVisible = false;
+      } else {
+        this.editVisible = false;
+      }
+    },
+    onDelete(e) {
+      console.log(this.selectedRowKeys);
+      let qs = require("qs");
+      let data = qs.stringify({
+        orderIds: this.selectedRowKeys.join(",")
+      });
+      this.Axios(
+        {
+          url: "/api-order/order/delOrder",
+          params: data,
+          type: "post",
+          option: { successMsg: "删除成功！" }
+        },
+        this
+      ).then(
+        result => {
+          if (result.data.code === 200) {
+            console.log(result);
+            this.getList();
+            this.selectedRowKeys = [];
+          }
+        },
+        ({ type, info }) => {}
+      );
+    },
+    showDeleteConfirm() {
+      let that = this;
+      this.$confirm({
+        title: "确定删除吗？",
+        content: "",
+        okText: "确定",
+        okType: "danger",
+        cancelText: "取消",
+        onOk: function() {
+          that.onDelete();
+        },
+        onCancel() {}
+      });
+    }
   }
 };
 </script>
@@ -101,7 +170,7 @@ export default {
     margin-bottom: 10px;
   }
   .ant-row:nth-child(2) {
-      margin-bottom: 10px;
+    margin-bottom: 10px;
   }
 }
 </style>
