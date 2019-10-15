@@ -79,7 +79,7 @@
       </a-row>
       <a-row>
         <a-form-item label="签订时间" :labelCol="{span:3}" :wrapperCol="{span:21}">
-          <a-input v-decorator="['gmtSign']"></a-input>
+          <a-date-picker @change="onChangeSign" style="width:90%" v-decorator="['gmtSign']" format="YYYY/MM/DD"/>
         </a-form-item>
       </a-row>
       <a-row>
@@ -89,7 +89,7 @@
       </a-row>
       <a-row>
         <a-form-item label="交货日期" :labelCol="{span:3}" :wrapperCol="{span:21}" required>
-          <a-date-picker @change="onChange" v-decorator="['gmtDelivery']" format="YYYY/MM/DD" />
+          <a-date-picker @change="onChange" style="width:90%" v-decorator="['gmtDelivery']" format="YYYY/MM/DD" />
         </a-form-item>
       </a-row>
       <a-row>
@@ -121,20 +121,24 @@
   </div>
 </template>
 <script>
+import moment from "moment";
 export default {
   props: {
-    OrderMessageId: {
-      default: null
-    }
+    OrderMessageId: String
   },
   data() {
     return {
       form: this.$form.createForm(this),
       orderNo: "",
-      dataValue: ""
+      dataValue: "",
+      editMsg: [],
+      signDate: ''
     };
   },
   methods: {
+    onChangeSign(data,dateString) {
+      this.signDate = dateString;
+    },
     onChange(date, dateString) {
       console.log(date, dateString);
       this.dataValue = dateString;
@@ -151,12 +155,18 @@ export default {
             contractName: values.contractName,
             contractNo: values.contractNo,
             customerName: values.customerName,
+            dutyBy: values.dutyBy,
+            totalMoney: values.totalMoney,
             measureUnit: values.measureUnit,
+            transportType: values.transportType,
+            deliveryPlace:values.deliveryPlace,
+            gmtSign: this.signDate,
             gmtDelivery: this.dataValue,
             no: values.no,
             orderType: values.orderType,
             orderQuantity: values.orderQuantity,
-            undertakeDep: values.undertakeDep
+            undertakeDep: values.undertakeDep,
+            remark: values.remark
           };
           console.log(data);
           this.Axios(
@@ -174,14 +184,62 @@ export default {
             result => {
               if (result.data.code === 200) {
                 console.log(result);
-                this.$router.back(-1);
+                this.$emit("close",false);
+                
               }
             },
             ({ type, info }) => {}
           );
         }
       });
-    }
+    },
+    findOne(id) {
+			this.Axios(
+				{
+					url: `/api-order/order/getOrder/${id}`,
+					params: {},
+					type: "get",
+					option: { enableMsg: false }
+				},
+				this
+			).then(
+				result => {
+					if (result.data.code === 200) {
+            console.log(result.data.data);
+            this.editMsg = result.data.data;
+            setTimeout(()=> {
+              this.form.setFieldsValue({
+                contractName: this.editMsg.contractName,
+                contractNo: this.editMsg.contractNo,
+                customerName: this.editMsg.customerName,
+                dutyBy: this.editMsg.dutyBy,
+                totalMoney: this.editMsg.totalMoney,
+                measureUnit: this.editMsg.measureUnit,
+                transportType: this.editMsg.transportType,
+                deliveryPlace:this.editMsg.deliveryPlace,
+                gmtSign: moment(
+                  this.editMsg.gmtSign,
+                  "YYYY/MM/DD"
+                ),
+                gmtDelivery: moment(
+                  this.editMsg.gmtDelivery,
+                  "YYYY/MM/DD"
+                ),
+                no: this.editMsg.no,
+                orderType: this.editMsg.orderType,
+                orderQuantity: this.editMsg.orderQuantity,
+                undertakeDep: this.editMsg.undertakeDep,
+                remark: this.editMsg.remark
+                })
+            },100)
+					}
+				},
+				({ type, info }) => {}
+			);
+		},
+  },
+  created() {
+    this.findOne(this.OrderMessageId)
   }
 };
 </script>

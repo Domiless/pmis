@@ -25,13 +25,13 @@
         <a-row>
           <a-col :span="24">
             <span>日期 :</span>
-            <a-date-picker style="width:120px"></a-date-picker>
+            <a-date-picker style="width:120px" @change="onChangeBegin" format="YYYY/MM/DD"></a-date-picker>
             <span>~</span>
-            <a-date-picker style="width: 120px"></a-date-picker>
+            <a-date-picker style="width: 120px" @change="onChangeEnd" format="YYYY/MM/DD"></a-date-picker>
             <a-input-group class="changeDis">
               <span>审批状态 : </span>
-              <a-select v-model="state" style="width: 100px" optionFilterProp="children">
-                <a-select-option :value="-1">全部</a-select-option>
+              <a-select v-model="reviewState" style="width: 100px" optionFilterProp="children">
+                <a-select-option :value="0">全部</a-select-option>
                 <a-select-option :value="1">暂存</a-select-option>
                 <a-select-option :value="2">审批中</a-select-option>
                 <a-select-option :value="3">已通过</a-select-option>
@@ -40,7 +40,7 @@
               </a-select>
             </a-input-group>
             <span>关键词 :</span>
-            <a-input placeholder="请输入关键词" style="width: 250px"></a-input>
+            <a-input placeholder="请输入关键词" style="width: 250px" v-model="keyWords"></a-input>
             <a-button @click="getList">搜索</a-button>
           </a-col>
         </a-row>
@@ -51,12 +51,6 @@
           :pagination="false"
           :rowSelection="{selectedRowKeys:selectedRowKeys,onChange: onSelectChange}"
         >
-          <!-- <a
-            slot="contractName"
-            slot-scope="details"
-            href="javascript:;"
-            @click="sendDetails()"
-          >{{ details }}</a> -->
           <template slot="contractName" slot-scope="text, record">
             <a href="javascript:" @click="showDetails(record)">{{text}}</a>
           </template>
@@ -117,16 +111,6 @@
       <submit-approval></submit-approval>
     </a-modal>
     <a-modal
-      title="详情"
-      :visible="detailsVisible"
-      width="800px"
-      :maskClosable="false"
-      :footer="null"
-      @cancel="closeDetails"
-    >
-      <Details :sendId="selectedRowKeys[0]" @closeDetails="cancelDetails"></Details>
-    </a-modal>
-    <a-modal
       title="修改"
       :footer="null"
       style="top:20px"
@@ -134,7 +118,84 @@
       :visible="editVisible"
       @cancel="editVisible=false"
     >
-      <edit-order-message :OrderMessageId="selectedRowKeys[0]"></edit-order-message>
+      <edit-order-message :OrderMessageId="selectedRowKeys[0]" @close="cancelEdit"></edit-order-message>
+    </a-modal>
+    <a-modal
+      title="详情"
+      :visible="detailsVisible"
+      width="800px"
+      :maskClosable="false"
+      :footer="null"
+      @cancel="closeDetails"
+    >
+      <a-row>
+          <span class="label_right" style="margin-bottom:12px;">合同号：</span>
+          <span>{{ orderDetails.contractNo }}</span>
+      </a-row>
+      <a-row>
+          <span class="label_right" style="margin-bottom:12px;">项目名称：</span>
+          <span>{{ orderDetails.contractName }}</span>
+      </a-row>
+      <a-row>
+          <span class="label_right" style="margin-bottom:12px;">订单类别：</span>
+          <span v-if="orderDetails.orderType==1">贸易类</span>
+          <span v-if="orderDetails.orderType==2">咨询类</span>
+          <span v-if="orderDetails.orderType==3">设计制造类</span>
+          <span v-if="orderDetails.orderType==4">其他</span>
+      </a-row>
+      <a-row>
+          <span class="label_right" style="margin-bottom:12px;">项目订单编号：</span>
+          <span>{{ orderDetails.no }}</span>
+      </a-row>
+      <a-row>
+          <span class="label_right" style="margin-bottom:12px;">承接部门：</span>
+          <span>{{ orderDetails.undertakeDep }}</span>
+      </a-row>
+      <a-row>
+          <span class="label_right" style="margin-bottom:12px;">负责人：</span>
+          <span>{{ orderDetails.dutyBy }}</span>
+      </a-row>
+      <a-row>
+          <span class="label_right" style="margin-bottom:12px;">客户名称：</span>
+          <span>{{ orderDetails.customerName }}</span>
+      </a-row>
+      <a-row>
+          <span class="label_right" style="margin-bottom:12px;">合同金额：</span>
+          <span>{{ orderDetails.totalMoney }}</span>
+      </a-row>
+      <a-row>
+          <span class="label_right" style="margin-bottom:12px;">计量单位：</span>
+          <span>{{ orderDetails.measureUnit }}</span>
+      </a-row>
+      <a-row>
+          <span class="label_right" style="margin-bottom:12px;">订单数量：</span>
+          <span>{{ orderDetails.orderQuantity }}</span>
+      </a-row>
+      <a-row>
+          <span class="label_right" style="margin-bottom:12px;">运输方式：</span>
+          <span>{{ orderDetails.transportType }}</span>
+      </a-row>
+      <a-row>
+          <span class="label_right" style="margin-bottom:12px;">签订时间：</span>
+          <span>{{ orderDetails.gmtCreate }}</span>
+      </a-row>
+      <a-row>
+          <span class="label_right" style="margin-bottom:12px;">交货地点：</span>
+          <span>{{ orderDetails.deliveryPlace }}</span>
+      </a-row>
+      <a-row>
+          <span class="label_right" style="margin-bottom:12px;">交货日期：</span>
+          <span>{{ orderDetails.gmtDelivery }}</span>
+      </a-row>
+      <a-row>
+          <span class="label_right" style="margin-bottom:12px;">附件：</span>
+          <span>{{ orderDetails.orderDocs }}</span>
+      </a-row>
+      <a-row>
+          <span class="label_right" style="margin-bottom:12px;">备注：</span>
+          <span>{{ orderDetails.remark }}</span>
+      </a-row>
+
     </a-modal>
   </div>
 </template>
@@ -219,13 +280,13 @@ export default {
       current: 1,
       pageSize: 10,
       total: 0,
-      startTime: null,
-      endTime: null,
+      beginDate: null,
+      endDate: null,
       employeeId: null,
       selectedRowKeys: [],
       orderDetails: [],
-      state: -1,
-      value1: ""
+      reviewState: 1,
+      keyWords: ''
     };
   },
   methods: {
@@ -235,6 +296,12 @@ export default {
     // 	this.selectedRowKeys = [];
     // 	this.selectedRows = [];
     // },
+    onChangeBegin(date,datestring){
+      this.beginDate = datestring;
+    },
+    onChangeEnd(date,datestring){
+      this.endDate = datestring;
+    },
     showDetails(row) {
       this.orderDetails = row;
       this.detailsVisible = true;
@@ -243,10 +310,14 @@ export default {
     cancelAddOrder(params) {
       this.addVisible = params;
     },
+    cancelEdit(params) {
+      this.editVisible = params;
+      this.getList();
+    },
     cancelDetails(params) {
       this.detailsVisible = params;
     },
-    onSelectChange(selectedRowKeys) {
+    onSelectChange(selectedRowKeys,id) {
       this.selectedRowKeys = selectedRowKeys;
       console.log(this.selectedRowKeys);
     },
@@ -272,13 +343,17 @@ export default {
     onDelete(e) {
       console.log(this.selectedRowKeys);
       let qs = require("qs");
-      let data = qs.stringify({
-        orderIds: this.selectedRowKeys.join(",")
-      });
+      // let data = qs.stringify({
+      //   orderIds: this.selectedRowKeys
+      // });
+      let data = {
+        orderIds: this.selectedRowKeys.join(',')
+      }
+      console.log(data.orderIds)
       this.Axios(
         {
-          url: "/api-order/order/delOrder",
-          params: data,
+          url: `/api-order/order/delOrder/${data.orderIds}`,
+          params: {},
           type: "post",
           option: { successMsg: "删除成功！" }
         },
@@ -309,9 +384,10 @@ export default {
           params: {
             page: this.current,
             size: this.pageSize,
-            // state: this.state,
-            // startTime: this.startTime != "" ? this.startTime : null,
-            // endTime: this.endTime != "" ? this.endTime : null
+            reviewState: this.reviewState,
+            keyword: this.keyWords,
+            beginDate: this.beginDate != "" ? this.beginDate : null,
+            endDate: this.endDate != "" ? this.endDate : null
           },
           option: { enableMsg: false }
         },
@@ -322,7 +398,6 @@ export default {
             console.log(result);
             this.data = result.data.data.content;
             this.total = result.data.data.totalElement;
-            this.value1 = this.data[0].id;
           }
         },
         ({ type, info }) => {}
@@ -369,14 +444,16 @@ export default {
         margin-top: 10px;
       }
     }
-    // .ant-input {
-    //   width: 100px;
-    //   margin: 0 8px 8px 0;
-    // }
+    
   }
   .changeDis {
     display: inline;
     margin: 0px 50px 0px 50px;
   }
 }
+.label_right{
+    display: inline-block;
+	  width: 120px;
+	  text-align: right;
+    }
 </style>

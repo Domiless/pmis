@@ -67,7 +67,9 @@
           <a-col style="text-align: right; margin-bottom: 10px">
             <a-button @click="addVisible=true">导入BOM</a-button>
           </a-col>
-          <a-table :columns="columns" :dataSource="data" :scroll="{ x: 1900, y: 400 }" :pagination="false"></a-table>
+          <a-table :columns="columns" :dataSource="data" :scroll="{ x: 1900, y: 400 }" :pagination="false">
+            
+          </a-table>
           <a-pagination
           style="padding-top:12px;text-align: right;"
           size= 'small'

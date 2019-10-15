@@ -187,13 +187,18 @@ export default {
 						contractName: values.contractName,
             contractNo: values.contractNo,
             customerName: values.customerName,
+            dutyBy: values.dutyBy,
+            totalMoney: values.totalMoney,
             measureUnit: values.measureUnit,
+            transportType: values.transportType,
+            deliveryPlace:values.deliveryPlace,
             gmtSign: this.signDate,
             gmtDelivery: this.dataValue,
             no: values.no,
             orderType: values.orderType,
             orderQuantity: values.orderQuantity,
             undertakeDep: values.undertakeDep,
+            remark: values.remark
           };
           console.log(data);
 
