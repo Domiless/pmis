@@ -125,6 +125,7 @@ export default {
 	name: "dashboard",
 	data() {
 		return {
+			detailsVisible: true,
 			msg: "Welcome to Your Dashboard",
 			things: 10,
 			current: 1,
@@ -149,7 +150,8 @@ export default {
 			// this.msg='I had change Dashboard';
 		}
 	},
-	created() {}
+	created() {},
+	components: {}
 };
 </script>
 <style lang="less">
