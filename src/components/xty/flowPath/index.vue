@@ -4,13 +4,13 @@
 			<a-row>
 				<div style="line-height:50px;">
 					<a-col :span="8">
-						<permission-button permCode banType="hide" @click="addVisible=true">
+						<permission-button permCode banType="hide" @click="add">
 							<a-icon style="color:#1890ff;" type="plus" />新增
 						</permission-button>
 						<permission-button
 							permCode
 							banType="hide"
-							@click="editVisible=true"
+							@click="edit"
 							:disabled="selectedRowKeys.length!=1"
 						>
 							<a-icon style="color:#1890ff;" type="edit" />修改
@@ -47,7 +47,7 @@
 				@cancel="handleCancel(1)"
 				:maskClosable="false"
 			>
-				<add></add>
+				<add v-on:addCancel="addCancel" ref="addPage"></add>
 			</a-modal>
 			<a-modal
 				title="修改"
@@ -57,7 +57,7 @@
 				@cancel="handleCancel(2)"
 				:maskClosable="false"
 			>
-				<edit></edit>
+				<edit v-on:editCancel="editCancel" ref="editPage" :editMsg="editMsg"></edit>
 			</a-modal>
 		</a-col>
 	</div>
@@ -101,13 +101,28 @@ export default {
 			current: 1,
 			pageSize: 10,
 			total: 0,
-			selectedRowKeys: []
+			selectedRowKeys: [],
+			editMsg: ""
 		};
 	},
 	methods: {
+		addCancel() {
+			this.addVisible = false;
+		},
+		editCancel() {
+			this.editVisible = false;
+		},
+		add() {
+			this.addVisible = true;
+		},
+		edit() {
+			this.editVisible = true;
+			this.editMsg = this.selectedRowKeys[0];
+		},
 		handleCancel(a) {
 			if (a == 1) {
-				this.addVisible = false;
+				// this.addVisible = false;
+				this.$refs.addPage.quexiao();
 			}
 			if (a == 2) {
 				this.editVisible = false;
@@ -127,7 +142,33 @@ export default {
 			console.log("第几页: ", current);
 			this.current = current;
 			// this.getList();
+		},
+		getList() {
+			this.Axios(
+				{
+					url: "/activiti/getprocess",
+					params: {
+						page: this.current,
+						size: this.pageSize
+					},
+					type: "get",
+					option: { enableMsg: false }
+				},
+				this
+			).then(
+				result => {
+					if (result.data.code === 200) {
+						console.log(result);
+						// this.data = result.data.data.data;
+						// this.total = result.data.data.totalElement;
+					}
+				},
+				({ type, info }) => {}
+			);
 		}
+	},
+	created() {
+		this.getList();
 	},
 	components: {
 		add,
