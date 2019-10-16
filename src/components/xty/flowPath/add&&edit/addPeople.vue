@@ -19,19 +19,22 @@
 				label="角色列表"
 				v-if="radioValue==1"
 			>
-				<a-tree-select
+				<a-select
+					showSearch
+					labelInValue
+					placeholder="请选择"
+					optionFilterProp="children"
 					v-decorator="[
-							'roleValue',
-							{rules: [{ required: true, message: '请填写流程类型' }]}
+							'roleCode',
+							{rules: [{ required: true, message: '请选择角色' }]}
 							]"
-					allowClear
-					style="width: 100%"
-					:dropdownStyle="{ maxHeight: '400px', overflow: 'auto' }"
-					:treeData="treeData"
-					placeholder="Please select"
-					treeDefaultExpandAll
-					@change="treeSelect"
-				></a-tree-select>
+				>
+					<a-select-option
+						v-for="(item, index) in roleList"
+						:key="index"
+						:value="item.roleCode"
+					>{{item.name}}</a-select-option>
+				</a-select>
 			</a-form-item>
 			<a-form-item
 				v-if="radioValue==2"
@@ -46,7 +49,7 @@
 							style="width: 100%"
 							:dropdownStyle="{ maxHeight: '400px', overflow: 'auto' }"
 							:treeData="treeData"
-							placeholder="Please select"
+							placeholder="请选择"
 							treeDefaultExpandAll
 							@change="tableTreeselect"
 						></a-tree-select>
@@ -68,16 +71,16 @@
 						<ul>
 							<h4>已选：</h4>
 							<li v-for="(item, index) in selectedRows" :key="index">
-								<span>{{item.name}}</span>
-								<a-icon type="close-circle" />
+								<span>{{item.userName}}</span>
+								<a-icon type="close-circle" @click="delUserId(index)" />
 							</li>
 						</ul>
 					</a-col>
 				</a-col>
 			</a-form-item>
 			<a-form-item :wrapper-col="{ span: 20,offset: 4 }" style="text-align:right;">
-				<permission-button permCode banType="hide" style="margin-right:12px;">取消</permission-button>
-				<permission-button type="primary" permCode banType="hide" @click>提交</permission-button>
+				<permission-button permCode banType="hide" style="margin-right:12px;" @click="cancel">取消</permission-button>
+				<permission-button type="primary" permCode banType="hide" @click="getMsg">提交</permission-button>
 			</a-form-item>
 		</a-form>
 	</div>
@@ -87,55 +90,19 @@ import { TreeSelect } from "ant-design-vue";
 
 const columns = [
 	{
-		dataIndex: "name",
+		dataIndex: "userName",
 		title: "名称",
 		width: "45%",
-		key: "name"
+		key: "userName"
 	},
 	{
-		dataIndex: "description",
+		dataIndex: "workTypeName",
 		title: "职能/工种",
 		width: "50%",
-		key: "description"
+		key: "workTypeName"
 	}
 ];
-const treeData = [
-	{
-		title: "Node1",
-		value: "0-0",
-		key: "0-0",
-		children: [
-			{
-				title: "Child Node1",
-				value: "0-0-0",
-				key: "0-0-0"
-			}
-		]
-	},
-	{
-		title: "Node2",
-		value: "0-1",
-		key: "0-1",
-		children: [
-			{
-				title: "Child Node3",
-				value: "0-1-0",
-				key: "0-1-0",
-				disabled: true
-			},
-			{
-				title: "Child Node4",
-				value: "0-1-1",
-				key: "0-1-1"
-			},
-			{
-				title: "Child Node5",
-				value: "0-1-2",
-				key: "0-1-2"
-			}
-		]
-	}
-];
+
 export default {
 	data() {
 		return {
@@ -192,11 +159,142 @@ export default {
 			value: "",
 			selectedRowKeys: [],
 			selectedRows: [],
-			treeData,
-			form: this.$form.createForm(this)
+			treeData: [],
+			form: this.$form.createForm(this),
+			roleList: [],
+			organizeId: ""
 		};
 	},
 	methods: {
+		cancel() {
+			this.selectedRowKeys = [];
+			this.selectedRows = [];
+			this.radioValue = 1;
+			this.form.resetFields();
+			let params = {
+				value: {
+					type: 3
+				}
+			};
+			this.$emit("getAuditor", params);
+		},
+		getMsg() {
+			this.form.validateFieldsAndScroll((err, values) => {
+				console.log(values);
+				if (!err) {
+					let userTask;
+					if (values.type == 1) {
+						userTask = {
+							type: values.type,
+							candidateGroups: values.roleCode
+						};
+					}
+					if (values.type == 2) {
+						if (this.selectedRows.length < 1) {
+							this.$message.error(`请选择人员`);
+							return false;
+						}
+						userTask = {
+							type: values.type,
+							candidateUsers: this.selectedRows.map(item => {
+								return {
+									id: item.id,
+									name: item.userName
+								};
+							})
+						};
+					}
+					let params = {
+						value: userTask,
+						visible: false
+					};
+					this.$emit("getAuditor", params);
+					this.selectedRowKeys = [];
+					this.selectedRows = [];
+					this.radioValue = 1;
+					this.form.resetFields();
+					this.organizeId = "";
+					this.getEmployeeList();
+				}
+			});
+		},
+		delUserId(index) {
+			this.selectedRowKeys.splice(index, 1);
+			this.selectedRows.splice(index, 1);
+		},
+		getRoleList() {
+			this.Axios(
+				{
+					url: "/api-sso/role/roleList",
+					params: {
+						page: 1,
+						size: -1
+					},
+					type: "get",
+					option: { enableMsg: false }
+				},
+				this
+			).then(
+				result => {
+					if (result.data.code === 200) {
+						this.roleList = result.data.data;
+						console.log(result.data.data);
+					}
+				},
+				({ type, info }) => {}
+			);
+		},
+		getTreeDataList() {
+			this.Axios(
+				{
+					url: "/api-platform/organize/list",
+					params: {},
+					type: "get",
+					option: { enableMsg: false }
+				},
+				this
+			).then(
+				result => {
+					if (result.data.code === 200) {
+						console.log(result);
+						this.treeData = result.data.data.map(item => {
+							return {
+								title: item.organizeName,
+								key: item.id,
+								value: item.id,
+								organizeCode: parseInt(item.organizeCode),
+								organizeParentCode: parseInt(item.organizeParentCode),
+								disabled: item.organizeParentCode == 0
+							};
+						});
+						let code = Math.min.apply(
+							null,
+							this.treeData.map(item => {
+								return item.organizeParentCode;
+							})
+						);
+						this.treeData = this.filterArray(this.treeData, code);
+					}
+				},
+				({ type, info }) => {}
+			);
+		},
+		filterArray(data, parent) {
+			let vm = this;
+			var tree = [];
+			var temp;
+			for (var i = 0; i < data.length; i++) {
+				if (data[i].organizeParentCode == parent) {
+					var obj = data[i];
+					temp = this.filterArray(data, data[i].organizeCode);
+					if (temp.length > 0) {
+						obj.children = temp;
+					}
+					tree.push(obj);
+				}
+			}
+			return tree;
+		},
 		onChange(value) {
 			console.log("onChange ", value);
 			this.value = value;
@@ -208,6 +306,8 @@ export default {
 		},
 		radioChange(e) {
 			this.radioValue = e.target.value;
+			this.selectedRowKeys = [];
+			this.selectedRows = [];
 			console.log(e.target.value);
 		},
 		treeSelect(e) {
@@ -216,7 +316,44 @@ export default {
 		},
 		tableTreeselect(e) {
 			console.log(e);
+			this.organizeId = e != undefined ? e : "";
+			this.selectedRowKeys = [];
+			this.selectedRows = [];
+			this.getEmployeeList();
+		},
+		getEmployeeList() {
+			this.Axios(
+				{
+					url: "/api-platform/employee/organize?organizeId=" + this.organizeId,
+					params: {},
+					type: "get",
+					option: { enableMsg: false }
+				},
+				this
+			).then(
+				result => {
+					if (result.data.code === 200) {
+						console.log(result);
+						this.data = result.data.data;
+
+						for (let i = 0; i < this.data.length; i++) {
+							this.data[i].workTypeName = "";
+							for (let j = 0; j < this.data[i].workType.length; j++) {
+								this.data[i].workTypeName +=
+									this.data[i].workType[j].workTypeName +
+									(j == this.data[i].workType.length - 1 ? "" : "、");
+							}
+						}
+					}
+				},
+				({ type, info }) => {}
+			);
 		}
+	},
+	created() {
+		this.getTreeDataList();
+		this.getRoleList();
+		this.getEmployeeList();
 	}
 };
 </script>
