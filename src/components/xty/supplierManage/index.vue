@@ -30,7 +30,9 @@
        :pagination="false"
        :rowSelection="{selectedRowKeys:selectedRowKeys,onChange: onSelectChange}"
        >
-       <a slot="supplierName" slot-scope="details" href="javascript:;" @click="sendDetails()">{{ details }}</a>
+       <template slot="supplierName" slot-scope="text, record">
+            <a href="javascript:" @click="showDetails(record)">{{text}}</a>
+        </template>
        </a-table>
     </a-row>
     <a-row>
@@ -276,6 +278,43 @@
         </a-row>
       </a-form>
     </a-modal>
+    <a-modal
+      title="详情"
+      :visible="detailsVisible"
+      width="500px"
+      :maskClosable="false"
+      :footer="null"
+      @cancel="detailsVisible=false"
+    >
+    <a-row>
+          <span class="label_right" style="margin-bottom:12px;">供应商编码：</span>
+          <span>{{ supplierDetails.supplierNo }}</span>
+      </a-row>
+      <a-row>
+          <span class="label_right" style="margin-bottom:12px;">供应商名称：</span>
+          <span>{{ supplierDetails.supplierName }}</span>
+      </a-row>
+      <a-row>
+          <span class="label_right" style="margin-bottom:12px;">联系人：</span>
+          <span>{{ supplierDetails.linkman }}</span>
+      </a-row>
+      <a-row>
+          <span class="label_right" style="margin-bottom:12px;">联系电话：</span>
+          <span>{{ supplierDetails.linkPhone }}</span>
+      </a-row>
+      <a-row>
+          <span class="label_right" style="margin-bottom:12px;">地址：</span>
+          <span>{{ supplierDetails.address }}</span>
+      </a-row>
+      <a-row>
+          <span class="label_right" style="margin-bottom:12px;">电子邮箱：</span>
+          <span>{{ supplierDetails.email }}</span>
+      </a-row>
+      <a-row>
+          <span class="label_right" style="margin-bottom:12px;">备注：</span>
+          <span>{{ supplierDetails.remark }}</span>
+      </a-row>
+    </a-modal>
   </div>
 </template>
 <script>
@@ -326,12 +365,14 @@ export default {
       data: [],
       addVisible: false,
       editVisible: false,
-      showDetails: false,
+      detailsVisible: false,
       form: this.$form.createForm(this),
       current: 1,
 			pageSize: 10,
       total: 0,
       selectedRowKeys: [],
+      defaultValue: [],
+      supplierDetails: [],
       beginDate: null,
       endDate: null,
       keyWords: '',
@@ -345,6 +386,11 @@ export default {
     };
   },
   methods: {
+    showDetails(row) {
+      this.supplierDetails = row;
+      this.detailsVisible = true;
+      console.log("row:" +this.supplierDetails);
+    },
     onChangeBegin(date,datestring){
       this.beginDate = datestring;
     },
@@ -358,9 +404,6 @@ export default {
     handleCityChange (value) {
       this.secondCity = cityData[value]
       this.thirdCity = areaData[value]
-    },
-    sendDetails() {
-      this.showDetails = true;
     },
     showAdd(){
       this.addVisible = true;
@@ -376,9 +419,11 @@ export default {
       this.addVisible = false;
       this.form.resetFields();
     },
-    onSelectChange(selectedRowKeys) {
+    onSelectChange(selectedRowKeys,arr) {
       this.selectedRowKeys = selectedRowKeys;
-			console.log(this.selectedRowKeys);
+      this.defaultValue = arr
+      console.log(this.selectedRowKeys);
+      console.log(this.defaultValue)
 		},
     onShowSizeChange(current, pageSize) {
 			this.pageSize = pageSize;
@@ -446,6 +491,7 @@ export default {
           let qs = require("qs");
 					let data = {
             id: this.selectedRowKeys[0],
+            supplierNo: values.supplierNo,
 						supplierName: values.supplierName,
             linkman: values.linkman,
             linkPhone: values.linkPhone,
@@ -509,8 +555,8 @@ export default {
 						page: this.current,
             size: this.pageSize,
             // state: this.state,
-						// startTime: this.startTime != "" ? this.startTime : null,
-						// endTime: this.endTime != "" ? this.endTime : null
+						beginDate: this.beginDate != "" ? this.beginDate : null,
+            endDate: this.endDate != "" ? this.endDate : null
 					},
 					option: { enableMsg: false }
 				},
@@ -632,4 +678,9 @@ export default {
     margin-bottom: 10px;
   }
 }
+.label_right{
+    display: inline-block;
+	  width: 120px;
+	  text-align: right;
+    }
 </style>

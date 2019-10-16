@@ -129,8 +129,8 @@ export default {
   data() {
     return {
       form: this.$form.createForm(this),
-      orderNo: "",
-      dataValue: "",
+      orderNo: '',
+      dateValue: '',
       editMsg: [],
       signDate: ''
     };
@@ -141,14 +141,14 @@ export default {
     },
     onChange(date, dateString) {
       console.log(date, dateString);
-      this.dataValue = dateString;
+      this.dateValue = dateString;
     },
     confirmCancel() {
-      this.$emit("changeAddOrder", false);
+      this.$emit("cancelEdit", false);
     },
     handleSubmit() {
       this.form.validateFieldsAndScroll((err, values) => {
-        console.log(values);
+        console.log(values,values.gmtSign,values.gmtDelivery);
         if (!err) {
           let qs = require("qs");
           let data = {
@@ -161,7 +161,7 @@ export default {
             transportType: values.transportType,
             deliveryPlace:values.deliveryPlace,
             gmtSign: this.signDate,
-            gmtDelivery: this.dataValue,
+            gmtDelivery: this.dateValue,
             no: values.no,
             orderType: values.orderType,
             orderQuantity: values.orderQuantity,
@@ -184,7 +184,7 @@ export default {
             result => {
               if (result.data.code === 200) {
                 console.log(result);
-                this.$emit("close",false);
+                this.$emit("cancelEdit",false);
                 
               }
             },
@@ -207,6 +207,8 @@ export default {
 					if (result.data.code === 200) {
             console.log(result.data.data);
             this.editMsg = result.data.data;
+            this.dateValue = this.editMsg.gmtDelivery;
+            this.signDate = this.editMsg.gmtSign;
             setTimeout(()=> {
               this.form.setFieldsValue({
                 contractName: this.editMsg.contractName,
@@ -230,7 +232,7 @@ export default {
                 orderQuantity: this.editMsg.orderQuantity,
                 undertakeDep: this.editMsg.undertakeDep,
                 remark: this.editMsg.remark
-                })
+                });
             },100)
 					}
 				},

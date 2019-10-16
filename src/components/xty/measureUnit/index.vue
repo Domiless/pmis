@@ -4,7 +4,7 @@
       <permission-button permCode banType="hide" @click="addVisible=true">
         <a-icon style="color:#1890ff;" type="plus" />新增
       </permission-button>
-      <permission-button permCode banType="hide" @click="editVisible=true" :disabled="selectedRowKeys.length!=1">
+      <permission-button permCode banType="hide" @click="showEdit" :disabled="selectedRowKeys.length!=1">
         <a-icon style="color:#1890ff;" type="edit" />修改
       </permission-button>
       <permission-button permCode banType="hide" @click="showDeleteConfirm" :disabled="selectedRowKeys.length==0">
@@ -36,12 +36,13 @@
       v-model="addVisible"
       :maskClosable="false"
       width="500px"
+      @ok="addUnit"
       @cancel="handleCancel(1)"
     >
       <a-form :form="form">
         <a-form-item label="计量单位" :labelCol="{span:5}" :wrapperCol="{span:17}" required>
           <a-input
-            v-decorator="['measureUnit', { rules: [{ required:'true', message: '请填写计量单位'}]}]"
+            v-decorator="['name', { rules: [{ required:'true', message: '请填写计量单位'}]}]"
           ></a-input>
         </a-form-item>
         <a-form-item label="备注" :labelCol="{span:5}" :wrapperCol="{span:17}">
@@ -54,12 +55,13 @@
       v-model="editVisible"
       :maskClosable="false"
       width="500px"
+      @ok="editUnit"
       @cancel="handleCancel(2)"
     >
       <a-form :form="form">
         <a-form-item label="计量单位" :labelCol="{span:5}" :wrapperCol="{span:17}" required>
           <a-input
-            v-decorator="['measureUnit', { rules: [{ required:'true', message: '请填写计量单位'}]}]"
+            v-decorator="['name', { rules: [{ required:'true', message: '请填写计量单位'}]}]"
           ></a-input>
         </a-form-item>
         <a-form-item label="备注" :labelCol="{span:5}" :wrapperCol="{span:17}">
@@ -72,9 +74,9 @@
 <script>
 const columns = [
   {
-    dataIndex: "measureUnit",
+    dataIndex: "name",
     title: "计量单位",
-    key: "measureUnit",
+    key: "name",
     width: "60%"
   },
   {
@@ -91,6 +93,7 @@ export default {
       columns,
       data: [],
       selectedRowKeys: [],
+      defaultValue: [],
       addVisible: false,
       editVisible: false,
       current: 1,
@@ -110,9 +113,11 @@ export default {
       this.current = 1;
       this.getList();
     },
-    onSelectChange(selectedRowKeys) {
+    onSelectChange(selectedRowKeys,arr) {
       this.selectedRowKeys = selectedRowKeys;
+      this.defaultValue = arr
       console.log(this.selectedRowKeys);
+      console.log(arr);
     },
     handleCancel(num) {
       if (num == 1) {
@@ -121,15 +126,123 @@ export default {
         this.editVisible = false;
       }
     },
+    showEdit() {
+      this.editVisible = true;
+      setTimeout(() => {
+        this.form.setFieldsValue({
+          name: this.defaultValue[0].name,
+          remark: this.defaultValue[0].remark
+        })
+      },100)
+    },
+    getList() {
+      this.Axios(
+        {
+          url: "/api-order/unit/list",
+          type: "get",
+          params: {
+            page: this.current,
+            size: this.pageSize
+          },
+          option: { enableMsg: false }
+        },
+        this
+      ).then(
+        result => {
+          if (result.data.code === 200) {
+            console.log(result);
+            this.data = result.data.data.content;
+            this.total = result.data.data.totalElement;
+          }
+        },
+        ({ type, info }) => {}
+      );
+    },
+    addUnit() {
+      this.form.validateFieldsAndScroll((err, values) => {
+				if (!err) {
+					console.log("Received values of form: ", values);
+					// if (!this.checkedKeys.length) {
+					// 	this.$message.error("请分配角色权限");
+					// 	return false;
+					// }
+					let qs = require("qs");
+					let data = qs.stringify({
+            name: values.name,
+            remake: values.remark
+          });
+          console.log(data);
+
+					this.Axios(
+						{
+							url: "/api-order/unit/add",
+							params: data,
+							type: "post",
+							option: { successMsg: "添加成功！" },
+							// config: {
+							// 	headers: { "Content-Type": "application/json" }
+							// }
+						},
+						this
+					).then(
+						result => {
+							if (result.data.code === 200) {
+                console.log(result);
+                this.getList();
+                this.form.resetFields();
+                this.addVisible = false;
+							}
+						},
+						({ type, info }) => {}
+					);
+				}
+			});
+    },
+    editUnit(){
+      this.form.validateFieldsAndScroll((err, values) => {
+        console.log(values);
+        if (!err) {
+          let qs = require("qs");
+          let data = qs.stringify({
+            id: this.selectedRowKeys[0],
+            name: values.name,
+            remake: values.remark
+          });
+          console.log(data);
+          this.Axios(
+            {
+              url: "/api-order/unit/update",
+              params: data,
+              type: "post",
+              option: { successMsg: "修改成功！" },
+              // config: {
+              //   headers: { "Content-Type": "application/json" }
+              // }
+            },
+            this
+          ).then(
+            result => {
+              if (result.data.code === 200) {
+                console.log(result);
+                this.editVisible = false;
+                this.getList();
+                
+              }
+            },
+            ({ type, info }) => {}
+          );
+        }
+      });
+    },
     onDelete(e) {
       console.log(this.selectedRowKeys);
       let qs = require("qs");
       let data = qs.stringify({
-        orderIds: this.selectedRowKeys.join(",")
+        id: this.selectedRowKeys.join(",")
       });
       this.Axios(
         {
-          url: "/api-order/order/delOrder",
+          url: "/api-order/unit/delete",
           params: data,
           type: "post",
           option: { successMsg: "删除成功！" }
@@ -160,6 +273,9 @@ export default {
         onCancel() {}
       });
     }
+  },
+  created() {
+    this.getList();
   }
 };
 </script>
