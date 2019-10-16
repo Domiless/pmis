@@ -14,12 +14,12 @@
     <a-row>
         <a-col :span="24">
           <span>日期 :</span>
-          <a-date-picker style="width:120px"></a-date-picker>
+          <a-date-picker style="width:120px"  @change="onChangeBegin" format="YYYY/MM/DD"></a-date-picker>
           <span>~</span>
-          <a-date-picker style="width: 120px; margin-right: 50px"></a-date-picker>
+          <a-date-picker style="width: 120px; margin-right: 50px"  @change="onChangeEnd" format="YYYY/MM/DD"></a-date-picker>
           <span>关键词 :</span>
-          <a-input placeholder="供应商编码/名称/联系人/电话" style="width: 250px"></a-input>
-          <a-button>搜索</a-button>
+          <a-input placeholder="供应商编码/名称/联系人/电话" style="width: 250px" v-model="keyWords"></a-input>
+          <a-button @click="getList">搜索</a-button>
         </a-col>
       </a-row>
     <a-row>
@@ -332,6 +332,9 @@ export default {
 			pageSize: 10,
       total: 0,
       selectedRowKeys: [],
+      beginDate: null,
+      endDate: null,
+      keyWords: '',
       provinceData,
       cityData,
       areaData,
@@ -342,6 +345,12 @@ export default {
     };
   },
   methods: {
+    onChangeBegin(date,datestring){
+      this.beginDate = datestring;
+    },
+    onChangeEnd(date,datestring){
+      this.endDate = datestring;
+    },
     handleProvinceChange(value) {
       this.cities = cityData[value]
       this.secondCity = cityData[value][0]
@@ -497,8 +506,8 @@ export default {
 					url: "/api-order/supplier/list",
           type: "get",
          	params: {
-						// page: this.current,
-            // size: this.pageSize,
+						page: this.current,
+            size: this.pageSize,
             // state: this.state,
 						// startTime: this.startTime != "" ? this.startTime : null,
 						// endTime: this.endTime != "" ? this.endTime : null

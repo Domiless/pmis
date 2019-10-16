@@ -46,9 +46,7 @@ export default {
         {
           url: "/api-order/",
           type: "get",
-          params: {
-            orderId: 
-          }
+          params: {}
         },
         this
       ).then(

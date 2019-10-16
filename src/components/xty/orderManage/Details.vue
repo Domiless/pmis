@@ -82,10 +82,10 @@ export default {
      console.log("sendid: " + this.sendId)
       this.Axios(
         {
-          url: "/api-order/order/getOrder/",
+          url: `/api-order/order/getOrder/${sendId}`,
           type: "get",
           params: {
-            orderId: this.sendId
+            // orderId: this.sendId
           }
         },
         this
