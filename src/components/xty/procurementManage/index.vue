@@ -4,22 +4,22 @@
       <a-button @click="addVisible=true">
         <a-icon style="color:#1890ff;" type="plus" />新增
       </a-button>
-      <a-button @click="editVisible=true">
+      <a-button @click="editVisible=true" :disabled="selectedRowKeys.length!=1">
         <a-icon style="color:#1890ff;" type="edit" />修改
       </a-button>
-      <a-button>
+      <a-button :disabled="selectedRowKeys.length!=1">
         <a-icon style="color:#1890ff;" type="submit" />提交审批
       </a-button>
-      <a-button>
+      <a-button @click="showDeleteConfirm" :disabled="selectedRowKeys.length<1">
         <a-icon style="color:#1890ff;" type="delete" />删除
       </a-button>
     </a-row>
     <a-row>
       <a-col :span="24">
         <span>日期 :</span>
-        <a-date-picker style="width:120px"></a-date-picker>
+        <a-date-picker style="width:120px" @change="onChangeBegin" format="YYYY/MM/DD"></a-date-picker>
         <span>~</span>
-        <a-date-picker style="width: 120px"></a-date-picker>
+        <a-date-picker style="width: 120px" @change="onChangeEnd" format="YYYY/MM/DD"></a-date-picker>
         <a-input-group class="changeDis">
           <span>审批状态 : </span>
           <a-select v-model="state" style="width: 100px" optionFilterProp="children">
@@ -85,7 +85,7 @@
      width="1200px"
      :footer="null"
      >
-      <add-procurement></add-procurement>
+      <add-procurement @cancelAdd="closeAdd"></add-procurement>
     </a-modal>
     <a-modal
      title="修改"
@@ -106,19 +106,19 @@
 			<a-row>
 				<a-col :span="12" style="margin-bottom:12px;">
 					<span class="label_right">项目订单：</span>
-					<span>{{procurementDetails}}</span>
+					<span>{{procurementDetails.orderNo}}</span>
 				</a-col>
 				<a-col :span="12" style="margin-bottom:12px;">
 					<span class="label_right">设计单号：</span>
-					<span>{{procurementDetails}}</span>
+					<span>{{procurementDetails.designNo}}</span>
 				</a-col>
 				<a-col :span="12" style="margin-bottom:12px;">
 					<span class="label_right">采购单号：</span>
-					<span>{{procurementDetails}}</span>
+					<span>{{procurementDetails.procurementNo}}</span>
 				</a-col>
 				<a-col :span="12" style="margin-bottom:12px;">
 					<span class="label_right">备注：</span>
-					<span>{{procurementDetails}}</span>
+					<span>{{procurementDetails.remark}}</span>
 				</a-col>
 			</a-row>
 		</a-modal>
@@ -182,6 +182,8 @@ export default {
       addVisible: false,
       editVisible: false,
       detailsVisible: false,
+      beginDate: null,
+      endDate:null,
       current: 1,
       pageSize: 10,
       total: 0,
@@ -189,8 +191,18 @@ export default {
     };
   },
   methods: {
+    closeAdd(params) {
+      this.addVisible = params;
+      this.getList();
+    },
     handleCancel() {
       this.detailsVisible = false;
+    },
+    onChangeBegin(date,datestring){
+      this.beginDate = datestring;
+    },
+    onChangeEnd(date,datestring){
+      this.endDate = datestring;
     },
     showDetails(row) {
 			this.procurementDetails = row;
@@ -208,12 +220,82 @@ export default {
       this.current = 1;
       this.getList();
     },
-    onSelectChange() {},
-    getList() {}
+    onSelectChange(selectedRowKeys) {
+       this.selectedRowKeys = selectedRowKeys;
+       console.log(this.selectedRowKeys)
+    },
+    getList() {
+			this.Axios(
+				{
+					url: "/api-order/purchase/list",
+          type: "get",
+         	params: {
+						page: this.current,
+            size: this.pageSize,
+            auditState: this.state,
+						start: this.beginDate != "" ? this.beginDate : null,
+            end: this.endDate != "" ? this.endDate : null
+					},
+					option: { enableMsg: false }
+				},
+				this
+			).then(
+				result => {
+					if (result.data.code === 200) {
+						console.log(result);
+						this.data = result.data.data.content;
+            this.total = result.data.data.totalElement;
+					}
+				},
+				({ type, info }) => {}
+			);
+    },
+    showDeleteConfirm() {
+			let that = this;
+			this.$confirm({
+				title: "确定删除吗？",
+				content: "",
+				okText: "确定",
+				okType: "danger",
+				cancelText: "取消",
+				onOk: function() {
+					that.onDelete();
+				},
+				onCancel() {}
+			});
+		},
+    onDelete(e) {
+      console.log("delete" + this.selectedRowKeys);
+			let qs = require("qs");
+			let data = qs.stringify({
+				id: this.selectedRowKeys[0]
+			});
+			this.Axios(
+				{
+					url: "/api-order/purchase/delete",
+					params: data,
+					type: "post",
+					option: { successMsg: "删除成功！" }
+				},
+				this
+			).then(
+				result => {
+					if (result.data.code === 200) {
+						console.log(result);
+						this.getList();
+						this.selectedRowKeys = [];
+					}
+				},
+				({ type, info }) => {}
+			);
+    },
   },
   components: {
       AddProcurement,
       EditProcurement
+  },
+  created() {
+    this.getList();
   }
 };
 </script>

@@ -58,8 +58,8 @@
     </a-tabs>
     <a-row>
       <a-form-item :wrapper-col="{ span: 20,offset: 2 }" style="text-align:right">
-        <a-button style="margin-right:12px;">关闭</a-button>
-        <a-button type="primary">提交</a-button>
+        <a-button style="margin-right:12px;" @click="close">关闭</a-button>
+        <a-button type="primary" @click="addProcurement">提交</a-button>
       </a-form-item>
     </a-row>
   </div>
@@ -169,6 +169,9 @@ export default {
     };
   },
   methods: {
+    close() {
+      this.$emit('cancelAdd',false);
+    },
     onChange(current, pageNumber) {
       console.log("Page: ", pageNumber);
       console.log("第几页: ", current);
@@ -179,6 +182,47 @@ export default {
       this.pageSize = pageSize;
       this.current = 1;
       this.getList();
+    },
+    addProcurement() {
+      const that = this;
+			this.form.validateFieldsAndScroll((err, values) => {
+				if (!err) {
+					console.log("Received values of form: ", values);
+					// if (!this.checkedKeys.length) {
+					// 	this.$message.error("请分配角色权限");
+					// 	return false;
+					// }
+					let qs = require("qs");
+					let data = {
+						orderNo: values.orderNo,
+            workOrderNo: values.workOrderNo,
+            procurementNo: values.procurementNo,
+            remark: values.remark,
+          };
+          console.log(data);
+
+					this.Axios(
+						{
+							url: "/api-order/purchase/add",
+							params: data,
+							type: "post",
+							option: { successMsg: "添加成功！" },
+							config: {
+								headers: { "Content-Type": "application/json" }
+							}
+						},
+						this
+					).then(
+						result => {
+							if (result.data.code === 200) {
+                console.log(result);
+                this.close();
+							}
+						},
+						({ type, info }) => {}
+					);
+				}
+      });
     },
   }
 };

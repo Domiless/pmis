@@ -31,7 +31,7 @@
             <a-input-group class="changeDis">
               <span>审批状态 : </span>
               <a-select v-model="reviewState" style="width: 100px" optionFilterProp="children">
-                <a-select-option :value="0">全部</a-select-option>
+                <a-select-option :value="-1">全部</a-select-option>
                 <a-select-option :value="1">暂存</a-select-option>
                 <a-select-option :value="2">审批中</a-select-option>
                 <a-select-option :value="3">已通过</a-select-option>
@@ -40,7 +40,7 @@
               </a-select>
             </a-input-group>
             <span>关键词 :</span>
-            <a-input placeholder="请输入关键词" style="width: 250px" v-model="keyWords"></a-input>
+            <a-input placeholder="合同号/订单编号/项目名称/承接部门" style="width: 250px" v-model="keyWords"></a-input>
             <a-button @click="getList">搜索</a-button>
           </a-col>
         </a-row>
@@ -118,7 +118,7 @@
       :visible="editVisible"
       @cancel="editVisible=false"
     >
-      <edit-order-message :OrderMessageId="selectedRowKeys[0]" @close="cancelEdit"></edit-order-message>
+      <edit-order-message :OrderMessageId="selectedRowKeys[0]" @cancelEdit="cancelEdit"></edit-order-message>
     </a-modal>
     <a-modal
       title="详情"
@@ -177,7 +177,7 @@
       </a-row>
       <a-row>
           <span class="label_right" style="margin-bottom:12px;">签订时间：</span>
-          <span>{{ orderDetails.gmtCreate }}</span>
+          <span>{{ orderDetails.gmtSign }}</span>
       </a-row>
       <a-row>
           <span class="label_right" style="margin-bottom:12px;">交货地点：</span>
@@ -285,7 +285,7 @@ export default {
       employeeId: null,
       selectedRowKeys: [],
       orderDetails: [],
-      reviewState: 1,
+      reviewState: -1,
       keyWords: ''
     };
   },
@@ -319,7 +319,7 @@ export default {
     },
     onSelectChange(selectedRowKeys,id) {
       this.selectedRowKeys = selectedRowKeys;
-      console.log(this.selectedRowKeys);
+      console.log(this.selectedRowKeys,id);
     },
     getTime(a, b) {
       console.log(b);
@@ -377,6 +377,9 @@ export default {
     // 	}
     // },
     getList() {
+      if(this.reviewState === -1){
+        this.reviewState = ''
+      }
       this.Axios(
         {
           url: "/api-order/order/getOrderList",
@@ -398,6 +401,9 @@ export default {
             console.log(result);
             this.data = result.data.data.content;
             this.total = result.data.data.totalElement;
+             if(this.reviewState === ''){
+                this.reviewState = -1
+            }
           }
         },
         ({ type, info }) => {}
