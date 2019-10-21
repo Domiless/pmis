@@ -2,17 +2,110 @@
   <div class="editContractManage">
     <a-form :form="form">
       <a-form-item label="合同名称" :labelCol="{span:3}" :wrapperCol="{span:19}" required>
-        <a-input v-decorator="['contractName', { rules: [{ required:'true', message: '请填写计量单位'}]}]"></a-input>
+        <a-input v-decorator="['contractName', { rules: [{ required:'true', message: '请填写合同名称'}]}]"></a-input>
+      </a-form-item>
+      <a-form-item label="合同内容" :labelCol="{span:3}" :wrapperCol="{span:19}">
+        <editor v-on:tinymceValue="tinymceValue" :value="tinymceHtml"></editor>
+			</a-form-item>
+       <a-form-item :wrapper-col="{ span: 20,offset: 2 }" style="text-align:right">
+        <a-button @click="confirmCancel" style="margin-right:12px;">关闭</a-button>
+        <a-button type="primary" @click="editContract()">提交</a-button>
       </a-form-item>
     </a-form>
   </div>
 </template>
 <script>
+import editor from "../../public/Editor";
 export default {
+  props: {
+    contractId: String
+  },
   data() {
     return {
-      form: this.$form.createForm(this)
+      form: this.$form.createForm(this),
+      content: "",
+      tinymceHtml: ""
+      
     };
+  },
+  methods: {
+		tinymceValue(value) {
+			this.content = value;
+			console.log(this.content);
+    },
+    confirmCancel() {
+      this.$emit("changeEditContract", false);
+      this.form.resetFields();
+    },
+    findOne(id) {
+      let that = this;
+			this.Axios(
+				{
+					url: '/api-order/template/findOne',
+					params: {
+            id: id
+          },
+					type: "get",
+					option: { enableMsg: false }
+				},
+				this
+			).then(
+				result => {
+					if (result.data.code === 200) {
+            console.log(result);
+            let msg = result.data.data;
+            setTimeout(()=> {
+              this.form.setFieldsValue({
+                contractName: msg.title,
+                tinymceHtml: msg.content
+                });
+            },100)
+					}
+				},
+				({ type, info }) => {}
+			);
+		},
+    editContract(){
+      this.form.validateFieldsAndScroll((err, values) => {
+        console.log(values);
+        if (!err) {
+          let qs = require("qs");
+          let data = qs.stringify({
+            id: this.contractId,
+            title: values.contractName,
+            content: this.content
+          });
+          console.log(data);
+          this.Axios(
+            {
+              url: "/api-order/template/update",
+              params: data,
+              type: "post",
+              option: { successMsg: "修改成功！" },
+              // config: {
+              //   headers: { "Content-Type": "application/json" }
+              // }
+            },
+            this
+          ).then(
+            result => {
+              if (result.data.code === 200) {
+                console.log(result);
+                this.confirmCancel();
+                
+              }
+            },
+            ({ type, info }) => {}
+          );
+        }
+      });
+    }
+	},
+  components: {
+		editor
+  },
+  created() {
+    this.findOne(this.contractId)
   }
 };
 </script>

@@ -6,26 +6,34 @@
           <a-row>
             <a-form-item label="项目订单" :labelCol="{ span: 3}" :wrapperCol="{ span: 19 }">
               <a-select
-                v-decorator="['orderNo', { rules: [{ required:'true', message: '请选择项目订单'}]}]"
+                v-decorator="['workOrderNo', { rules: [{ required:'true', message: '请选择项目订单'}]}]"
                 placeholder="请选择"
+                @change="sendOrderId"
               >
-                <a-select-option value="1">1</a-select-option>
+                <a-select-option v-for="item in ProjectId" :key="item.no">{{ item.no }}</a-select-option>
               </a-select>
             </a-form-item>
           </a-row>
           <a-row>
             <a-form-item label="设计单号" :labelCol="{ span: 3}" :wrapperCol="{ span: 19 }">
               <a-select
-                v-decorator="['workOrderNo', { rules: [{ required:'true', message: '请选择设计单号'}]}]"
+                mode="multiple"
+                v-decorator="['bomIdS', { rules: [{ required:'true', message: '请选择设计单号'}]}]"
                 placeholder="请选择"
+                @change="sendId"
               >
-                <a-select-option value="2">2</a-select-option>
+                <a-select-option
+                  v-for="item in idArr"
+                  :key="item.bomNo"
+                >{{ item.bomNo }}</a-select-option>
               </a-select>
             </a-form-item>
           </a-row>
           <a-row>
             <a-form-item label="采购单号" :labelCol="{ span: 3}" :wrapperCol="{ span: 19 }">
-              <a-input v-decorator="['procurementNo', { rules: [{ required:'true'}]}]"></a-input>
+              <a-input
+                v-decorator="['procurementNo', { rules: [{ required:'true', message: '请填写采购单号'}]}]"
+              ></a-input>
             </a-form-item>
           </a-row>
           <a-row>
@@ -36,7 +44,83 @@
         </a-form>
       </a-tab-pane>
       <a-tab-pane tab="采购明细" key="2" style="margin-bottom: 20px">
-        <a-table :columns="columns" :dataSource="data" :scroll="{ x: 1900, y: 500 }" />
+        <a-table
+          rowKey="id"
+          :columns="columns"
+          :dataSource="data"
+          :pagination="false"
+          :scroll="{ x: 1900, y: 500 }"
+        >
+          <span slot="orderNumTitle">
+            <span style="color: #f5222d">*</span>订单数量
+          </span>
+          <span slot="orderUnitTitle">
+            <span style="color: #f5222d">*</span>订单单位
+          </span>
+          <span slot="deliveryDateTitle">
+            <span style="color: #f5222d">*</span>交货日期
+          </span>
+          <span slot="unitPriceTitle">
+            <span style="color: #f5222d">*</span>单价
+          </span>
+          <span slot="taxrateTitle">
+            <span style="color: #f5222d">*</span>税率
+          </span>
+          <span slot="supplierTitle">
+            <span style="color: #f5222d">*</span>供应商
+          </span>
+          <span slot="priceUnitTitle">
+            <span style="color: #f5222d">*</span>价格单位
+          </span>
+          <span slot="moneyTypeTitle">
+            <span style="color: #f5222d">*</span>货币类型
+          </span>
+          <template slot="orderNum" slot-scope="text,record">
+            <a-input :value="text"></a-input>
+          </template>
+          <template slot="orderUnit" slot-scope="text,record">
+            <a-select style="width: 100%" v-model="unit">
+              <a-select-option
+                v-for="item in unitArr"
+                :value="item.id"
+                :key="item.id"
+              >{{ item.name }}</a-select-option>
+            </a-select>
+          </template>
+          <template slot="deliveryDate" slot-scope="text,record">
+            <a-date-picker @change="onChangeDelivery" format="YYYY/MM/DD" placeholder="请选择" />
+          </template>
+          <template slot="unitPrice" slot-scope="text,record">
+            <a-input :value="price"></a-input>
+          </template>
+          <template slot="taxrate" slot-scope="text,record">
+            <a-input :value="taxrate"></a-input>
+          </template>
+          <template slot="supplier" slot-scope="text,record">
+            <a-select style="width: 100%" :value="supplier">
+              <a-select-option
+                v-for="item in supplierArr"
+                :value="item.supplierName"
+                :key="item.supplierNo"
+              >{{ item.supplierName }}</a-select-option>
+            </a-select>
+          </template>
+          <template slot="priceUnit" slot-scope="text,record">
+            <a-select style="width: 100%" :value="priseUnit">
+              <a-select-option
+                v-for="item in priceArr"
+                :value="item.name"
+                :key="item.id"
+              >1{{ item.name }}</a-select-option>
+            </a-select>
+          </template>
+          <template slot="moneyType" slot-scope="text,record">
+            <a-input :value="moneyType"></a-input>
+          </template>
+          <template slot="remark" slot-scope="text,record">
+            <a-input :value="remark"></a-input>
+          </template>
+        </a-table>
         <a-col :span="12" style="padding-top: 12px; height: 36px;">
           <span style="line-height: 12px">合计：</span>
         </a-col>
@@ -65,11 +149,12 @@
   </div>
 </template>
 <script>
+import { stringify } from "querystring";
 const columns = [
   {
-    dataIndex: "bomDrawingNo",
+    dataIndex: "drawingNo",
     title: "图号",
-    key: "bomDrawingNo",
+    key: "drawingNo",
     width: 100
   },
   {
@@ -98,56 +183,73 @@ const columns = [
   },
   {
     dataIndex: "orderNum",
-    title: "订单数量",
+    // title: "订单数量",
     key: "orderNum",
+    slots: { title: "orderNumTitle" },
+    scopedSlots: { customRender: "orderNum" },
     width: 100
   },
   {
     dataIndex: "orderUnit",
-    title: "订单单位",
+    // title: "订单单位",
     key: "orderUnit",
+    slots: { title: "orderUnitTitle" },
+    scopedSlots: { customRender: "orderUnit" },
     width: 100
   },
   {
     dataIndex: "deliveryDate",
-    title: "交货日期",
+    // title: "交货日期",
     key: "deliveryDate",
-    width: 100
+    slots: { title: "deliveryDateTitle" },
+    scopedSlots: { customRender: "deliveryDate" },
+    width: 120
   },
   {
     dataIndex: "unitPrice",
-    title: "单价",
+    // title: "单价",
     key: "unitPrice",
+    slots: { title: "unitPriceTitle" },
+    scopedSlots: { customRender: "unitPrice" },
     width: 100
   },
   {
     dataIndex: "taxrate",
-    title: "税率",
+    // title: "税率",
     key: "taxrate",
+    slots: { title: "taxrateTitle" },
+    scopedSlots: { customRender: "taxrate" },
     width: 100
   },
   {
     dataIndex: "supplier",
-    title: "供应商",
+    // title: "供应商",
     key: "supplier",
+    slots: { title: "supplierTitle" },
+    scopedSlots: { customRender: "supplier" },
     width: 100
   },
   {
     dataIndex: "priceUnit",
-    title: "价格单位",
+    // title: "价格单位",
     key: "priceUnit",
+    slots: { title: "priceUnitTitle" },
+    scopedSlots: { customRender: "priceUnit" },
     width: 100
   },
   {
-    dataIndex: "currencyType",
-    title: "货币类型",
-    key: "currencyType",
+    dataIndex: "moneyType",
+    // title: "货币类型",
+    key: "moneyType",
+    slots: { title: "moneyTypeTitle" },
+    scopedSlots: { customRender: "moneyType" },
     width: 100
   },
   {
     dataIndex: "remark",
     title: "备注",
     key: "remark",
+    scopedSlots: { customRender: "remark" },
     width: 100
   },
   {
@@ -166,11 +268,35 @@ export default {
       current: 1,
       pageSize: 10,
       total: 0,
+      ProjectId: [],
+      idArr: [],
+      unitArr: [],
+      supplierArr: [],
+      priceArr: [],
+      bomName: "",
+      designIdArr: [],
+      designNameArr: [],
+      orderNumber: "",
+      unit: "",
+      taxrate: "",
+      priseUnit: "",
+      supplier: "",
+      delivery: "",
+      price: "",
+      moneyType: "RMB",
+      remark: "",
+      workOrderId: ""
+
+
     };
   },
   methods: {
     close() {
-      this.$emit('cancelAdd',false);
+      this.$emit("cancelAdd", false);
+      this.form.resetFields();
+    },
+    onChangeDelivery(date,dateString){
+      this.delivery = dateString;
     },
     onChange(current, pageNumber) {
       console.log("Page: ", pageNumber);
@@ -183,49 +309,240 @@ export default {
       this.current = 1;
       this.getList();
     },
+    sendOrderId(value){
+      console.log(value);
+      for(let i = 0; i < this.ProjectId.length; i ++){
+        if(value === this.ProjectId[i].no){
+          this.workOrderId = this.ProjectId[i].id
+        }
+      }
+      console.log(this.workOrderId)
+    },
+    sendId(value) {
+      console.log(value);
+      this.designNameArr = value;
+      for (let i = 0; i < value.length; i++) {
+        for (let j = 0; j < this.idArr.length; j++) {
+          if (value[i] === this.idArr[j].bomNo) {
+            if(this.designIdArr.indexOf(this.idArr[j].id) === -1){
+              this.designIdArr.push(this.idArr[j].id);
+            }
+          }
+        }
+      }
+      console.log(this.designIdArr)
+      this.Axios(
+        {
+          url: "/api-order/bom/getBomdes",
+          type: "get",
+          params: {
+            bomIdS: this.designIdArr.join(",")
+          },
+          option: { enableMsg: false }
+        },
+        this
+      ).then(
+        result => {
+          if (result.data.code === 200) {
+            console.log(result);
+            this.data = result.data.data;
+            this.total = result.data.data.totalElement;
+          }
+        },
+        ({ type, info }) => {}
+      );
+      // for(let i = 0; i < this.data.length; i++){
+      //   if(value.join(',') === this.data[i].id){
+      //     this.bomName = this.data[i].name
+      //   }
+      // }
+      this.Axios(
+        {
+          url: "/api-order/unit/list",
+          type: "get",
+          params: {},
+          option: { enableMsg: false }
+        },
+        this
+      ).then(
+        result => {
+          if (result.data.code === 200) {
+            // console.log(result);
+            this.unitArr = result.data.data.content;
+          }
+        },
+        ({ type, info }) => {}
+      );
+      this.Axios(
+        {
+          url: "/api-order/supplier/list",
+          type: "get",
+          params: {},
+          option: { enableMsg: false }
+        },
+        this
+      ).then(
+        result => {
+          if (result.data.code === 200) {
+            // console.log(result);
+            this.supplierArr = result.data.data.content;
+          }
+        },
+        ({ type, info }) => {}
+      );
+      this.Axios(
+        {
+          url: "/api-order/unit/list",
+          type: "get",
+          params: {},
+          option: { enableMsg: false }
+        },
+        this
+      ).then(
+        result => {
+          if (result.data.code === 200) {
+            // console.log(result);
+            this.priceArr = result.data.data.content;
+          }
+        },
+        ({ type, info }) => {}
+      );
+    },
     addProcurement() {
       const that = this;
-			this.form.validateFieldsAndScroll((err, values) => {
-				if (!err) {
-					console.log("Received values of form: ", values);
-					// if (!this.checkedKeys.length) {
-					// 	this.$message.error("请分配角色权限");
-					// 	return false;
-					// }
-					let qs = require("qs");
-					let data = {
-						orderNo: values.orderNo,
+      this.form.validateFieldsAndScroll((err, values) => {
+        if (!err) {
+          console.log("Received values of form: ", values);
+          // if (!this.checkedKeys.length) {
+          // 	this.$message.error("请分配角色权限");
+          // 	return false;
+          // }
+          let qs = require("qs");
+          let data = {
+            bomIds: this.designIdArr.join(","),
+            bomName: this.designNameArr.join(","),
+            desCount: this.total,
+            workOrderId: this.workOrderId,
             workOrderNo: values.workOrderNo,
-            procurementNo: values.procurementNo,
+            purchaseNo: values.procurementNo,
             remark: values.remark,
+            purchaseDesDTOList: this.data.map(item => {
+                      return {
+                        drawingNo: item.drawingNo,
+                        name: item.name,
+                        number: item.number,
+                        brand: item.brand,
+                        designer: item.designer, 
+                        delivery: this.delivery,
+                        moneyType: this.moneyType,
+                        price: this.price,
+                        orderNumber: this.orderNumber,
+                        priseUnit: this.priseUnit,
+                        supplier: this.supplier,
+                        taxrate: this.taxrate,
+                        unit: this.unit,
+                        remark: this.remark
+                      }
+                  })
           };
           console.log(data);
 
-					this.Axios(
-						{
-							url: "/api-order/purchase/add",
-							params: data,
-							type: "post",
-							option: { successMsg: "添加成功！" },
-							config: {
-								headers: { "Content-Type": "application/json" }
-							}
-						},
-						this
-					).then(
-						result => {
-							if (result.data.code === 200) {
+          this.Axios(
+            {
+              url: "/api-order/purchase/add",
+              params: data,
+              type: "post",
+              option: { successMsg: "添加成功！" },
+              config: {
+                headers: { "Content-Type": "application/json" }
+              }
+            },
+            this
+          ).then(
+            result => {
+              if (result.data.code === 200) {
                 console.log(result);
                 this.close();
-							}
-						},
-						({ type, info }) => {}
-					);
-				}
+                this.form.resetFields();
+              }
+            },
+            ({ type, info }) => {}
+          );
+        }
       });
     },
+    getDesignId() {
+      this.Axios(
+        {
+          url: "/api-order/bom/list",
+          type: "get",
+          params: {},
+          option: { enableMsg: false }
+        },
+        this
+      ).then(
+        result => {
+          if (result.data.code === 200) {
+            console.log(result);
+            this.idArr = result.data.data.content;
+          }
+        },
+        ({ type, info }) => {}
+      );
+    },
+    getProjectId() {
+      this.Axios(
+        {
+          url: "/api-order/order/getOrderList",
+          type: "get",
+          params: {},
+          option: { enableMsg: false }
+        },
+        this
+      ).then(
+        result => {
+          if (result.data.code === 200) {
+            // console.log(result);
+            this.ProjectId = result.data.data.content;
+          }
+        },
+        ({ type, info }) => {}
+      );
+    },
+    getProcurementId() {
+      this.Axios(
+        {
+          url: "/api-order/supplier/getNo",
+          type: "get",
+          params: {},
+          option: { enableMsg: false }
+        },
+        this
+      ).then(
+        result => {
+          if (result.data.code === 200) {
+            // console.log(result);
+            this.form.setFieldsValue({
+              procurementNo: result.data.data
+            })
+          }
+        },
+        ({ type, info }) => {}
+      );
+    }
+  },
+  created() {
+    this.getDesignId();
+    this.getProjectId();
+    this.getProcurementId();
   }
 };
 </script>
-<style lang="less" scoped>
+<style lang="less">
+.addProcurement {
+  .ant-table-thead > tr > th,
+  .ant-table-tbody > tr > td {
+    padding: 8px 4px;
+  }
+}
 </style>

@@ -8,8 +8,9 @@
               <a-select
                 v-decorator="['procurementNo', { rules: [{ required:'true', message: '请选择采购单号'}]}]"
                 placeholder="请选择"
+                @change="getProcurementId"
               >
-                <a-select-option value="1">1</a-select-option>
+                <a-select-option v-for="item in procurementNo" :key="item.purchaseNo">{{ item.purchaseNo }}</a-select-option>
               </a-select>
             </a-form-item>
           </a-row>
@@ -25,7 +26,7 @@
                 v-decorator="['contractTemplate', { rules: [{ required:'true', message: '请选择合同模板'}]}]"
                 placeholder="请选择"
               >
-                <a-select-option value="1">1</a-select-option>
+                <a-select-option v-for="item in contractTemplate" :key="item.id" :value="item.title">{{ item.title }}</a-select-option>
               </a-select>
             </a-form-item>
           </a-row>
@@ -35,7 +36,7 @@
                 v-decorator="['supplier', { rules: [{ required:'true', message: '请选择供应商'}]}]"
                 placeholder="请选择"
               >
-                <a-select-option value="1">1</a-select-option>
+                <a-select-option :value="item.supplierName" v-for="(item,index) in supplierName"  :key="index">{{ item.supplierName }}</a-select-option>
               </a-select>
             </a-form-item>
           </a-row>
@@ -51,12 +52,12 @@
           </a-row>
           <a-row>
             <a-form-item label="总金额" :labelCol="{ span: 3}" :wrapperCol="{ span: 19 }">
-              <a-input v-decorator="['totalMoney']" disabled></a-input>
+              <a-input v-decorator="['totalMoney']"></a-input>
             </a-form-item>
           </a-row>
           <a-row>
             <a-form-item label="金额大写" :labelCol="{ span: 3}" :wrapperCol="{ span: 19 }">
-              <a-input v-decorator="['moneyUpper']" disabled></a-input>
+              <a-input v-decorator="['moneyUpper']"></a-input>
             </a-form-item>
           </a-row>
           <a-row>
@@ -80,7 +81,8 @@
                 v-decorator="['supplyMode']"
                 placeholder="请选择"
               >
-                <a-select-option value="1">1</a-select-option>
+                <a-select-option value="供方送货">供方送货</a-select-option>
+                <a-select-option value="自提">自提</a-select-option>
               </a-select>
             </a-form-item>
           </a-row>
@@ -114,8 +116,8 @@
     </a-tabs>
     <a-row>
       <a-form-item :wrapper-col="{ span: 20,offset: 2 }" style="text-align:right">
-        <a-button style="margin-right:12px;">关闭</a-button>
-        <a-button type="primary">提交</a-button>
+        <a-button style="margin-right:12px;" @click="close">关闭</a-button>
+        <a-button type="primary" @click="addProcurement">提交</a-button>
       </a-form-item>
     </a-row>
   </div>
@@ -123,9 +125,9 @@
 <script>
 const columns = [
   {
-    dataIndex: "bomDrawingNo",
+    dataIndex: "drawingNo",
     title: "图号",
-    key: "bomDrawingNo",
+    key: "drawingNo",
     width: 100
   },
   {
@@ -168,7 +170,7 @@ const columns = [
     dataIndex: "deliveryDate",
     title: "交货日期",
     key: "deliveryDate",
-    width: 100
+    width: 120
   },
   {
     dataIndex: "unitPrice",
@@ -195,9 +197,9 @@ const columns = [
     width: 100
   },
   {
-    dataIndex: "currencyType",
+    dataIndex: "moneyType",
     title: "货币类型",
-    key: "currencyType",
+    key: "moneyType",
     width: 100
   },
   {
@@ -216,10 +218,17 @@ export default {
       current: 1,
       pageSize: 10,
       total: 0,
-      signDate: ""
+      signDate: "",
+      procurementNo: [],
+      supplierName: [],
+      contractTemplate: [],
+      procurementId: '',
     };
   },
   methods: {
+    close() {
+      this.$emit('cancelAdd',false);
+    },
     onChangeSign(data, dateString) {
       this.signDate = dateString;
     },
@@ -233,7 +242,190 @@ export default {
       this.pageSize = pageSize;
       this.current = 1;
       this.getList();
+    },
+    getProcurementId(value) {
+      for(let i = 0; i < this.procurementNo.length; i ++){
+        if(value === this.procurementNo[i].purchaseNo){
+          this.procurementId = this.procurementNo[i].id
+        }
+      }
+      console.log(this.procurementId)
+      this.findOne(this.procurementId)
+    },
+    findOne(id) {
+			this.Axios(
+				{
+					url: '/api-order/purchase/findone',
+					params: {
+            id: id
+          },
+					type: "get",
+					option: { enableMsg: false }
+				},
+				this
+			).then(
+				result => {
+					if (result.data.code === 200) {
+            console.log(result);
+            this.data = result.data.data.purchaseDesDOList;
+					}
+				},
+				({ type, info }) => {}
+			);
+		},
+    addProcurement() {
+      const that = this;
+			this.form.validateFieldsAndScroll((err, values) => {
+				if (!err) {
+					console.log("Received values of form: ", values);
+					// if (!this.checkedKeys.length) {
+					// 	this.$message.error("请分配角色权限");
+					// 	return false;
+					// }
+					let qs = require("qs");
+					let data = {
+            purchaseNo: values.procurementNo,
+            purchaseId: this.procurementId,
+            supplier: values.supplier,
+            chineseMoney: values.moneyUpper,
+            summoney: values.totalMoney,
+            demand: values.demand,
+            digndate: this.signDate,
+            model: values.contractTemplate,
+            place : values.signPlace,
+            remark: values.remark,
+            salesman : values.salesman,
+            sendway: values.supplyMode,
+            shopContractNo: values.contractNo,
+            shopContractDesDOList: [],
+            desCount: 10,
+            ShopContractDesDTO: [
+                {
+                  delivery: "2019/9/9",
+                  moneyType: "RMB",
+                  price: 100,
+                  orderNumber: 200,
+                  priseUnit: "万",
+                  supplier: "gongyingshang",
+                  taxrate: "20",
+                  unit: "10"
+
+                }
+              ]
+          };
+          console.log(data);
+
+					this.Axios(
+						{
+							url: "/api-order/shopContract/add",
+							params: data,
+							type: "post",
+							option: { successMsg: "添加成功！" },
+							config: {
+								headers: { "Content-Type": "application/json" }
+							}
+						},
+						this
+					).then(
+						result => {
+							if (result.data.code === 200) {
+                console.log(result);
+                this.close();
+							}
+						},
+						({ type, info }) => {}
+					);
+				}
+      });
+    },
+    getProcurementNo() {
+      this.Axios(
+				{
+					url: "/api-order/purchase/list",
+          type: "get",
+         	params: {},
+					option: { enableMsg: false }
+				},
+				this
+			).then(
+				result => {
+					if (result.data.code === 200) {
+            console.log(result);
+            this.procurementNo = result.data.data.content;
+            
+      
+					}
+				},
+				({ type, info }) => {}
+			);
+    },
+    getSupplierName() {
+      this.Axios(
+				{
+					url: "/api-order/supplier/list",
+          type: "get",
+         	params: {},
+					option: { enableMsg: false }
+				},
+				this
+			).then(
+				result => {
+					if (result.data.code === 200) {
+            // console.log(result);
+            this.supplierName = result.data.data.content;
+            
+      
+					}
+				},
+				({ type, info }) => {}
+			);
+    },
+    getContract(){
+      this.Axios(
+        {
+          url: "/api-order/template/list",
+          type: "get",
+          params: {},
+          option: {enableMsg: false}
+        },
+        this
+      ).then(
+        result => {
+          if(result.data.code ===200) {
+            // console.log(result);
+            this.contractTemplate = result.data.data.content;
+
+          }
+        }
+      )
+    },
+    getContractId() {
+      this.Axios(
+        {
+          url: "/api-order/supplier/getNo",
+          type: "get",
+          params: {},
+          option: { enableMsg: false }
+        },
+        this
+      ).then(
+        result => {
+          if (result.data.code === 200) {
+            // console.log(result);
+            this.form.setFieldsValue({
+              contractNo: result.data.data
+            })
+          }
+        },
+        ({ type, info }) => {}
+      );
     }
+  },
+  created() {
+    this.getProcurementNo();
+    this.getSupplierName();
+    this.getContract();
+    this.getContractId()
   }
 };
 </script>

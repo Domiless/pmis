@@ -17,9 +17,7 @@
     <a-row>
       <a-col :span="24">
         <span>日期 :</span>
-        <a-date-picker style="width:120px" @change="onChangeBegin" format="YYYY/MM/DD"></a-date-picker>
-        <span>~</span>
-        <a-date-picker style="width: 120px" @change="onChangeEnd" format="YYYY/MM/DD"></a-date-picker>
+        <a-range-picker style="width:240px" @change="onChangeRange" format="YYYY/MM/DD"></a-range-picker>
         <a-input-group class="changeDis">
           <span>审批状态 : </span>
           <a-select v-model="state" style="width: 100px" optionFilterProp="children">
@@ -32,7 +30,7 @@
           </a-select>
         </a-input-group>
         <span>关键词 :</span>
-        <a-input placeholder="请输入关键词" style="width: 250px"></a-input>
+        <a-input placeholder="请输入关键词" style="width: 250px" v-model="keyWords"></a-input>
         <a-button @click="getList">搜索</a-button>
       </a-col>
     </a-row>
@@ -44,10 +42,10 @@
         :pagination="false"
         :rowSelection="{selectedRowKeys:selectedRowKeys,onChange: onSelectChange}"
       >
-        <template slot="procurementNo" slot-scope="text, record">
+        <template slot="purchaseNo" slot-scope="text, record">
 						<a href="javascript:" @click="showDetails(record)">{{text}}</a>
 				</template>
-        <template slot="orderReviewSchedule" slot-scope="text, record">
+        <template slot="state" slot-scope="text, record">
           <div>
             <span v-if="text==2" style="font-size:14px;color:#027DB4;">审批中</span>
             <span v-if="text==1" style="font-size:14px;color:#999999;">暂存</span>
@@ -84,6 +82,7 @@
      v-model="addVisible"
      width="1200px"
      :footer="null"
+     :maskClosable="false"
      >
       <add-procurement @cancelAdd="closeAdd"></add-procurement>
     </a-modal>
@@ -92,8 +91,9 @@
      v-model="editVisible"
      width="1200px"
      :footer="null"
+     :maskClosable="false"
      >
-      <edit-procurement></edit-procurement>
+      <edit-procurement @cancelEdit="closeEdit" :procurementId="selectedRowKeys[0]"></edit-procurement>
     </a-modal>
     <a-modal
 			title="采购单号详情"
@@ -104,19 +104,19 @@
 			:maskClosable="false"
 		>
 			<a-row>
-				<a-col :span="12" style="margin-bottom:12px;">
+				<a-col :span="24" style="margin-bottom:12px;">
 					<span class="label_right">项目订单：</span>
-					<span>{{procurementDetails.orderNo}}</span>
+					<span>{{procurementDetails.workOrderNo}}</span>
 				</a-col>
-				<a-col :span="12" style="margin-bottom:12px;">
+				<a-col :span="24" style="margin-bottom:12px;">
 					<span class="label_right">设计单号：</span>
-					<span>{{procurementDetails.designNo}}</span>
+					<span>{{procurementDetails.bomName}}</span>
 				</a-col>
-				<a-col :span="12" style="margin-bottom:12px;">
+				<a-col :span="24" style="margin-bottom:12px;">
 					<span class="label_right">采购单号：</span>
-					<span>{{procurementDetails.procurementNo}}</span>
+					<span>{{procurementDetails.purchaseNo}}</span>
 				</a-col>
-				<a-col :span="12" style="margin-bottom:12px;">
+				<a-col :span="24" style="margin-bottom:12px;">
 					<span class="label_right">备注：</span>
 					<span>{{procurementDetails.remark}}</span>
 				</a-col>
@@ -129,41 +129,41 @@ import EditProcurement from "./editProcurement"
 import AddProcurement from "./addProcurement"
 const columns = [
   {
-    dataIndex: "orderNo",
+    dataIndex: "workOrderNo",
     title: "项目订单编号",
-    key: "orderNo",
+    key: "workOrderNo",
     width: "20%"
   },
   {
-    dataIndex: "procurementNo",
+    dataIndex: "purchaseNo",
     title: "采购单号",
-    key: "procurementNo",
-    scopedSlots: { customRender: "procurementNo" },
+    key: "purchaseNo",
+    scopedSlots: { customRender: "purchaseNo" },
     width: "20%"
   },
   {
-    dataIndex: "applicant",
+    dataIndex: "production",
     title: "申请人",
-    key: "applicant",
+    key: "production",
     width: "10%"
   },
   {
-    dataIndex: "applyDate",
+    dataIndex: "gmtCreated",
     title: "申请日期",
-    key: "applyDate",
+    key: "gmtCreated",
     width: "10%"
   },
   {
-    dataIndex: "enquiryMsg",
+    dataIndex: "isOffer",
     title: "是否询价",
-    key: "enquiryMsg",
+    key: "isOffer",
     width: "10%"
   },
   {
-    dataIndex: "orderReviewSchedule",
+    dataIndex: "state",
     title: "审批状态",
-    key: "orderReviewSchedule",
-    scopedSlots: { customRender: "orderReviewSchedule" },
+    key: "state",
+    scopedSlots: { customRender: "state" },
     width: "10%"
   },
   {
@@ -182,12 +182,12 @@ export default {
       addVisible: false,
       editVisible: false,
       detailsVisible: false,
-      beginDate: null,
-      endDate:null,
+      dateValue: [],
       current: 1,
       pageSize: 10,
       total: 0,
-      state: -1
+      state: -1,
+      keyWords: ''
     };
   },
   methods: {
@@ -195,14 +195,16 @@ export default {
       this.addVisible = params;
       this.getList();
     },
+    closeEdit(params){
+      this.editVisible = params;
+      this.getList();
+    },
     handleCancel() {
       this.detailsVisible = false;
     },
-    onChangeBegin(date,datestring){
-      this.beginDate = datestring;
-    },
-    onChangeEnd(date,datestring){
-      this.endDate = datestring;
+    onChangeRange(date,datestring){
+      this.dateValue = datestring;
+      console.log(this.dateValue)
     },
     showDetails(row) {
 			this.procurementDetails = row;
@@ -225,6 +227,9 @@ export default {
        console.log(this.selectedRowKeys)
     },
     getList() {
+       if(this.state === -1){
+        this.state = ''
+      }
 			this.Axios(
 				{
 					url: "/api-order/purchase/list",
@@ -233,8 +238,9 @@ export default {
 						page: this.current,
             size: this.pageSize,
             auditState: this.state,
-						start: this.beginDate != "" ? this.beginDate : null,
-            end: this.endDate != "" ? this.endDate : null
+            keyword: this.keyWords,
+						start: this.dateValue[0] != "" ? this.dateValue[0] : null,
+            end: this.dateValue[1] != "" ? this.dateValue[1] : null
 					},
 					option: { enableMsg: false }
 				},
@@ -245,6 +251,9 @@ export default {
 						console.log(result);
 						this.data = result.data.data.content;
             this.total = result.data.data.totalElement;
+            if(this.state === ''){
+                this.state = -1
+            }
 					}
 				},
 				({ type, info }) => {}
@@ -317,5 +326,11 @@ export default {
     display: inline;
     margin: 0px 50px 0px 50px;
   }
+  
 }
+.label_right{
+    display: inline-block;
+	  width: 120px;
+	  text-align: right;
+    }
 </style>

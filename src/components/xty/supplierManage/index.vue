@@ -14,10 +14,8 @@
     <a-row>
         <a-col :span="24">
           <span>日期 :</span>
-          <a-date-picker style="width:120px"  @change="onChangeBegin" format="YYYY/MM/DD"></a-date-picker>
-          <span>~</span>
-          <a-date-picker style="width: 120px; margin-right: 50px"  @change="onChangeEnd" format="YYYY/MM/DD"></a-date-picker>
-          <span>关键词 :</span>
+          <a-range-picker style="width:240px" @change="onChangeRange" format="YYYY/MM/DD"></a-range-picker>
+          <span style="margin-left: 50px">关键词 :</span>
           <a-input placeholder="供应商编码/名称/联系人/电话" style="width: 250px" v-model="keyWords"></a-input>
           <a-button @click="getList">搜索</a-button>
         </a-col>
@@ -373,8 +371,7 @@ export default {
       selectedRowKeys: [],
       defaultValue: [],
       supplierDetails: [],
-      beginDate: null,
-      endDate: null,
+      dateValue: [],
       keyWords: '',
       provinceData,
       cityData,
@@ -391,11 +388,9 @@ export default {
       this.detailsVisible = true;
       console.log("row:" +this.supplierDetails);
     },
-    onChangeBegin(date,datestring){
-      this.beginDate = datestring;
-    },
-    onChangeEnd(date,datestring){
-      this.endDate = datestring;
+    onChangeRange(date,datestring){
+      this.dateValue = datestring;
+      console.log(this.dateValue)
     },
     handleProvinceChange(value) {
       this.cities = cityData[value]
@@ -472,6 +467,7 @@ export default {
 							if (result.data.code === 200) {
                 console.log(result);
                 this.getList();
+                // this.form.resetFields();
                 this.addVisible = false;
 							}
 						},

@@ -3,7 +3,7 @@
     <a-form :form="form">
       <a-row>
         <a-form-item label="合同号" :labelCol="{span:3}" :wrapperCol="{span:21}" required>
-          <a-input v-decorator="['contractNo', { rules: [{ required:'true', message: '请填写合同号'}]}]"></a-input>
+          <a-input v-decorator="['contractNo', { rules: [{ required:'true', message: '请填写合同号'}]}]" disabled></a-input>
         </a-form-item>
       </a-row>
       <a-row>
@@ -31,7 +31,7 @@
       </a-row>
       <a-row>
         <a-form-item label="订单编号" :labelCol="{span:3}" :wrapperCol="{span:21}" required>
-          <a-input v-decorator="['no', { rules: [{ required:'true', message: '请填写订单编号'}]}]"></a-input>
+          <a-input v-decorator="['no', { rules: [{ required:'true', message: '请填写订单编号'}]}]" disabled></a-input>
         </a-form-item>
       </a-row>
       <a-row>

@@ -25,9 +25,7 @@
         <a-row>
           <a-col :span="24">
             <span>日期 :</span>
-            <a-date-picker style="width:120px" @change="onChangeBegin" format="YYYY/MM/DD"></a-date-picker>
-            <span>~</span>
-            <a-date-picker style="width: 120px" @change="onChangeEnd" format="YYYY/MM/DD"></a-date-picker>
+            <a-range-picker style="width:240px" @change="onChangeRange" format="YYYY/MM/DD"></a-range-picker>
             <a-input-group class="changeDis">
               <span>审批状态 : </span>
               <a-select v-model="reviewState" style="width: 100px" optionFilterProp="children">
@@ -189,7 +187,11 @@
       </a-row>
       <a-row>
           <span class="label_right" style="margin-bottom:12px;">附件：</span>
-          <span>{{ orderDetails.orderDocs }}</span>
+          <span style="display:inline-block;vertical-align:top">
+						<p v-for="(item,index) in orderDetails.orderDocs" :key="index">
+							<a :href="item.docPositionTrueUrl" target="_blank">{{item.docName}}</a>
+						</p>
+					</span>
       </a-row>
       <a-row>
           <span class="label_right" style="margin-bottom:12px;">备注：</span>
@@ -280,8 +282,7 @@ export default {
       current: 1,
       pageSize: 10,
       total: 0,
-      beginDate: null,
-      endDate: null,
+      dateValue: [],
       employeeId: null,
       selectedRowKeys: [],
       orderDetails: [],
@@ -296,16 +297,14 @@ export default {
     // 	this.selectedRowKeys = [];
     // 	this.selectedRows = [];
     // },
-    onChangeBegin(date,datestring){
-      this.beginDate = datestring;
-    },
-    onChangeEnd(date,datestring){
-      this.endDate = datestring;
+    onChangeRange(date,datestring){
+      this.dateValue = datestring;
+      console.log(this.dateValue)
     },
     showDetails(row) {
       this.orderDetails = row;
       this.detailsVisible = true;
-      console.log("row:" +this.orderDetails);
+      console.log(this.orderDetails);
     },
     cancelAddOrder(params) {
       this.addVisible = params;
@@ -389,8 +388,8 @@ export default {
             size: this.pageSize,
             reviewState: this.reviewState,
             keyword: this.keyWords,
-            beginDate: this.beginDate != "" ? this.beginDate : null,
-            endDate: this.endDate != "" ? this.endDate : null
+            beginDate: this.dateValue[0] != "" ? this.dateValue[0] : null,
+            endDate: this.dateValue[1] != "" ? this.dateValue[1] : null
           },
           option: { enableMsg: false }
         },
