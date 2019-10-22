@@ -1,6 +1,6 @@
 <template>
 	<div class="flow_path">
-		<a-col :span="24" style="padding:0 20px;">
+		<a-col :span="24" style="padding:0 20px;overflow:hidden;">
 			<a-row>
 				<div style="line-height:50px;">
 					<a-col :span="8">
@@ -10,12 +10,17 @@
 						<permission-button
 							permCode
 							banType="hide"
-							@click="edit"
+							@click="findOne"
 							:disabled="selectedRowKeys.length!=1"
 						>
 							<a-icon style="color:#1890ff;" type="edit" />修改
 						</permission-button>
-						<permission-button permCode banType="hide" :disabled="selectedRowKeys.length!=1" @click>启用/禁用</permission-button>
+						<permission-button
+							permCode
+							banType="hide"
+							:disabled="selectedRowKeys.length!=1"
+							@click="updateProcessState"
+						>启用/禁用</permission-button>
 					</a-col>
 				</div>
 			</a-row>
@@ -26,7 +31,18 @@
 					:dataSource="data"
 					:rowSelection="{selectedRowKeys:selectedRowKeys,onChange: onSelectChange}"
 					rowKey="id"
-				></a-table>
+				>
+					<template slot="type" slot-scope="text, record, index">
+						<div>
+							<span>{{text==1?"订单审批":text==2?"设计审批":text==3?"询价审批":text==4?"采购合同审批":""}}</span>
+						</div>
+					</template>
+					<template slot="suspension" slot-scope="text, record, index">
+						<div>
+							<span>{{text=="false"?"启用":"禁用"}}</span>
+						</div>
+					</template>
+				</a-table>
 				<a-pagination
 					style="padding-top:12px;text-align: right;"
 					showQuickJumper
@@ -67,58 +83,59 @@ import add from "./add&&edit/add";
 import edit from "./add&&edit/edit";
 const columns = [
 	{
-		dataIndex: "name",
+		dataIndex: "type",
 		title: "流程类型",
 		width: "20%",
+		key: "type",
+		scopedSlots: { customRender: "type" }
+	},
+	{
+		dataIndex: "name",
+		title: "流程名称",
+		width: "60%",
 		key: "name"
 	},
 	{
-		dataIndex: "description",
-		title: "流程名称",
-		width: "60%",
-		key: "description"
-	},
-	{
-		dataIndex: "state",
+		dataIndex: "suspension",
 		title: "状态",
 		width: "15%",
-		key: "state"
+		key: "suspension",
+		scopedSlots: { customRender: "suspension" }
 	}
 ];
 export default {
+	inject: ["reload"],
 	data() {
 		return {
 			editVisible: false,
 			addVisible: false,
 			columns,
-			data: [
-				{
-					name: 11,
-					description: 22,
-					state: 33
-				}
-			],
+			data: [],
 			current: 1,
 			pageSize: 10,
 			total: 0,
 			selectedRowKeys: [],
+			selectedRows: [],
 			editMsg: ""
 		};
 	},
 	methods: {
 		addCancel() {
 			this.addVisible = false;
+			this.getList();
+			this.selectedRowKeys = [];
+			this.selectedRows = [];
 		},
 		editCancel() {
 			this.editVisible = false;
+			this.getList();
+			this.selectedRowKeys = [];
+			this.selectedRows = [];
 		},
 		add() {
 			this.addVisible = true;
 		},
-		edit() {
-			this.editVisible = true;
-			this.editMsg = this.selectedRowKeys[0];
-		},
+		edit() {},
 		handleCancel(a) {
 			if (a == 1) {
 				// this.addVisible = false;
@@ -128,25 +145,27 @@ export default {
 				this.editVisible = false;
 			}
 		},
-		onSelectChange(selectedRowKeys) {
+		onSelectChange(selectedRowKeys, b) {
 			this.selectedRowKeys = selectedRowKeys;
-			console.log(this.selectedRowKeys);
+			this.selectedRows = b;
+			console.log(this.selectedRows);
 		},
 		onShowSizeChange(current, pageSize) {
 			this.pageSize = pageSize;
 			this.current = 1;
-			// this.getList();
+			this.getList();
 		},
 		onChange(current, pageNumber) {
 			console.log("Page: ", pageNumber);
 			console.log("第几页: ", current);
 			this.current = current;
-			// this.getList();
+			this.selectedRowKeys = [];
+			this.getList();
 		},
 		getList() {
 			this.Axios(
 				{
-					url: "/activiti/getprocess",
+					url: "/api-order/activiti/getprocess",
 					params: {
 						page: this.current,
 						size: this.pageSize
@@ -159,8 +178,62 @@ export default {
 				result => {
 					if (result.data.code === 200) {
 						console.log(result);
-						// this.data = result.data.data.data;
-						// this.total = result.data.data.totalElement;
+						this.data = result.data.data.data;
+						this.total = Number(result.data.data.totalElement);
+					}
+				},
+				({ type, info }) => {}
+			);
+		},
+		findOne() {
+			this.Axios(
+				{
+					url: "/api-order/activiti/getModelProcess",
+					params: {
+						procDefId: this.selectedRowKeys[0]
+					},
+					type: "get",
+					option: { enableMsg: false }
+				},
+				this
+			).then(
+				result => {
+					if (result.data.code === 200) {
+						console.log(result);
+						this.editVisible = true;
+						this.editMsg = result.data.data;
+					}
+				},
+				({ type, info }) => {}
+			);
+		},
+		updateProcessState() {
+			let qs = require("qs");
+			let data = qs.stringify({
+				state: this.selectedRows[0].suspension == "false" ? 1 : 0,
+				procDefId: this.selectedRows[0].id
+			});
+			let showMsg;
+			if (this.selectedRows[0].suspension == "false") {
+				showMsg = "禁用成功";
+			} else {
+				showMsg = "启用成功";
+			}
+			this.Axios(
+				{
+					url: "/api-order/activiti/updateProcessState",
+					params: data,
+					type: "post",
+					option: { successMsg: showMsg }
+				},
+				this
+			).then(
+				result => {
+					if (result.data.code === 204) {
+						console.log(result);
+						this.getList();
+						this.selectedRowKeys = [];
+						this.selectedRows = [];
 					}
 				},
 				({ type, info }) => {}

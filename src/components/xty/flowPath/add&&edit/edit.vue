@@ -33,7 +33,7 @@
 							<span style="color:#F5222D;font-weight:600">*</span>
 							{{item.label}}：
 						</span>
-						<a-input v-model="item.value" maxlength="20" style="width:564px;"></a-input>
+						<a-input v-model="item.name" maxlength="20" style="width:564px;"></a-input>
 						<span class="handle_del_style">
 							<a-icon
 								type="plus-circle"
@@ -54,8 +54,11 @@
 							<span @click="addPeopleMsg(index)">选择审批人</span>
 						</span>
 						<span v-if="item.type!=''&&item.type!=null" class="add_msg">
-							<span>{{item.type}}：</span>
-							<span v-for="(i, index1) in item.typeValue" :key="index1">{{i.name}}</span>
+							<span>{{item.type==1?"已选角色":"已指定成员"}}：</span>
+							<span v-if="item.type==2">
+								<span v-for="(i, index1) in item.users" style="color:#1890ff" :key="index1">{{i.name+" "}}</span>
+							</span>
+							<span v-if="item.type==1" style="color:#1890ff">{{item.groups.label}}</span>
 							<a-icon type="form" @click="addPeopleMsg(index)" />
 						</span>
 					</div>
@@ -97,13 +100,13 @@ export default {
 					label: "流程节点1",
 					name: "",
 					type: "",
-					candidateUsers: [
+					users: [
 						{
 							name: "",
 							id: ""
 						}
 					],
-					candidateGroups: ""
+					groups: {}
 				}
 			],
 			num: 1
@@ -117,31 +120,33 @@ export default {
 					label: "流程节点1",
 					name: "",
 					type: "",
-					candidateUsers: [
+					users: [
 						{
 							name: "",
 							id: ""
 						}
 					],
-					candidateGroups: ""
+					groups: {}
 				}
 			];
 			this.$emit("editCancel");
 		},
 		getAuditor(params) {
 			if (params.value.type == 2) {
-				this.node[this.nodeIndex].candidateGroups = {};
-				this.node[this.nodeIndex].candidateUsers = [];
+				this.node[this.nodeIndex].groups = {};
+				this.node[this.nodeIndex].users = [];
 				this.node[this.nodeIndex].type = params.value.type;
-				this.node[this.nodeIndex].candidateUsers = params.value.candidateUsers;
+				this.node[this.nodeIndex].users = params.value.candidateUsers;
 				this.auditVisible = false;
 			}
 			if (params.value.type == 1) {
-				this.node[this.nodeIndex].candidateGroups = {};
-				this.node[this.nodeIndex].candidateUsers = [];
+				this.node[this.nodeIndex].groups = {};
+				this.node[this.nodeIndex].users = [];
 				this.node[this.nodeIndex].type = params.value.type;
-				this.node[this.nodeIndex].candidateGroups =
-					params.value.candidateGroups;
+				this.node[this.nodeIndex].groups = {
+					roleCode: params.value.candidateGroups.key,
+					label: params.value.candidateGroups.label
+				};
 				this.auditVisible = false;
 			}
 			if (params.value.type == 3) {
@@ -172,15 +177,26 @@ export default {
 					} else {
 						let qs = require("qs");
 						let data = {
-							employeeNo: values.employeeNo,
-							userName: values.userName
+							name: values.name,
+							type: values.type,
+							userTask: this.node.map(item => {
+								return {
+									name: item.name,
+									type: item.type,
+									groups: {
+										roleCode: item.groups.roleCode,
+										label: item.groups.label
+									},
+									users: item.users
+								};
+							})
 						};
 						this.Axios(
 							{
-								url: "/api-platform/employee/addEmployee",
+								url: "/api-order/activiti/updateProcess/" + this.editMsg.id,
 								params: data,
 								type: "post",
-								option: { successMsg: "添加成功！" },
+								option: { successMsg: "修改成功！" },
 								config: {
 									headers: { "Content-Type": "application/json" }
 								}
@@ -190,6 +206,25 @@ export default {
 							result => {
 								if (result.data.code === 200) {
 									console.log(result);
+									this.$emit("editCancel", {});
+									this.form.resetFields();
+									this.node = [
+										{
+											label: "流程节点1",
+											name: "",
+											type: "",
+											users: [
+												{
+													name: "",
+													id: ""
+												}
+											],
+											groups: {
+												roleCode: "",
+												label: ""
+											}
+										}
+									];
 								}
 							},
 							({ type, info }) => {}
@@ -216,13 +251,13 @@ export default {
 				label: "流程节点" + this.num,
 				name: "",
 				type: "",
-				candidateUsers: [
+				users: [
 					{
 						name: "",
 						id: ""
 					}
 				],
-				candidateGroups: ""
+				groups: {}
 			});
 		},
 		findOne() {
@@ -268,10 +303,31 @@ export default {
 	},
 	created() {
 		console.log(this.editMsg);
+		setTimeout(() => {
+			this.form.setFieldsValue({
+				type: this.editMsg.type,
+				name: this.editMsg.name
+			});
+		}, 100);
+		this.node = this.editMsg.userTask;
+		for (let i = 0; i < this.node.length; i++) {
+			this.node[i].label = "流程节点" + (i + 1);
+		}
+		this.num = this.node.length;
 	},
 	watch: {
 		editMsg() {
-			console.log(this.editMsg);
+			setTimeout(() => {
+				this.form.setFieldsValue({
+					type: this.editMsg.type,
+					name: this.editMsg.name
+				});
+			}, 100);
+			this.node = this.editMsg.userTask;
+			for (let i = 0; i < this.node.length; i++) {
+				this.node[i].label = "流程节点" + (i + 1);
+			}
+			this.num = this.node.length;
 		}
 	},
 	components: {

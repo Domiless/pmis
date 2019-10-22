@@ -338,10 +338,12 @@ export default {
 
 						for (let i = 0; i < this.data.length; i++) {
 							this.data[i].workTypeName = "";
-							for (let j = 0; j < this.data[i].workType.length; j++) {
-								this.data[i].workTypeName +=
-									this.data[i].workType[j].workTypeName +
-									(j == this.data[i].workType.length - 1 ? "" : "、");
+							if (this.data[i].workType != null) {
+								for (let j = 0; j < this.data[i].workType.length; j++) {
+									this.data[i].workTypeName +=
+										this.data[i].workType[j].workTypeName +
+										(j == this.data[i].workType.length - 1 ? "" : "、");
+								}
 							}
 						}
 					}
