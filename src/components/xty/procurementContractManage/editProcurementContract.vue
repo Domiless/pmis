@@ -52,12 +52,12 @@
           </a-row>
           <a-row>
             <a-form-item label="总金额" :labelCol="{ span: 3}" :wrapperCol="{ span: 19 }">
-              <a-input v-decorator="['totalMoney']"></a-input>
+              <a-input v-decorator="['totalMoney']" disabled></a-input>
             </a-form-item>
           </a-row>
           <a-row>
             <a-form-item label="金额大写" :labelCol="{ span: 3}" :wrapperCol="{ span: 19 }">
-              <a-input v-decorator="['moneyUpper']"></a-input>
+              <a-input v-decorator="['moneyUpper']" disabled></a-input>
             </a-form-item>
           </a-row>
           <a-row>
@@ -94,7 +94,7 @@
         </a-form>
       </a-tab-pane>
       <a-tab-pane tab="采购明细" key="2" style="margin-bottom: 20px">
-        <a-table :columns="columns" :dataSource="data" :scroll="{ x: 1900, y: 500 }" />
+        <a-table rowKey="id" :columns="columns" :dataSource="data" :scroll="{ x: 1900, y: 500 }" :pagination="false"/>
         <!-- <a-col :span="12" style="padding-top: 12px; height: 36px;">
           <span style="line-height: 12px">合计：</span>
         </a-col> -->
@@ -155,27 +155,27 @@ const columns = [
     width: 100
   },
   {
-    dataIndex: "orderNum",
+    dataIndex: "orderNumber",
     title: "订单数量",
-    key: "orderNum",
+    key: "orderNumber",
     width: 100
   },
   {
-    dataIndex: "orderUnit",
+    dataIndex: "unit",
     title: "订单单位",
-    key: "orderUnit",
+    key: "unit",
     width: 100
   },
   {
-    dataIndex: "deliveryDate",
+    dataIndex: "delivery",
     title: "交货日期",
-    key: "deliveryDate",
+    key: "delivery",
     width: 120
   },
   {
-    dataIndex: "unitPrice",
+    dataIndex: "price",
     title: "单价",
-    key: "unitPrice",
+    key: "price",
     width: 100
   },
   {
@@ -191,9 +191,9 @@ const columns = [
     width: 100
   },
   {
-    dataIndex: "priceUnit",
+    dataIndex: "priseUnit",
     title: "价格单位",
-    key: "priceUnit",
+    key: "priseUnit",
     width: 100
   },
   {
@@ -269,8 +269,9 @@ export default {
 			).then(
 				result => {
 					if (result.data.code === 200) {
-            // console.log(result);
+            console.log(result);
             this.data = result.data.data.purchaseDesDOList;
+            this.total = result.data.data.purchaseDesDOList.length;
 					}
 				},
 				({ type, info }) => {}
@@ -292,6 +293,8 @@ export default {
 					if (result.data.code === 200) {
             console.log(result);
             let msg = result.data.data;
+            this.data = msg.shopContractDesDOList;
+            this.total = msg.shopContractDesDOList.length;
             setTimeout(()=> {
               this.form.setFieldsValue({
                 procurementNo: msg.purchaseNo,
@@ -323,6 +326,7 @@ export default {
 					// }
 					let qs = require("qs");
 					let data = {
+            id: this.procurementContractId,
             purchaseNo: values.procurementNo,
             purchaseId: this.procurementId,
             supplier: values.supplier,
@@ -336,9 +340,8 @@ export default {
             salesman : values.salesman,
             sendway: values.supplyMode,
             shopContractNo: values.contractNo,
-            shopContractDesDOList: [],
-            desCount: 10,
-            ShopContractDesDTO: []
+            shopContractDesDOList: this.data,
+            desCount: this.total
           };
           console.log(data);
 

@@ -22,10 +22,7 @@
                 placeholder="请选择"
                 @change="sendId"
               >
-                <a-select-option
-                  v-for="item in idArr"
-                  :key="item.bomNo"
-                >{{ item.bomNo }}</a-select-option>
+                <a-select-option v-for="item in idArr" :key="item.bomNo">{{ item.bomNo }}</a-select-option>
               </a-select>
             </a-form-item>
           </a-row>
@@ -75,29 +72,70 @@
           <span slot="moneyTypeTitle">
             <span style="color: #f5222d">*</span>货币类型
           </span>
-          <template slot="orderNum" slot-scope="text,record">
-            <a-input :value="orderNumber"></a-input>
+          <template slot="orderNumber" slot-scope="text,record">
+            <div key="orderNumber">
+              <a-input
+                maxlength="20"
+                style="margin: -5px 0"
+                :value="text"
+                @change="e => handleChangeTable(e.target.value, record.id, 'orderNumber')"
+              />
+            </div>
           </template>
-          <template slot="orderUnit" slot-scope="text,record">
-            <a-select style="width: 100%" v-model="unit">
+          <template slot="unit" slot-scope="text,record">
+            <a-select
+              style="width: 100%"
+              :value="text"
+              @change="(value,option) => {
+                  let value1 = value;
+                  handleChangeTable(value1, record.id, 'unit')
+                  }"
+            >
               <a-select-option
                 v-for="item in unitArr"
-                :value="item.id"
+                :value="item.name"
                 :key="item.id"
               >{{ item.name }}</a-select-option>
             </a-select>
           </template>
-          <template slot="deliveryDate" slot-scope="text,record">
-            <a-date-picker @change="onChangeDelivery" format="YYYY/MM/DD" placeholder="请选择" />
+          <template slot="delivery" slot-scope="text,record,index">
+            <a-date-picker
+              @change="(date,dateString) => {
+                                      let delivery = dateString;
+                                      handleChangeTable(delivery,record.id,'delivery');}"
+              format="YYYY/MM/DD"
+              placeholder="请选择"
+            />
           </template>
-          <template slot="unitPrice" slot-scope="text,record">
-            <a-input :value="price"></a-input>
+          <template slot="price" slot-scope="text,record">
+            <div key="price">
+              <a-input
+                maxlength="20"
+                style="margin: -5px 0"
+                :value="text"
+                @change="e => handleChangeTable(e.target.value, record.id, 'price')"
+              />
+            </div>
           </template>
           <template slot="taxrate" slot-scope="text,record">
-            <a-input :value="taxrate"></a-input>
+            <div key="taxrate">
+              <a-input
+                maxlength="20"
+                style="margin: -5px 0"
+                :value="text"
+                @change="e => handleChangeTable(e.target.value, record.id, 'taxrate')"
+              />
+            </div>
           </template>
           <template slot="supplier" slot-scope="text,record">
-            <a-select style="width: 100%" :value="supplier">
+            <a-select
+              style="width: 100%"
+              :value="text"
+              @change="(value,option) => {
+                  let value1 = value;
+                  handleChangeTable(value1, record.id, 'supplier')
+                  }"
+            >
               <a-select-option
                 v-for="item in supplierArr"
                 :value="item.supplierName"
@@ -106,19 +144,40 @@
             </a-select>
           </template>
           <template slot="priceUnit" slot-scope="text,record">
-            <a-select style="width: 100%" :value="priseUnit">
+            <a-select
+              style="width: 100%"
+              :value="text"
+              @change="(value,option) => {
+                  let value1 = value;
+                  handleChangeTable(value1, record.id, 'priceUnit')
+                  }"
+            >
               <a-select-option
                 v-for="item in priceArr"
-                :value="item.name"
+                :value="'1'+item.name"
                 :key="item.id"
               >1{{ item.name }}</a-select-option>
             </a-select>
           </template>
           <template slot="moneyType" slot-scope="text,record">
-            <a-input :value="moneyType"></a-input>
+            <div key="moneyType">
+              <a-input
+                maxlength="20"
+                style="margin: -5px 0"
+                :value="text"
+                @change="e => handleChangeTable(e.target.value, record.id, 'moneyType')"
+              />
+            </div>
           </template>
           <template slot="remark" slot-scope="text,record">
-            <a-input :value="remark"></a-input>
+            <div key="remark">
+              <a-input
+                maxlength="20"
+                style="margin: -5px 0"
+                :value="text"
+                @change="e => handleChangeTable(e.target.value, record.id, 'remark')"
+              />
+            </div>
           </template>
         </a-table>
         <a-col :span="12" style="padding-top: 12px; height: 36px;">
@@ -182,35 +241,35 @@ const columns = [
     width: 100
   },
   {
-    dataIndex: "orderNum",
+    dataIndex: "orderNumber",
     // title: "订单数量",
-    key: "orderNum",
+    key: "orderNumber",
     slots: { title: "orderNumTitle" },
-    scopedSlots: { customRender: "orderNum" },
+    scopedSlots: { customRender: "orderNumber" },
     width: 100
   },
   {
-    dataIndex: "orderUnit",
+    dataIndex: "unit",
     // title: "订单单位",
-    key: "orderUnit",
+    key: "unit",
     slots: { title: "orderUnitTitle" },
-    scopedSlots: { customRender: "orderUnit" },
+    scopedSlots: { customRender: "unit" },
     width: 100
   },
   {
-    dataIndex: "deliveryDate",
+    dataIndex: "delivery",
     // title: "交货日期",
-    key: "deliveryDate",
+    key: "delivery",
     slots: { title: "deliveryDateTitle" },
-    scopedSlots: { customRender: "deliveryDate" },
+    scopedSlots: { customRender: "delivery" },
     width: 120
   },
   {
-    dataIndex: "unitPrice",
+    dataIndex: "price",
     // title: "单价",
-    key: "unitPrice",
+    key: "price",
     slots: { title: "unitPriceTitle" },
-    scopedSlots: { customRender: "unitPrice" },
+    scopedSlots: { customRender: "price" },
     width: 100
   },
   {
@@ -278,29 +337,25 @@ export default {
       priceArr: [],
       bomName: "",
       designIdArr: [],
-      designNameArr: [],
-      orderNumber: "",
-      unit: "",
-      taxrate: "",
-      priseUnit: "",
-      supplier: "",
-      delivery: "",
-      price: "",
-      moneyType: "RMB",
-      remark: "",
-      workOrderId: ""
-
-
+      designNameArr: []
     };
-
   },
- methods: {
+  methods: {
+    handleChangeTable(value, key, column) {
+      // console.log(value);
+      // console.log(key);
+      // console.log(column);
+
+      const newData = [...this.data];
+      const target = newData.filter(item => key === item.id)[0];
+      if (target) {
+        target[column] = value;
+        this.data = newData;
+      }
+    },
     close() {
       this.$emit("cancelEdit", false);
       this.form.resetFields();
-    },
-    onChangeDelivery(date,dateString){
-      this.delivery = dateString;
     },
     onChange(current, pageNumber) {
       console.log("Page: ", pageNumber);
@@ -313,53 +368,16 @@ export default {
       this.current = 1;
       this.getList();
     },
-    sendOrderId(value){
+    sendOrderId(value) {
       console.log(value);
-      for(let i = 0; i < this.ProjectId.length; i ++){
-        if(value === this.ProjectId[i].no){
-          this.workOrderId = this.ProjectId[i].id
+      for (let i = 0; i < this.ProjectId.length; i++) {
+        if (value === this.ProjectId[i].no) {
+          this.workOrderId = this.ProjectId[i].id;
         }
       }
-      console.log(this.workOrderId)
+      console.log(this.workOrderId);
     },
-    sendId(value) {
-      console.log(value);
-      this.designNameArr = value;
-      for (let i = 0; i < value.length; i++) {
-        for (let j = 0; j < this.idArr.length; j++) {
-          if (value[i] === this.idArr[j].bomNo) {
-            if(this.designIdArr.indexOf(this.idArr[j].id) === -1){
-              this.designIdArr.push(this.idArr[j].id);
-            }
-          }
-        }
-      }
-      console.log(this.designIdArr)
-      this.Axios(
-        {
-          url: "/api-order/bom/getBomdes",
-          type: "get",
-          params: {
-            bomIdS: this.designIdArr.join(",")
-          },
-          option: { enableMsg: false }
-        },
-        this
-      ).then(
-        result => {
-          if (result.data.code === 200) {
-            console.log(result);
-            this.data = result.data.data;
-            this.total = result.data.data.totalElement;
-          }
-        },
-        ({ type, info }) => {}
-      );
-      // for(let i = 0; i < this.data.length; i++){
-      //   if(value.join(',') === this.data[i].id){
-      //     this.bomName = this.data[i].name
-      //   }
-      // }
+    getUnitArr(){
       this.Axios(
         {
           url: "/api-order/unit/list",
@@ -377,6 +395,8 @@ export default {
         },
         ({ type, info }) => {}
       );
+    },
+    getSupplierArr(){
       this.Axios(
         {
           url: "/api-order/supplier/list",
@@ -394,6 +414,8 @@ export default {
         },
         ({ type, info }) => {}
       );
+    },
+    getPriceArr(){
       this.Axios(
         {
           url: "/api-order/unit/list",
@@ -412,6 +434,46 @@ export default {
         ({ type, info }) => {}
       );
     },
+    sendId(value) {
+      console.log(value);
+      this.designNameArr = value;
+      for (let i = 0; i < value.length; i++) {
+        for (let j = 0; j < this.idArr.length; j++) {
+          if (value[i] === this.idArr[j].bomNo) {
+            if (this.designIdArr.indexOf(this.idArr[j].id) === -1) {
+              this.designIdArr.push(this.idArr[j].id);
+            }
+          }
+        }
+      }
+      console.log(this.designIdArr);
+      this.Axios(
+        {
+          url: "/api-order/bom/getBomdes",
+          type: "get",
+          params: {
+            bomIdS: this.designIdArr.join(",")
+          },
+          option: { enableMsg: false }
+        },
+        this
+      ).then(
+        result => {
+          if (result.data.code === 200) {
+            console.log(result);
+          }
+        },
+        ({ type, info }) => {}
+      );
+      // for(let i = 0; i < this.data.length; i++){
+      //   if(value.join(',') === this.data[i].id){
+      //     this.bomName = this.data[i].name
+      //   }
+      // }
+      this.getUnitArr();
+      this.getSupplierArr();
+      this.getPriceArr();
+    },
     editProcurement() {
       const that = this;
       this.form.validateFieldsAndScroll((err, values) => {
@@ -421,34 +483,46 @@ export default {
           // 	this.$message.error("请分配角色权限");
           // 	return false;
           // }
+          this.designNameArr = values.bomIdS;
+          for (let i = 0; i < values.bomIdS.length; i++) {
+            for (let j = 0; j < this.idArr.length; j++) {
+              if (values.bomIdS[i] === this.idArr[j].bomNo) {
+                if (this.designIdArr.indexOf(this.idArr[j].id) === -1) {
+                  this.designIdArr.push(this.idArr[j].id);
+                }
+              }
+            }
+          }
+          console.log(values.bomIdS);
+          console.log(this.designIdArr);
           let qs = require("qs");
           let data = {
             id: this.procurementId,
             bomIds: this.designIdArr.join(","),
-            bomName: this.designNameArr.join(","),
+            bomName: values.bomIdS,
             desCount: this.total,
             workOrderId: this.workOrderId,
             workOrderNo: values.workOrderNo,
             purchaseNo: values.procurementNo,
             remark: values.remark,
             purchaseDesDTOList: this.data.map(item => {
-                      return {
-                        drawingNo: item.drawingNo,
-                        name: item.name,
-                        number: item.number,
-                        brand: item.brand,
-                        designer: item.designer, 
-                        delivery: this.delivery,
-                        moneyType: this.moneyType,
-                        price: this.price,
-                        orderNumber: this.orderNumber,
-                        priseUnit: this.priseUnit,
-                        supplier: this.supplier,
-                        taxrate: this.taxrate,
-                        unit: this.unit,
-                        remark: this.remark
-                      }
-                  })
+              return {
+                drawingNo: item.drawingNo,
+                name: item.name,
+                number: item.number,
+                brand: item.brand,
+                designer: item.designer,
+                delivery: item.delivery,
+                moneyType: item.moneyType,
+                price: item.price,
+                orderNumber: item.orderNum,
+                priseUnit: item.priceUnit,
+                supplier: item.supplier,
+                taxrate: item.taxrate,
+                unit: item.unit,
+                remark: item.remark
+              };
+            })
           };
           console.log(data);
 
@@ -466,6 +540,7 @@ export default {
           ).then(
             result => {
               if (result.data.code === 200) {
+                this.total = 0;
                 console.log(result);
                 this.close();
               }
@@ -476,34 +551,40 @@ export default {
       });
     },
     findOne(id) {
-			this.Axios(
-				{
-					url: '/api-order/purchase/findone',
-					params: {
+      this.Axios(
+        {
+          url: "/api-order/purchase/findone",
+          params: {
             id: id
           },
-					type: "get",
-					option: { enableMsg: false }
-				},
-				this
-			).then(
-				result => {
-					if (result.data.code === 200) {
+          type: "get",
+          option: { enableMsg: false }
+        },
+        this
+      ).then(
+        result => {
+          if (result.data.code === 200) {
             console.log(result);
             let msg = result.data.data;
-            setTimeout(()=> {
+            this.data = msg.purchaseDesDOList;
+            this.total = msg.purchaseDesDOList.length;
+            this.bomIds = msg.bomIds;
+            this.bomName = msg.bomName;
+            this.workOrderId = msg.workOrderId;
+            console.log(this.total);
+            setTimeout(() => {
               this.form.setFieldsValue({
                 workOrderNo: msg.workOrderNo,
-                bomIdS: msg.bomIds,
+                bomIdS: msg.bomName,
                 procurementNo: msg.purchaseNo,
                 remark: msg.remark
-                });
-            },100)
-					}
-				},
-				({ type, info }) => {}
-			);
-		},
+              });
+            }, 100);
+          }
+        },
+        ({ type, info }) => {}
+      );
+    },
     getDesignId() {
       this.Axios(
         {
@@ -516,7 +597,7 @@ export default {
       ).then(
         result => {
           if (result.data.code === 200) {
-            // console.log(result);
+            console.log(result);
             this.idArr = result.data.data.content;
           }
         },
@@ -535,45 +616,48 @@ export default {
       ).then(
         result => {
           if (result.data.code === 200) {
-            // console.log(result);
+            console.log(result);
             this.ProjectId = result.data.data.content;
           }
         },
         ({ type, info }) => {}
       );
     },
-    // getProcurementId() {
-    //   this.Axios(
-    //     {
-    //       url: "/api-order/supplier/getNo",
-    //       type: "get",
-    //       params: {},
-    //       option: { enableMsg: false }
-    //     },
-    //     this
-    //   ).then(
-    //     result => {
-    //       if (result.data.code === 200) {
-    //         // console.log(result);
-    //         this.form.setFieldsValue({
-    //           procurementNo: result.data.data
-    //         })
-    //       }
-    //     },
-    //     ({ type, info }) => {}
-    //   );
-    // }
+    getProcurementId() {
+      this.Axios(
+        {
+          url: "/api-order/supplier/getNo",
+          type: "get",
+          params: {},
+          option: { enableMsg: false }
+        },
+        this
+      ).then(
+        result => {
+          if (result.data.code === 200) {
+            console.log(result);
+            this.form.setFieldsValue({
+              procurementNo: result.data.data
+            })
+          }
+        },
+        ({ type, info }) => {}
+      );
+    }
   },
   created() {
+    this.getUnitArr();
+    this.getSupplierArr();
+    this.getPriceArr();
     this.getDesignId();
     this.getProjectId();
-    // this.getProcurementId();
+    this.getProcurementId();
     this.findOne(this.procurementId);
   }
 };
 </script>
-<style lang="less" scoped>
-.editProcurement{
+<style lang="less">
+.editProcurement {
   .ant-table-thead > tr > th,
   .ant-table-tbody > tr > td {
     padding: 8px 4px;
