@@ -10,10 +10,10 @@
 							{rules: [{ required: true, message: '请选择流程类型' }]}
 							]"
 				>
-					<a-select-option value="1">订单审批</a-select-option>
-					<a-select-option value="2">设计审批</a-select-option>
-					<a-select-option value="3">询价审批</a-select-option>
-					<a-select-option value="4">采购合同审批</a-select-option>
+					<a-select-option :value="1">订单审批</a-select-option>
+					<a-select-option :value="2">设计审批</a-select-option>
+					<a-select-option :value="3">询价审批</a-select-option>
+					<a-select-option :value="4">采购合同审批</a-select-option>
 				</a-select>
 			</a-form-item>
 			<a-form-item :label-col=" { span: 4 }" :wrapper-col="{ span: 18 }" label="流程名称">
@@ -105,7 +105,10 @@ export default {
 							id: ""
 						}
 					],
-					candidateGroups: ""
+					candidateGroups: {
+						roleCode: "",
+						label: ""
+					}
 				}
 			],
 			num: 1
@@ -125,7 +128,10 @@ export default {
 							id: ""
 						}
 					],
-					candidateGroups: ""
+					candidateGroups: {
+						roleCode: "",
+						label: ""
+					}
 				}
 			];
 			this.$emit("addCancel");
@@ -174,12 +180,23 @@ export default {
 					} else {
 						let qs = require("qs");
 						let data = {
-							employeeNo: values.employeeNo,
-							userName: values.userName
+							name: values.name,
+							type: values.type,
+							userTask: this.node.map(item => {
+								return {
+									name: item.name,
+									type: item.type,
+									groups: {
+										roleCode: item.candidateGroups.key,
+										label: item.candidateGroups.label
+									},
+									users: item.candidateUsers
+								};
+							})
 						};
 						this.Axios(
 							{
-								url: "/api-platform/employee/addEmployee",
+								url: "/api-order/activiti/addProcess",
 								params: data,
 								type: "post",
 								option: { successMsg: "添加成功！" },
@@ -192,6 +209,25 @@ export default {
 							result => {
 								if (result.data.code === 200) {
 									console.log(result);
+									this.$emit("addCancel", {});
+									this.form.resetFields();
+									this.node = [
+										{
+											label: "流程节点1",
+											name: "",
+											type: "",
+											candidateUsers: [
+												{
+													name: "",
+													id: ""
+												}
+											],
+											candidateGroups: {
+												roleCode: "",
+												label: ""
+											}
+										}
+									];
 								}
 							},
 							({ type, info }) => {}
@@ -224,7 +260,10 @@ export default {
 						id: ""
 					}
 				],
-				candidateGroups: ""
+				candidateGroups: {
+					roleCode: "",
+					label: ""
+				}
 			});
 		}
 	},
