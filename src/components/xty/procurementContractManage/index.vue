@@ -17,9 +17,7 @@
     <a-row>
       <a-col :span="24">
         <span>日期 :</span>
-        <a-date-picker style="width:120px"></a-date-picker>
-        <span>~</span>
-        <a-date-picker style="width: 120px"></a-date-picker>
+        <a-range-picker style="width:240px" @change="onChangeRange" format="YYYY/MM/DD"></a-range-picker>
         <a-input-group class="changeDis">
           <span>审批状态 : </span>
           <a-select v-model="state" style="width: 100px" optionFilterProp="children">
@@ -44,10 +42,10 @@
         :pagination="false"
         :rowSelection="{selectedRowKeys:selectedRowKeys,onChange: onSelectChange}"
       >
-        <template slot="contractNo" slot-scope="text, record">
+        <template slot="shopContractNo" slot-scope="text, record">
           <a href="javascript:" @click="showDetails(record)">{{text}}</a>
         </template>
-        <template slot="orderReviewSchedule" slot-scope="text, record">
+        <template slot="state" slot-scope="text, record">
           <div>
             <span v-if="text==2" style="font-size:14px;color:#027DB4;">审批中</span>
             <span v-if="text==1" style="font-size:14px;color:#999999;">暂存</span>
@@ -67,12 +65,24 @@
           </div>
         </template>
       </a-table>
+      <a-pagination
+            style="padding-top:12px;text-align: right;"
+            showQuickJumper
+            :defaultCurrent="current"
+            :total="total"
+            @change="onChange"
+            showSizeChanger
+            :pageSizeOptions="['10','20','30']"
+            @showSizeChange="onShowSizeChange"
+            :showTotal="total => `共 ${total} 条`"
+          />
+    </a-row>
     </a-row>
     <a-modal title="新增" v-model="addVisible" style="top:20px" width="1200px" :footer="null">
-      <add-procurement-contract></add-procurement-contract>
+      <add-procurement-contract @cancelAdd="closeAdd"></add-procurement-contract>
     </a-modal>
     <a-modal title="修改" v-model="editVisible" style="top:20px" width="1200px" :footer="null">
-      <edit-procurement-contract></edit-procurement-contract>
+      <edit-procurement-contract @cancelEdit="closeEdit" :procurementContractId="selectedRowKeys[0]"></edit-procurement-contract>
     </a-modal>
     <a-modal
       title="合同详情"
@@ -83,51 +93,51 @@
       :maskClosable="false"
     >
       <a-row>
-        <a-col :span="12" style="margin-bottom:12px;">
+        <a-col :span="24" style="margin-bottom:12px;">
           <span class="label_right">采购单号：</span>
-          <span>{{contractDetails}}</span>
+          <span>{{contractDetails.purchaseNo}}</span>
         </a-col>
-        <a-col :span="12" style="margin-bottom:12px;">
+        <a-col :span="24" style="margin-bottom:12px;">
           <span class="label_right">合同编号：</span>
-          <span>{{contractDetails}}</span>
+          <span>{{contractDetails.shopContractNo}}</span>
         </a-col>
-        <a-col :span="12" style="margin-bottom:12px;">
+        <a-col :span="24" style="margin-bottom:12px;">
           <span class="label_right">合同模板：</span>
-          <span>{{contractDetails}}</span>
+          <span>{{contractDetails.model}}</span>
         </a-col>
-        <a-col :span="12" style="margin-bottom:12px;">
+        <a-col :span="24" style="margin-bottom:12px;">
           <span class="label_right">供应商：</span>
-          <span>{{contractDetails}}</span>
+          <span>{{contractDetails.supplier}}</span>
         </a-col>
-        <a-col :span="12" style="margin-bottom:12px;">
+        <a-col :span="24" style="margin-bottom:12px;">
           <span class="label_right">需求方：</span>
-          <span>{{contractDetails}}</span>
+          <span>{{contractDetails.demand}}</span>
         </a-col>
-        <a-col :span="12" style="margin-bottom:12px;">
+        <a-col :span="24" style="margin-bottom:12px;">
           <span class="label_right">业务员：</span>
-          <span>{{contractDetails}}</span>
+          <span>{{contractDetails.salesman}}</span>
         </a-col>
-        <a-col :span="12" style="margin-bottom:12px;">
+        <a-col :span="24" style="margin-bottom:12px;">
           <span class="label_right">总金额：</span>
-          <span>{{contractDetails}}</span>
+          <span>{{contractDetails.summoney}}</span>
         </a-col>
-        <a-col :span="12" style="margin-bottom:12px;">
+        <a-col :span="24" style="margin-bottom:12px;">
           <span class="label_right">金额大写：</span>
-          <span>{{contractDetails}}</span>
+          <span>{{contractDetails.chineseMoney}}</span>
         </a-col>
-        <a-col :span="12" style="margin-bottom:12px;">
+        <a-col :span="24" style="margin-bottom:12px;">
           <span class="label_right">签订地点：</span>
-          <span>{{contractDetails}}</span>
+          <span>{{contractDetails.place}}</span>
         </a-col>
-        <a-col :span="12" style="margin-bottom:12px;">
+        <a-col :span="24" style="margin-bottom:12px;">
           <span class="label_right">签订日期：</span>
-          <span>{{}}</span>
+          <span>{{contractDetails.digndate}}</span>
         </a-col>
-        <a-col :span="12" style="margin-bottom:12px;">
+        <a-col :span="24" style="margin-bottom:12px;">
           <span class="label_right">供货方式：</span>
-          <span>{{}}</span>
+          <span>{{contractDetails.sendway}}</span>
         </a-col>
-        <a-col :span="12" style="margin-bottom:12px;">
+        <a-col :span="24" style="margin-bottom:12px;">
           <span class="label_right">备注：</span>
           <span>{{contractDetails.remark}}</span>
         </a-col>
@@ -140,48 +150,48 @@ import AddProcurementContract from "./addProcurementContract";
 import EditProcurementContract from "./editProcurementContract";
 const columns = [
   {
-    dataIndex: "procurementNo",
+    dataIndex: "purchaseNo",
     title: "采购单号",
-    key: "procurementNo",
+    key: "purchaseNo",
     width: "15%"
   },
   {
-    dataIndex: "contractNo",
+    dataIndex: "shopContractNo",
     title: "合同编号",
-    key: "contractNo",
-    scopedSlots: { customRender: "contractNo" },
+    key: "shopContractNo",
+    scopedSlots: { customRender: "shopContractNo" },
     width: "15%"
   },
   {
-    dataIndex: "provider",
+    dataIndex: "supplier",
     title: "供方",
-    key: "provider",
+    key: "supplier",
     width: "20%"
   },
   {
-    dataIndex: "applyDate",
+    dataIndex: "salesman",
     title: "业务员",
-    key: "applyDate",
+    key: "salesman",
     width: "10%"
   },
   {
-    dataIndex: "enquiryMsg",
+    dataIndex: "digndate",
     title: "签订日期",
-    key: "enquiryMsg",
+    key: "digndate",
     width: "8%"
   },
   {
-    dataIndex: "orderReviewSchedule",
+    dataIndex: "state",
     title: "审批状态",
-    key: "orderReviewSchedule",
-    scopedSlots: { customRender: "orderReviewSchedule" },
+    key: "state",
+    scopedSlots: { customRender: "state" },
     width: "8%"
   },
   {
-    dataIndex: "createDate",
+    dataIndex: "gmtCreated",
     title: "创建日期",
-    key: "createDate",
-    width: "8%"
+    key: "gmtCreated",
+    width: "12%"
   },
   {
     dataIndex: "remark",
@@ -196,31 +206,95 @@ export default {
       data: [],
       selectedRowKeys: [],
       contractDetails: [],
+      dateValue: [],
       addVisible: false,
       editVisible: false,
       detailsVisible: false,
-      state: -1
+      current: 1,
+      pageSize: 10,
+      total: 0,
+      state: -1,
+      keyWords: ''
     };
   },
   methods: {
+     closeAdd(params) {
+      this.addVisible = params;
+      this.getList();
+    },
+    closeEdit(params){
+      this.editVisible = params;
+      this.getList();
+    },
+    onChange(current, pageNumber) {
+      console.log("Page: ", pageNumber);
+      console.log("第几页: ", current);
+      this.current = current;
+      this.getList();
+    },
+    onShowSizeChange(current, pageSize) {
+      this.pageSize = pageSize;
+      this.current = 1;
+      this.getList();
+    },
+    onChangeRange(date,datestring){
+      this.dateValue = datestring;
+      console.log(this.dateValue)
+    },
     handleCancel() {
       this.detailsVisible = false;
     },
-    onSelectChange() {},
+    onSelectChange(selectedRowKeys) {
+       this.selectedRowKeys = selectedRowKeys;
+       console.log(this.selectedRowKeys)
+    },
     showDetails(row) {
       this.contractDetails = row;
       this.detailsVisible = true;
       console.log(this.contractDetails);
     },
+    getList() {
+       if(this.state === -1){
+        this.state = ''
+      }
+			this.Axios(
+				{
+					url: "/api-order/shopContract/list",
+          type: "get",
+         	params: {
+						page: this.current,
+            size: this.pageSize,
+            auditState: this.state,
+            keyword: this.keyWords,
+						start: this.dateValue[0] != "" ? this.dateValue[0] : null,
+            end: this.dateValue[1] != "" ? this.dateValue[1] : null
+					},
+					option: { enableMsg: false }
+				},
+				this
+			).then(
+				result => {
+					if (result.data.code === 200) {
+						console.log(result);
+						this.data = result.data.data.content;
+            this.total = result.data.data.totalElement;
+            if(this.state === ''){
+                this.state = -1
+            }
+					}
+				},
+				({ type, info }) => {}
+			);
+    },
     onDelete(e) {
       console.log(this.selectedRowKeys);
       let qs = require("qs");
       let data = qs.stringify({
-        orderIds: this.selectedRowKeys.join(",")
+        id: this.selectedRowKeys.join(",")
       });
       this.Axios(
         {
-          url: "/api-order/order/delOrder",
+          url: "/api-order/shopContract/delete",
           params: data,
           type: "post",
           option: { successMsg: "删除成功！" }
@@ -255,6 +329,9 @@ export default {
   components: {
     AddProcurementContract,
     EditProcurementContract
+  },
+  created() {
+    this.getList();
   }
 };
 </script>
@@ -267,14 +344,14 @@ export default {
   .ant-row:nth-child(2) {
     margin-bottom: 10px;
   }
-  .label_right {
-	display: inline-block;
-	width: 120px;
-	text-align: right;
-  }
   .changeDis {
     display: inline;
     margin: 0px 50px 0px 50px;
   }
 }
+.label_right{
+    display: inline-block;
+	  width: 120px;
+	  text-align: right;
+    }
 </style>

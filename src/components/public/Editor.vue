@@ -1,7 +1,7 @@
 <template>
 	<div class="tinymce">
 		<!-- 富文本编辑组件 -->
-		<editor id="tinymce" v-model="tinymceHtml" :init="init"></editor>
+		<editor  v-model="tinymceHtml" :init="init"></editor>
 	</div>
 </template>
  
@@ -22,13 +22,17 @@ import "tinymce/plugins/imagetools";
 export default {
 	name: "tinymce",
 	props: {
+		value:{
+			default: ""
+		},
 		tinymceValue: {
 			default: ""
-		}
+		},
+	
 	},
 	data() {
 		return {
-			tinymceHtml: this.tinymceValue,
+			tinymceHtml: this.value,
 			init: {
 				language_url: "/static/tinymce/zh_CN.js",
 				language: "zh_CN",

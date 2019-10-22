@@ -101,6 +101,7 @@
         <a-row>
           <a-form-item label="附件" :labelCol="{span:3}" :wrapperCol="{span:21}">
             <a-upload
+            v-decorator="['orderDocDTO']"
              name="file"
              :action="global.apiImg"
 						 :multiple="true"
@@ -198,7 +199,16 @@ export default {
             orderType: values.orderType,
             orderQuantity: values.orderQuantity,
             undertakeDep: values.undertakeDep,
-            remark: values.remark
+            remark: values.remark,
+            OrderDocDTO: 
+            values.orderDocDTO != undefined
+								? values.orderDocDTO.fileList.map(item => {
+										return {
+											docName: item.name,
+											docPosition: item.response.data
+										};
+								  })
+								: []
           };
           console.log(data);
 
@@ -220,8 +230,7 @@ export default {
                 this.getlist();
                 setTimeout(() => {
                   this.closeAdd()
-                 
-
+                  this.form.resetFields();
                 },0) 
 							}
 						},
