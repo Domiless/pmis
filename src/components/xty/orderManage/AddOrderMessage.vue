@@ -153,7 +153,8 @@ export default {
 			this.dataValue = dateString;
 		},
     confirmCancel() {
-			this.$emit("changeAddOrder", false);
+      this.$emit("changeAddOrder", false);
+      this.form.resetFields();
     },
     handleChange(info) {
 			console.log(info);

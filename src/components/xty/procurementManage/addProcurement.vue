@@ -76,28 +76,60 @@
             <span style="color: #f5222d">*</span>货币类型
           </span>
           <template slot="orderNum" slot-scope="text,record">
-            <a-input :value="text"></a-input>
+            <div key="orderNum">
+							<a-input
+								maxlength="20"
+								style="margin: -5px 0"
+								:value="text"
+								@change="e => handleChangeTable(e.target.value, record.id, 'orderNum')"
+							/>
+						</div>
           </template>
           <template slot="orderUnit" slot-scope="text,record">
-            <a-select style="width: 100%" v-model="unit">
+            <a-select style="width: 100%"
+            @change="(value,option) => {
+                  let value1 = value;
+                  handleChangeTable(value1, record.id, 'orderUnit')
+                  }">
               <a-select-option
                 v-for="item in unitArr"
-                :value="item.id"
+                :value="item.name"
                 :key="item.id"
               >{{ item.name }}</a-select-option>
             </a-select>
           </template>
-          <template slot="deliveryDate" slot-scope="text,record">
-            <a-date-picker @change="onChangeDelivery" format="YYYY/MM/DD" placeholder="请选择" />
+          <template slot="deliveryDate" slot-scope="text,record,index">
+            <a-date-picker @change="(date,dateString) => {
+                                      let delivery = dateString;
+                                      handleChangeTable(delivery,record.id,'deliveryDate');}" 
+                                      format="YYYY/MM/DD" placeholder="请选择" />
           </template>
           <template slot="unitPrice" slot-scope="text,record">
-            <a-input :value="price"></a-input>
+            <div key="unitPrice">
+							<a-input
+								maxlength="20"
+								style="margin: -5px 0"
+								:value="text"
+								@change="e => handleChangeTable(e.target.value, record.id, 'unitPrice')"
+							/>
+						</div>
           </template>
           <template slot="taxrate" slot-scope="text,record">
-            <a-input :value="taxrate"></a-input>
+            <div key="taxrate">
+							<a-input
+								maxlength="20"
+								style="margin: -5px 0"
+								:value="text"
+								@change="e => handleChangeTable(e.target.value, record.id, 'taxrate')"
+							/>
+						</div>
           </template>
           <template slot="supplier" slot-scope="text,record">
-            <a-select style="width: 100%" :value="supplier">
+            <a-select style="width: 100%"
+            @change="(value,option) => {
+                  let value1 = value;
+                  handleChangeTable(value1, record.id, 'supplier')
+                  }">
               <a-select-option
                 v-for="item in supplierArr"
                 :value="item.supplierName"
@@ -106,19 +138,37 @@
             </a-select>
           </template>
           <template slot="priceUnit" slot-scope="text,record">
-            <a-select style="width: 100%" :value="priseUnit">
+            <a-select style="width: 100%"
+            @change="(value,option) => {
+                  let value1 = value;
+                  handleChangeTable(value1, record.id, 'priceUnit')
+                  }">
               <a-select-option
                 v-for="item in priceArr"
-                :value="item.name"
+                :value="'1'+item.name"
                 :key="item.id"
               >1{{ item.name }}</a-select-option>
             </a-select>
           </template>
           <template slot="moneyType" slot-scope="text,record">
-            <a-input :value="moneyType"></a-input>
+            <div key="moneyType">
+							<a-input
+								maxlength="20"
+								style="margin: -5px 0"
+								:value="text"
+								@change="e => handleChangeTable(e.target.value, record.id, 'moneyType')"
+							/>
+						</div>
           </template>
           <template slot="remark" slot-scope="text,record">
-            <a-input :value="remark"></a-input>
+            <div key="remark">
+							<a-input
+								maxlength="20"
+								style="margin: -5px 0"
+								:value="text"
+								@change="e => handleChangeTable(e.target.value, record.id, 'remark')"
+							/>
+						</div>
           </template>
         </a-table>
         <a-col :span="12" style="padding-top: 12px; height: 36px;">
@@ -275,28 +325,27 @@ export default {
       priceArr: [],
       bomName: "",
       designIdArr: [],
-      designNameArr: [],
-      orderNumber: "",
-      unit: "",
-      taxrate: "",
-      priseUnit: "",
-      supplier: "",
-      delivery: "",
-      price: "",
-      moneyType: "RMB",
-      remark: "",
-      workOrderId: ""
+      designNameArr: []
 
 
     };
   },
   methods: {
+    handleChangeTable(value, key, column) {
+      // console.log(value);
+      // console.log(key);
+      // console.log(column);
+
+      const newData = [...this.data];
+			const target = newData.filter(item => key === item.id)[0];
+			if (target) {
+				target[column] = value;
+				this.data = newData;
+			}
+		},
     close() {
       this.$emit("cancelAdd", false);
       this.form.resetFields();
-    },
-    onChangeDelivery(date,dateString){
-      this.delivery = dateString;
     },
     onChange(current, pageNumber) {
       console.log("Page: ", pageNumber);
@@ -433,15 +482,15 @@ export default {
                         number: item.number,
                         brand: item.brand,
                         designer: item.designer, 
-                        delivery: this.delivery,
-                        moneyType: this.moneyType,
-                        price: this.price,
-                        orderNumber: this.orderNumber,
-                        priseUnit: this.priseUnit,
-                        supplier: this.supplier,
-                        taxrate: this.taxrate,
-                        unit: this.unit,
-                        remark: this.remark
+                        delivery: item.deliveryDate,
+                        moneyType: item.moneyType,
+                        price: item.unitPrice,
+                        orderNumber: item.orderNum,
+                        priseUnit: item.priceUnit,
+                        supplier: item.supplier,
+                        taxrate: item.taxrate,
+                        unit: item.orderUnit,
+                        remark: item.remark
                       }
                   })
           };

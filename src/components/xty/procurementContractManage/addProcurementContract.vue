@@ -94,7 +94,7 @@
         </a-form>
       </a-tab-pane>
       <a-tab-pane tab="采购明细" key="2" style="margin-bottom: 20px">
-        <a-table :columns="columns" :dataSource="data" :scroll="{ x: 1900, y: 500 }" />
+        <a-table rowKey="id" :columns="columns" :dataSource="data" :scroll="{ x: 1900, y: 500 }" :pagination="false"/>
         <!-- <a-col :span="12" style="padding-top: 12px; height: 36px;">
           <span style="line-height: 12px">合计：</span>
         </a-col> -->
@@ -155,27 +155,27 @@ const columns = [
     width: 100
   },
   {
-    dataIndex: "orderNum",
+    dataIndex: "orderNumber",
     title: "订单数量",
-    key: "orderNum",
+    key: "orderNumber",
     width: 100
   },
   {
-    dataIndex: "orderUnit",
+    dataIndex: "unit",
     title: "订单单位",
-    key: "orderUnit",
+    key: "unit",
     width: 100
   },
   {
-    dataIndex: "deliveryDate",
+    dataIndex: "delivery",
     title: "交货日期",
-    key: "deliveryDate",
+    key: "delivery",
     width: 120
   },
   {
-    dataIndex: "unitPrice",
+    dataIndex: "price",
     title: "单价",
-    key: "unitPrice",
+    key: "price",
     width: 100
   },
   {
@@ -191,9 +191,9 @@ const columns = [
     width: 100
   },
   {
-    dataIndex: "priceUnit",
+    dataIndex: "priseUnit",
     title: "价格单位",
-    key: "priceUnit",
+    key: "priseUnit",
     width: 100
   },
   {
@@ -268,6 +268,9 @@ export default {
 					if (result.data.code === 200) {
             console.log(result);
             this.data = result.data.data.purchaseDesDOList;
+            this.total = result.data.data.purchaseDesDOList.length;
+            console.log(this.data);
+            console.log(this.total);
 					}
 				},
 				({ type, info }) => {}
@@ -297,21 +300,8 @@ export default {
             salesman : values.salesman,
             sendway: values.supplyMode,
             shopContractNo: values.contractNo,
-            shopContractDesDOList: [],
-            desCount: 10,
-            ShopContractDesDTO: [
-                {
-                  delivery: "2019/9/9",
-                  moneyType: "RMB",
-                  price: 100,
-                  orderNumber: 200,
-                  priseUnit: "万",
-                  supplier: "gongyingshang",
-                  taxrate: "20",
-                  unit: "10"
-
-                }
-              ]
+            shopContractDesDOList: this.data,
+            desCount: this.total,
           };
           console.log(data);
 
@@ -330,6 +320,7 @@ export default {
 						result => {
 							if (result.data.code === 200) {
                 console.log(result);
+                this.form.resetFields();
                 this.close();
 							}
 						},
@@ -350,7 +341,7 @@ export default {
 			).then(
 				result => {
 					if (result.data.code === 200) {
-            console.log(result);
+            // console.log(result);
             this.procurementNo = result.data.data.content;
             
       
