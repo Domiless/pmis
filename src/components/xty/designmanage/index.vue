@@ -43,7 +43,6 @@
 					<a-button @click="getList">搜索</a-button>
 				</a-col>
 			</a-row>
-
 			<a-row>
 				<a-table
 					:pagination="false"
@@ -52,6 +51,11 @@
 					:dataSource="data"
 					:rowSelection="{selectedRowKeys:selectedRowKeys,onChange: onSelectChange}"
 				>
+					<template slot="state" slot-scope="text, record">
+						<div>
+							<span>{{text==1?"暂存":text==2?"审批中":text==3?"已通过":text==4?"未通过":text==5?"已终止":""}}</span>
+						</div>
+					</template>
 					<template slot="partName" slot-scope="text, record">
 						<a href="javascript:" @click="showDetails(record)">{{text}}</a>
 					</template>
@@ -95,7 +99,7 @@
 							style="width: 100%"
 							:filterOption="filterOption"
 						>
-							<a-select-option v-for="(i,j) in 2" :key="j" :value="i">{{i}}</a-select-option>
+							<a-select-option v-for="(i,j) in userProcess" :key="j" :value="i.id">{{i.name}}</a-select-option>
 						</a-select>
 					</a-form-item>
 					<a-form-item label="说明" :labelCol="{span:4}" :wrapperCol="{span:18}">
@@ -191,7 +195,8 @@ const columns = [
 		dataIndex: "state",
 		title: "审批状态",
 		key: "state",
-		width: "10%"
+		width: "10%",
+		scopedSlots: { customRender: "state" }
 	},
 
 	{
@@ -221,7 +226,8 @@ export default {
 			selectedRowKeys: [],
 			selectedRows: [],
 			oneMsg: {},
-			form: this.$form.createForm(this)
+			form: this.$form.createForm(this),
+			userProcess: []
 		};
 	},
 	methods: {
@@ -254,6 +260,7 @@ export default {
 								console.log(result);
 								this.addBomVisible = false;
 								this.form.resetFields();
+								this.getList();
 							}
 						},
 						({ type, info }) => {}
@@ -323,6 +330,8 @@ export default {
 						console.log(result);
 						this.data = result.data.data.content;
 						this.total = result.data.data.totalElement;
+						this.selectedRowKeys = [];
+						this.selectedRows = [];
 					}
 				},
 				({ type, info }) => {}
@@ -393,11 +402,32 @@ export default {
 		onSelectChange(selectedRowKeys, selectedRows) {
 			this.selectedRows = selectedRows;
 			this.selectedRowKeys = selectedRowKeys;
+		},
+		getUserprocess() {
+			this.Axios(
+				{
+					url: "/api-order/activiti/getUserprocess",
+					// url: "/api-order/activiti/getprocess",
+					type: "get",
+					params: {},
+					option: { enableMsg: false }
+				},
+				this
+			).then(
+				result => {
+					if (result.data.code === 200) {
+						console.log(result);
+						this.userProcess = result.data.data;
+					}
+				},
+				({ type, info }) => {}
+			);
 		}
 	},
 
 	created() {
 		this.getList();
+		this.getUserprocess();
 	},
 	computed: {},
 	components: {

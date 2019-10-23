@@ -511,6 +511,8 @@ export default {
 				? projectMap
 				: menuKey == "procurement"
 				? procurementMap
+				: menuKey == "system"
+				? systemMap
 				: homeMap;
 		this.initPermission();
 		// this.initHeaderMenu();
