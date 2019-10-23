@@ -10,7 +10,7 @@
             <a-button @click="editVisible=true" :disabled="selectedRowKeys.length!=1">
               <a-icon type="edit" style="color: #1890ff" />修改
             </a-button>
-            <a-button @click="submitVisible=true" :disabled="selectedRowKeys.length!=1">
+            <a-button @click="approveVisible=true" :disabled="selectedRowKeys.length!=1">
               <a-icon type="submit" style="color: #1890ff" />提交审批
             </a-button>
             <a-button @click="showDeleteConfirm" :disabled="selectedRowKeys.length==0" >
@@ -105,9 +105,39 @@
     <a-modal title="新增" style="top:20px" v-model="addVisible" width="1000px" :footer="null">
       <add-order-message @changeAddOrder="cancelAddOrder" :getlist="getList"></add-order-message>
     </a-modal>
-    <a-modal title="提交审批" v-model="submitVisible" width="500px" okText="提交">
-      <submit-approval></submit-approval>
-    </a-modal>
+    <a-modal
+				title="提交审批"
+				v-model="approveVisible"
+				:footer="null"
+				width="600px"
+				@cancel="approveVisible=false"
+				:maskClosable="false"
+			>
+				<a-form :form="form">
+					<a-form-item label="选择流程" :labelCol="{span:4}" :wrapperCol="{span:18}">
+						<a-select
+							v-decorator="[
+								'procDefId',
+								{rules: [{ required: true, message: '请选择流程' }]}
+								]"
+							showSearch
+							placeholder="请选择"
+							optionFilterProp="children"
+							style="width: 100%"
+							:filterOption="filterOption"
+						>
+							<a-select-option v-for="(i,j) in userProcess" :key="j" :value="i.id">{{i.name}}</a-select-option>
+						</a-select>
+					</a-form-item>
+					<a-form-item label="说明" :labelCol="{span:4}" :wrapperCol="{span:18}">
+						<a-textarea v-decorator="['description']" :autosize="{ minRows: 4, maxRows: 4 }" />
+					</a-form-item>
+					<a-form-item :wrapper-col="{ span: 20,offset: 4 }" style="text-align:right">
+						<a-button style="margin-right:12px;" @click="approveVisible = false">取消</a-button>
+						<a-button type="primary" @click="auditSubmit">提交</a-button>
+					</a-form-item>
+				</a-form>
+			</a-modal>
     <a-modal
       title="修改"
       :footer="null"
@@ -272,10 +302,11 @@ const rowSelection = {
 export default {
   data() {
     return {
+      form: this.$form.createForm(this),
       columns,
       data: [],
       addVisible: false,
-      submitVisible: false,
+      approveVisible: false,
       editVisible: false,
       applyShow: false,
       detailsVisible: false,
@@ -287,7 +318,8 @@ export default {
       selectedRowKeys: [],
       orderDetails: [],
       reviewState: -1,
-      keyWords: ''
+      keyWords: '',
+      userProcess: []
     };
   },
   methods: {
@@ -297,6 +329,51 @@ export default {
     // 	this.selectedRowKeys = [];
     // 	this.selectedRows = [];
     // },
+    auditSubmit() {
+			this.form.validateFieldsAndScroll((err, values) => {
+				if (!err) {
+					console.log("Received values of form: ", values);
+					let qs = require("qs");
+					let data = qs.stringify({
+						orderId: this.selectedRowKeys[0],
+						procDefId: values.procDefId,
+						description: values.description
+          });
+          console.log(data);
+					console.log(this.selectedRowKeys[0]);
+
+					this.Axios(
+						{
+							url: `/api-order/order/reviewOrder/${this.selectedRowKeys[0]}`,
+							params: data,
+							type: "post",
+							option: { successMsg: "提交成功！" }
+							// config: {
+							// 	headers: { "Content-Type": "application/json" }
+							// }
+						},
+						this
+					).then(
+						result => {
+							if (result.data.code === 200) {
+								console.log(result);
+								this.approveVisible = false;
+								this.form.resetFields();
+								this.getList();
+							}
+						},
+						({ type, info }) => {}
+					);
+				}
+			});
+		},
+    filterOption(input, option) {
+			return (
+				option.componentOptions.children[0].text
+					.toLowerCase()
+					.indexOf(input.toLowerCase()) >= 0
+			);
+		},
     onChangeRange(date,datestring){
       this.dateValue = datestring;
       console.log(this.dateValue)
@@ -376,9 +453,6 @@ export default {
     // 	}
     // },
     getList() {
-      if(this.reviewState === -1){
-        this.reviewState = ''
-      }
       this.Axios(
         {
           url: "/api-order/order/getOrderList",
@@ -386,7 +460,7 @@ export default {
           params: {
             page: this.current,
             size: this.pageSize,
-            reviewState: this.reviewState,
+            reviewState: this.reviewState != -1 ? this.reviewState : null,
             keyword: this.keyWords,
             beginDate: this.dateValue[0] != "" ? this.dateValue[0] : null,
             endDate: this.dateValue[1] != "" ? this.dateValue[1] : null
@@ -400,9 +474,6 @@ export default {
             console.log(result);
             this.data = result.data.data.content;
             this.total = result.data.data.totalElement;
-             if(this.reviewState === ''){
-                this.reviewState = -1
-            }
           }
         },
         ({ type, info }) => {}
@@ -421,7 +492,27 @@ export default {
         },
         onCancel() {}
       });
-    }
+    },
+    getUserprocess() {
+			this.Axios(
+				{
+					url: "/api-order/activiti/getUserprocess",
+					// url: "/api-order/activiti/getprocess",
+					type: "get",
+					params: {},
+					option: { enableMsg: false }
+				},
+				this
+			).then(
+				result => {
+					if (result.data.code === 200) {
+						console.log(result);
+						this.userProcess = result.data.data;
+					}
+				},
+				({ type, info }) => {}
+			);
+		}
   },
   components: {
     AddOrderMessage,
@@ -431,6 +522,7 @@ export default {
   },
   created() {
     this.getList();
+    this.getUserprocess();
   }
 };
 </script>

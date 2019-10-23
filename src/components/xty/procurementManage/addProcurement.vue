@@ -8,6 +8,7 @@
               <a-select
                 v-decorator="['workOrderNo', { rules: [{ required:'true', message: '请选择项目订单'}]}]"
                 placeholder="请选择"
+                showSearch
                 @change="sendOrderId"
               >
                 <a-select-option v-for="item in ProjectId" :key="item.no">{{ item.no }}</a-select-option>
@@ -22,10 +23,7 @@
                 placeholder="请选择"
                 @change="sendId"
               >
-                <a-select-option
-                  v-for="item in idArr"
-                  :key="item.bomNo"
-                >{{ item.bomNo }}</a-select-option>
+                <a-select-option v-for="item in idArr" :key="item.bomNo">{{ item.bomNo }}</a-select-option>
               </a-select>
             </a-form-item>
           </a-row>
@@ -77,20 +75,22 @@
           </span>
           <template slot="orderNum" slot-scope="text,record">
             <div key="orderNum">
-							<a-input
-								maxlength="20"
-								style="margin: -5px 0"
-								:value="text"
-								@change="e => handleChangeTable(e.target.value, record.id, 'orderNum')"
-							/>
-						</div>
+              <a-input
+                maxlength="20"
+                style="margin: -5px 0"
+                :value="text"
+                @change="e => handleChangeTable(e.target.value, record.id, 'orderNum')"
+              />
+            </div>
           </template>
           <template slot="orderUnit" slot-scope="text,record">
-            <a-select style="width: 100%"
-            @change="(value,option) => {
+            <a-select
+              style="width: 100%"
+              @change="(value,option) => {
                   let value1 = value;
                   handleChangeTable(value1, record.id, 'orderUnit')
-                  }">
+                  }"
+            >
               <a-select-option
                 v-for="item in unitArr"
                 :value="item.name"
@@ -99,37 +99,42 @@
             </a-select>
           </template>
           <template slot="deliveryDate" slot-scope="text,record,index">
-            <a-date-picker @change="(date,dateString) => {
+            <a-date-picker
+              @change="(date,dateString) => {
                                       let delivery = dateString;
-                                      handleChangeTable(delivery,record.id,'deliveryDate');}" 
-                                      format="YYYY/MM/DD" placeholder="请选择" />
+                                      handleChangeTable(delivery,record.id,'deliveryDate');}"
+              format="YYYY/MM/DD"
+              placeholder="请选择"
+            />
           </template>
           <template slot="unitPrice" slot-scope="text,record">
             <div key="unitPrice">
-							<a-input
-								maxlength="20"
-								style="margin: -5px 0"
-								:value="text"
-								@change="e => handleChangeTable(e.target.value, record.id, 'unitPrice')"
-							/>
-						</div>
+              <a-input
+                maxlength="20"
+                style="margin: -5px 0"
+                :value="text"
+                @change="e => handleChangeTable(e.target.value, record.id, 'unitPrice')"
+              />
+            </div>
           </template>
           <template slot="taxrate" slot-scope="text,record">
             <div key="taxrate">
-							<a-input
-								maxlength="20"
-								style="margin: -5px 0"
-								:value="text"
-								@change="e => handleChangeTable(e.target.value, record.id, 'taxrate')"
-							/>
-						</div>
+              <a-input
+                maxlength="20"
+                style="margin: -5px 0"
+                :value="text"
+                @change="e => handleChangeTable(e.target.value, record.id, 'taxrate')"
+              />
+            </div>
           </template>
           <template slot="supplier" slot-scope="text,record">
-            <a-select style="width: 100%"
-            @change="(value,option) => {
+            <a-select
+              style="width: 100%"
+              @change="(value,option) => {
                   let value1 = value;
                   handleChangeTable(value1, record.id, 'supplier')
-                  }">
+                  }"
+            >
               <a-select-option
                 v-for="item in supplierArr"
                 :value="item.supplierName"
@@ -138,11 +143,13 @@
             </a-select>
           </template>
           <template slot="priceUnit" slot-scope="text,record">
-            <a-select style="width: 100%"
-            @change="(value,option) => {
+            <a-select
+              style="width: 100%"
+              @change="(value,option) => {
                   let value1 = value;
                   handleChangeTable(value1, record.id, 'priceUnit')
-                  }">
+                  }"
+            >
               <a-select-option
                 v-for="item in priceArr"
                 :value="'1'+item.name"
@@ -152,24 +159,24 @@
           </template>
           <template slot="moneyType" slot-scope="text,record">
             <div key="moneyType">
-							<a-input
-								maxlength="20"
-								style="margin: -5px 0"
+              <a-input
+                maxlength="20"
+                style="margin: -5px 0"
                 defaultValue="RMB"
-								:value="text"
-								@change="e => handleChangeTable(e.target.value, record.id, 'moneyType')"
-							/>
-						</div>
+                :value="text"
+                @change="e => handleChangeTable(e.target.value, record.id, 'moneyType')"
+              />
+            </div>
           </template>
           <template slot="remark" slot-scope="text,record">
             <div key="remark">
-							<a-input
-								maxlength="20"
-								style="margin: -5px 0"
-								:value="text"
-								@change="e => handleChangeTable(e.target.value, record.id, 'remark')"
-							/>
-						</div>
+              <a-input
+                maxlength="20"
+                style="margin: -5px 0"
+                :value="text"
+                @change="e => handleChangeTable(e.target.value, record.id, 'remark')"
+              />
+            </div>
           </template>
         </a-table>
         <a-col :span="12" style="padding-top: 12px; height: 36px;">
@@ -327,8 +334,6 @@ export default {
       bomName: "",
       designIdArr: [],
       designNameArr: []
-
-
     };
   },
   methods: {
@@ -338,12 +343,12 @@ export default {
       // console.log(column);
 
       const newData = [...this.data];
-			const target = newData.filter(item => key === item.id)[0];
-			if (target) {
-				target[column] = value;
-				this.data = newData;
-			}
-		},
+      const target = newData.filter(item => key === item.id)[0];
+      if (target) {
+        target[column] = value;
+        this.data = newData;
+      }
+    },
     close() {
       this.$emit("cancelAdd", false);
       this.form.resetFields();
@@ -359,104 +364,110 @@ export default {
       this.current = 1;
       this.getList();
     },
-    sendOrderId(value){
+    sendOrderId(value) {
       console.log(value);
-      for(let i = 0; i < this.ProjectId.length; i ++){
-        if(value === this.ProjectId[i].no){
-          this.workOrderId = this.ProjectId[i].id
+      for (let i = 0; i < this.ProjectId.length; i++) {
+        if (value === this.ProjectId[i].no) {
+          this.workOrderId = this.ProjectId[i].id;
         }
       }
-      console.log(this.workOrderId)
+      console.log(this.workOrderId);
     },
     sendId(value) {
       console.log(value);
       this.designNameArr = value;
-      for (let i = 0; i < value.length; i++) {
-        for (let j = 0; j < this.idArr.length; j++) {
-          if (value[i] === this.idArr[j].bomNo) {
-            if(this.designIdArr.indexOf(this.idArr[j].id) === -1){
-              this.designIdArr.push(this.idArr[j].id);
+      if (value == []) {
+        this.data = [];
+      } else 
+      {
+        for (let i = 0; i < value.length; i++) {
+          for (let j = 0; j < this.idArr.length; j++) {
+            if (value[i] === this.idArr[j].bomNo) {
+              if (this.designIdArr.indexOf(this.idArr[j].id) === -1) {
+                this.designIdArr.push(this.idArr[j].id);
+              }
             }
           }
         }
-      }
-      console.log(this.designIdArr)
-      this.Axios(
-        {
-          url: "/api-order/bom/getBomdes",
-          type: "get",
-          params: {
-            bomIdS: this.designIdArr.join(",")
+        console.log(this.designIdArr);
+        this.Axios(
+          {
+            url: "/api-order/bom/getBomdes",
+            type: "get",
+            params: {
+              bomIdS: this.designIdArr.join(",")
+            },
+            option: { enableMsg: false }
           },
-          option: { enableMsg: false }
-        },
-        this
-      ).then(
-        result => {
-          if (result.data.code === 200) {
-            console.log(result);
-            this.data = result.data.data;
-            this.total = result.data.data.totalElement;
-          }
-        },
-        ({ type, info }) => {}
-      );
-      // for(let i = 0; i < this.data.length; i++){
-      //   if(value.join(',') === this.data[i].id){
-      //     this.bomName = this.data[i].name
-      //   }
-      // }
-      this.Axios(
-        {
-          url: "/api-order/unit/list",
-          type: "get",
-          params: {},
-          option: { enableMsg: false }
-        },
-        this
-      ).then(
-        result => {
-          if (result.data.code === 200) {
-            // console.log(result);
-            this.unitArr = result.data.data.content;
-          }
-        },
-        ({ type, info }) => {}
-      );
-      this.Axios(
-        {
-          url: "/api-order/supplier/list",
-          type: "get",
-          params: {},
-          option: { enableMsg: false }
-        },
-        this
-      ).then(
-        result => {
-          if (result.data.code === 200) {
-            // console.log(result);
-            this.supplierArr = result.data.data.content;
-          }
-        },
-        ({ type, info }) => {}
-      );
-      this.Axios(
-        {
-          url: "/api-order/unit/list",
-          type: "get",
-          params: {},
-          option: { enableMsg: false }
-        },
-        this
-      ).then(
-        result => {
-          if (result.data.code === 200) {
-            // console.log(result);
-            this.priceArr = result.data.data.content;
-          }
-        },
-        ({ type, info }) => {}
-      );
+          this
+        ).then(
+          result => {
+            if (result.data.code === 200) {
+              console.log(result);
+              this.data = result.data.data;
+              this.total = result.data.data.length;
+              this.designIdArr = [];
+            }
+          },
+          ({ type, info }) => {}
+        );
+        // for(let i = 0; i < this.data.length; i++){
+        //   if(value.join(',') === this.data[i].id){
+        //     this.bomName = this.data[i].name
+        //   }
+        // }
+        this.Axios(
+          {
+            url: "/api-order/unit/list",
+            type: "get",
+            params: {},
+            option: { enableMsg: false }
+          },
+          this
+        ).then(
+          result => {
+            if (result.data.code === 200) {
+              // console.log(result);
+              this.unitArr = result.data.data.content;
+            }
+          },
+          ({ type, info }) => {}
+        );
+        this.Axios(
+          {
+            url: "/api-order/supplier/list",
+            type: "get",
+            params: {},
+            option: { enableMsg: false }
+          },
+          this
+        ).then(
+          result => {
+            if (result.data.code === 200) {
+              // console.log(result);
+              this.supplierArr = result.data.data.content;
+            }
+          },
+          ({ type, info }) => {}
+        );
+        this.Axios(
+          {
+            url: "/api-order/unit/list",
+            type: "get",
+            params: {},
+            option: { enableMsg: false }
+          },
+          this
+        ).then(
+          result => {
+            if (result.data.code === 200) {
+              // console.log(result);
+              this.priceArr = result.data.data.content;
+            }
+          },
+          ({ type, info }) => {}
+        );
+      }
     },
     addProcurement() {
       const that = this;
@@ -477,23 +488,23 @@ export default {
             purchaseNo: values.procurementNo,
             remark: values.remark,
             purchaseDesDTOList: this.data.map(item => {
-                      return {
-                        drawingNo: item.drawingNo,
-                        name: item.name,
-                        number: item.number,
-                        brand: item.brand,
-                        designer: item.designer, 
-                        delivery: item.deliveryDate,
-                        moneyType: item.moneyType,
-                        price: item.unitPrice,
-                        orderNumber: item.orderNum,
-                        priseUnit: item.priceUnit,
-                        supplier: item.supplier,
-                        taxrate: item.taxrate,
-                        unit: item.orderUnit,
-                        remark: item.remark
-                      }
-                  })
+              return {
+                drawingNo: item.drawingNo,
+                name: item.name,
+                number: item.number,
+                brand: item.brand,
+                designer: item.designer,
+                delivery: item.deliveryDate,
+                moneyType: item.moneyType,
+                price: item.unitPrice,
+                orderNumber: item.orderNum,
+                priseUnit: item.priceUnit,
+                supplier: item.supplier,
+                taxrate: item.taxrate,
+                unit: item.orderUnit,
+                remark: item.remark
+              };
+            })
           };
           console.log(data);
 
@@ -574,7 +585,7 @@ export default {
             // console.log(result);
             this.form.setFieldsValue({
               procurementNo: result.data.data
-            })
+            });
           }
         },
         ({ type, info }) => {}

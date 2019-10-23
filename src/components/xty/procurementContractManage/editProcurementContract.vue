@@ -8,6 +8,7 @@
               <a-select
                 v-decorator="['procurementNo', { rules: [{ required:'true', message: '请选择采购单号'}]}]"
                 placeholder="请选择"
+                showSearch
                 @change="getProcurementId"
               >
                 <a-select-option v-for="item in procurementNo" :key="item.purchaseNo">{{ item.purchaseNo }}</a-select-option>
@@ -35,6 +36,7 @@
               <a-select
                 v-decorator="['supplier', { rules: [{ required:'true', message: '请选择供应商'}]}]"
                 placeholder="请选择"
+                showSearch
               >
                 <a-select-option :value="item.supplierName" v-for="(item,index) in supplierName"  :key="index">{{ item.supplierName }}</a-select-option>
               </a-select>
@@ -80,6 +82,7 @@
               <a-select
                 v-decorator="['supplyMode']"
                 placeholder="请选择"
+                showSearch
               >
                 <a-select-option value="供方送货">供方送货</a-select-option>
                 <a-select-option value="自提">自提</a-select-option>

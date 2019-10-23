@@ -7,7 +7,7 @@
       <a-button @click="editVisible=true" :disabled="selectedRowKeys.length!=1">
         <a-icon style="color:#1890ff;" type="edit" />修改
       </a-button>
-      <a-button :disabled="selectedRowKeys.length!=1">
+      <a-button :disabled="selectedRowKeys.length!=1" @click="approveVisible=true">
         <a-icon style="color:#1890ff;" type="submit" />提交审批
       </a-button>
       <a-button @click="showDeleteConfirm" :disabled="selectedRowKeys.length<1">
@@ -84,6 +84,39 @@
     <a-modal title="修改" v-model="editVisible" style="top:20px" width="1200px" :footer="null">
       <edit-procurement-contract @cancelEdit="closeEdit" :procurementContractId="selectedRowKeys[0]"></edit-procurement-contract>
     </a-modal>
+    <a-modal
+				title="提交审批"
+				v-model="approveVisible"
+				:footer="null"
+				width="600px"
+				@cancel="approveVisible=false"
+				:maskClosable="false"
+			>
+				<a-form :form="form">
+					<a-form-item label="选择流程" :labelCol="{span:4}" :wrapperCol="{span:18}">
+						<a-select
+							v-decorator="[
+								'procDefId',
+								{rules: [{ required: true, message: '请选择流程' }]}
+								]"
+							showSearch
+							placeholder="请选择"
+							optionFilterProp="children"
+							style="width: 100%"
+							:filterOption="filterOption"
+						>
+							<a-select-option v-for="(i,j) in userProcess" :key="j" :value="i.id">{{i.name}}</a-select-option>
+						</a-select>
+					</a-form-item>
+					<a-form-item label="说明" :labelCol="{span:4}" :wrapperCol="{span:18}">
+						<a-textarea v-decorator="['description']" :autosize="{ minRows: 4, maxRows: 4 }" />
+					</a-form-item>
+					<a-form-item :wrapper-col="{ span: 20,offset: 4 }" style="text-align:right">
+						<a-button style="margin-right:12px;" @click="approveVisible = false">取消</a-button>
+						<a-button type="primary" @click="auditSubmit">提交</a-button>
+					</a-form-item>
+				</a-form>
+			</a-modal>
     <a-modal
       title="合同详情"
       :footer="null"
@@ -202,6 +235,7 @@ const columns = [
 export default {
   data() {
     return {
+      form: this.$form.createForm(this),
       columns,
       data: [],
       selectedRowKeys: [],
@@ -210,14 +244,60 @@ export default {
       addVisible: false,
       editVisible: false,
       detailsVisible: false,
+      approveVisible: false,
       current: 1,
       pageSize: 10,
       total: 0,
       reviewSchedule: -1,
-      keyWords: ''
+      keyWords: '',
+      userProcess: []
     };
   },
   methods: {
+    auditSubmit() {
+			this.form.validateFieldsAndScroll((err, values) => {
+				if (!err) {
+					console.log("Received values of form: ", values);
+					let qs = require("qs");
+					let data = qs.stringify({
+						shopContractId: this.selectedRowKeys[0],
+						procDefId: values.procDefId,
+						description: values.description
+					});
+					console.log(data);
+
+					this.Axios(
+						{
+							url: "/api-order/shopContract/submit",
+							params: data,
+							type: "post",
+							option: { successMsg: "提交成功！" }
+							// config: {
+							// 	headers: { "Content-Type": "application/json" }
+							// }
+						},
+						this
+					).then(
+						result => {
+							if (result.data.code === 200) {
+								console.log(result);
+								this.approveVisible = false;
+								this.form.resetFields();
+								this.getList();
+							}
+						},
+						({ type, info }) => {}
+					);
+				}
+			});
+		},
+    filterOption(input, option) {
+			return (
+				option.componentOptions.children[0].text
+					.toLowerCase()
+					.indexOf(input.toLowerCase()) >= 0
+			);
+		},
      closeAdd(params) {
       this.addVisible = params;
       this.getList();
@@ -318,7 +398,27 @@ export default {
         },
         onCancel() {}
       });
-    }
+    },
+    getUserprocess() {
+			this.Axios(
+				{
+					url: "/api-order/activiti/getUserprocess",
+					// url: "/api-order/activiti/getprocess",
+					type: "get",
+					params: {},
+					option: { enableMsg: false }
+				},
+				this
+			).then(
+				result => {
+					if (result.data.code === 200) {
+						console.log(result);
+						this.userProcess = result.data.data;
+					}
+				},
+				({ type, info }) => {}
+			);
+		}
   },
   components: {
     AddProcurementContract,
@@ -326,6 +426,7 @@ export default {
   },
   created() {
     this.getList();
+    this.getUserprocess();
   }
 };
 </script>
