@@ -351,6 +351,24 @@ export default new Router({
         requireAuth: true,
       },
       children: []
+    },
+    {
+      path: '/Message',
+      name: 'Message',
+      components: require('@/components/system/message'),
+      meta: {
+        requireAuth: true,
+      },
+      children: []
+    },
+    {
+      path: '/Blackboard',
+      name: 'Blackboard',
+      components: require('@/components/system/Blackboard'),
+      meta: {
+        requireAuth: true,
+      },
+      children: []
     }
   ]
 })

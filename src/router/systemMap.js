@@ -12,6 +12,17 @@ export default [{
       key: 'FlowPath',
       permissionCode: 'workdesk_desk_lookup',
     },
-
+    {
+      menu: '消息管理',
+      route: '/Message',
+      key: 'Message',
+      permissionCode: 'workdesk_desk_lookup',
+    },
+    {
+      menu: '小黑板',
+      route: '/Blackboard',
+      key: 'Blackboard',
+      permissionCode: 'workdesk_desk_lookup',
+    },
   ]
 }, ]

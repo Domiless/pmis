@@ -1,7 +1,7 @@
 <template>
 	<div class="tinymce">
 		<!-- 富文本编辑组件 -->
-		<editor  v-model="tinymceHtml" :init="init"></editor>
+		<editor v-model="tinymceHtml" :init="init"></editor>
 	</div>
 </template>
  
@@ -22,13 +22,12 @@ import "tinymce/plugins/imagetools";
 export default {
 	name: "tinymce",
 	props: {
-		value:{
+		value: {
 			default: ""
 		},
 		tinymceValue: {
 			default: ""
-		},
-	
+		}
 	},
 	data() {
 		return {
@@ -53,6 +52,9 @@ export default {
 		tinymce.init({});
 	},
 	methods: {
+		clearValue() {
+			this.tinymceHtml = "";
+		},
 		handleImgUpload(blobInfo, success, failure) {
 			let formdata = new FormData();
 			formdata.set("file", blobInfo.blob());
@@ -84,7 +86,13 @@ export default {
 				});
 		}
 	},
+	created() {
+		tinymceHtml: this.value;
+	},
 	watch: {
+		value() {
+			tinymceHtml: this.value;
+		},
 		tinymceHtml() {
 			this.$emit("tinymceValue", this.tinymceHtml);
 		}

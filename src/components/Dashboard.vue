@@ -148,9 +148,48 @@ export default {
 		},
 		clickMsg() {
 			// this.msg='I had change Dashboard';
+		},
+		getPending() {
+			this.Axios(
+				{
+					url: "/api-order/activiti/pendingTask",
+					params: {},
+					type: "get",
+					option: { enableMsg: false }
+				},
+				this
+			).then(
+				result => {
+					if (result.data.code === 200) {
+						console.log(result);
+					}
+				},
+				({ type, info }) => {}
+			);
+		},
+		getAlready() {
+			this.Axios(
+				{
+					url: "/api-order/activiti/alreadyTask",
+					params: {},
+					type: "get",
+					option: { enableMsg: false }
+				},
+				this
+			).then(
+				result => {
+					if (result.data.code === 200) {
+						console.log(result);
+					}
+				},
+				({ type, info }) => {}
+			);
 		}
 	},
-	created() {},
+	created() {
+		this.getPending();
+		this.getAlready();
+	},
 	components: {}
 };
 </script>
