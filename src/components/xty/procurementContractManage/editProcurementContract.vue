@@ -123,6 +123,7 @@
   </div>
 </template>
 <script>
+import moment from "moment";
 const columns = [
   {
     dataIndex: "drawingNo",
@@ -295,6 +296,7 @@ export default {
             let msg = result.data.data;
             this.data = msg.shopContractDesDOList;
             this.total = msg.shopContractDesDOList.length;
+            this.signDate = msg.digndate;
             setTimeout(()=> {
               this.form.setFieldsValue({
                 procurementNo: msg.purchaseNo,
@@ -307,7 +309,11 @@ export default {
                 moneyUpper: msg.chineseMoney,
                 signPlace: msg.place,
                 supplyMode: msg.sendway,
-                remark: msg.remark
+                remark: msg.remark,
+                gmtSign: moment(
+                  msg.digndate,
+                  "YYYY/MM/DD"
+                ),
                 });
             },100)
 					}

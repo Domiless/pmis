@@ -20,7 +20,7 @@
         <a-range-picker style="width:240px" @change="onChangeRange" format="YYYY/MM/DD"></a-range-picker>
         <a-input-group class="changeDis">
           <span>审批状态 : </span>
-          <a-select v-model="state" style="width: 100px" optionFilterProp="children">
+          <a-select :defaultValue="-1" v-model="reviewSchedule" style="width: 100px" optionFilterProp="children">
             <a-select-option :value="-1">全部</a-select-option>
             <a-select-option :value="1">暂存</a-select-option>
             <a-select-option :value="2">审批中</a-select-option>
@@ -30,7 +30,7 @@
           </a-select>
         </a-input-group>
         <span>关键词 :</span>
-        <a-input placeholder="请输入关键词" style="width: 250px" v-model="keyWords"></a-input>
+        <a-input placeholder="项目订单编号/采购单号/申请人" style="width: 250px" v-model="keyWords"></a-input>
         <a-button @click="getList">搜索</a-button>
       </a-col>
     </a-row>
@@ -45,8 +45,14 @@
         <template slot="purchaseNo" slot-scope="text, record">
 						<a href="javascript:" @click="showDetails(record)">{{text}}</a>
 				</template>
-        <template slot="state" slot-scope="text, record">
-          <div>
+        <template slot="isOffer" slot-scope="text">
+						<div style="padding-left: 15px">
+							<a-icon type="close" v-if="text==false" style="color:red;font-size: 16px;" />
+							<a-icon type="check" v-if="text==true" style="color:green;font-size: 16px;" />
+						</div>
+				</template>
+        <template slot="reviewSchedule" slot-scope="text, record">
+          <div style="padding-left: 15px">
             <span v-if="text==2" style="font-size:14px;color:#027DB4;">审批中</span>
             <span v-if="text==1" style="font-size:14px;color:#999999;">暂存</span>
             <a-popover title placement="right">
@@ -157,13 +163,14 @@ const columns = [
     dataIndex: "isOffer",
     title: "是否询价",
     key: "isOffer",
+    scopedSlots: { customRender: "isOffer" },
     width: "10%"
   },
   {
-    dataIndex: "state",
+    dataIndex: "reviewSchedule",
     title: "审批状态",
-    key: "state",
-    scopedSlots: { customRender: "state" },
+    key: "reviewSchedule",
+    scopedSlots: { customRender: "reviewSchedule" },
     width: "10%"
   },
   {
@@ -186,7 +193,7 @@ export default {
       current: 1,
       pageSize: 10,
       total: 0,
-      state: -1,
+      reviewSchedule: -1,
       keyWords: ''
     };
   },
@@ -227,9 +234,6 @@ export default {
        console.log(this.selectedRowKeys)
     },
     getList() {
-       if(this.state === -1){
-        this.state = ''
-      }
 			this.Axios(
 				{
 					url: "/api-order/purchase/list",
@@ -237,7 +241,7 @@ export default {
          	params: {
 						page: this.current,
             size: this.pageSize,
-            auditState: this.state,
+            auditState: this.reviewSchedule != -1 ? this.reviewSchedule : null,
             keyword: this.keyWords,
 						start: this.dateValue[0] != "" ? this.dateValue[0] : null,
             end: this.dateValue[1] != "" ? this.dateValue[1] : null
@@ -251,9 +255,6 @@ export default {
 						console.log(result);
 						this.data = result.data.data.content;
             this.total = result.data.data.totalElement;
-            if(this.state === ''){
-                this.state = -1
-            }
 					}
 				},
 				({ type, info }) => {}

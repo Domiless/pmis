@@ -155,6 +155,7 @@
 							<a-input
 								maxlength="20"
 								style="margin: -5px 0"
+                defaultValue="RMB"
 								:value="text"
 								@change="e => handleChangeTable(e.target.value, record.id, 'moneyType')"
 							/>
