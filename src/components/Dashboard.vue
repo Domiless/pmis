@@ -11,8 +11,13 @@
 					<a-tabs defaultActiveKey="1" class="tabs_style">
 						<a-tab-pane tab="待办事项" key="1">
 							<ul v-if="pendingValue.length>0" class="list_case">
-								<li v-for="(item, index) in pendingValue" :key="index" class="list">
-									<a-col :span="3">20191012</a-col>
+								<li
+									v-for="(item, index) in pendingValue"
+									:key="index"
+									class="list"
+									@click="getDetails(item)"
+								>
+									<a-col :span="3">{{item.id}}</a-col>
 									<a-col
 										:span="3"
 									>{{item.type==1?"项目订单":item.type==2?"项目设计":item.type==3?"采购询价":item.type==4?"采购合同":""}}</a-col>
@@ -35,7 +40,7 @@
 						<a-tab-pane tab="已办事项" key="2" forceRender>
 							<ul v-if="alreadyValue.length>0" class="list_case">
 								<li v-for="(item, index) in alreadyValue" :key="index" class="list">
-									<a-col :span="3">20191012</a-col>
+									<a-col :span="3">{{item.id}}</a-col>
 									<a-col
 										:span="3"
 									>{{item.type==1?"项目订单":item.type==2?"项目设计":item.type==3?"采购询价":item.type==4?"采购合同":""}}</a-col>
@@ -118,16 +123,64 @@
 			width="600px"
 			:visible="msgVisible"
 			:footer="null"
-			@cancel="cancel(2)"
+			@cancel="cancel(1)"
 			class="modal_body_style"
 		>
 			<h3 style="text-align:center;font-weight:900;">{{msgValue.title}}</h3>
 			<div v-html="msgValue.content"></div>
 			<div style="text-align:right;">{{msgValue.gmtCreated}}</div>
 		</a-modal>
+		<a-modal
+			title="订单审批 "
+			:maskClosable="false"
+			centered
+			width="800px"
+			:visible="orderAuditVisible"
+			:footer="null"
+			@cancel="cancel(2)"
+		>
+			<orderAudit v-on:auditParams="auditParams" :auditValue="auditValue"></orderAudit>
+		</a-modal>
+		<a-modal
+			title="设计审批 "
+			:maskClosable="false"
+			centered
+			width="800px"
+			:visible="designAuditVisible"
+			:footer="null"
+			@cancel="cancel(3)"
+		>
+			<designAudit v-on:auditParams="auditParams" :auditValue="auditValue"></designAudit>
+		</a-modal>
+		<a-modal
+			title="采购审批 "
+			:maskClosable="false"
+			centered
+			width="800px"
+			:visible="purchaseContractAuditVisible"
+			:footer="null"
+			@cancel="cancel(5)"
+		>
+			<purchaseContractAudit v-on:auditParams="auditParams" :auditValue="auditValue"></purchaseContractAudit>
+		</a-modal>
+		<a-modal
+			title="询价审批 "
+			:maskClosable="false"
+			centered
+			width="800px"
+			:visible="enquiryAuditVisible"
+			:footer="null"
+			@cancel="cancel(4)"
+		>
+			<enquiryAudit v-on:auditParams="auditParams" :auditValue="auditValue"></enquiryAudit>
+		</a-modal>
 	</div>
 </template>
 <script>
+import designAudit from "./public/designAudit";
+import enquiryAudit from "./public/enquiryAudit";
+import orderAudit from "./public/orderAudit";
+import purchaseContractAudit from "./public/purchaseContractAudit";
 import Vue from "vue";
 import { calendar } from "ant-design-vue";
 Vue.use(calendar);
@@ -135,6 +188,10 @@ export default {
 	name: "dashboard",
 	data() {
 		return {
+			enquiryAuditVisible: false,
+			purchaseContractAuditVisible: false,
+			designAuditVisible: false,
+			orderAuditVisible: false,
 			msgVisible: false,
 			detailsVisible: true,
 			msg: "Welcome to Your Dashboard",
@@ -149,17 +206,36 @@ export default {
 			alreadyValue: [],
 			messageValue: [],
 			blackboardValue: "",
-			msgValue: {}
+			msgValue: {},
+			auditValue: ""
 		};
 	},
 	methods: {
+		auditParams(params) {
+			if (params.type == 1) {
+				this.orderAuditVisible == false;
+				this.getPending();
+			}
+		},
 		msgShow(item) {
 			this.msgValue = item;
 			this.msgVisible = true;
 		},
 		cancel(a) {
-			if (a == 2) {
+			if (a == 1) {
 				this.msgVisible = false;
+			}
+			if (a == 2) {
+				this.orderAuditVisible = false;
+			}
+			if (a == 3) {
+				this.designAuditVisible = false;
+			}
+			if (a == 4) {
+				this.enquiryAuditVisible = false;
+			}
+			if (a == 5) {
+				this.purchaseContractAuditVisible = false;
 			}
 		},
 		onPanelChange(value, mode) {
@@ -273,6 +349,41 @@ export default {
 				},
 				({ type, info }) => {}
 			);
+		},
+		getDetails(item) {
+			console.log(item.id);
+			console.log(item.type);
+			this.Axios(
+				{
+					url: "/api-order/activiti/detail",
+					params: {
+						processInstanceId: item.id
+					},
+					type: "get",
+					option: { enableMsg: false }
+				},
+				this
+			).then(
+				result => {
+					if (result.data.code === 200) {
+						console.log(result);
+						this.auditValue = result.data.data;
+						if (item.type == 1) {
+							this.orderAuditVisible = true;
+						}
+						if (item.type == 2) {
+							this.designAuditVisible = true;
+						}
+						if (item.type == 3) {
+							this.enquiryAuditVisible = true;
+						}
+						if (item.type == 4) {
+							this.purchaseContractAuditVisible = true;
+						}
+					}
+				},
+				({ type, info }) => {}
+			);
 		}
 	},
 	created() {
@@ -281,7 +392,12 @@ export default {
 		this.getBlackboard();
 		this.getMessageList();
 	},
-	components: {}
+	components: {
+		designAudit,
+		enquiryAudit,
+		orderAudit,
+		purchaseContractAudit
+	}
 };
 </script>
 <style lang="less">
@@ -318,6 +434,7 @@ export default {
 				min-height: 100px;
 				overflow: auto;
 				.list {
+					cursor: pointer;
 					list-style-type: none;
 					line-height: 40px;
 					border: 1px solid #dddddd;

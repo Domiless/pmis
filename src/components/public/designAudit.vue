@@ -4,23 +4,23 @@
 			<a-col :span="12" style="margin-bottom: -1000px;padding-bottom: 1000px;float: left;">
 				<a-col :span="24" class="case">
 					<span class="audit_label">项目订单</span>
-					<span>DDHT-20190919-001</span>
+					<span>{{detailsValue.DO.workOrderNo}}</span>
 				</a-col>
 				<a-col :span="24" class="case">
 					<span class="audit_label">设计单号</span>
-					<span>DDHT-20190919-001</span>
+					<span>{{detailsValue.DO.bomNo}}</span>
 				</a-col>
 				<a-col :span="24" class="case">
 					<span class="audit_label">部件名称</span>
-					<span>DDHT-20190919-001</span>
+					<span>{{detailsValue.DO.partName}}</span>
 				</a-col>
 				<a-col :span="24" class="case">
 					<span class="audit_label">图号</span>
-					<span>DDHT-20190919-001</span>
+					<span>{{detailsValue.DO.bomDrawingNo}}</span>
 				</a-col>
 				<a-col :span="24" class="case">
 					<span class="audit_label">需求数量</span>
-					<span>DDHT-20190919-001</span>
+					<span>{{detailsValue.DO.number}}</span>
 				</a-col>
 				<a-col :span="24" class="case">
 					<span class="audit_label">BOM</span>
@@ -28,7 +28,7 @@
 				</a-col>
 				<a-col :span="24" class="case">
 					<span class="audit_label">备注</span>
-					<span>DDHT-20190919-001</span>
+					<span>{{detailsValue.DO.remake}}</span>
 				</a-col>
 			</a-col>
 			<a-col
@@ -39,23 +39,23 @@
 					<a-tab-pane tab="审批意见" key="1">
 						<a-col :span="24">
 							<span class="opinion_style">发起人：</span>
-							<span>王五</span>
+							<span>{{detailsValue.auditData.userName}}</span>
 						</a-col>
 						<a-col :span="24">
 							<span class="opinion_style">发起时间：</span>
-							<span>2019-09-01 12:32:09</span>
+							<span>{{detailsValue.auditData.startTime}}</span>
 						</a-col>
 						<a-col :span="24">
 							<span class="opinion_style">停留时间：</span>
-							<span>9 天 23 小时 46 秒</span>
+							<span>{{detailsValue.auditData.stopTime}}</span>
 						</a-col>
 						<a-col :span="24">
 							<span class="opinion_style">审批意见：</span>
 							<span>
 								<a-radio-group v-model="value" style="vertical-align:top">
 									<a-radio :style="radioStyle" :value="1">同意</a-radio>
-									<a-radio :style="radioStyle" :value="2">驳回</a-radio>
-									<a-radio :style="radioStyle" :value="3">终止</a-radio>
+									<a-radio :style="radioStyle" :value="0">驳回</a-radio>
+									<a-radio :style="radioStyle" :value="-1">终止</a-radio>
 								</a-radio-group>
 							</span>
 						</a-col>
@@ -63,6 +63,7 @@
 							<span class="opinion_style">审批说明：</span>
 							<span>
 								<a-textarea
+									v-model="comment"
 									style="vertical-align:top;width:260px;"
 									placeholder
 									:autosize="{ minRows: 4, maxRows: 4 }"
@@ -70,24 +71,38 @@
 							</span>
 						</a-col>
 						<a-col :span="24" style="padding-left:280px;">
-							<a-button type="primary">提交</a-button>
+							<a-button type="primary" @click="audit">提交</a-button>
 						</a-col>
 					</a-tab-pane>
 					<a-tab-pane tab="审批日志" key="2" forceRender>
 						<div class="log_case">
-							<div v-for="(item, index) in 10" :key="index" class="log_item_case">
-								<h3>发起审批</h3>
+							<div v-for="(item, index) in detailsValue.log" :key="index" class="log_item_case">
+								<h3>领导审批</h3>
 								<a-col :span="24">
 									<span>姓名：</span>
-									<span></span>
+									<span>{{item.name}}</span>
 								</a-col>
 								<a-col :span="24">
 									<span>处理时间：</span>
-									<span></span>
+									<span>{{item.dealTime}}</span>
 								</a-col>
 								<a-col :span="24">
 									<span>处理结果：</span>
-									<span></span>
+									<span>
+										{{item.state}}
+										<span v-if="item.comment!=null">({{item.comment}})</span>
+									</span>
+								</a-col>
+							</div>
+							<div class="log_item_case">
+								<h3>发起审批</h3>
+								<a-col :span="24">
+									<span>姓名：</span>
+									<span>{{rizi.name}}</span>
+								</a-col>
+								<a-col :span="24">
+									<span>处理时间：</span>
+									<span>{{rizi.dealTime}}</span>
 								</a-col>
 							</div>
 						</div>
@@ -96,9 +111,11 @@
 						<div class="flow_case">
 							<div class="content_case">
 								<span class="item_case">开始</span>
-								<div v-for="(item, index1) in 10" :key="index1">
+								<div v-for="(item, index1) in flow" :key="index1">
 									<a-divider type="vertical" style="display: block;margin: auto;" />
-									<span class="item_case">结束</span>
+									<span
+										class="item_case"
+									>{{item.type==1?"角色权限":"领导审批"}}（{{item.type==1?item.groups.label:item.users.map(i=>i.name).join(",")}}）</span>
 								</div>
 								<a-divider type="vertical" style="display: block;margin: auto;" />
 								<span class="item_case">结束</span>
@@ -130,20 +147,77 @@
 const columns = [
 	{
 		title: "图号",
-		width: 150,
-		dataIndex: "name",
-		key: "name"
+		dataIndex: "drawingNo",
+		key: "drawingNo",
+		// fixed: "left",
+		width: 150
 	},
-	{ title: "名称", dataIndex: "address", key: "1", width: 150 },
-	{ title: "装入部件号", dataIndex: "address", key: "2", width: 150 },
-	{ title: "组件中零件数量", dataIndex: "address", key: "3", width: 150 },
-	{ title: "单件中零件数量", dataIndex: "address", key: "4", width: 150 },
-	{ title: "需求总数量", dataIndex: "address", key: "5", width: 150 },
-	{ title: "装入整件号", dataIndex: "address", key: "6", width: 150 },
-	{ title: "领料单位", dataIndex: "address", key: "7", width: 150 },
-	{ title: "备注", dataIndex: "address", key: "8", width: 150 },
-	{ title: "零件类别", dataIndex: "address", key: "9", width: 150 },
-	{ title: "指定品牌", dataIndex: "address", key: "10", width: 150 }
+	{
+		title: "名称",
+		dataIndex: "name",
+		key: "name",
+		width: 150
+	},
+	{
+		title: "装入部件号",
+		dataIndex: "partsNo",
+		key: "partsNo",
+		width: 150
+	},
+	{
+		title: "组件中零件数量",
+		dataIndex: "groupNum",
+		key: "groupNum",
+		width: 150
+	},
+	{
+		title: "单件中零件数量",
+		dataIndex: "singleNum",
+		key: "singleNum",
+		width: 150
+	},
+	{
+		title: "需求总数量",
+		dataIndex: "addNum",
+		key: "addNum",
+		width: 150
+	},
+	{
+		title: "装入整件号",
+		dataIndex: "entiretyNo",
+		key: "entiretyNo",
+		width: 150
+	},
+	{
+		title: "领料单位",
+		dataIndex: "picking",
+		key: "picking",
+		width: 150
+	},
+	{
+		title: "备注",
+		dataIndex: "remake",
+		key: "remake",
+		width: 150
+	},
+	{
+		title: "零件类别",
+		dataIndex: "partCat",
+		key: "8",
+		width: 150
+	},
+	{
+		title: "指定品牌",
+		dataIndex: "brand",
+		key: "brand",
+		width: 150
+	},
+	{
+		title: "设计师",
+		dataIndex: "planner",
+		key: "planner",
+		width: 150
+	}
 ];
 const data = [];
 for (let i = 0; i < 100; i++) {
@@ -158,8 +232,21 @@ import Vue from "vue";
 import { Divider } from "ant-design-vue";
 Vue.use(Divider);
 export default {
+	props: {
+		auditValue: {
+			default: {}
+		},
+		auditParams: {
+			default: ""
+		}
+	},
 	data() {
 		return {
+			detailsValue: {
+				DO: {},
+				auditData: {},
+				log: []
+			},
 			columns,
 			data,
 			detailsVisible: false,
@@ -167,12 +254,86 @@ export default {
 			radioStyle: {
 				display: "block",
 				lineHeight: "24px"
-			}
+			},
+			rizi: {},
+			flow: [],
+			comment: ""
 		};
 	},
 	methods: {
 		handleCancel() {
 			this.detailsVisible = false;
+		},
+		getModel() {
+			this.Axios(
+				{
+					url: "/api-order/activiti/getModelProcess",
+					params: {
+						procDefId: this.auditValue.auditData.processDefinitionId
+					},
+					type: "get",
+					option: { enableMsg: false }
+				},
+				this
+			).then(
+				result => {
+					if (result.data.code === 200) {
+						console.log(result);
+						this.flow = result.data.data.userTask;
+					}
+				},
+				({ type, info }) => {}
+			);
+		},
+		audit() {
+			if (this.value != 1 && this.comment == "") {
+				this.$message.error("驳回或终止需要填写审批说明！");
+				return false;
+			}
+			let qs = require("qs");
+			let data = qs.stringify({
+				comment: this.comment,
+				state: this.value,
+				taskID: this.auditValue.auditData.id
+			});
+			this.Axios(
+				{
+					url: "/api-order/activiti/audit",
+					params: data,
+					type: "post",
+					option: { successMsg: "审批成功！" }
+					// config: {
+					// 	headers: { "Content-Type": "application/json" }
+					// }
+				},
+				this
+			).then(
+				result => {
+					if (result.data.code === 200) {
+						console.log(result);
+						let params = {
+							type: 2
+						};
+						this.$emit("auditParams", params);
+					}
+				},
+				({ type, info }) => {}
+			);
+		}
+	},
+	created() {
+		this.rizi = this.auditValue.log[this.auditValue.log.length - 1];
+		this.detailsValue = this.auditValue;
+		this.detailsValue.log.pop();
+		this.getModel();
+		this.data = this.auditValue.DO.bomDes;
+	},
+	watch: {
+		auditValue() {
+			this.rizi = this.auditValue.log[this.auditValue.log.length - 1];
+			this.detailsValue = this.auditValue;
+			this.detailsValue.log.pop();
+			this.getModel();
 		}
 	}
 };
