@@ -121,9 +121,12 @@ export default {
     },
     handleCancel(num) {
       if (num == 1) {
+        this.form.resetFields();
         this.addVisible = false;
       } else {
+        this.form.resetFields();
         this.editVisible = false;
+        this.selectedRowKeys = [];
       }
     },
     showEdit() {

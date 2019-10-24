@@ -321,7 +321,9 @@ const columns = [
 ];
 export default {
   props: {
-    procurementId: String
+    procurementId: {
+      default: ''
+    }
   },
   data() {
     return {
@@ -654,6 +656,13 @@ export default {
     this.getProjectId();
     this.getProcurementId();
     this.findOne(this.procurementId);
+  },
+  watch: {
+    procurementId(){
+      if(this.procurementId != ''){
+        this.findOne(this.procurementId);
+      }
+    }
   }
 };
 </script>

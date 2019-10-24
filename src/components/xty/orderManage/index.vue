@@ -7,7 +7,7 @@
             <a-button @click="addVisible=true">
               <a-icon type="plus" style="color: #1890ff" />新增
             </a-button>
-            <a-button @click="editVisible=true" :disabled="selectedRowKeys.length!=1">
+            <a-button @click="editShow" :disabled="selectedRowKeys.length!=1">
               <a-icon type="edit" style="color: #1890ff" />修改
             </a-button>
             <a-button @click="approveVisible=true" :disabled="selectedRowKeys.length!=1">
@@ -102,8 +102,8 @@
         </a-row>
       </div>
     </div>
-    <a-modal title="新增" style="top:20px" v-model="addVisible" width="1000px" :footer="null">
-      <add-order-message @changeAddOrder="cancelAddOrder" :getlist="getList"></add-order-message>
+    <a-modal title="新增" style="top:20px" v-model="addVisible" width="1000px" :footer="null" @cancel="handleCancel(1)">
+      <add-order-message @changeAddOrder="cancelAddOrder" :getlist="getList" ref="addOrderMessage"></add-order-message>
     </a-modal>
     <a-modal
 				title="提交审批"
@@ -144,9 +144,9 @@
       style="top:20px"
       width="1000px"
       :visible="editVisible"
-      @cancel="editVisible=false"
+      @cancel="handleCancel(2)"
     >
-      <edit-order-message :OrderMessageId="selectedRowKeys[0]" @cancelEdit="cancelEdit"></edit-order-message>
+      <edit-order-message :OrderMessageId="selectedRowKeys[0]" @cancelEdit="cancelEdit" ref="editOrderMessage"></edit-order-message>
     </a-modal>
     <a-modal
       title="详情"
@@ -316,6 +316,7 @@ export default {
       dateValue: [],
       employeeId: null,
       selectedRowKeys: [],
+      selectedRows: [],
       orderDetails: [],
       reviewState: -1,
       keyWords: '',
@@ -323,12 +324,22 @@ export default {
     };
   },
   methods: {
-    // changeEditModal(params) {
-    // 	this.editVisible = params;
-    // 	this.getList();
-    // 	this.selectedRowKeys = [];
-    // 	this.selectedRows = [];
-    // },
+    handleCancel(num){
+      if(num == 1) {
+        this.$refs.addOrderMessage.confirmCancel();
+      }
+      if(num == 2) {
+        this.$refs.editOrderMessage.confirmCancel();
+      }
+
+    },
+    editShow() {
+      if (this.selectedRows[0].orderReviewSchedule != 1) {
+				this.$message.error(`只能对暂存状态的订单进行修改！`);
+			} else {
+				this.editVisible = true;
+			}
+    },
     auditSubmit() {
 			this.form.validateFieldsAndScroll((err, values) => {
 				if (!err) {
@@ -389,13 +400,15 @@ export default {
     cancelEdit(params) {
       this.editVisible = params;
       this.getList();
+      this.selectedRowKeys = [];
     },
     cancelDetails(params) {
       this.detailsVisible = params;
     },
-    onSelectChange(selectedRowKeys,id) {
+    onSelectChange(selectedRowKeys,selectedRows) {
       this.selectedRowKeys = selectedRowKeys;
-      console.log(this.selectedRowKeys,id);
+      this.selectedRows = selectedRows;
+      console.log(this.selectedRowKeys,selectedRows);
     },
     getTime(a, b) {
       console.log(b);
@@ -445,13 +458,6 @@ export default {
         ({ type, info }) => {}
       );
     },
-    // editShow() {
-    // 	if (this.selectedRows[0].orderReviewSchedule != 1) {
-    // 		this.$message.error(`只能对暂存状态的订单进行修改！`);
-    // 	} else {
-    // 		this.editVisible = true;
-    // 	}
-    // },
     getList() {
       this.Axios(
         {

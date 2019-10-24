@@ -4,7 +4,7 @@
       <a-button @click="addVisible=true">
         <a-icon style="color:#1890ff;" type="plus" />新增
       </a-button>
-      <a-button @click="editVisible=true" :disabled="selectedRowKeys.length!=1">
+      <a-button @click="editShow" :disabled="selectedRowKeys.length!=1">
         <a-icon style="color:#1890ff;" type="edit" />修改
       </a-button>
       <a-button :disabled="selectedRowKeys.length!=1" @click="approveVisible=true">
@@ -89,8 +89,9 @@
      width="1200px"
      :footer="null"
      :maskClosable="false"
+     @cancel="handleCancel(1)"
      >
-      <add-procurement @cancelAdd="closeAdd"></add-procurement>
+      <add-procurement @cancelAdd="closeAdd" ref="addProcurement"></add-procurement>
     </a-modal>
     <a-modal
      title="修改"
@@ -98,8 +99,9 @@
      width="1200px"
      :footer="null"
      :maskClosable="false"
+     @cancel="handleCancel(2)"
      >
-      <edit-procurement @cancelEdit="closeEdit" :procurementId="selectedRowKeys[0]"></edit-procurement>
+      <edit-procurement @cancelEdit="closeEdit" :procurementId="selectedRowKeys[0]" ref="editProcurement"></edit-procurement>
     </a-modal>
     <a-modal
 				title="提交审批"
@@ -139,7 +141,7 @@
 			:footer="null"
 			width="600px"
 			:visible="detailsVisible"
-			@cancel="handleCancel()"
+			@cancel="handleCancel(3)"
 			:maskClosable="false"
 		>
 			<a-row>
@@ -219,6 +221,7 @@ export default {
       columns,
       data: [],
       selectedRowKeys: [],
+      selectedRows: [],
       procurementDetails: [],
       addVisible: false,
       editVisible: false,
@@ -234,6 +237,17 @@ export default {
     };
   },
   methods: {
+    handleCancel(num){
+      if( num == 1 ) {
+        this.$refs.addProcurement.close();
+      }
+      if( num == 2 ) {
+        this.$refs.editProcurement.close();
+      }
+      if( num == 3 ) {
+        this.detailsVisible = false;
+      }
+    },
     auditSubmit() {
 			this.form.validateFieldsAndScroll((err, values) => {
 				if (!err) {
@@ -277,7 +291,14 @@ export default {
 					.toLowerCase()
 					.indexOf(input.toLowerCase()) >= 0
 			);
-		},
+    },
+    editShow() {
+      if (this.selectedRows[0].reviewSchedule != 1) {
+				this.$message.error(`只能对暂存状态的订单进行修改！`);
+			} else {
+				this.editVisible = true;
+			}
+    },
     closeAdd(params) {
       this.addVisible = params;
       this.getList();
@@ -285,9 +306,7 @@ export default {
     closeEdit(params){
       this.editVisible = params;
       this.getList();
-    },
-    handleCancel() {
-      this.detailsVisible = false;
+      this.selectedRowKeys = [];
     },
     onChangeRange(date,datestring){
       this.dateValue = datestring;
@@ -309,9 +328,11 @@ export default {
       this.current = 1;
       this.getList();
     },
-    onSelectChange(selectedRowKeys) {
+    onSelectChange(selectedRowKeys,selectedRows) {
        this.selectedRowKeys = selectedRowKeys;
-       console.log(this.selectedRowKeys)
+       this.selectedRows = selectedRows;
+       console.log(this.selectedRowKeys);
+       console.log(this.selectedRows);
     },
     getList() {
 			this.Axios(

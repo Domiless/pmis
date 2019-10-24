@@ -230,6 +230,7 @@ export default {
   },
   methods: {
     close() {
+      this.form.resetFields();
       this.$emit('cancelAdd',false);
     },
     onChangeSign(data, dateString) {

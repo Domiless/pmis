@@ -120,29 +120,29 @@
 				:maskClosable="false"
 			>
 				<a-row>
-					<a-col :span="12" style="margin-bottom:12px;">
+					<a-col :span="24" style="margin-bottom:12px;">
 						<span class="label_right">项目订单：</span>
-						<span>{{partDetails}}</span>
+						<span>{{partDetails.workOrderNo}}</span>
 					</a-col>
-					<a-col :span="12" style="margin-bottom:12px;">
+					<a-col :span="24" style="margin-bottom:12px;">
 						<span class="label_right">设计单号：</span>
-						<span>{{partDetails}}</span>
+						<span>{{partDetails.bomNo}}</span>
 					</a-col>
-					<a-col :span="12" style="margin-bottom:12px;">
+					<a-col :span="24" style="margin-bottom:12px;">
 						<span class="label_right">部件名称：</span>
-						<span>{{partDetails}}</span>
+						<span>{{partDetails.partName}}</span>
 					</a-col>
-					<a-col :span="12" style="margin-bottom:12px;">
+					<a-col :span="24" style="margin-bottom:12px;">
 						<span class="label_right">图号：</span>
-						<span>{{partDetails}}</span>
+						<span>{{partDetails.bomDrawingNo}}</span>
 					</a-col>
-					<a-col :span="12" style="margin-bottom:12px;">
+					<a-col :span="24" style="margin-bottom:12px;">
 						<span class="label_right">需求数量：</span>
-						<span>{{partDetails}}</span>
+						<span>{{partDetails.number}}</span>
 					</a-col>
-					<a-col :span="12" style="margin-bottom:12px;">
+					<a-col :span="24" style="margin-bottom:12px;">
 						<span class="label_right">备注：</span>
-						<span>{{partDetails}}</span>
+						<span>{{partDetails.remake}}</span>
 					</a-col>
 				</a-row>
 			</a-modal>

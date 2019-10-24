@@ -158,7 +158,7 @@ export default {
     },
     handleChange(info) {
 			console.log(info);
-			let fileList = [...info.fileList];
+      let fileList = [...info.fileList];
 
 			// 1. Limit the number of uploaded files
 			//    Only to show two recent uploaded files, and old ones will be replaced by the new
@@ -201,7 +201,7 @@ export default {
             orderQuantity: values.orderQuantity,
             undertakeDep: values.undertakeDep,
             remark: values.remark,
-            OrderDocDTO: 
+            orderDocDTOList: 
             values.orderDocDTO != undefined
 								? values.orderDocDTO.fileList.map(item => {
 										return {

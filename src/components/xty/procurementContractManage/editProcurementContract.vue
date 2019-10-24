@@ -215,7 +215,9 @@ const columns = [
 ];
 export default {
   props: {
-    procurementContractId: String
+    procurementContractId: {
+      default: ''
+    }
   },
   data() {
     return {
@@ -234,6 +236,7 @@ export default {
   },
   methods: {
     close() {
+      this.form.resetFields();
       this.$emit('cancelEdit',false);
     },
     onChangeSign(data, dateString) {
@@ -466,6 +469,13 @@ export default {
     this.getSupplierName();
     this.getContract();
     this.getContractId();
+  },
+  watch: {
+    procurementContractId(){
+      if( this.procurementContractId != '' ) {
+        this.setDefalut(this.procurementContractId)
+      }
+    }
   }
 };
 </script>

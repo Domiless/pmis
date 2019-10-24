@@ -93,18 +93,20 @@
         </a-form-item>
       </a-row>
       <a-row>
-        <a-form-item label="附件" :labelCol="{span:3}" :wrapperCol="{span:21}">
-          <a-upload
-            name="file"
-            :multiple="true"
-            listType="picture"
-            action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-          >
-            <a-button>
-              <a-icon type="upload" />选择文件
-            </a-button>
-          </a-upload>
-        </a-form-item>
+          <a-form-item label="附件" :labelCol="{span:3}" :wrapperCol="{span:21}">
+            <a-upload
+            v-decorator="['orderDocDTO']"
+             name="file"
+             :action="global.apiImg"
+						 :multiple="true"
+						 :fileList="fileList"
+						 @change="handleChange"
+            >
+              <a-button>
+                <a-icon type="upload" />选择文件
+              </a-button>
+            </a-upload>
+          </a-form-item>
       </a-row>
       <a-row>
         <a-form-item label="备注" :labelCol="{span:3}" :wrapperCol="{span:21}">
@@ -124,7 +126,9 @@
 import moment from "moment";
 export default {
   props: {
-    OrderMessageId: String
+    OrderMessageId: {
+      default:''
+    }
   },
   data() {
     return {
@@ -132,7 +136,9 @@ export default {
       orderNo: '',
       dateValue: '',
       editMsg: [],
-      signDate: ''
+      fileList: [],
+      signDate: '',
+      defaultType: ''
     };
   },
   methods: {
@@ -144,8 +150,28 @@ export default {
       this.dateValue = dateString;
     },
     confirmCancel() {
+      this.form.resetFields();
       this.$emit("cancelEdit", false);
     },
+    handleChange(info) {
+			console.log(info);
+			let fileList = [...info.fileList];
+
+			// 1. Limit the number of uploaded files
+			//    Only to show two recent uploaded files, and old ones will be replaced by the new
+			// fileList = fileList.slice(-2);
+
+			// 2. read from response and show file link
+			fileList = fileList.map(file => {
+				if (file.response) {
+					// Component will show file.url as link
+					file.url = file.response.url;
+				}
+				return file;
+			});
+
+			this.fileList = fileList;
+		},
     handleSubmit() {
       this.form.validateFieldsAndScroll((err, values) => {
         console.log(values,values.gmtSign,values.gmtDelivery);
@@ -166,7 +192,19 @@ export default {
             orderType: values.orderType,
             orderQuantity: values.orderQuantity,
             undertakeDep: values.undertakeDep,
-            remark: values.remark
+            remark: values.remark,
+            orderDocDTOList:
+							values.orderDocDTO.fileList == undefined
+								? values.orderDocDTO
+								: values.orderDocDTO.fileList.map(item => {
+										return {
+											docName: item.name,
+											docPosition:
+												item.response == undefined
+													? item.docPosition
+													: item.response.data
+										};
+								  })
           };
           console.log(data);
           this.Axios(
@@ -209,7 +247,17 @@ export default {
             this.editMsg = result.data.data;
             this.dateValue = this.editMsg.gmtDelivery;
             this.signDate = this.editMsg.gmtSign;
+            this.fileList = result.data.data.orderDocs.map(item => {
+							return {
+								uid: item.id,
+								name: item.docName,
+								status: "done",
+								docPosition: item.docPosition,
+								url: item.docPositionTrueUrl
+							};
+						});
             setTimeout(()=> {
+              this.defaultType = this.editMsg.orderType;
               this.form.setFieldsValue({
                 contractName: this.editMsg.contractName,
                 contractNo: this.editMsg.contractNo,
@@ -231,7 +279,8 @@ export default {
                 orderType: this.editMsg.orderType,
                 orderQuantity: this.editMsg.orderQuantity,
                 undertakeDep: this.editMsg.undertakeDep,
-                remark: this.editMsg.remark
+                remark: this.editMsg.remark,
+                orderDocDTO: result.data.data.orderDocs
                 });
             },100)
 					}
@@ -242,6 +291,13 @@ export default {
   },
   created() {
     this.findOne(this.OrderMessageId)
+  },
+  watch:{
+    OrderMessageId(){
+      if(this.OrderMessageId != ''){
+        this.findOne(this.OrderMessageId)
+      }
+    }
   }
 };
 </script>
