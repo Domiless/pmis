@@ -50,9 +50,9 @@ const columns = [
     width: "60%"
   },
   {
-    dataIndex: "editMan",
+    dataIndex: "userName",
     title: "编辑人",
-    key: "editMan",
+    key: "userName",
     width: "20%"
   },
   {

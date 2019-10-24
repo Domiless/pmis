@@ -8,6 +8,7 @@
               <a-select
                 v-decorator="['workOrderNo', { rules: [{ required:'true', message: '请选择项目订单'}]}]"
                 placeholder="请选择"
+                showSearch
                 @change="sendOrderId"
               >
                 <a-select-option v-for="item in ProjectId" :key="item.no">{{ item.no }}</a-select-option>

@@ -7,7 +7,7 @@
       <a-button @click="editVisible=true" :disabled="selectedRowKeys.length!=1">
         <a-icon style="color:#1890ff;" type="edit" />修改
       </a-button>
-      <a-button :disabled="selectedRowKeys.length!=1">
+      <a-button :disabled="selectedRowKeys.length!=1" @click="approveVisible=true">
         <a-icon style="color:#1890ff;" type="submit" />提交审批
       </a-button>
       <a-button @click="showDeleteConfirm" :disabled="selectedRowKeys.length<1">
@@ -20,7 +20,7 @@
         <a-range-picker style="width:240px" @change="onChangeRange" format="YYYY/MM/DD"></a-range-picker>
         <a-input-group class="changeDis">
           <span>审批状态 : </span>
-          <a-select v-model="state" style="width: 100px" optionFilterProp="children">
+          <a-select :defaultValue="-1" v-model="reviewSchedule" style="width: 100px" optionFilterProp="children">
             <a-select-option :value="-1">全部</a-select-option>
             <a-select-option :value="1">暂存</a-select-option>
             <a-select-option :value="2">审批中</a-select-option>
@@ -30,7 +30,7 @@
           </a-select>
         </a-input-group>
         <span>关键词 :</span>
-        <a-input placeholder="请输入关键词" style="width: 250px" v-model="keyWords"></a-input>
+        <a-input placeholder="项目订单编号/采购单号/申请人" style="width: 250px" v-model="keyWords"></a-input>
         <a-button @click="getList">搜索</a-button>
       </a-col>
     </a-row>
@@ -45,8 +45,14 @@
         <template slot="purchaseNo" slot-scope="text, record">
 						<a href="javascript:" @click="showDetails(record)">{{text}}</a>
 				</template>
-        <template slot="state" slot-scope="text, record">
-          <div>
+        <template slot="isOffer" slot-scope="text">
+						<div style="padding-left: 15px">
+							<a-icon type="close" v-if="text==false" style="color:red;font-size: 16px;" />
+							<a-icon type="check" v-if="text==true" style="color:green;font-size: 16px;" />
+						</div>
+				</template>
+        <template slot="reviewSchedule" slot-scope="text, record">
+          <div style="padding-left: 15px">
             <span v-if="text==2" style="font-size:14px;color:#027DB4;">审批中</span>
             <span v-if="text==1" style="font-size:14px;color:#999999;">暂存</span>
             <a-popover title placement="right">
@@ -95,6 +101,39 @@
      >
       <edit-procurement @cancelEdit="closeEdit" :procurementId="selectedRowKeys[0]"></edit-procurement>
     </a-modal>
+    <a-modal
+				title="提交审批"
+				v-model="approveVisible"
+				:footer="null"
+				width="600px"
+				@cancel="approveVisible=false"
+				:maskClosable="false"
+			>
+				<a-form :form="form">
+					<a-form-item label="选择流程" :labelCol="{span:4}" :wrapperCol="{span:18}">
+						<a-select
+							v-decorator="[
+								'procDefId',
+								{rules: [{ required: true, message: '请选择流程' }]}
+								]"
+							showSearch
+							placeholder="请选择"
+							optionFilterProp="children"
+							style="width: 100%"
+							:filterOption="filterOption"
+						>
+							<a-select-option v-for="(i,j) in userProcess" :key="j" :value="i.id">{{i.name}}</a-select-option>
+						</a-select>
+					</a-form-item>
+					<a-form-item label="说明" :labelCol="{span:4}" :wrapperCol="{span:18}">
+						<a-textarea v-decorator="['description']" :autosize="{ minRows: 4, maxRows: 4 }" />
+					</a-form-item>
+					<a-form-item :wrapper-col="{ span: 20,offset: 4 }" style="text-align:right">
+						<a-button style="margin-right:12px;" @click="approveVisible = false">取消</a-button>
+						<a-button type="primary" @click="auditSubmit">提交</a-button>
+					</a-form-item>
+				</a-form>
+			</a-modal>
     <a-modal
 			title="采购单号详情"
 			:footer="null"
@@ -157,13 +196,14 @@ const columns = [
     dataIndex: "isOffer",
     title: "是否询价",
     key: "isOffer",
+    scopedSlots: { customRender: "isOffer" },
     width: "10%"
   },
   {
-    dataIndex: "state",
+    dataIndex: "reviewSchedule",
     title: "审批状态",
-    key: "state",
-    scopedSlots: { customRender: "state" },
+    key: "reviewSchedule",
+    scopedSlots: { customRender: "reviewSchedule" },
     width: "10%"
   },
   {
@@ -175,6 +215,7 @@ const columns = [
 export default {
   data() {
     return {
+      form: this.$form.createForm(this),
       columns,
       data: [],
       selectedRowKeys: [],
@@ -182,15 +223,61 @@ export default {
       addVisible: false,
       editVisible: false,
       detailsVisible: false,
+      approveVisible: false,
       dateValue: [],
       current: 1,
       pageSize: 10,
       total: 0,
-      state: -1,
-      keyWords: ''
+      reviewSchedule: -1,
+      keyWords: '',
+      userProcess: []
     };
   },
   methods: {
+    auditSubmit() {
+			this.form.validateFieldsAndScroll((err, values) => {
+				if (!err) {
+					console.log("Received values of form: ", values);
+					let qs = require("qs");
+					let data = qs.stringify({
+						purchaseId: this.selectedRowKeys[0],
+						procDefId: values.procDefId,
+						description: values.description
+					});
+					console.log(data);
+
+					this.Axios(
+						{
+							url: "/api-order/purchase/submit",
+							params: data,
+							type: "post",
+							option: { successMsg: "提交成功！" }
+							// config: {
+							// 	headers: { "Content-Type": "application/json" }
+							// }
+						},
+						this
+					).then(
+						result => {
+							if (result.data.code === 200) {
+								console.log(result);
+								this.approveVisible = false;
+								this.form.resetFields();
+								this.getList();
+							}
+						},
+						({ type, info }) => {}
+					);
+				}
+			});
+		},
+    filterOption(input, option) {
+			return (
+				option.componentOptions.children[0].text
+					.toLowerCase()
+					.indexOf(input.toLowerCase()) >= 0
+			);
+		},
     closeAdd(params) {
       this.addVisible = params;
       this.getList();
@@ -227,9 +314,6 @@ export default {
        console.log(this.selectedRowKeys)
     },
     getList() {
-       if(this.state === -1){
-        this.state = ''
-      }
 			this.Axios(
 				{
 					url: "/api-order/purchase/list",
@@ -237,7 +321,7 @@ export default {
          	params: {
 						page: this.current,
             size: this.pageSize,
-            auditState: this.state,
+            auditState: this.reviewSchedule != -1 ? this.reviewSchedule : null,
             keyword: this.keyWords,
 						start: this.dateValue[0] != "" ? this.dateValue[0] : null,
             end: this.dateValue[1] != "" ? this.dateValue[1] : null
@@ -251,9 +335,6 @@ export default {
 						console.log(result);
 						this.data = result.data.data.content;
             this.total = result.data.data.totalElement;
-            if(this.state === ''){
-                this.state = -1
-            }
 					}
 				},
 				({ type, info }) => {}
@@ -298,6 +379,26 @@ export default {
 				({ type, info }) => {}
 			);
     },
+    getUserprocess() {
+			this.Axios(
+				{
+					url: "/api-order/activiti/getUserprocess",
+					// url: "/api-order/activiti/getprocess",
+					type: "get",
+					params: {},
+					option: { enableMsg: false }
+				},
+				this
+			).then(
+				result => {
+					if (result.data.code === 200) {
+						console.log(result);
+						this.userProcess = result.data.data;
+					}
+				},
+				({ type, info }) => {}
+			);
+		}
   },
   components: {
       AddProcurement,
@@ -305,6 +406,7 @@ export default {
   },
   created() {
     this.getList();
+    this.getUserprocess();
   }
 };
 </script>
