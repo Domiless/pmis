@@ -18,12 +18,13 @@
           <a-row>
             <a-form-item label="设计单号" :labelCol="{ span: 3}" :wrapperCol="{ span: 19 }">
               <a-select
+              labelInValue
                 mode="multiple"
                 v-decorator="['bomIdS', { rules: [{ required:'true', message: '请选择设计单号'}]}]"
                 placeholder="请选择"
                 @change="sendId"
               >
-                <a-select-option v-for="item in idArr" :key="item.bomNo">{{ item.bomNo }}</a-select-option>
+                <a-select-option v-for="item in idArr" :key="item.bomNo" :value="item.id">{{ item.bomNo }}</a-select-option>
               </a-select>
             </a-form-item>
           </a-row>
@@ -162,7 +163,7 @@
               <a-input
                 maxlength="20"
                 style="margin: -5px 0"
-                defaultValue="RMB"
+                
                 :value="text"
                 @change="e => handleChangeTable(e.target.value, record.id, 'moneyType')"
               />
@@ -318,6 +319,11 @@ const columns = [
   }
 ];
 export default {
+  props: {
+    sendProcurementNo: {
+      default: ''
+    }
+  },
   data() {
     return {
       form: this.$form.createForm(this),
@@ -375,20 +381,16 @@ export default {
     },
     sendId(value) {
       console.log(value);
-      this.designNameArr = value;
+      this.designNameArr = value.map(item => { 
+        return item.label
+       });
+       this.designIdArr = value.map(item => {
+         return item.key
+       })
       if (value == []) {
         this.data = [];
       } else 
       {
-        for (let i = 0; i < value.length; i++) {
-          for (let j = 0; j < this.idArr.length; j++) {
-            if (value[i] === this.idArr[j].bomNo) {
-              if (this.designIdArr.indexOf(this.idArr[j].id) === -1) {
-                this.designIdArr.push(this.idArr[j].id);
-              }
-            }
-          }
-        }
         console.log(this.designIdArr);
         this.Axios(
           {
@@ -407,6 +409,12 @@ export default {
               this.data = result.data.data;
               this.total = result.data.data.length;
               this.designIdArr = [];
+              this.data = this.data.map(item=>{
+                return {
+                  ...item,
+                  moneyType:"RMB"
+                }
+              })
             }
           },
           ({ type, info }) => {}
@@ -545,6 +553,7 @@ export default {
         result => {
           if (result.data.code === 200) {
             console.log(result);
+            // this.idArr = result.data.data.content.filter(item => { item.bomReviewSchedule === 3 });
             this.idArr = result.data.data.content;
           }
         },

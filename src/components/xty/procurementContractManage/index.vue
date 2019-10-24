@@ -4,7 +4,7 @@
       <a-button @click="addVisible=true">
         <a-icon style="color:#1890ff;" type="plus" />新增
       </a-button>
-      <a-button @click="editVisible=true" :disabled="selectedRowKeys.length!=1">
+      <a-button @click="editShow" :disabled="selectedRowKeys.length!=1">
         <a-icon style="color:#1890ff;" type="edit" />修改
       </a-button>
       <a-button :disabled="selectedRowKeys.length!=1" @click="approveVisible=true">
@@ -78,11 +78,11 @@
           />
     </a-row>
     </a-row>
-    <a-modal title="新增" v-model="addVisible" style="top:20px" width="1200px" :footer="null">
-      <add-procurement-contract @cancelAdd="closeAdd"></add-procurement-contract>
+    <a-modal title="新增" v-model="addVisible" style="top:20px" width="1200px" :footer="null" @cancel="handleCancel(1)">
+      <add-procurement-contract @cancelAdd="closeAdd" ref="addProcurementContract"></add-procurement-contract>
     </a-modal>
-    <a-modal title="修改" v-model="editVisible" style="top:20px" width="1200px" :footer="null">
-      <edit-procurement-contract @cancelEdit="closeEdit" :procurementContractId="selectedRowKeys[0]"></edit-procurement-contract>
+    <a-modal title="修改" v-model="editVisible" style="top:20px" width="1200px" :footer="null" @cancel="handleCancel(2)">
+      <edit-procurement-contract @cancelEdit="closeEdit" :procurementContractId="selectedRowKeys[0]" ref="editProcurementContract"></edit-procurement-contract>
     </a-modal>
     <a-modal
 				title="提交审批"
@@ -122,7 +122,7 @@
       :footer="null"
       width="600px"
       :visible="detailsVisible"
-      @cancel="handleCancel()"
+      @cancel="handleCancel(3)"
       :maskClosable="false"
     >
       <a-row>
@@ -239,6 +239,7 @@ export default {
       columns,
       data: [],
       selectedRowKeys: [],
+      selectedRows: [],
       contractDetails: [],
       dateValue: [],
       addVisible: false,
@@ -254,6 +255,24 @@ export default {
     };
   },
   methods: {
+    handleCancel(num) {
+      if( num == 1 ) {
+        this.$refs.addProcurementContract.close();
+      }
+      if( num == 2 ) {
+        this.$refs.editProcurementContract.close();
+      }
+      if( num == 3 ) {
+        this.detailsVisible = false;
+      }
+    },
+    editShow(){
+       if (this.selectedRows[0].reviewSchedule != 1) {
+				this.$message.error(`只能对暂存状态的订单进行修改！`);
+			} else {
+				this.editVisible = true;
+			}
+    },
     auditSubmit() {
 			this.form.validateFieldsAndScroll((err, values) => {
 				if (!err) {
@@ -305,6 +324,7 @@ export default {
     closeEdit(params){
       this.editVisible = params;
       this.getList();
+      this.selectedRowKeys = [];
     },
     onChange(current, pageNumber) {
       console.log("Page: ", pageNumber);
@@ -321,12 +341,11 @@ export default {
       this.dateValue = datestring;
       console.log(this.dateValue)
     },
-    handleCancel() {
-      this.detailsVisible = false;
-    },
-    onSelectChange(selectedRowKeys) {
+    onSelectChange(selectedRowKeys,selectedRows) {
        this.selectedRowKeys = selectedRowKeys;
-       console.log(this.selectedRowKeys)
+       this.selectedRows = selectedRows;
+       console.log(this.selectedRowKeys);
+       console.log(this.selectedRows);
     },
     showDetails(row) {
       this.contractDetails = row;

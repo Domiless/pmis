@@ -46,7 +46,7 @@
             :showTotal="total => `共 ${total} 条`"
 			    />
     </a-row>
-    <a-modal title="新增" v-model="addVisible"   :footer="null" width="800px">
+    <a-modal title="新增" v-model="addVisible"   :footer="null" width="800px" @cancel="cancelAdd">
       <a-form :form="form">
         <a-row>
           <a-form-item label="供应商编码" :labelCol="{ span: 4}" :wrapperCol="{ span: 18}">
@@ -151,13 +151,13 @@
         </a-row>
         <a-row>
           <a-form-item :wrapper-col="{ span: 20,offset: 2 }" style="text-align:right">
-            <a-button @click="cancelAdd()" style="margin-right:12px;">关闭</a-button>
+            <a-button @click="cancelAdd" style="margin-right:12px;">关闭</a-button>
 						<a-button type="primary" @click="addSupplier()">提交</a-button>
 					</a-form-item>
         </a-row>
       </a-form>
     </a-modal>
-    <a-modal title="修改" v-model="editVisible"   :footer="null" width="800px">
+    <a-modal title="修改" v-model="editVisible"   :footer="null" width="800px" @cancel="cancelEdit">
       <a-form :form="form">
         <a-row>
           <a-form-item label="供应商编码" :labelCol="{ span: 4}" :wrapperCol="{ span: 18}">
@@ -270,7 +270,7 @@
         </a-row>
         <a-row>
           <a-form-item :wrapper-col="{ span: 20,offset: 2 }" style="text-align:right">
-            <a-button @click="editVisible=false" style="margin-right:12px;">关闭</a-button>
+            <a-button @click="cancelEdit" style="margin-right:12px;">关闭</a-button>
 						<a-button type="primary" @click="updata()">提交</a-button>
 					</a-form-item>
         </a-row>
@@ -383,6 +383,11 @@ export default {
     };
   },
   methods: {
+    cancelEdit(){
+      this.editVisible = false;
+      this.form.resetFields();
+      this.selectedRowKeys = [];
+    },
     showDetails(row) {
       this.supplierDetails = row;
       this.detailsVisible = true;
