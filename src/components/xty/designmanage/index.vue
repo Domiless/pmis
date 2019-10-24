@@ -11,7 +11,7 @@
 				<!-- <a-button @click="addBomVisible=true">
 					<a-icon style="color:#1890ff;" type />BOM管理
 				</a-button>-->
-				<a-button :disabled="selectedRowKeys.length!=1">
+				<a-button :disabled="selectedRowKeys.length!=1" @click="download">
 					<a-icon style="color:#1890ff;" type />BOM导出
 				</a-button>
 				<a-button :disabled="selectedRowKeys.length!=1" @click="addBomVisible=true">
@@ -231,6 +231,36 @@ export default {
 		};
 	},
 	methods: {
+		download() {
+			let qs = require("qs");
+			let value = qs.stringify({
+				bomId: this.selectedRowKeys[0]
+			});
+			this.$axios
+				.post(this.global.apiSrc + "/api-order/bom/exportExcel", value, {
+					responseType: "blob", // 设置响应数据类型
+					// headers: { "Content-Type": "application/json" }
+				})
+				.then(res => {
+					if (res.status == 200) {
+						console.log(res);
+						var blob = new Blob([res.data], {
+							type:
+								"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
+						});
+						var downloadElement = document.createElement("a");
+						var href = window.URL.createObjectURL(blob); //创建下载的链接
+						downloadElement.href = href;
+						let fileName;
+						fileName = this.selectedRows[0].partName;
+						downloadElement.download = fileName + "BOM单.xlsx"; //下载后文件名
+						document.body.appendChild(downloadElement);
+						downloadElement.click(); //点击下载
+						document.body.removeChild(downloadElement); //下载完成移除元素
+						window.URL.revokeObjectURL(href); //释放掉blob对象
+					}
+				});
+		},
 		auditSubmit() {
 			this.form.validateFieldsAndScroll((err, values) => {
 				if (!err) {

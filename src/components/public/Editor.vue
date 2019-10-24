@@ -87,11 +87,11 @@ export default {
 		}
 	},
 	created() {
-		tinymceHtml: this.value;
+		this.tinymceHtml = this.value;
 	},
 	watch: {
 		value() {
-			tinymceHtml: this.value;
+			this.tinymceHtml = this.value;
 		},
 		tinymceHtml() {
 			this.$emit("tinymceValue", this.tinymceHtml);

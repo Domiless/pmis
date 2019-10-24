@@ -12,7 +12,7 @@
 					<permission-button
 						permCode
 						banType="hide"
-						@click="editVisible = true;"
+						@click="findOne"
 						:disabled="selectedRowKeys.length!=1"
 					>
 						<a-icon style="color:#1890ff;" type="edit" />修改
@@ -60,10 +60,10 @@
 			<a-form :form="form">
 				<a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 21 }" label="分类">
 					<!-- <a-input v-decorator="['workType',{rules: [{ required: true, message: '请选择分类' }]}]"></a-input> -->
-					<a-select v-decorator="['workType',{rules: [{ required: true, message: '请选择分类' }]}]">
-						<a-select-option :value="1">公告</a-select-option>
-						<a-select-option :value="2">产品</a-select-option>
-						<a-select-option :value="3">其他</a-select-option>
+					<a-select v-decorator="['type',{rules: [{ required: true, message: '请选择分类' }]}]">
+						<a-select-option value="公告">公告</a-select-option>
+						<a-select-option value="产品">产品</a-select-option>
+						<a-select-option value="其他">其他</a-select-option>
 					</a-select>
 				</a-form-item>
 				<a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 21 }" label="标题">
@@ -77,7 +77,7 @@
 				</a-form-item>
 				<a-form-item :wrapper-col="{ span: 22,offset: 2 }" style="text-align:right;">
 					<a-button @click="cancel(1)" style="margin-right:12px;">取消</a-button>
-					<a-button type="primary" @click>提交</a-button>
+					<a-button type="primary" @click="add">提交</a-button>
 				</a-form-item>
 			</a-form>
 		</a-modal>
@@ -93,7 +93,7 @@
 			<a-form :form="form">
 				<a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 21 }" label="分类">
 					<!-- <a-input v-decorator="['workType',{rules: [{ required: true, message: '请选择分类' }]}]"></a-input> -->
-					<a-select v-decorator="['workType',{rules: [{ required: true, message: '请选择分类' }]}]">
+					<a-select v-decorator="['type',{rules: [{ required: true, message: '请选择分类' }]}]">
 						<a-select-option :value="1">公告</a-select-option>
 						<a-select-option :value="2">产品</a-select-option>
 						<a-select-option :value="3">其他</a-select-option>
@@ -110,7 +110,7 @@
 				</a-form-item>
 				<a-form-item :wrapper-col="{ span: 22,offset: 2 }" style="text-align:right;">
 					<a-button @click="cancel(2)" style="margin-right:12px;">取消</a-button>
-					<a-button type="primary" @click>提交</a-button>
+					<a-button type="primary" @click="edit">提交</a-button>
 				</a-form-item>
 			</a-form>
 		</a-modal>
@@ -132,8 +132,8 @@ const columns = [
 		key: "title"
 	},
 	{
-		dataIndex: "time",
-		key: "time",
+		dataIndex: "gmtCreated",
+		key: "gmtCreated",
 		title: "发布时间",
 		width: "20%"
 	}
@@ -141,7 +141,7 @@ const columns = [
 export default {
 	data() {
 		return {
-			editorValue: "<p>2222</p><p>3333</p>",
+			editorValue: "",
 			editVisible: false,
 			addVisible: false,
 			columns,
@@ -164,7 +164,7 @@ export default {
 	methods: {
 		tinymceValue(params) {
 			this.content = params;
-			console.log(params);
+			// console.log(params);
 		},
 		cancel(a) {
 			if (a == 1) {
@@ -183,13 +183,13 @@ export default {
 		onShowSizeChange(current, pageSize) {
 			this.pageSize = pageSize;
 			this.current = 1;
-			// this.getList();
+			this.getList();
 		},
 		onChange(current, pageNumber) {
 			console.log("Page: ", pageNumber);
 			console.log("第几页: ", current);
 			this.current = current;
-			// this.getList();
+			this.getList();
 		},
 		onSelectChange(selectedRowKeys, b) {
 			this.selectedRowKeys = selectedRowKeys;
@@ -213,11 +213,11 @@ export default {
 		onDelete() {
 			let qs = require("qs");
 			let data = qs.stringify({
-				workTypeId: this.selectedRowKeys[0]
+				id: this.selectedRowKeys[0]
 			});
 			this.Axios(
 				{
-					url: "/api-platform/workType/del",
+					url: "/api-order/message/delete",
 					params: data,
 					type: "post",
 					option: { successMsg: "删除成功！" }
@@ -234,14 +234,12 @@ export default {
 				({ type, info }) => {}
 			);
 		},
-		getList() {
+		findOne() {
 			this.Axios(
 				{
-					url: "/api-platform/employee/list",
+					url: "/api-order/message/findOne",
 					params: {
-						page: this.current,
-						size: this.pageSize,
-						param: this.param
+						id: this.selectedRowKeys[0]
 					},
 					type: "get",
 					option: { enableMsg: false }
@@ -251,13 +249,119 @@ export default {
 				result => {
 					if (result.data.code === 200) {
 						console.log(result);
+						this.editorValue = result.data.data.content;
+						this.content = result.data.data.content;
+						setTimeout(() => {
+							this.form.setFieldsValue({
+								type: result.data.data.type,
+								title: result.data.data.title
+							});
+						}, 100);
+						this.editVisible = true;
 					}
 				},
 				({ type, info }) => {}
 			);
+		},
+		getList() {
+			this.Axios(
+				{
+					url: "/api-order/message/list",
+					params: {
+						page: this.current,
+						size: this.pageSize
+					},
+					type: "get",
+					option: { enableMsg: false }
+				},
+				this
+			).then(
+				result => {
+					if (result.data.code === 200) {
+						console.log(result);
+						this.data = result.data.data.content;
+						this.total = result.data.data.totalElement;
+						this.selectedRowKeys = [];
+						this.selectedRows = [];
+					}
+				},
+				({ type, info }) => {}
+			);
+		},
+		add() {
+			this.form.validateFieldsAndScroll((err, values) => {
+				console.log(values);
+				if (!err) {
+					let qs = require("qs");
+					let data = qs.stringify({
+						title: values.title,
+						type: values.type,
+						content: this.content
+					});
+					this.Axios(
+						{
+							url: "/api-order/message/add",
+							params: data,
+							type: "post",
+							option: { successMsg: "保存成功" }
+						},
+						this
+					).then(
+						result => {
+							if (result.data.code === 200) {
+								console.log(result);
+								this.getList();
+								this.form.resetFields();
+								this.addVisible = false;
+								this.editorValue = "";
+								this.$refs.addEditor.clearValue();
+							}
+						},
+						({ type, info }) => {}
+					);
+				}
+			});
+		},
+		edit() {
+			this.form.validateFieldsAndScroll((err, values) => {
+				console.log(values);
+				if (!err) {
+					let qs = require("qs");
+					let data = qs.stringify({
+						id: this.selectedRowKeys[0],
+						title: values.title,
+						type: values.type,
+						content: this.content
+					});
+					this.Axios(
+						{
+							url: "/api-order/message/update",
+							params: data,
+							type: "post",
+							option: { successMsg: "修改成功" }
+						},
+						this
+					).then(
+						result => {
+							if (result.data.code === 200) {
+								console.log(result);
+								this.getList();
+								this.form.resetFields();
+								this.editVisible = false;
+								this.editorValue = "";
+								this.$refs.addEditor.clearValue();
+								this.content = "";
+							}
+						},
+						({ type, info }) => {}
+					);
+				}
+			});
 		}
 	},
-	created() {},
+	created() {
+		this.getList();
+	},
 	components: {
 		editor
 	}

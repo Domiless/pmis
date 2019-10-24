@@ -137,6 +137,7 @@ export default {
 			this.$emit("addCancel");
 		},
 		getAuditor(params) {
+			console.log(params);
 			if (params.value.type == 2) {
 				this.node[this.nodeIndex].candidateGroups = {};
 				this.node[this.nodeIndex].candidateUsers = [];
