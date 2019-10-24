@@ -40,7 +40,7 @@
 								</a-form-item>
 							</a-form>
 						</a-modal>
-						<ul class="header_menu_case">
+						<ul class="header_menu_case" v-if="userType!=0">
 							<li
 								class="header_menu_style"
 								v-for="(item,index) in headerMenuGroup"
@@ -104,7 +104,7 @@
 				>
 					<a-menu
 						mode="inline"
-						:defaultOpenKeys="['workdesk']"
+						:defaultOpenKeys="['workdesk','system','enterprise','workOrder','process','materialManagement','dataAnalysis','project','procurement','design']"
 						:selectable="false"
 						:style="{ height: '100%', borderRight: 0 }"
 					>
@@ -250,43 +250,43 @@ export default {
 				},
 				{
 					title: "生产",
-					icon: "&#xe60a;",
+					icon: "&#xe608;",
 					key: "production",
 					disable: false
 				},
 				{
 					title: "项目",
-					icon: "&#xe60a;",
+					icon: "&#xe60f;",
 					key: "project",
 					disable: false
 				},
 				{
 					title: "设计",
-					icon: "&#xe60a;",
+					icon: "&#xe646;",
 					key: "design",
 					disable: false
 				},
 				{
 					title: "采购",
-					icon: "&#xe60a;",
+					icon: "&#xe60e;",
 					key: "procurement",
 					disable: false
 				},
 				{
 					title: "仓库",
-					icon: "&#xe60a;",
+					icon: "&#xe609;",
 					key: "warehouse",
 					disable: false
 				},
 				{
 					title: "统计",
-					icon: "&#xe60a;",
+					icon: "&#xe610;",
 					key: "statistics ",
 					disable: false
 				},
 				{
 					title: "系统",
-					icon: "&#xe60a;",
+					icon: "&#xe741;",
 					key: "system",
 					disable: false
 				}
@@ -496,24 +496,32 @@ export default {
 		$route() {},
 		tabsList() {
 			this.cachedViews = this.tabsList.map(item => item.key);
+			if (this.tabsList.length > 13) {
+				this.tabsList.shift();
+			}
 		}
 	},
 	created() {
 		let menuKey = sessionStorage.getItem("menuKey");
-		this.menuSourceMap =
-			menuKey == "production"
-				? productionMap
-				: menuKey == "home"
-				? homeMap
-				: menuKey == "design"
-				? designMap
-				: menuKey == "project"
-				? projectMap
-				: menuKey == "procurement"
-				? procurementMap
-				: menuKey == "system"
-				? systemMap
-				: homeMap;
+		if (this.userType == 0) {
+			this.menuSourceMap = productionMap;
+		} else {
+			this.menuSourceMap =
+				menuKey == "production"
+					? productionMap
+					: menuKey == "home"
+					? homeMap
+					: menuKey == "design"
+					? designMap
+					: menuKey == "project"
+					? projectMap
+					: menuKey == "procurement"
+					? procurementMap
+					: menuKey == "system"
+					? systemMap
+					: homeMap;
+		}
+
 		this.initPermission();
 		// this.initHeaderMenu();
 	}
@@ -553,7 +561,7 @@ input[type="number"] {
 		list-style-type: none;
 		line-height: 24px;
 		text-align: center;
-		width: 120px;
+		width: 88px;
 		height: 60px;
 		padding-top: 10px;
 		&:hover {

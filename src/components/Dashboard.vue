@@ -10,13 +10,15 @@
 				<div class="things_case">
 					<a-tabs defaultActiveKey="1" class="tabs_style">
 						<a-tab-pane tab="待办事项" key="1">
-							<ul v-if="things>0" class="list_case">
-								<li v-for="(item, index) in things" :key="index" class="list">
+							<ul v-if="pendingValue.length>0" class="list_case">
+								<li v-for="(item, index) in pendingValue" :key="index" class="list">
 									<a-col :span="3">20191012</a-col>
-									<a-col :span="3">项目订单</a-col>
-									<a-col :span="10">张三发起的项目订单流程审批111111111111111</a-col>
-									<a-col :span="4">2019-10-12 14:23:01</a-col>
-									<a-col :span="4">4天23小时46分</a-col>
+									<a-col
+										:span="3"
+									>{{item.type==1?"项目订单":item.type==2?"项目设计":item.type==3?"采购询价":item.type==4?"采购合同":""}}</a-col>
+									<a-col :span="10">{{item.name}}</a-col>
+									<a-col :span="4">{{item.startTime}}</a-col>
+									<a-col :span="4">{{item.time}}</a-col>
 								</li>
 							</ul>
 							<div style="text-align:center;line-height:100px;" v-else>暂无待办事项</div>
@@ -25,59 +27,63 @@
 									size="small"
 									@change="onChange"
 									:current="current"
-									:total="50"
-									:showTotal="total => `共 ${total} 条`"
+									:total="totle"
+									:showTotal="totle => `共 ${totle} 条`"
 								/>
 							</div>
 						</a-tab-pane>
 						<a-tab-pane tab="已办事项" key="2" forceRender>
-							<ul v-if="things>0" class="list_case">
-								<li v-for="(item, index) in things" :key="index" class="list">
+							<ul v-if="alreadyValue.length>0" class="list_case">
+								<li v-for="(item, index) in alreadyValue" :key="index" class="list">
 									<a-col :span="3">20191012</a-col>
-									<a-col :span="3">项目订单</a-col>
-									<a-col :span="10">张三发起的项目订单流程审批111111111111111</a-col>
-									<a-col :span="4">2019-10-12 14:23:01</a-col>
-									<a-col :span="4">4天23小时46分</a-col>
+									<a-col
+										:span="3"
+									>{{item.type==1?"项目订单":item.type==2?"项目设计":item.type==3?"采购询价":item.type==4?"采购合同":""}}</a-col>
+									<a-col :span="10">{{item.name}}</a-col>
+									<a-col :span="4">{{item.startTime}}</a-col>
+									<a-col :span="4">{{item.time}}</a-col>
 								</li>
 							</ul>
-							<div style="text-align:center;line-height:100px;" v-else>暂无待办事项</div>
+							<div style="text-align:center;line-height:100px;" v-else>暂无已办事项</div>
 							<div style="text-align:right;">
 								<a-pagination
 									size="small"
 									@change="onChange2"
 									:current="current2"
-									:total="50"
-									:showTotal="total => `共 ${total} 条`"
+									:total="totle2"
+									:showTotal="totle2 => `共 ${totle2} 条`"
 								/>
 							</div>
 						</a-tab-pane>
 					</a-tabs>
 				</div>
 				<div class="msg_style">
-					<a-badge count="5" class="badge_style">
+					<a-badge count="0" class="badge_style">
 						<a></a>
 					</a-badge>
 					<h3>消息通知</h3>
-					<ul class="list_case">
-						<li v-for="(item, index) in 30" :key="index" class="list">
+					<ul class="list_case" v-if="messageValue.length>0">
+						<li v-for="(item, index) in messageValue" :key="index" class="list">
 							<a-col :span="20">
-								<a-col :span="2" style="color:#999999">[业务]</a-col>
+								<a-col :span="2" style="color:#999999">[{{item.type}}]</a-col>
 								<a-col :span="22">
-									<i class="iconfont" style="color:red;">&#xe607;</i>有1条项目订单需要采购，请尽快处理，设计单号SJ-20190901-0001。
+									<i class="iconfont" style="color:red;">&#xe607;</i>
+									<span class="content_style" @click="msgShow(item)">{{item.title}}</span>
 								</a-col>
 							</a-col>
 							<a-col :span="4">
-								<span>2019-10-12 14:23:01</span>
+								<span>{{item.gmtCreated}}</span>
 							</a-col>
 						</li>
 					</ul>
+					<div style="text-align:center;line-height:100px;" v-else>暂无消息通知</div>
 					<div style="text-align:right;">
 						<a-pagination
 							size="small"
 							@change="onChange1"
 							:current="current1"
-							:total="50"
-							:showTotal="total => `共 ${total} 条`"
+							:total="totle1"
+							:showTotal="totle1 => `共 ${totle1} 条`"
 						/>
 					</div>
 				</div>
@@ -88,17 +94,7 @@
 				</div>
 				<div class="blackboard">
 					<h2>小黑板</h2>
-					<p>常用联系人及联系方式：</p>
-					<p>
-						项目部 张三 15012345678
-						<br />设计部一部 李四 15012345678
-						<br />设计部二部 王五 15012345678
-						<br />采购部 赵六 15012345678
-						<br />制造部 钱七 15012345678
-						<br />仓库 我爱罗 15012345678
-						<br />技术支持 汪宁 15012345678
-						<br />
-					</p>
+					<div v-html="blackboardValue"></div>
 				</div>
 				<div class="erweima">
 					<a-col :span="10">
@@ -115,6 +111,20 @@
 				</div>
 			</a-col>
 		</a-row>
+		<a-modal
+			title="消息通知 "
+			:maskClosable="false"
+			centered
+			width="600px"
+			:visible="msgVisible"
+			:footer="null"
+			@cancel="cancel(2)"
+			class="modal_body_style"
+		>
+			<h3 style="text-align:center;font-weight:900;">{{msgValue.title}}</h3>
+			<div v-html="msgValue.content"></div>
+			<div style="text-align:right;">{{msgValue.gmtCreated}}</div>
+		</a-modal>
 	</div>
 </template>
 <script>
@@ -125,26 +135,47 @@ export default {
 	name: "dashboard",
 	data() {
 		return {
+			msgVisible: false,
 			detailsVisible: true,
 			msg: "Welcome to Your Dashboard",
-			things: 10,
+
 			current: 1,
 			current1: 1,
-			current2: 1
+			current2: 1,
+			totle: 0,
+			totle1: 0,
+			totle2: 0,
+			pendingValue: [],
+			alreadyValue: [],
+			messageValue: [],
+			blackboardValue: "",
+			msgValue: {}
 		};
 	},
 	methods: {
+		msgShow(item) {
+			this.msgValue = item;
+			this.msgVisible = true;
+		},
+		cancel(a) {
+			if (a == 2) {
+				this.msgVisible = false;
+			}
+		},
 		onPanelChange(value, mode) {
 			console.log(value, mode);
 		},
 		onChange(current) {
 			this.current = current;
+			this.getPending();
 		},
 		onChange1(current) {
 			this.current1 = current;
+			this.getMessageList();
 		},
 		onChange2(current) {
 			this.current2 = current;
+			this.getAlready();
 		},
 		clickMsg() {
 			// this.msg='I had change Dashboard';
@@ -153,7 +184,10 @@ export default {
 			this.Axios(
 				{
 					url: "/api-order/activiti/pendingTask",
-					params: {},
+					params: {
+						page: this.current,
+						size: 10
+					},
 					type: "get",
 					option: { enableMsg: false }
 				},
@@ -162,6 +196,11 @@ export default {
 				result => {
 					if (result.data.code === 200) {
 						console.log(result);
+						this.pendingValue =
+							result.data.data != null ? result.data.data.data : [];
+						this.totle = parseInt(
+							result.data.data != null ? result.data.data.totalElement : 0
+						);
 					}
 				},
 				({ type, info }) => {}
@@ -171,7 +210,10 @@ export default {
 			this.Axios(
 				{
 					url: "/api-order/activiti/alreadyTask",
-					params: {},
+					params: {
+						page: this.current2,
+						size: 10
+					},
 					type: "get",
 					option: { enableMsg: false }
 				},
@@ -180,6 +222,53 @@ export default {
 				result => {
 					if (result.data.code === 200) {
 						console.log(result);
+						this.alreadyValue =
+							result.data.data != null ? result.data.data.data : [];
+						this.totle2 = parseInt(
+							result.data.data != null ? result.data.data.totalElement : 0
+						);
+					}
+				},
+				({ type, info }) => {}
+			);
+		},
+		getBlackboard() {
+			this.Axios(
+				{
+					url: "/api-order/blackborad/get",
+					params: {},
+					type: "get",
+					option: { enableMsg: false }
+				},
+				this
+			).then(
+				result => {
+					if (result.data.code === 200) {
+						// console.log(result);
+						this.blackboardValue = result.data.data;
+					}
+				},
+				({ type, info }) => {}
+			);
+		},
+		getMessageList() {
+			this.Axios(
+				{
+					url: "/api-order/message/list",
+					params: {
+						page: this.current1,
+						size: 10
+					},
+					type: "get",
+					option: { enableMsg: false }
+				},
+				this
+			).then(
+				result => {
+					if (result.data.code === 200) {
+						// console.log(result);
+						this.messageValue = result.data.data.content;
+						this.totle1 = result.data.data.totalElement;
 					}
 				},
 				({ type, info }) => {}
@@ -189,6 +278,8 @@ export default {
 	created() {
 		this.getPending();
 		this.getAlready();
+		this.getBlackboard();
+		this.getMessageList();
 	},
 	components: {}
 };
@@ -287,9 +378,11 @@ export default {
 					overflow: hidden;
 					white-space: nowrap;
 					cursor: pointer;
-					&:hover {
-						color: #40a9ff;
-						text-decoration: underline;
+					.content_style {
+						&:hover {
+							color: #40a9ff;
+							text-decoration: underline;
+						}
 					}
 				}
 				.ant-col-2 {
@@ -335,6 +428,16 @@ export default {
 			line-height: 32px;
 			padding-left: 12px;
 			color: #999999;
+		}
+	}
+}
+.modal_body_style {
+	.ant-modal-body {
+		padding: 12px 24px;
+		max-height: 600px;
+		overflow: auto;
+		img {
+			width: 100%;
 		}
 	}
 }

@@ -3,13 +3,20 @@
 //route和routeReg为匹配路由，二者必须有一个，若都有则为“或”逻辑
 export default [{
   menu: '设计管理',
-  permissionCode: 'workdesk',
+  permissionCode: 'design',
   icon: '&#xe60a;',
   defaultDock: true,
   subMenu: [{
-    menu: '设计列表',
-    route: '/designmanage',
-    key: 'designmanage',
-    permissionCode: 'workdesk_desk_lookup',
-  }, ]
+      menu: '设计列表',
+      route: '/designmanage',
+      key: 'designmanage',
+      permissionCode: 'workdesk_desk_lookup',
+    },
+    {
+      menu: '图纸列表',
+      route: '/DrawingsList',
+      key: 'drawingsList',
+      permissionCode: 'drawing_drawing_lookup'
+    }
+  ]
 }, ]

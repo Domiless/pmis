@@ -3,7 +3,7 @@
 		<a-row>
 			<div style="line-height:50px;">
 				<a-col :span="24">
-					<permission-button permCode banType="hide" @click="addVisible = true;">
+					<permission-button permCode banType="hide" @click="save">
 						<a-icon style="color:#1890ff;" type="plus" />保存
 					</permission-button>
 				</a-col>
@@ -29,9 +29,53 @@ export default {
 		tinymceValue(params) {
 			this.content = params;
 			console.log(params);
+		},
+		getList() {
+			this.Axios(
+				{
+					url: "/api-order/blackborad/get",
+					params: {},
+					type: "get",
+					option: { enableMsg: false }
+				},
+				this
+			).then(
+				result => {
+					if (result.data.code === 200) {
+						console.log(result);
+						this.editorValue = result.data.data;
+					}
+				},
+				({ type, info }) => {}
+			);
+		},
+		save() {
+			let qs = require("qs");
+			let data = qs.stringify({
+				content: this.content
+			});
+			this.Axios(
+				{
+					url: "/api-order/blackborad/save",
+					params: data,
+					type: "post",
+					option: { successMsg: "保存成功" }
+				},
+				this
+			).then(
+				result => {
+					if (result.data.code === 200) {
+						console.log(result);
+						this.getList();
+					}
+				},
+				({ type, info }) => {}
+			);
 		}
 	},
-	created() {},
+	created() {
+		this.getList();
+	},
 	components: {
 		editor
 	}

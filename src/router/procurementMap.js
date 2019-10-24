@@ -3,7 +3,7 @@
 //route和routeReg为匹配路由，二者必须有一个，若都有则为“或”逻辑
 export default [{
   menu: '采购管理',
-  permissionCode: 'workdesk',
+  permissionCode: 'procurement',
   icon: '&#xe60a;',
   defaultDock: true,
   subMenu: [{
