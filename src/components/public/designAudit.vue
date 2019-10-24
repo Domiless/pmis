@@ -334,6 +334,7 @@ export default {
 			this.detailsValue = this.auditValue;
 			this.detailsValue.log.pop();
 			this.getModel();
+			this.data = this.auditValue.DO.bomDes;
 		}
 	}
 };

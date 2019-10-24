@@ -138,21 +138,112 @@
 <script>
 const columns = [
 	{
+		dataIndex: "drawingNo",
 		title: "图号",
-		width: 150,
-		dataIndex: "name",
-		key: "name"
+		key: "drawingNo",
+		width: 100
 	},
-	{ title: "名称", dataIndex: "address", key: "1", width: 150 },
-	{ title: "装入部件号", dataIndex: "address", key: "2", width: 150 },
-	{ title: "组件中零件数量", dataIndex: "address", key: "3", width: 150 },
-	{ title: "单件中零件数量", dataIndex: "address", key: "4", width: 150 },
-	{ title: "需求总数量", dataIndex: "address", key: "5", width: 150 },
-	{ title: "装入整件号", dataIndex: "address", key: "6", width: 150 },
-	{ title: "领料单位", dataIndex: "address", key: "7", width: 150 },
-	{ title: "备注", dataIndex: "address", key: "8", width: 150 },
-	{ title: "零件类别", dataIndex: "address", key: "9", width: 150 },
-	{ title: "指定品牌", dataIndex: "address", key: "10", width: 150 }
+	{
+		dataIndex: "name",
+		title: "名称",
+		key: "name",
+		width: 100
+	},
+	{
+		dataIndex: "number",
+		title: "需求数量",
+		key: "number",
+		width: 100
+	},
+	{
+		dataIndex: "brand",
+		title: "指定品牌",
+		key: "brand",
+		width: 100
+	},
+	{
+		dataIndex: "designer",
+		title: "设计师",
+		key: "designer",
+		width: 100
+	},
+	{
+		dataIndex: "orderNum",
+		title: "订单数量",
+		key: "orderNum",
+		slots: { title: "orderNumTitle" },
+		scopedSlots: { customRender: "orderNum" },
+		width: 100
+	},
+	{
+		dataIndex: "orderUnit",
+		title: "订单单位",
+		key: "orderUnit",
+		slots: { title: "orderUnitTitle" },
+		scopedSlots: { customRender: "orderUnit" },
+		width: 100
+	},
+	{
+		dataIndex: "deliveryDate",
+		title: "交货日期",
+		key: "deliveryDate",
+		slots: { title: "deliveryDateTitle" },
+		scopedSlots: { customRender: "deliveryDate" },
+		width: 120
+	},
+	{
+		dataIndex: "unitPrice",
+		title: "单价",
+		key: "unitPrice",
+		slots: { title: "unitPriceTitle" },
+		scopedSlots: { customRender: "unitPrice" },
+		width: 100
+	},
+	{
+		dataIndex: "taxrate",
+		title: "税率",
+		key: "taxrate",
+		slots: { title: "taxrateTitle" },
+		scopedSlots: { customRender: "taxrate" },
+		width: 100
+	},
+	{
+		dataIndex: "supplier",
+		title: "供应商",
+		key: "supplier",
+		slots: { title: "supplierTitle" },
+		scopedSlots: { customRender: "supplier" },
+		width: 100
+	},
+	{
+		dataIndex: "priceUnit",
+		title: "价格单位",
+		key: "priceUnit",
+		slots: { title: "priceUnitTitle" },
+		scopedSlots: { customRender: "priceUnit" },
+		width: 100
+	},
+	{
+		dataIndex: "moneyType",
+		title: "货币类型",
+		key: "moneyType",
+		slots: { title: "moneyTypeTitle" },
+		scopedSlots: { customRender: "moneyType" },
+		width: 100
+	},
+	{
+		dataIndex: "remark",
+		title: "备注",
+		key: "remark",
+		scopedSlots: { customRender: "remark" },
+		width: 100
+	},
+	{
+		dataIndex: "summation",
+		title: "小计",
+		key: "summation",
+		width: 100
+	}
 ];
 const data = [];
 for (let i = 0; i < 100; i++) {
@@ -269,6 +360,7 @@ export default {
 			this.detailsValue = this.auditValue;
 			this.detailsValue.log.pop();
 			this.getModel();
+			this.data = this.auditValue.DO.purchaseDesDOList;
 		}
 	}
 };

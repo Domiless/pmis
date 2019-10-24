@@ -153,7 +153,7 @@
 			<designAudit v-on:auditParams="auditParams" :auditValue="auditValue"></designAudit>
 		</a-modal>
 		<a-modal
-			title="采购审批 "
+			title="采购合同审批 "
 			:maskClosable="false"
 			centered
 			width="800px"
@@ -214,6 +214,18 @@ export default {
 		auditParams(params) {
 			if (params.type == 1) {
 				this.orderAuditVisible == false;
+				this.getPending();
+			}
+			if (params.type == 2) {
+				this.designAuditVisible == false;
+				this.getPending();
+			}
+			if (params.type == 3) {
+				this.enquiryAuditVisible == false;
+				this.getPending();
+			}
+			if (params.type == 4) {
+				this.purchaseContractAuditVisible == false;
 				this.getPending();
 			}
 		},
