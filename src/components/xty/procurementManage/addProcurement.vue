@@ -47,7 +47,7 @@
           rowKey="id"
           :columns="columns"
           :dataSource="data"
-          :pagination="false"
+          :pagination="true"
           :scroll="{ x: 1900, y: 500 }"
         >
           <span slot="orderNumTitle">
@@ -179,11 +179,20 @@
               />
             </div>
           </template>
+          <template slot="summation" slot-scope="text">
+            <span>{{text}}</span>
+          </template>
         </a-table>
-        <a-col :span="12" style="padding-top: 12px; height: 36px;">
+        <div style="position: relative">
+          <div style="position: absolute; top: -45px;font-size: 16px">
+            <span>合计：{{totalMoney}}</span>
+            <!-- <span style="margin-left: 885px">共 {{total}} 条</span> -->
+          </div>
+        </div>
+        <!-- <a-col :span="12" style="padding-top: 12px; height: 36px;">
           <span style="line-height: 12px">合计：</span>
-        </a-col>
-        <a-col :span="12">
+        </a-col> -->
+        <!-- <a-col :span="12">
           <a-pagination
             style="padding-top:12px;text-align: right;"
             size="small"
@@ -195,12 +204,12 @@
             showSizeChanger
             :pageSizeOptions="['10','20','50','100']"
             :showTotal="total => `共 ${total} 条`"
-          ></a-pagination>
-        </a-col>
+          ></a-pagination> -->
+        <!-- </a-col> -->
       </a-tab-pane>
     </a-tabs>
     <a-row>
-      <a-form-item :wrapper-col="{ span: 20,offset: 2 }" style="text-align:right">
+      <a-form-item :wrapper-col="{ span: 22,offset: 2 }" style="text-align:right">
         <a-button style="margin-right:12px;" @click="close">关闭</a-button>
         <a-button type="primary" @click="addProcurement">提交</a-button>
       </a-form-item>
@@ -315,6 +324,7 @@ const columns = [
     dataIndex: "summation",
     title: "小计",
     key: "summation",
+    scopedSlots: { customRender: "summation" },
     width: 100
   }
 ];
@@ -339,7 +349,8 @@ export default {
       priceArr: [],
       bomName: "",
       designIdArr: [],
-      designNameArr: []
+      designNameArr: [],
+      totalMoney: 0
     };
   },
   methods: {
@@ -352,8 +363,10 @@ export default {
       const target = newData.filter(item => key === item.id)[0];
       if (target) {
         target[column] = value;
+        target.summation = target.orderNum * target.unitPrice * target.taxrate + target.orderNum * target.unitPrice;
         this.data = newData;
       }
+       this.data.map(item => this.totalMoney += item.summation);
     },
     close() {
       this.$emit("cancelAdd", false);
@@ -412,7 +425,8 @@ export default {
               this.data = this.data.map(item=>{
                 return {
                   ...item,
-                  moneyType:"RMB"
+                  moneyType: "RMB",
+                  summation: 0
                 }
               })
             }
@@ -510,7 +524,8 @@ export default {
                 supplier: item.supplier,
                 taxrate: item.taxrate,
                 unit: item.orderUnit,
-                remark: item.remark
+                remark: item.remark,
+                total: item.summation
               };
             })
           };
@@ -545,7 +560,11 @@ export default {
         {
           url: "/api-order/bom/list",
           type: "get",
-          params: {},
+          params: {
+						page: 1,
+						size: -1,
+						auditState: 3
+					},
           option: { enableMsg: false }
         },
         this
@@ -554,7 +573,7 @@ export default {
           if (result.data.code === 200) {
             console.log(result);
             // this.idArr = result.data.data.content.filter(item => { item.bomReviewSchedule === 3 });
-            this.idArr = result.data.data.content;
+            this.idArr = result.data.data;
           }
         },
         ({ type, info }) => {}
@@ -565,7 +584,11 @@ export default {
         {
           url: "/api-order/order/getOrderList",
           type: "get",
-          params: {},
+          params: {
+						page: 1,
+						size: -1,
+						reviewState: 3
+					},
           option: { enableMsg: false }
         },
         this
@@ -573,7 +596,7 @@ export default {
         result => {
           if (result.data.code === 200) {
             // console.log(result);
-            this.ProjectId = result.data.data.content;
+            this.ProjectId = result.data.data;
           }
         },
         ({ type, info }) => {}
@@ -613,6 +636,9 @@ export default {
   .ant-table-thead > tr > th,
   .ant-table-tbody > tr > td {
     padding: 8px 4px;
+  }
+  .ant-tabs-tabpane .ant-tabs-tabpane-active {
+    margin-bottom: 0px;
   }
 }
 </style>

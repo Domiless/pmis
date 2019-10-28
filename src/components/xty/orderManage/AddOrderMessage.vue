@@ -20,10 +20,10 @@
           >
             <a-input-group compact>
                 <a-select style="width:100%" v-decorator="['orderType', { rules: [{ required:'true', message: '请选择'}]}]">>
-                    <a-select-option value="1">贸易类</a-select-option>
-                    <a-select-option value="2">咨询类</a-select-option>
-                    <a-select-option value="3">设计制造类</a-select-option>
-                    <a-select-option value="4">其他</a-select-option>
+                    <a-select-option :value="1">贸易类</a-select-option>
+                    <a-select-option :value="2">咨询类</a-select-option>
+                    <a-select-option :value="3">设计制造类</a-select-option>
+                    <a-select-option :value="4">其他</a-select-option>
                 </a-select>
             </a-input-group>
           </a-form-item>

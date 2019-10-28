@@ -21,10 +21,10 @@
               v-decorator="['orderType', { rules: [{ required:'true', message: '请选择'}]}]"
             >
               >
-              <a-select-option value="1">贸易类</a-select-option>
-              <a-select-option value="2">咨询类</a-select-option>
-              <a-select-option value="3">设计制造类</a-select-option>
-              <a-select-option value="4">其他</a-select-option>
+              <a-select-option :value="1">贸易类</a-select-option>
+              <a-select-option :value="2">咨询类</a-select-option>
+              <a-select-option :value="3">设计制造类</a-select-option>
+              <a-select-option :value="4">其他</a-select-option>
             </a-select>
           </a-input-group>
         </a-form-item>
@@ -277,6 +277,10 @@ export default {
                 ),
                 no: this.editMsg.no,
                 orderType: this.editMsg.orderType,
+                // orderType: this.editMsg.orderType == 1 ? "贸易类"
+                //                  : this.editMsg.orderType == 2 ? "咨询类"
+                //                  : this.editMsg.orderType == 3 ? "设计制造类"
+                //                  : this.editMsg.orderType == 4 ? "其他" : null,
                 orderQuantity: this.editMsg.orderQuantity,
                 undertakeDep: this.editMsg.undertakeDep,
                 remark: this.editMsg.remark,
