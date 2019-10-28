@@ -10,7 +10,7 @@
             <a-button @click="editShow" :disabled="selectedRowKeys.length!=1">
               <a-icon type="edit" style="color: #1890ff" />修改
             </a-button>
-            <a-button @click="approveVisible=true" :disabled="selectedRowKeys.length!=1">
+            <a-button @click="approveShow" :disabled="selectedRowKeys.length!=1">
               <a-icon type="submit" style="color: #1890ff" />提交审批
             </a-button>
             <a-button @click="showDeleteConfirm" :disabled="selectedRowKeys.length==0" >
@@ -338,6 +338,13 @@ export default {
 				this.$message.error(`只能对暂存状态的订单进行修改！`);
 			} else {
 				this.editVisible = true;
+			}
+    },
+    approveShow() {
+      if (this.selectedRows[0].orderReviewSchedule != 1) {
+				this.$message.error(`只能对暂存状态的订单提交审批！`);
+			} else {
+				this.approveVisible = true;
 			}
     },
     auditSubmit() {

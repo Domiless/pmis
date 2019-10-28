@@ -29,6 +29,7 @@ export default {
       console.log(this.content);
     },
     confirmCancel() {
+      this.form.resetFields();
       this.$emit("changeAddContract", false);
     },
     addContract() {

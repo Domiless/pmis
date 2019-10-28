@@ -31,11 +31,11 @@
         :showTotal="total => `共 ${total} 条`"
       />
     </a-row>
-    <a-modal title="新增" v-model="addVisible" :maskClosable="false" width="1200px" :footer="null">
-      <add-contract-manage @changeAddContract="closeAdd"></add-contract-manage>
+    <a-modal title="新增" v-model="addVisible" :maskClosable="false" width="1200px" :footer="null" @cancel="handle(1)">
+      <add-contract-manage @changeAddContract="closeAdd" ref="addContractManage"></add-contract-manage>
     </a-modal>
-    <a-modal title="修改" v-model="editVisible" :maskClosable="false" width="1200px" :footer="null">
-      <edit-contract-manage @changeEditContract="closeEdit" :contractId="this.selectedRowKeys[0]"></edit-contract-manage>
+    <a-modal title="修改" v-model="editVisible" :maskClosable="false" width="1200px" :footer="null" @cancel="handle(2)">
+      <edit-contract-manage @changeEditContract="closeEdit" :contractId="this.selectedRowKeys[0]" ref="editContractManage"></edit-contract-manage>
     </a-modal>
   </div>
 </template>
@@ -76,6 +76,14 @@ export default {
     };
   },
   methods: {
+    handle(num) {
+      if( num == 1 ) {
+        this.$refs.addContractManage.confirmCancel();
+      }
+      if( num == 2 ) {
+        this.$refs.editContractManage.confirmCancel();
+      }
+    },
     onChange(current, pageNumber) {
       console.log("Page: ", pageNumber);
       console.log("第几页: ", current);

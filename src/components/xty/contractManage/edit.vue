@@ -18,7 +18,9 @@
 import editor from "../../public/Editor";
 export default {
   props: {
-    contractId: String
+    contractId: {
+      default: ''
+    }
   },
   data() {
     return {
@@ -54,10 +56,11 @@ export default {
 					if (result.data.code === 200) {
             console.log(result);
             let msg = result.data.data;
+            this.tinymceHtml= msg.content;
             setTimeout(()=> {
               this.form.setFieldsValue({
                 contractName: msg.title,
-                tinymceHtml: msg.content
+                
                 });
             },100)
 					}
@@ -106,6 +109,13 @@ export default {
   },
   created() {
     this.findOne(this.contractId)
+  },
+  watch: {
+    contractId() {
+      if(this.contractId != '') {
+        this.findOne(this.contractId)
+      }
+    }
   }
 };
 </script>

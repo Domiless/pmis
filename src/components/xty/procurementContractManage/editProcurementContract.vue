@@ -97,11 +97,11 @@
         </a-form>
       </a-tab-pane>
       <a-tab-pane tab="采购明细" key="2" style="margin-bottom: 20px">
-        <a-table rowKey="id" :columns="columns" :dataSource="data" :scroll="{ x: 1900, y: 500 }" :pagination="false"/>
+        <a-table rowKey="id" :columns="columns" :dataSource="data" :scroll="{ x: 1900, y: 500 }" :pagination="true"/>
         <!-- <a-col :span="12" style="padding-top: 12px; height: 36px;">
           <span style="line-height: 12px">合计：</span>
         </a-col> -->
-        <a-col :span="24">
+        <!-- <a-col :span="24">
           <a-pagination
             style="padding-top:12px;text-align: right;"
             size="small"
@@ -114,7 +114,13 @@
             :pageSizeOptions="['10','20','50','100']"
             :showTotal="total => `共 ${total} 条`"
           ></a-pagination>
-        </a-col>
+        </a-col> -->
+        <!-- <div style="position: relative">
+          <div style="position: absolute; top: -45px;font-size: 16px">
+            <span>合计：</span>
+            <span style="margin-left: 885px">共 {{total}} 条</span>
+          </div>
+        </div> -->
       </a-tab-pane>
     </a-tabs>
     <a-row>

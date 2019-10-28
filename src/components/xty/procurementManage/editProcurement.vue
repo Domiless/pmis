@@ -46,7 +46,7 @@
           rowKey="id"
           :columns="columns"
           :dataSource="data"
-          :pagination="false"
+          :pagination="true"
           :scroll="{ x: 1900, y: 500 }"
         >
           <span slot="orderNumTitle">
@@ -67,7 +67,7 @@
           <span slot="supplierTitle">
             <span style="color: #f5222d">*</span>供应商
           </span>
-          <span slot="priceUnitTitle">
+          <span slot="priseUnitTitle">
             <span style="color: #f5222d">*</span>价格单位
           </span>
           <span slot="moneyTypeTitle">
@@ -102,8 +102,7 @@
           <template slot="delivery" slot-scope="text,record,index">
             <a-date-picker
               @change="(date,dateString) => {
-                                      let delivery = dateString;
-                                      handleChangeTable(delivery,record.id,'delivery');}"
+                                      handleChangeTable(dateString,record.id,'delivery');}"
               format="YYYY/MM/DD"
               placeholder="请选择"
             />
@@ -144,13 +143,13 @@
               >{{ item.supplierName }}</a-select-option>
             </a-select>
           </template>
-          <template slot="priceUnit" slot-scope="text,record">
+          <template slot="priseUnit" slot-scope="text,record">
             <a-select
               style="width: 100%"
               :value="text"
               @change="(value,option) => {
                   let value1 = value;
-                  handleChangeTable(value1, record.id, 'priceUnit')
+                  handleChangeTable(value1, record.id, 'priseUnit')
                   }"
             >
               <a-select-option
@@ -180,8 +179,17 @@
               />
             </div>
           </template>
+          <template slot="total" slot-scope="text">
+            <span>{{text}}</span>
+          </template>
         </a-table>
-        <a-col :span="12" style="padding-top: 12px; height: 36px;">
+        <div style="position: relative">
+          <div style="position: absolute; top: -45px;font-size: 16px">
+            <span>合计：</span>
+            <!-- <span style="margin-left: 885px">共 {{total}} 条</span> -->
+          </div>
+        </div>
+        <!-- <a-col :span="12" style="padding-top: 12px; height: 36px;">
           <span style="line-height: 12px">合计：</span>
         </a-col>
         <a-col :span="12">
@@ -197,11 +205,11 @@
             :pageSizeOptions="['10','20','50','100']"
             :showTotal="total => `共 ${total} 条`"
           ></a-pagination>
-        </a-col>
+        </a-col> -->
       </a-tab-pane>
     </a-tabs>
     <a-row>
-      <a-form-item :wrapper-col="{ span: 20,offset: 2 }" style="text-align:right">
+      <a-form-item :wrapper-col="{ span: 22,offset: 2 }" style="text-align:right">
         <a-button style="margin-right:12px;" @click="close">关闭</a-button>
         <a-button type="primary" @click="editProcurement">提交</a-button>
       </a-form-item>
@@ -209,6 +217,7 @@
   </div>
 </template>
 <script>
+import moment from "moment";
 import { stringify } from "querystring";
 const columns = [
   {
@@ -290,11 +299,11 @@ const columns = [
     width: 100
   },
   {
-    dataIndex: "priceUnit",
+    dataIndex: "priseUnit",
     // title: "价格单位",
-    key: "priceUnit",
-    slots: { title: "priceUnitTitle" },
-    scopedSlots: { customRender: "priceUnit" },
+    key: "priseUnit",
+    slots: { title: "priseUnitTitle" },
+    scopedSlots: { customRender: "priseUnit" },
     width: 100
   },
   {
@@ -313,9 +322,9 @@ const columns = [
     width: 100
   },
   {
-    dataIndex: "summation",
+    dataIndex: "total",
     title: "小计",
-    key: "summation",
+    key: "total",
     width: 100
   }
 ];
@@ -340,7 +349,8 @@ export default {
       priceArr: [],
       bomName: "",
       designIdArr: [],
-      designNameArr: []
+      designNameArr: [],
+      totalMoney: 0
     };
   },
   methods: {
@@ -351,8 +361,10 @@ export default {
 
       const newData = [...this.data];
       const target = newData.filter(item => key === item.id)[0];
+      console.log(target);
       if (target) {
         target[column] = value;
+        target.total = target.orderNumber * target.price * target.taxrate + target.orderNumber * target.price;
         this.data = newData;
       }
     },
@@ -519,11 +531,12 @@ export default {
                 moneyType: item.moneyType,
                 price: item.price,
                 orderNumber: item.orderNum,
-                priseUnit: item.priceUnit,
+                priseUnit: item.priseUnit,
                 supplier: item.supplier,
                 taxrate: item.taxrate,
                 unit: item.unit,
-                remark: item.remark
+                remark: item.remark,
+                total: item.total
               };
             })
           };
@@ -574,7 +587,7 @@ export default {
             this.bomIds = msg.bomIds;
             this.bomName = msg.bomName;
             this.workOrderId = msg.workOrderId;
-            console.log(this.total);
+            console.log(this.data);
             setTimeout(() => {
               this.form.setFieldsValue({
                 workOrderNo: msg.workOrderNo,
@@ -600,7 +613,7 @@ export default {
       ).then(
         result => {
           if (result.data.code === 200) {
-            console.log(result);
+            // console.log(result);
             this.idArr = result.data.data.content;
           }
         },
@@ -619,7 +632,7 @@ export default {
       ).then(
         result => {
           if (result.data.code === 200) {
-            console.log(result);
+            // console.log(result);
             this.ProjectId = result.data.data.content;
           }
         },
@@ -638,7 +651,7 @@ export default {
       ).then(
         result => {
           if (result.data.code === 200) {
-            console.log(result);
+            // console.log(result);
             this.form.setFieldsValue({
               procurementNo: result.data.data
             })
