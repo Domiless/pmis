@@ -34,7 +34,7 @@
 				>
 					<template slot="type" slot-scope="text, record, index">
 						<div>
-							<span>{{text==1?"订单审批":text==2?"设计审批":text==3?"询价审批":text==4?"采购合同审批":""}}</span>
+							<span>{{text==1?"订单审批":text==2?"设计审批":text==3?"采购审批":text==4?"采购合同审批":""}}</span>
 						</div>
 					</template>
 					<template slot="suspension" slot-scope="text, record, index">
@@ -229,7 +229,7 @@ export default {
 				this
 			).then(
 				result => {
-					if (result.data.code === 204) {
+					if (result.data.code === 200) {
 						console.log(result);
 						this.getList();
 						this.selectedRowKeys = [];

@@ -12,7 +12,7 @@
 				>
 					<a-select-option :value="1">订单审批</a-select-option>
 					<a-select-option :value="2">设计审批</a-select-option>
-					<a-select-option :value="3">询价审批</a-select-option>
+					<a-select-option :value="3">采购审批</a-select-option>
 					<a-select-option :value="4">采购合同审批</a-select-option>
 				</a-select>
 			</a-form-item>

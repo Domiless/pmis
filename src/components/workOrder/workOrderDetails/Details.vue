@@ -108,6 +108,14 @@
 					<template slot="serialNo" slot-scope="text, record, index">
 						<span class="serial_number">{{index+1}}</span>
 					</template>
+					<template slot="employeeName" slot-scope="text, record, index">
+						<a-popover title placement="right">
+							<template slot="content">
+								<span>完工时间：{{record.executives.map(item=>item.gmtModified).join(",")}}</span>
+							</template>
+							<span class="serial_number">{{record.executives.map(item=>item.employeeName).join(",")}}</span>
+						</a-popover>
+					</template>
 				</a-table>
 			</a-col>
 		</a-form>
@@ -141,6 +149,13 @@ const columns = [
 		title: "工序内容",
 		width: 120,
 		scopedSlots: { customRender: "processInfo" }
+	},
+	{
+		dataIndex: "employeeName",
+		key: "employeeName",
+		title: "加工者",
+		width: 80,
+		scopedSlots: { customRender: "employeeName" }
 	},
 	{
 		dataIndex: "principalEmployeeName",

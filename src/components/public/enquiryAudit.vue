@@ -28,7 +28,7 @@
 				style="margin-bottom: -1000px;padding-bottom: 1000px;float: left;background-color:rgba(242, 242, 242, 0.435294117647059)"
 			>
 				<a-tabs defaultActiveKey="1">
-					<a-tab-pane tab="审批意见" key="1">
+					<a-tab-pane tab="审批意见" key="1" v-if="auditType!=2">
 						<a-col :span="24">
 							<span class="opinion_style">发起人：</span>
 							<span>{{detailsValue.auditData.userName}}</span>
@@ -45,9 +45,9 @@
 							<span class="opinion_style">审批意见：</span>
 							<span>
 								<a-radio-group v-model="value" style="vertical-align:top">
-									<a-radio :style="radioStyle" :value="1">同意</a-radio>
-									<a-radio :style="radioStyle" :value="0">驳回</a-radio>
-									<a-radio :style="radioStyle" :value="-1">终止</a-radio>
+									<a-radio :style="radioStyle" value="1">同意</a-radio>
+									<a-radio :style="radioStyle" value="0">驳回</a-radio>
+									<a-radio :style="radioStyle" value="-1">终止</a-radio>
 								</a-radio-group>
 							</span>
 						</a-col>
@@ -82,7 +82,7 @@
 									<span>处理结果：</span>
 									<span>
 										{{item.state}}
-										<span v-if="item.comment!=null">({{item.comment}})</span>
+										<span v-if="item.comment!=null&&item.comment!=''">({{item.comment}})</span>
 									</span>
 								</a-col>
 							</div>
@@ -131,6 +131,7 @@
 				:columns="columns"
 				:dataSource="data"
 				:scroll="{ x: 1500, y: 500 }"
+				rowKey="id"
 			></a-table>
 		</a-modal>
 	</div>
@@ -283,7 +284,8 @@ export default {
 			},
 			rizi: {},
 			flow: [],
-			comment: ""
+			comment: "",
+			auditType: ""
 		};
 	},
 	methods: {
@@ -312,7 +314,11 @@ export default {
 			);
 		},
 		audit() {
-			if (this.value != 1 && this.comment == "") {
+			if (this.value == "" || this.value == null) {
+				this.$message.error("请选择审批意见！");
+				return false;
+			}
+			if ((this.value == 0 || this.value == -1) && this.comment == "") {
 				this.$message.error("驳回或终止需要填写审批说明！");
 				return false;
 			}
@@ -337,6 +343,8 @@ export default {
 				result => {
 					if (result.data.code === 200) {
 						console.log(result);
+						this.comment = "";
+						this.value = "";
 						let params = {
 							type: 3
 						};
@@ -353,6 +361,7 @@ export default {
 		this.detailsValue.log.pop();
 		this.getModel();
 		this.data = this.auditValue.DO.purchaseDesDOList;
+		this.auditType = this.$store.state.homeStore.details;
 	},
 	watch: {
 		auditValue() {
@@ -361,6 +370,7 @@ export default {
 			this.detailsValue.log.pop();
 			this.getModel();
 			this.data = this.auditValue.DO.purchaseDesDOList;
+			this.auditType = this.$store.state.homeStore.details;
 		}
 	}
 };

@@ -107,7 +107,7 @@
 			<div>
 				导入步骤：
 				<br />1、下载模板
-				<a href="#">《BOM模板.xlsx》</a>；
+				<a href="http://114.116.238.150/model/BOM.xlsx">《BOM模板.xlsx》</a>；
 				<br />2、按格式要求填写，请勿模板修改结构；
 				<br />3、点击下方“选择文件”按钮导入数据；
 				<br />4、校对并保存数据。
@@ -159,7 +159,7 @@ const columns = [
 		width: 150
 	},
 	{
-		title: "单件中零件数量",
+		title: "单机中零件数量",
 		dataIndex: "singleNum",
 		key: "singleNum",
 		width: 150

@@ -123,7 +123,7 @@ export default {
 					this.randomNum(0, this.identifyCodes.length)
 				];
 			}
-			// this.user.identifyCode = this.identifyCode;
+			this.user.identifyCode = this.identifyCode;
 		},
 		refreshCode() {
 			this.identifyCode = "";

@@ -12,61 +12,14 @@
 		</a-row>
 		<a-form :form="form" layout="inline">
 			<a-col :span="24">
-				<a-form-item label="询价方">
+				<a-form-item label="标题">
 					<a-input
 						maxlength="20"
 						v-decorator="['inquiry',{rules: [{ required: true, message: '请填写询价方' }]}]"
 						style="width:390px"
 					></a-input>
 				</a-form-item>
-				<a-form-item label="联系人">
-					<a-input maxlength="20" v-decorator="['inquiryName']" style="width:390px"></a-input>
-				</a-form-item>
-			</a-col>
-			<a-col :span="24">
-				<a-form-item label="联系电话">
-					<a-input
-						type="number"
-						oninput="if(value.length>11)value=value.slice(0,11)"
-						v-decorator="['inquiryPhone',{rules: [{validator: chickPhone}]}]"
-						style="width:390px"
-					></a-input>
-				</a-form-item>
-				<a-form-item label="电子邮箱">
-					<a-input
-						maxlength="20"
-						v-decorator="['inquiryMail',{rules: [{validator: chickMail}]}]"
-						style="width:390px"
-					></a-input>
-				</a-form-item>
-			</a-col>
-			<a-col :span="24" style="margin-bottom:20px;">
-				<a-form-item label="订单标题">
-					<a-input
-						maxlength="20"
-						v-decorator="['address',{rules: [{ required: true, message: '请填订单标题' }]}]"
-						style="width:390px"
-					></a-input>
-				</a-form-item>
-			</a-col>
-			<a-col :span="24">
-				<a-form-item label="报价人">
-					<a-input maxlength="20" v-decorator="['baoName']" style="width:390px"></a-input>
-				</a-form-item>
-				<a-form-item label="审核人">
-					<a-input maxlength="20" v-decorator="['audit']" style="width:390px"></a-input>
-				</a-form-item>
-			</a-col>
-			<a-col :span="24">
-				<a-form-item label="报价人电话">
-					<a-input
-						type="number"
-						oninput="if(value.length>11)value=value.slice(0,11)"
-						v-decorator="['baoPhone',{rules: [{validator: chickPhone}]}]"
-						style="width:390px"
-					></a-input>
-				</a-form-item>
-				<a-form-item label="报价日期">
+				<a-form-item label="签订时间">
 					<a-date-picker
 						v-decorator="['offerDate']"
 						@change="(e,d)=>handleTime(e,d,1)"
@@ -76,6 +29,44 @@
 				</a-form-item>
 			</a-col>
 			<a-col :span="24">
+				<a-form-item label="需方">
+					<a-input
+						v-decorator="['inquiryPhone',{rules: [{ required: true, message: '请填写询价方' }]}]"
+						style="width:390px"
+					></a-input>
+				</a-form-item>
+				<a-form-item label="需方订单号">
+					<a-input
+						maxlength="20"
+						v-decorator="['inquiryMail',{rules: [{validator: chickMail}]}]"
+						style="width:390px"
+					></a-input>
+				</a-form-item>
+			</a-col>
+			<a-col :span="24">
+				<a-form-item label="供方">
+					<a-input
+						maxlength="20"
+						v-decorator="['address',{rules: [{ required: true, message: '请填订单标题' }]}]"
+						style="width:390px"
+					></a-input>
+				</a-form-item>
+				<a-form-item label="供方订单号">
+					<a-input maxlength="20" v-decorator="['baoName']" style="width:390px"></a-input>
+				</a-form-item>
+			</a-col>
+			<a-col :span="24">
+				<a-form-item label="项目名称">
+					<a-input
+						v-decorator="['baoPhone',{rules: [{ required: true, message: '请填写询价方' }]}]"
+						style="width:390px"
+					></a-input>
+				</a-form-item>
+				<a-form-item label="协议编号">
+					<a-input v-decorator="['bianhao',{rules: []}]" style="width:390px"></a-input>
+				</a-form-item>
+			</a-col>
+			<!-- <a-col :span="24">
 				<a-form-item label="报价人邮箱">
 					<a-input
 						maxlength="20"
@@ -91,7 +82,7 @@
 						style="width:390px"
 					/>
 				</a-form-item>
-			</a-col>
+			</a-col>-->
 			<a-col :span="24">
 				<a-form-item label="备注">
 					<a-textarea

@@ -29,11 +29,7 @@
 							{rules: [{ required: true, message: '请选择角色' }]}
 							]"
 				>
-					<a-select-option
-						v-for="(item, index) in roleList"
-						:key="index"
-						:value="item.roleCode"
-					>{{item.name}}</a-select-option>
+					<a-select-option v-for="(item, index) in roleList" :key="index" :value="item.id">{{item.name}}</a-select-option>
 				</a-select>
 			</a-form-item>
 			<a-form-item
