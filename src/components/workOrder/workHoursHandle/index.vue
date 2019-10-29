@@ -46,7 +46,11 @@
 					<span class="item_label">毛坯外形尺寸：</span>
 					<span>{{item.dimensions}}</span>
 				</a-col>
-				<a-col :span="24" class="item_content">
+				<a-col :span="12" class="item_content">
+					<span class="item_label">工艺人员：</span>
+					<span>{{item.drawing.modifiedBy}}</span>
+				</a-col>
+				<a-col :span="12" class="item_content">
 					<span class="item_label">备注：</span>
 					<span>{{item.drawing.workOrderDes.remark}}</span>
 				</a-col>

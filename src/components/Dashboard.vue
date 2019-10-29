@@ -15,7 +15,7 @@
 									v-for="(item, index) in pendingValue"
 									:key="index"
 									class="list"
-									@click="getDetails(item)"
+									@click="getDetails(item,1)"
 								>
 									<a-col :span="3">{{item.id}}</a-col>
 									<a-col
@@ -26,7 +26,7 @@
 									<a-col :span="4">{{item.time}}</a-col>
 								</li>
 							</ul>
-							<div style="text-align:center;line-height:100px;" v-else>暂无待办事项</div>
+							<div style="text-align:center;line-height:384px;" v-else>暂无待办事项</div>
 							<div style="text-align:right;">
 								<a-pagination
 									size="small"
@@ -39,7 +39,12 @@
 						</a-tab-pane>
 						<a-tab-pane tab="已办事项" key="2" forceRender>
 							<ul v-if="alreadyValue.length>0" class="list_case">
-								<li v-for="(item, index) in alreadyValue" :key="index" class="list">
+								<li
+									v-for="(item, index) in alreadyValue"
+									:key="index"
+									class="list"
+									@click="getDetails(item,2)"
+								>
 									<a-col :span="3">{{item.id}}</a-col>
 									<a-col
 										:span="3"
@@ -49,7 +54,7 @@
 									<a-col :span="4">{{item.time}}</a-col>
 								</li>
 							</ul>
-							<div style="text-align:center;line-height:100px;" v-else>暂无已办事项</div>
+							<div style="text-align:center;line-height:384px;" v-else>暂无已办事项</div>
 							<div style="text-align:right;">
 								<a-pagination
 									size="small"
@@ -139,7 +144,7 @@
 			:footer="null"
 			@cancel="cancel(2)"
 		>
-			<orderAudit v-on:auditParams="auditParams" :auditValue="auditValue"></orderAudit>
+			<orderAudit v-on:auditParams="auditParams" :auditValue="auditValue1"></orderAudit>
 		</a-modal>
 		<a-modal
 			title="设计审批 "
@@ -150,7 +155,7 @@
 			:footer="null"
 			@cancel="cancel(3)"
 		>
-			<designAudit v-on:auditParams="auditParams" :auditValue="auditValue"></designAudit>
+			<designAudit v-on:auditParams="auditParams" :auditValue="auditValue2"></designAudit>
 		</a-modal>
 		<a-modal
 			title="采购合同审批 "
@@ -161,10 +166,10 @@
 			:footer="null"
 			@cancel="cancel(5)"
 		>
-			<purchaseContractAudit v-on:auditParams="auditParams" :auditValue="auditValue"></purchaseContractAudit>
+			<purchaseContractAudit v-on:auditParams="auditParams" :auditValue="auditValue4"></purchaseContractAudit>
 		</a-modal>
 		<a-modal
-			title="询价审批 "
+			title="采购审批 "
 			:maskClosable="false"
 			centered
 			width="800px"
@@ -172,7 +177,7 @@
 			:footer="null"
 			@cancel="cancel(4)"
 		>
-			<enquiryAudit v-on:auditParams="auditParams" :auditValue="auditValue"></enquiryAudit>
+			<enquiryAudit v-on:auditParams="auditParams" :auditValue="auditValue3"></enquiryAudit>
 		</a-modal>
 	</div>
 </template>
@@ -185,6 +190,7 @@ import Vue from "vue";
 import { calendar } from "ant-design-vue";
 Vue.use(calendar);
 export default {
+	inject: ["reload"],
 	name: "dashboard",
 	data() {
 		return {
@@ -207,26 +213,34 @@ export default {
 			messageValue: [],
 			blackboardValue: "",
 			msgValue: {},
-			auditValue: ""
+			auditValue1: "",
+			auditValue2: "",
+			auditValue3: "",
+			auditValue4: ""
 		};
 	},
 	methods: {
 		auditParams(params) {
+			console.log(params);
 			if (params.type == 1) {
-				this.orderAuditVisible == false;
+				this.orderAuditVisible = false;
 				this.getPending();
+				this.getAlready();
 			}
 			if (params.type == 2) {
-				this.designAuditVisible == false;
+				this.designAuditVisible = false;
 				this.getPending();
+				this.getAlready();
 			}
 			if (params.type == 3) {
-				this.enquiryAuditVisible == false;
+				this.enquiryAuditVisible = false;
 				this.getPending();
+				this.getAlready();
 			}
 			if (params.type == 4) {
-				this.purchaseContractAuditVisible == false;
+				this.purchaseContractAuditVisible = false;
 				this.getPending();
+				this.getAlready();
 			}
 		},
 		msgShow(item) {
@@ -362,7 +376,8 @@ export default {
 				({ type, info }) => {}
 			);
 		},
-		getDetails(item) {
+		getDetails(item, a) {
+			this.$store.commit("getArea", a);
 			console.log(item.id);
 			console.log(item.type);
 			this.Axios(
@@ -379,18 +394,22 @@ export default {
 				result => {
 					if (result.data.code === 200) {
 						console.log(result);
-						this.auditValue = result.data.data;
+
 						if (item.type == 1) {
 							this.orderAuditVisible = true;
+							this.auditValue1 = result.data.data;
 						}
 						if (item.type == 2) {
 							this.designAuditVisible = true;
+							this.auditValue2 = result.data.data;
 						}
 						if (item.type == 3) {
 							this.enquiryAuditVisible = true;
+							this.auditValue3 = result.data.data;
 						}
 						if (item.type == 4) {
 							this.purchaseContractAuditVisible = true;
+							this.auditValue4 = result.data.data;
 						}
 					}
 				},
@@ -399,10 +418,16 @@ export default {
 		}
 	},
 	created() {
+		// this.reload();
+		setTimeout(() => {
+			this.getPending();
+			this.getAlready();
+			this.getMessageList();
+		}, 10000);
 		this.getPending();
 		this.getAlready();
-		this.getBlackboard();
 		this.getMessageList();
+		this.getBlackboard();
 	},
 	components: {
 		designAudit,
@@ -442,7 +467,7 @@ export default {
 		}
 		.tabs_style {
 			.list_case {
-				max-height: 370px;
+				height: 370px;
 				min-height: 100px;
 				overflow: auto;
 				.list {
@@ -493,7 +518,7 @@ export default {
 			}
 		}
 		.list_case {
-			max-height: 240px;
+			height: 240px;
 			overflow: auto;
 			.list {
 				list-style-type: none;

@@ -464,7 +464,9 @@ export default {
           url: "/api-order/activiti/getUserprocess",
           // url: "/api-order/activiti/getprocess",
           type: "get",
-          params: {},
+          params: {
+            processType:"bom"
+          },
           option: { enableMsg: false }
         },
         this

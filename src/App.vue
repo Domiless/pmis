@@ -233,12 +233,12 @@ export default {
 				JSON.parse(sessionStorage.getItem("user")).userType == 0
 					? []
 					: [
-							{
-								key: "dashboard",
-								title: "首页",
-								route: "/Dashboard",
-								active: true
-							}
+							// {
+							// 	key: "dashboard",
+							// 	title: "首页",
+							// 	route: "/Dashboard",
+							// 	active: true
+							// }
 					  ],
 			headerMenu: ["dashboard"],
 			headerMenuGroup: [
@@ -246,12 +246,6 @@ export default {
 					title: "工作台",
 					icon: "&#xe60a;",
 					key: "home",
-					disable: false
-				},
-				{
-					title: "生产",
-					icon: "&#xe608;",
-					key: "production",
 					disable: false
 				},
 				{
@@ -270,6 +264,12 @@ export default {
 					title: "采购",
 					icon: "&#xe60e;",
 					key: "procurement",
+					disable: false
+				},
+				{
+					title: "生产",
+					icon: "&#xe608;",
+					key: "production",
 					disable: false
 				},
 				{
@@ -377,10 +377,7 @@ export default {
 		},
 		toLogin() {
 			window.location.href = "/login.html";
-			sessionStorage.removeItem("token");
-			sessionStorage.removeItem("user");
-			sessionStorage.removeItem("priview");
-			sessionStorage.removeItem("priviewType");
+			sessionStorage.clear();
 		},
 		switchTab(key, path) {
 			//先检查tabsList

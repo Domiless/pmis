@@ -428,30 +428,29 @@ const columns = [
 		dataIndex: "schedule",
 		key: "schedule",
 		title: "生产进度",
-		width: 100,
+		width: 80,
 		scopedSlots: { customRender: "schedule" }
 	},
-
 	{
-		dataIndex: "remark",
-		key: "remark",
-		title: "备注",
-		width: 160,
-		scopedSlots: { customRender: "comment" }
-	},
-	{
-		dataIndex: "hasWorkLoad",
-		key: "hasWorkLoad",
+		dataIndex: "quotaPerson",
+		key: "quotaPerson",
 		title: "工时定额",
 		width: 100,
-		scopedSlots: { customRender: "hasWorkLoad" }
+		scopedSlots: { customRender: "quotaPerson" }
 	},
 	{
-		dataIndex: "isShooting",
-		key: "isShooting",
+		dataIndex: "arranger",
+		key: "arranger",
 		title: "工艺排配",
 		width: 100,
-		scopedSlots: { customRender: "isShooting" }
+		scopedSlots: { customRender: "arranger" }
+	},
+	{
+		dataIndex: "processNames",
+		key: "processNames",
+		title: "工艺进度",
+		width: 180
+		// scopedSlots: { customRender: "comment" }
 	},
 	{
 		dataIndex: "detail",
@@ -870,7 +869,7 @@ export default {
 			}
 			if (a == 2) {
 				this.editVisible = false;
-				this.form.resetFields();
+				// this.form.resetFields();
 			}
 			if (a == 3) {
 				this.technologyAddVisible = false;

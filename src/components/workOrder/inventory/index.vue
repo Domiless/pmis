@@ -68,7 +68,7 @@
 					rowKey="id"
 				>
 					<template
-						v-for="col in [ 'materialCode', 'units','weight','number','recommend','manufacturers','way','remark']"
+						v-for="col in [ 'materialCode', 'units','recommend','manufacturers','way','remark']"
 						:slot="col"
 						slot-scope="text, record, index"
 					>
@@ -77,6 +77,26 @@
 								style="margin: -5px 0"
 								:value="text"
 								@change="e => handleChange(e.target.value, record.id, col)"
+							/>
+						</div>
+					</template>
+					<template slot="weight" slot-scope="text, record, index">
+						<div>
+							<a-input
+								type="number"
+								style="margin: -5px 0"
+								:value="text"
+								@change="e => handleChangeWeight(e.target.value,record, index)"
+							/>
+						</div>
+					</template>
+					<template slot="number" slot-scope="text, record, index">
+						<div>
+							<a-input
+								type="number"
+								style="margin: -5px 0"
+								:value="text"
+								@change="e => handleChangeNumber(e.target.value,record, index)"
 							/>
 						</div>
 					</template>
@@ -232,6 +252,18 @@ export default {
 		};
 	},
 	methods: {
+		handleChangeWeight(value, row, index) {
+			this.data[index].weight = value;
+			this.data[index].number = (
+				this.data[index].weight / this.data[index].qwProportion
+			).toFixed(2);
+		},
+		handleChangeNumber(value, row, index) {
+			this.data[index].number = value;
+			this.data[index].weight = (
+				this.data[index].number * this.data[index].qwProportion
+			).toFixed(2);
+		},
 		del(index) {
 			this.data.splice(index, 1);
 		},
@@ -290,6 +322,7 @@ export default {
 						this.data = result.data.data.quotationItems.map((item, index) => {
 							return {
 								id: index,
+								qwProportion: item.qwProportion,
 								materialCode:
 									item.materialCode != undefined &&
 									item.materialCode != null &&
