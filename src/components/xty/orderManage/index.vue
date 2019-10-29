@@ -102,7 +102,7 @@
         </a-row>
       </div>
     </div>
-    <a-modal title="新增" style="top:20px" v-model="addVisible" width="1000px" :footer="null" @cancel="handleCancel(1)">
+    <a-modal title="新增" style="top:20px" v-model="addVisible" width="1000px" :maskClosable="false" :footer="null" @cancel="handleCancel(1)">
       <add-order-message @changeAddOrder="cancelAddOrder" :getlist="getList" ref="addOrderMessage"></add-order-message>
     </a-modal>
     <a-modal
@@ -145,6 +145,7 @@
       width="1000px"
       :visible="editVisible"
       @cancel="handleCancel(2)"
+      :maskClosable="false"
     >
       <edit-order-message :OrderMessageId="selectedRowKeys[0]" @cancelEdit="cancelEdit" ref="editOrderMessage"></edit-order-message>
     </a-modal>
@@ -334,15 +335,15 @@ export default {
 
     },
     editShow() {
-      if (this.selectedRows[0].orderReviewSchedule != 1) {
-				this.$message.error(`只能对暂存状态的订单进行修改！`);
+      if (this.selectedRows[0].orderReviewSchedule != 1 && this.selectedRows[0].orderReviewSchedule != 4) {
+				this.$message.error(`只能对暂存或未通过状态的订单进行修改！`);
 			} else {
 				this.editVisible = true;
 			}
     },
     approveShow() {
-      if (this.selectedRows[0].orderReviewSchedule != 1) {
-				this.$message.error(`只能对暂存状态的订单提交审批！`);
+      if (this.selectedRows[0].orderReviewSchedule != 1 && this.selectedRows[0].orderReviewSchedule != 4) {
+				this.$message.error(`只能对暂存或未通过状态的订单提交审批！`);
 			} else {
 				this.approveVisible = true;
 			}
@@ -512,7 +513,9 @@ export default {
 					url: "/api-order/activiti/getUserprocess",
 					// url: "/api-order/activiti/getprocess",
 					type: "get",
-					params: {},
+					params: {
+            type: "order"
+          },
 					option: { enableMsg: false }
 				},
 				this

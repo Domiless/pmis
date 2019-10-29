@@ -48,7 +48,7 @@
           :columns="columns"
           :dataSource="data"
           :pagination="true"
-          :scroll="{ x: 1900, y: 500 }"
+          :scroll="{ x: 1600, y: 500 }"
         >
           <span slot="orderNumTitle">
             <span style="color: #f5222d">*</span>订单数量
@@ -295,7 +295,7 @@ const columns = [
     key: "supplier",
     slots: { title: "supplierTitle" },
     scopedSlots: { customRender: "supplier" },
-    width: 100
+    width: 120
   },
   {
     dataIndex: "priceUnit",
@@ -364,9 +364,15 @@ export default {
       if (target) {
         target[column] = value;
         target.summation = target.orderNum * target.unitPrice * target.taxrate + target.orderNum * target.unitPrice;
+        if(isNaN( target.summation )){
+          target.summation = 0 ;
+        }
         this.data = newData;
       }
-       this.data.map(item => this.totalMoney += item.summation);
+      this.totalMoney = 0;
+      for(let i = 0; i < this.data.length; i ++) {
+        this.totalMoney += this.data[i].summation
+      }
     },
     close() {
       this.$emit("cancelAdd", false);
@@ -509,6 +515,7 @@ export default {
             workOrderNo: values.workOrderNo,
             purchaseNo: values.procurementNo,
             remark: values.remark,
+            summoney: this.totalMoney,
             purchaseDesDTOList: this.data.map(item => {
               return {
                 drawingNo: item.drawingNo,

@@ -46,7 +46,7 @@
             :showTotal="total => `共 ${total} 条`"
 			    />
     </a-row>
-    <a-modal title="新增" v-model="addVisible"   :footer="null" width="800px" @cancel="cancelAdd">
+    <a-modal title="新增" v-model="addVisible" :maskClosable="false"  :footer="null" width="800px" @cancel="cancelAdd">
       <a-form :form="form">
         <a-row>
           <a-form-item label="供应商编码" :labelCol="{ span: 4}" :wrapperCol="{ span: 18}">
@@ -157,7 +157,7 @@
         </a-row>
       </a-form>
     </a-modal>
-    <a-modal title="修改" v-model="editVisible"   :footer="null" width="800px" @cancel="cancelEdit">
+    <a-modal title="修改" v-model="editVisible" :maskClosable="false"  :footer="null" width="800px" @cancel="cancelEdit">
       <a-form :form="form">
         <a-row>
           <a-form-item label="供应商编码" :labelCol="{ span: 4}" :wrapperCol="{ span: 18}">

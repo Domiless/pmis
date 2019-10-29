@@ -267,15 +267,15 @@ export default {
       }
     },
     editShow(){
-       if (this.selectedRows[0].reviewSchedule != 1) {
-				this.$message.error(`只能对暂存状态的订单进行修改！`);
+       if (this.selectedRows[0].reviewSchedule != 1 && this.selectedRows[0].reviewSchedule != 4) {
+				this.$message.error(`只能对暂存或未通过状态的订单进行修改！`);
 			} else {
 				this.editVisible = true;
 			}
     },
     approveShow(){
-       if (this.selectedRows[0].reviewSchedule != 1) {
-				this.$message.error(`只能对暂存状态的订单进行修改！`);
+       if (this.selectedRows[0].reviewSchedule != 1 && this.selectedRows[0].reviewSchedule != 4) {
+				this.$message.error(`只能对暂存或未通过状态的订单进行修改！`);
 			} else {
 				this.approveVisible = true;
 			}
@@ -431,7 +431,9 @@ export default {
 					url: "/api-order/activiti/getUserprocess",
 					// url: "/api-order/activiti/getprocess",
 					type: "get",
-					params: {},
+					params: {
+            type: "contract"
+          },
 					option: { enableMsg: false }
 				},
 				this

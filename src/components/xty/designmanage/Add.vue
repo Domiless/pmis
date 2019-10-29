@@ -7,16 +7,16 @@
 						<a-form-item label="项目订单" :labelCol="{span:3}" :wrapperCol="{span:18}" required>
 							<a-select
 								v-decorator="[
-                'workOrderId',
-                {rules: [{ required: true, message: '请选择项目订单' }]}
-                ]"
+									'workOrderId',
+									{rules: [{ required: true, message: '请选择项目订单' }]}
+									]"
 								showSearch
 								placeholder="请选择"
 								optionFilterProp="children"
 								style="width: 100%"
 								:filterOption="filterOption"
 							>
-								<a-select-option v-for="(i,j) in orderListValue" :key="j" :value="i.no">{{i.contractName}}</a-select-option>
+								<a-select-option v-for="(i,j) in orderListValue" :key="j" :value="i.id">{{i.contractName}}</a-select-option>
 							</a-select>
 						</a-form-item>
 					</a-row>
@@ -24,9 +24,9 @@
 						<a-form-item label="设计单号" :labelCol="{span:3}" :wrapperCol="{span:18}" required>
 							<a-input-search
 								v-decorator="[
-                'designNo',
-                {rules: [{ required: true, message: '请填写设计单号' }]}
-                ]"
+									'designNo',
+									{rules: [{ required: true, message: '请填写设计单号' }]}
+									]"
 								@search="onSearch"
 								enterButton="生成"
 							/>
@@ -34,9 +34,9 @@
 						<a-form-item label="项目名称" :labelCol="{span:3}" :wrapperCol="{span:18}" required>
 							<a-input
 								v-decorator="[
-							'projectName',
-							{rules: [{ required: true, message: '请填写项目名称' }]}
-							]"
+									'projectName',
+									{rules: [{ required: true, message: '请填写项目名称' }]}
+									]"
 							></a-input>
 						</a-form-item>
 					</a-row>
@@ -44,9 +44,9 @@
 						<a-form-item label="部件名称" :labelCol="{span:3}" :wrapperCol="{span:18}" required>
 							<a-input
 								v-decorator="[
-							'partName',
-							{rules: [{ required: true, message: '请填写部件名称' }]}
-							]"
+									'partName',
+									{rules: [{ required: true, message: '请填写部件名称' }]}
+									]"
 							></a-input>
 						</a-form-item>
 					</a-row>
@@ -67,7 +67,7 @@
 					</a-row>
 				</a-form>
 			</a-tab-pane>
-			<a-tab-pane tab="Bom" key="2" style="margin-bottom: 20px">
+			<a-tab-pane tab="BOM" key="2" style="margin-bottom: 20px">
 				<a-row>
 					<a-col style="text-align: right; margin-bottom: 10px">
 						<a-button @click="addVisible=true">导入BOM</a-button>
@@ -268,6 +268,9 @@ export default {
 			this.$emit("changeAddOrder", false);
 		},
 		addDesign() {
+			if (Object.keys(this.data).length == 0 ) {
+				this.$message.error(`请导入BOM！`);
+			} else {
 			this.form.validateFieldsAndScroll((err, values) => {
 				if (!err) {
 					console.log("Received values of form: ", values);
@@ -279,10 +282,9 @@ export default {
 					let data = {
 						bomNo: values.designNo,
 						workOrderId: values.workOrderId,
-						// workOrderNo: this.orderListValue.find(item => {
-						// 	return item.id == values.workOrderId;
-						// }).contractNo,
-						workOrderNo: values.workOrderId,
+						workOrderNo: this.orderListValue.find(item => {
+							return item.id == values.workOrderId;
+						}).no,
 						projectName: values.projectName,
 						bomDrawingNo: values.bomDrawingNo,
 						partName: values.partName,
@@ -318,6 +320,7 @@ export default {
 					);
 				}
 			});
+			}
 		},
 		getList() {
 			this.Axios(

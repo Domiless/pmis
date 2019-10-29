@@ -14,7 +14,7 @@
         <a-button :disabled="selectedRowKeys.length!=1" @click="download">
           <a-icon style="color:#1890ff;" type />BOM导出
         </a-button>
-        <a-button :disabled="selectedRowKeys.length!=1" @click="addBomVisible=true">
+        <a-button :disabled="selectedRowKeys.length!=1" @click="approveShow">
           <a-icon style="color:#1890ff;" type />提交审批
         </a-button>
         <a-button @click="showDeleteConfirm" :disabled="selectedRowKeys.length!=1">
@@ -126,7 +126,7 @@
         </a-form>
       </a-modal>
       <a-modal
-        title="采购单号详情"
+        title="设计单号详情"
         :footer="null"
         width="600px"
         :visible="detailsVisible"
@@ -245,6 +245,13 @@ export default {
     };
   },
   methods: {
+    approveShow() {
+      if (this.selectedRows[0].bomReviewSchedule != 1) {
+				this.$message.error(`只能对暂存状态的订单提交审批！`);
+			} else {
+				this.addBomVisible = true;
+			}
+    },
     download() {
       let qs = require("qs");
       let value = qs.stringify({
@@ -397,7 +404,11 @@ export default {
           if (result.data.code === 200) {
             console.log(result);
             this.oneMsg = result.data.data;
-            this.editVisible = true;
+            if (this.selectedRows[0].bomReviewSchedule != 1) {
+			          this.$message.error(`只能对暂存状态的订单进行修改！`);
+			      } else {
+				      this.editVisible = true;
+			      }
           }
         },
         ({ type, info }) => {}

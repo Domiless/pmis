@@ -6,6 +6,7 @@
 					<a-row>
 						<a-form-item label="关联订单" :labelCol="{span:3}" :wrapperCol="{span:18}" required>
 							<a-select
+								disabled
 								v-decorator="[
                 'workOrderId',
                 {rules: [{ required: true, message: '请选择项目订单' }]}
@@ -23,6 +24,7 @@
 					<a-row>
 						<a-form-item label="设计单号" :labelCol="{span:3}" :wrapperCol="{span:18}" required>
 							<a-input
+								disabled
 								v-decorator="[
                 'designNo',
                 {rules: [{ required: true, message: '请填写设计单号' }]}
@@ -272,7 +274,7 @@ export default {
 						workOrderId: values.workOrderId,
 						workOrderNo: this.orderListValue.find(item => {
 							return item.id == values.workOrderId;
-						}).contractNo,
+						}).no,
 						projectName: values.projectName,
 						bomDrawingNo: values.bomDrawingNo,
 						partName: values.partName,
@@ -334,7 +336,7 @@ export default {
 	},
 	created() {
 		this.getList();
-		console.log(this.oneMsg);
+		// console.log(this.oneMsg);
 		this.data = this.oneMsg.bomDes;
 		setTimeout(() => {
 			this.form.setFieldsValue({

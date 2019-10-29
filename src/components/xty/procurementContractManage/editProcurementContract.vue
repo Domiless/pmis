@@ -9,6 +9,7 @@
                 v-decorator="['procurementNo', { rules: [{ required:'true', message: '请选择采购单号'}]}]"
                 placeholder="请选择"
                 showSearch
+                disabled
                 @change="getProcurementId"
               >
                 <a-select-option v-for="item in procurementNo" :key="item.purchaseNo">{{ item.purchaseNo }}</a-select-option>
@@ -18,6 +19,7 @@
           <a-row>
             <a-form-item label="合同编号" :labelCol="{ span: 3}" :wrapperCol="{ span: 19 }">
               <a-input
+              disabled
                v-decorator="['contractNo', { rules: [{ required:'true', message: '请输入合同编号'}]}]"></a-input>
             </a-form-item>
           </a-row>

@@ -101,6 +101,7 @@
           </template>
           <template slot="delivery" slot-scope="text,record,index">
             <a-date-picker
+            :defaultValue="text!=''&&text!=null?moment(text, 'YYYY/MM/DD'):undefined"
               @change="(date,dateString) => {
                                       handleChangeTable(dateString,record.id,'delivery');}"
               format="YYYY/MM/DD"
@@ -185,7 +186,7 @@
         </a-table>
         <div style="position: relative">
           <div style="position: absolute; top: -45px;font-size: 16px">
-            <span>合计：</span>
+            <span>合计：{{totalMoney}}</span>
             <!-- <span style="margin-left: 885px">共 {{total}} 条</span> -->
           </div>
         </div>
@@ -365,9 +366,17 @@ export default {
       if (target) {
         target[column] = value;
         target.total = target.orderNumber * target.price * target.taxrate + target.orderNumber * target.price;
+        if(isNaN( target.total )){
+          target.total = 0 ;
+        }
         this.data = newData;
       }
+      this.totalMoney = 0;
+      for(let i = 0; i < this.data.length; i ++) {
+        this.totalMoney += this.data[i].total
+      }
     },
+    moment,
     close() {
       this.$emit("cancelEdit", false);
       this.form.resetFields();
@@ -520,6 +529,7 @@ export default {
             workOrderNo: values.workOrderNo,
             purchaseNo: values.procurementNo,
             remark: values.remark,
+            summoney: this.totalMoney,
             purchaseDesDTOList: this.data.map(item => {
               return {
                 drawingNo: item.drawingNo,
@@ -530,7 +540,7 @@ export default {
                 delivery: item.delivery,
                 moneyType: item.moneyType,
                 price: item.price,
-                orderNumber: item.orderNum,
+                orderNumber: item.orderNumber,
                 priseUnit: item.priseUnit,
                 supplier: item.supplier,
                 taxrate: item.taxrate,
@@ -587,6 +597,7 @@ export default {
             this.bomIds = msg.bomIds;
             this.bomName = msg.bomName;
             this.workOrderId = msg.workOrderId;
+            this.totalMoney = msg.summoney;
             console.log(this.data);
             setTimeout(() => {
               this.form.setFieldsValue({
@@ -685,5 +696,9 @@ export default {
   .ant-table-tbody > tr > td {
     padding: 8px 4px;
   }
+  //  .ant-table-fixed-header .ant-table-scroll .ant-table-header {
+  //   overflow: hidden;
+  //   height: 54px;
+  // }
 }
 </style>

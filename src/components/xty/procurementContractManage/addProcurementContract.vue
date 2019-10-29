@@ -37,6 +37,7 @@
                 v-decorator="['supplier', { rules: [{ required:'true', message: '请选择供应商'}]}]"
                 placeholder="请选择"
                 showSearch
+                @change="getSupplierTotal"
               >
                 <a-select-option :value="item.supplierName" v-for="(item,index) in supplierName"  :key="index">{{ item.supplierName }}</a-select-option>
               </a-select>
@@ -54,12 +55,12 @@
           </a-row>
           <a-row>
             <a-form-item label="总金额" :labelCol="{ span: 3}" :wrapperCol="{ span: 19 }">
-              <a-input v-decorator="['totalMoney']"></a-input>
+              <a-input v-decorator="['totalMoney']" disabled></a-input>
             </a-form-item>
           </a-row>
           <a-row>
             <a-form-item label="金额大写" :labelCol="{ span: 3}" :wrapperCol="{ span: 19 }">
-              <a-input v-decorator="['moneyUpper']"></a-input>
+              <a-input v-decorator="['moneyUpper']" disabled></a-input>
             </a-form-item>
           </a-row>
           <a-row>
@@ -235,6 +236,43 @@ export default {
     };
   },
   methods: {
+    number_chinese(str) {
+			var num = parseFloat(str);
+			var strOutput = "",
+				strUnit = "仟佰拾亿仟佰拾万仟佰拾元角分";
+			num += "00";
+			var intPos = num.indexOf(".");
+			if (intPos >= 0) {
+				num = num.substring(0, intPos) + num.substr(intPos + 1, 2);
+			}
+			strUnit = strUnit.substr(strUnit.length - num.length);
+			for (var i = 0; i < num.length; i++) {
+				strOutput +=
+					"零壹贰叁肆伍陆柒捌玖".substr(num.substr(i, 1), 1) +
+					strUnit.substr(i, 1);
+			}
+			return strOutput
+				.replace(/零角零分$/, "整")
+				.replace(/零[仟佰拾]/g, "零")
+				.replace(/零{2,}/g, "零")
+				.replace(/零([亿|万])/g, "$1")
+				.replace(/零+元/, "元")
+				.replace(/亿零{0,3}万/, "亿")
+				.replace(/^元/, "零元");
+		},
+    getSupplierTotal(value) {
+      let totalData = this.data.filter(item => item.supplier === value);
+      let money = 0;
+      for(let i = 0; i < totalData.length; i ++) {
+        money += totalData[i].total;
+      }
+      this.form.setFieldsValue({
+        totalMoney: money,
+        moneyUpper: this.number_chinese(money)
+      })
+      console.log(totalData);
+
+    },
     close() {
       this.form.resetFields();
       this.$emit('cancelAdd',false);
