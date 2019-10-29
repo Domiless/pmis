@@ -272,7 +272,7 @@ export default {
 						workOrderId: values.workOrderId,
 						workOrderNo: this.orderListValue.find(item => {
 							return item.id == values.workOrderId;
-						}).contractNo,
+						}).no,
 						projectName: values.projectName,
 						bomDrawingNo: values.bomDrawingNo,
 						partName: values.partName,

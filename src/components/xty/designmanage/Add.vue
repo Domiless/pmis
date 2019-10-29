@@ -16,7 +16,7 @@
 								style="width: 100%"
 								:filterOption="filterOption"
 							>
-								<a-select-option v-for="(i,j) in orderListValue" :key="j" :value="i.no">{{i.contractName}}</a-select-option>
+								<a-select-option v-for="(i,j) in orderListValue" :key="j" :value="i.id">{{i.contractName}}</a-select-option>
 							</a-select>
 						</a-form-item>
 					</a-row>
@@ -279,10 +279,9 @@ export default {
 					let data = {
 						bomNo: values.designNo,
 						workOrderId: values.workOrderId,
-						// workOrderNo: this.orderListValue.find(item => {
-						// 	return item.id == values.workOrderId;
-						// }).contractNo,
-						workOrderNo: values.workOrderId,
+						workOrderNo: this.orderListValue.find(item => {
+							return item.id == values.workOrderId;
+						}).no,
 						projectName: values.projectName,
 						bomDrawingNo: values.bomDrawingNo,
 						partName: values.partName,

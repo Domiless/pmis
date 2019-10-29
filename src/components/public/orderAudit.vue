@@ -60,7 +60,14 @@
 				</a-col>
 				<a-col :span="24" class="case">
 					<span class="audit_label">附件</span>
-					<span>{{detailsValue.DO.orderDocs.length==0?"":detailsValue.DO.orderDocs.length}}</span>
+					<span style="display:inline-block;vertical-align: top;width:250px;">
+						<span
+							v-for="(item, index) in detailsValue.DO.orderDocs==null?0:detailsValue.DO.orderDocs"
+							:key="index"
+						>
+							<a :href="item.docPositionTrueUrl" target="_back" style="display:block;">{{item.docName}}</a>
+						</span>
+					</span>
 				</a-col>
 				<a-col :span="24" class="case">
 					<span class="audit_label">备注</span>
@@ -113,7 +120,7 @@
 					<a-tab-pane tab="审批日志" key="2" forceRender>
 						<div class="log_case">
 							<div v-for="(item, index) in detailsValue.log" :key="index" class="log_item_case">
-								<h3>领导审批</h3>
+								<h3>{{item.taskName}}</h3>
 								<a-col :span="24">
 									<span>姓名：</span>
 									<span>{{item.name}}</span>
@@ -122,23 +129,12 @@
 									<span>处理时间：</span>
 									<span>{{item.dealTime}}</span>
 								</a-col>
-								<a-col :span="24">
+								<a-col :span="24" v-if="item.state!=0">
 									<span>处理结果：</span>
 									<span>
 										{{item.state}}
 										<span v-if="item.comment!=null&&item.comment!=''">({{item.comment}})</span>
 									</span>
-								</a-col>
-							</div>
-							<div class="log_item_case">
-								<h3>发起审批</h3>
-								<a-col :span="24">
-									<span>姓名：</span>
-									<span>{{rizi.name}}</span>
-								</a-col>
-								<a-col :span="24">
-									<span>处理时间：</span>
-									<span>{{rizi.dealTime}}</span>
 								</a-col>
 							</div>
 						</div>
@@ -151,7 +147,7 @@
 									<a-divider type="vertical" style="display: block;margin: auto;" />
 									<span
 										class="item_case"
-									>{{item.type==1?"角色权限":"领导审批"}}（{{item.type==1?item.groups.label:item.users.map(i=>i.name).join(",")}}）</span>
+									>{{item.name}}（{{item.type==1?item.groups.label:item.users.map(i=>i.name).join(",")}}）</span>
 								</div>
 								<a-divider type="vertical" style="display: block;margin: auto;" />
 								<span class="item_case">结束</span>
@@ -260,17 +256,17 @@ export default {
 		}
 	},
 	created() {
-		this.rizi = this.auditValue.log[this.auditValue.log.length - 1];
+		// this.rizi = this.auditValue.log[this.auditValue.log.length - 1];
 		this.detailsValue = this.auditValue;
-		this.detailsValue.log.pop();
+		// this.detailsValue.log.pop();
 		this.getModel();
 		this.auditType = this.$store.state.homeStore.details;
 	},
 	watch: {
 		auditValue() {
-			this.rizi = this.auditValue.log[this.auditValue.log.length - 1];
+			// this.rizi = this.auditValue.log[this.auditValue.log.length - 1];
 			this.detailsValue = this.auditValue;
-			this.detailsValue.log.pop();
+			// this.detailsValue.log.pop();
 			this.getModel();
 			this.auditType = this.$store.state.homeStore.details;
 		}
