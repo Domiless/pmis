@@ -294,14 +294,14 @@ export default {
     },
     editShow() {
       if (this.selectedRows[0].reviewSchedule != 1 && this.selectedRows[0].reviewSchedule != 4) {
-				this.$message.error(`只能对暂存或未通过状态的订单进行修改！`);
+				this.$message.error(`只能对暂存或未通过状态的采购单进行修改！`);
 			} else {
 				this.editVisible = true;
 			}
     },
      approveShow() {
       if (this.selectedRows[0].reviewSchedule != 1 && this.selectedRows[0].reviewSchedule != 4) {
-				this.$message.error(`只能对暂存或未通过状态的订单提交审批！`);
+				this.$message.error(`只能对暂存或未通过状态的采购单提交审批！`);
 			} else {
 				this.approveVisible = true;
 			}
@@ -369,6 +369,9 @@ export default {
 			);
     },
     showDeleteConfirm() {
+      if (this.selectedRows[0].reviewSchedule != 1 ) {
+				this.$message.error(`只能删除暂存状态的采购单！`);
+			} else {
 			let that = this;
 			this.$confirm({
 				title: "确定删除吗？",
@@ -380,7 +383,8 @@ export default {
 					that.onDelete();
 				},
 				onCancel() {}
-			});
+      });
+      }
 		},
     onDelete(e) {
       console.log("delete" + this.selectedRowKeys);

@@ -223,7 +223,9 @@ export default {
 				{
 					url: "/api-order/supplier/getNo",
 					type: "get",
-					params: {},
+					params: {
+						num: "SJ"
+					},
 					option: { enableMsg: false }
 				},
 				this

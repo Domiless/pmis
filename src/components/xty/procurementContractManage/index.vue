@@ -412,6 +412,9 @@ export default {
       );
     },
     showDeleteConfirm() {
+      if (this.selectedRows[0].reviewSchedule != 1 ) {
+				this.$message.error(`只能删除暂存状态的订单！`);
+			} else {
       let that = this;
       this.$confirm({
         title: "确定删除吗？",
@@ -424,6 +427,7 @@ export default {
         },
         onCancel() {}
       });
+      }
     },
     getUserprocess() {
 			this.Axios(

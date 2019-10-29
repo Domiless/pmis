@@ -11,7 +11,7 @@
                 showSearch
                 @change="sendOrderId"
               >
-                <a-select-option v-for="item in ProjectId" :key="item.no">{{ item.no }}</a-select-option>
+                <a-select-option v-for="item in ProjectId" :key="item.no">{{ item.no }}-{{ item.contractName }}</a-select-option>
               </a-select>
             </a-form-item>
           </a-row>
@@ -350,6 +350,7 @@ export default {
       bomName: "",
       designIdArr: [],
       designNameArr: [],
+      procurementNoWatch: '',
       totalMoney: 0
     };
   },
@@ -377,6 +378,7 @@ export default {
     close() {
       this.$emit("cancelAdd", false);
       this.form.resetFields();
+      this.procurementNoWatch = '';
     },
     onChange(current, pageNumber) {
       console.log("Page: ", pageNumber);
@@ -397,6 +399,7 @@ export default {
         }
       }
       console.log(this.workOrderId);
+      this.getDesignId(this.workOrderId);
     },
     sendId(value) {
       console.log(value);
@@ -562,7 +565,7 @@ export default {
         }
       });
     },
-    getDesignId() {
+    getDesignId(id) {
       this.Axios(
         {
           url: "/api-order/bom/list",
@@ -570,7 +573,8 @@ export default {
           params: {
 						page: 1,
 						size: -1,
-						auditState: 3
+            auditState: 3,
+            orderId: id
 					},
           option: { enableMsg: false }
         },
@@ -602,7 +606,7 @@ export default {
       ).then(
         result => {
           if (result.data.code === 200) {
-            // console.log(result);
+            console.log(result);
             this.ProjectId = result.data.data;
           }
         },
@@ -614,17 +618,20 @@ export default {
         {
           url: "/api-order/supplier/getNo",
           type: "get",
-          params: {},
+          params: {
+            num: "CG"
+          },
           option: { enableMsg: false }
         },
         this
       ).then(
         result => {
           if (result.data.code === 200) {
-            // console.log(result);
+            console.log(result);
             this.form.setFieldsValue({
               procurementNo: result.data.data
             });
+            this.procurementNoWatch = result.data.data;
           }
         },
         ({ type, info }) => {}
@@ -632,9 +639,15 @@ export default {
     }
   },
   created() {
-    this.getDesignId();
     this.getProjectId();
     this.getProcurementId();
+  },
+  watch: {
+    procurementNoWatch() {
+      if(this.procurementNoWatch == '') {
+        this.getProcurementId();
+      }
+    }
   }
 };
 </script>

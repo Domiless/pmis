@@ -209,6 +209,10 @@
           <span>{{ orderDetails.gmtSign }}</span>
       </a-row>
       <a-row>
+          <span class="label_right" style="margin-bottom:12px;">创建时间：</span>
+          <span>{{ orderDetails.gmtCreate }}</span>
+      </a-row>
+      <a-row>
           <span class="label_right" style="margin-bottom:12px;">交货地点：</span>
           <span>{{ orderDetails.deliveryPlace }}</span>
       </a-row>
@@ -494,6 +498,9 @@ export default {
       );
     },
     showDeleteConfirm() {
+      if (this.selectedRows[0].orderReviewSchedule != 1 ) {
+				this.$message.error(`只能删除暂存状态的订单！`);
+			} else {
       let that = this;
       this.$confirm({
         title: "确定删除吗？",
@@ -506,6 +513,7 @@ export default {
         },
         onCancel() {}
       });
+      }
     },
     getUserprocess() {
 			this.Axios(

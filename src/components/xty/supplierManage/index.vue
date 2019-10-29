@@ -13,9 +13,7 @@
     </a-row>
     <a-row>
         <a-col :span="24">
-          <span>日期 :</span>
-          <a-range-picker style="width:240px" @change="onChangeRange" format="YYYY/MM/DD"></a-range-picker>
-          <span style="margin-left: 50px">关键词 :</span>
+          <span>关键词 :</span>
           <a-input placeholder="供应商编码/名称/联系人/电话" style="width: 250px" v-model="keyWords"></a-input>
           <a-button @click="getList">搜索</a-button>
         </a-col>
@@ -529,7 +527,9 @@ export default {
 				{
 					url: "/api-order/supplier/getNo",
           type: "get",
-         	params: {},
+         	params: {
+             num: "GGS"
+           },
 					option: { enableMsg: false }
 				},
 				this
@@ -555,9 +555,10 @@ export default {
          	params: {
 						page: this.current,
             size: this.pageSize,
+            keyword: this.keyWords
             // state: this.state,
-						beginDate: this.beginDate != "" ? this.beginDate : null,
-            endDate: this.endDate != "" ? this.endDate : null
+						// beginDate: this.beginDate != "" ? this.beginDate : null,
+            // endDate: this.endDate != "" ? this.endDate : null
 					},
 					option: { enableMsg: false }
 				},

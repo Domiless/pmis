@@ -233,6 +233,7 @@ export default {
       supplierName: [],
       contractTemplate: [],
       procurementId: '',
+      contractNoWatch: ''
     };
   },
   methods: {
@@ -275,6 +276,7 @@ export default {
     },
     close() {
       this.form.resetFields();
+      this.contractNoWatch = '';
       this.$emit('cancelAdd',false);
     },
     onChangeSign(data, dateString) {
@@ -445,7 +447,9 @@ export default {
         {
           url: "/api-order/supplier/getNo",
           type: "get",
-          params: {},
+          params: {
+            num: "CGHT"
+          },
           option: { enableMsg: false }
         },
         this
@@ -456,6 +460,7 @@ export default {
             this.form.setFieldsValue({
               contractNo: result.data.data
             })
+            this.contractNoWatch = result.data.data;
           }
         },
         ({ type, info }) => {}
@@ -467,6 +472,13 @@ export default {
     this.getSupplierName();
     this.getContract();
     this.getContractId()
+  },
+  watch: {
+    contractNoWatch() {
+      if(this.contractNoWatch == '') {
+        this.getContractId();
+      }
+    }
   }
 };
 </script>
