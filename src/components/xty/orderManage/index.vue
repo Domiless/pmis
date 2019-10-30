@@ -58,17 +58,22 @@
               <span v-if="text==1" style="font-size:14px;color:#999999;">暂存</span>
               <a-popover title placement="right">
                 <template slot="content">
-                  <span>原因：{{record.reason}}</span>
+                  <span>审批意见：{{record.comment == null ? "无" : record.comment}}</span>
                 </template>
                 <span v-if="text==4" style="font-size:14px;color:#f6003c;">未通过</span>
               </a-popover>
               <a-popover title placement="right">
                 <template slot="content">
-                  <span>原因：{{record.reason}}</span>
+                  <span>审批意见：{{record.comment == null ? "无" : record.comment}}</span>
                 </template>
                 <span v-if="text==5" style="font-size:14px;color:#E02D2D;">已终止</span>
               </a-popover>
-              <span v-if="text==3" style="font-size:14px;color:#10CF0C;">已通过</span>
+              <a-popover title placement="right">
+                <template slot="content">
+                  <span>审批意见：{{record.comment == null ? "无" : record.comment}}</span>
+                </template>
+                <span v-if="text==3" style="font-size:14px;color:#10CF0C;">已通过</span>
+              </a-popover>
             </div>
           </template>
           <template slot="orderType" slot-scope="text">
@@ -498,8 +503,8 @@ export default {
       );
     },
     showDeleteConfirm() {
-      if (this.selectedRows[0].orderReviewSchedule != 1 ) {
-				this.$message.error(`只能删除暂存状态的订单！`);
+      if (this.selectedRows[0].orderReviewSchedule != 1 && this.selectedRows[0].orderReviewSchedule != 4) {
+				this.$message.error(`只能删除暂存或未通过状态的订单！`);
 			} else {
       let that = this;
       this.$confirm({

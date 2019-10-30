@@ -51,17 +51,22 @@
             <span v-if="text==1" style="font-size:14px;color:#999999;">暂存</span>
             <a-popover title placement="right">
               <template slot="content">
-                <span>原因：{{record.reason}}</span>
+                <span>审批意见：{{record.comment == null ? "无" : record.comment}}</span>
               </template>
               <span v-if="text==4" style="font-size:14px;color:#f6003c;">未通过</span>
             </a-popover>
             <a-popover title placement="right">
               <template slot="content">
-                <span>原因：{{record.reason}}</span>
+                <span>审批意见：{{record.comment == null ? "无" : record.comment}}</span>
               </template>
               <span v-if="text==5" style="font-size:14px;color:#E02D2D;">已终止</span>
             </a-popover>
-            <span v-if="text==3" style="font-size:14px;color:#10CF0C;">已通过</span>
+            <a-popover title placement="right">
+                <template slot="content">
+                  <span>审批意见：{{record.comment == null ? "无" : record.comment}}</span>
+                </template>
+                <span v-if="text==3" style="font-size:14px;color:#10CF0C;">已通过</span>
+            </a-popover>
           </div>
         </template>
       </a-table>
@@ -120,12 +125,14 @@
     <a-modal
       title="合同详情"
       :footer="null"
-      width="600px"
+      width="1000px"
       :visible="detailsVisible"
       @cancel="handleCancel(3)"
       :maskClosable="false"
     >
-      <a-row>
+    <a-tabs defaultActiveKey="1">
+      <a-tab-pane tab="基础信息" key="1">
+        <a-row>
         <a-col :span="24" style="margin-bottom:12px;">
           <span class="label_right">采购单号：</span>
           <span>{{contractDetails.purchaseNo}}</span>
@@ -175,6 +182,12 @@
           <span>{{contractDetails.remark}}</span>
         </a-col>
       </a-row>
+      </a-tab-pane>
+      <a-tab-pane tab="采购明细" key="2" style="margin-bottom: 20px">
+        <a-table rowKey="id" :columns="columns2" :dataSource="data2" :scroll="{ x: 1900, y: 500 }" :pagination="true"/>
+      </a-tab-pane>
+    </a-tabs>
+      
     </a-modal>
   </div>
 </template>
@@ -232,12 +245,100 @@ const columns = [
     key: "remark"
   }
 ];
+const columns2 = [
+  {
+    dataIndex: "drawingNo",
+    title: "图号",
+    key: "drawingNo",
+    width: 100
+  },
+  {
+    dataIndex: "name",
+    title: "名称",
+    key: "name",
+    width: 100
+  },
+  {
+    dataIndex: "number",
+    title: "需求数量",
+    key: "number",
+    width: 100
+  },
+  {
+    dataIndex: "brand",
+    title: "指定品牌",
+    key: "brand",
+    width: 100
+  },
+  {
+    dataIndex: "designer",
+    title: "设计师",
+    key: "designer",
+    width: 100
+  },
+  {
+    dataIndex: "orderNumber",
+    title: "订单数量",
+    key: "orderNumber",
+    width: 100
+  },
+  {
+    dataIndex: "unit",
+    title: "订单单位",
+    key: "unit",
+    width: 100
+  },
+  {
+    dataIndex: "delivery",
+    title: "交货日期",
+    key: "delivery",
+    width: 120
+  },
+  {
+    dataIndex: "price",
+    title: "单价",
+    key: "price",
+    width: 100
+  },
+  {
+    dataIndex: "taxrate",
+    title: "税率",
+    key: "taxrate",
+    width: 100
+  },
+  {
+    dataIndex: "supplier",
+    title: "供应商",
+    key: "supplier",
+    width: 100
+  },
+  {
+    dataIndex: "priseUnit",
+    title: "价格单位",
+    key: "priseUnit",
+    width: 100
+  },
+  {
+    dataIndex: "moneyType",
+    title: "货币类型",
+    key: "moneyType",
+    width: 100
+  },
+  {
+    dataIndex: "remark",
+    title: "备注",
+    key: "remark",
+    width: 100
+  }
+];
 export default {
   data() {
     return {
       form: this.$form.createForm(this),
       columns,
+      columns2,
       data: [],
+      data2: [],
       selectedRowKeys: [],
       selectedRows: [],
       contractDetails: [],
@@ -358,6 +459,28 @@ export default {
       this.contractDetails = row;
       this.detailsVisible = true;
       console.log(this.contractDetails);
+      this.findOne(row.id);
+    },
+    findOne(id){
+      this.Axios(
+				{
+					url: '/api-order/shopContract/findone',
+					params: {
+            id: id
+          },
+					type: "get",
+					option: { enableMsg: false }
+				},
+				this
+			).then(
+				result => {
+					if (result.data.code === 200) {
+            console.log(result);
+            this.data2 = result.data.data.shopContractDesDOList
+					}
+				},
+				({ type, info }) => {}
+			);
     },
     getList() {
 			this.Axios(
@@ -412,8 +535,8 @@ export default {
       );
     },
     showDeleteConfirm() {
-      if (this.selectedRows[0].reviewSchedule != 1 ) {
-				this.$message.error(`只能删除暂存状态的订单！`);
+      if (this.selectedRows[0].reviewSchedule != 1 && this.selectedRows[0].reviewSchedule != 4) {
+				this.$message.error(`只能删除暂存或未通过状态的订单！`);
 			} else {
       let that = this;
       this.$confirm({

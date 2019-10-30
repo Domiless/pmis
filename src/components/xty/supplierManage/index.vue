@@ -90,6 +90,7 @@
           <a-col :span="24">
             <a-form-item label="地址" :labelCol="{ span: 4}" :wrapperCol="{ span: 18}">
                <a-cascader
+               v-decorator="['addressId']"
                 :options="options"
                 :showSearch="{filter}"
                 placeholder="请选择"
@@ -659,7 +660,7 @@ export default {
 				}
         that.country[0].children.push(that.province);
         that.options=that.country[0].children[0]
-    console.log(that.options)
+        console.log(that.options)
 				// sessionStorage.setItem("area", JSON.stringify(that.country));
 				// this.$store.commit("getArea", Object.assign({},that.country));
 			});
