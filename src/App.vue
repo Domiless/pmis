@@ -5,7 +5,7 @@
 				<a-row>
 					<a-col :span="16">
 						<div class="logo">
-							<p>生产管理系统</p>Changhong
+							<p>协同云</p>Changhong
 						</div>
 						<a-modal
 							title="修改密码"
@@ -159,7 +159,7 @@
 					</a-layout-content>
 				</a-layout>
 			</a-layout>
-			<a-layout-footer>PMS (V1.2.3_beta（内测版）) ©2019 Created by Changhong Intelligent Manufacturing</a-layout-footer>
+			<a-layout-footer>协同云 (V1.0.0_beta（内测版）) ©2019 Created by Changhong Intelligent Manufacturing</a-layout-footer>
 		</a-layout>
 	</a-locale-provider>
 </template>

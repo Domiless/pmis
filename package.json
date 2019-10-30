@@ -1,7 +1,7 @@
 {
-  "name": "pms",
-  "version": "1.2.3",
-  "description": "生产管理系统",
+  "name": "pmis",
+  "version": "1.0.0",
+  "description": "协同云",
   "author": "zlc",
   "private": true,
   "scripts": {
