@@ -116,7 +116,7 @@
 				v-model="addBomVisible"
 				:footer="null"
 				width="600px"
-				@cancel="addBomVisible=false"
+				@cancel="handleCancel(4)"
 				:maskClosable="false"
 			>
 				<a-form :form="form">
@@ -139,7 +139,7 @@
 						<a-textarea v-decorator="['description']" :autosize="{ minRows: 4, maxRows: 4 }" />
 					</a-form-item>
 					<a-form-item :wrapper-col="{ span: 20,offset: 4 }" style="text-align:right">
-						<a-button style="margin-right:12px;">取消</a-button>
+						<a-button style="margin-right:12px;" @click="handleCancel(4)">取消</a-button>
 						<a-button type="primary" @click="auditSubmit">提交</a-button>
 					</a-form-item>
 				</a-form>
@@ -482,6 +482,10 @@ export default {
 			}
 			if (a == 3) {
 				this.detailsVisible = false;
+			}
+			if (a == 4) {
+				this.addBomVisible = false;
+				this.form.resetFields();
 			}
 		},
 		cancelAddOrder(params) {

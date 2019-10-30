@@ -135,12 +135,21 @@ export default ({
       }).catch(res => {
         //error && error(res);
         loadingConfig.done();
-        //console.log(info);
-        message.error(`网络异常：${res.message}`);
-        reject({
-          type: 'error',
-          info: res
-        });
+        console.log(res.response);
+        if (res.response.status === 401) {
+          message.error(`授权过期，即将跳转至登录页`);
+          window.setTimeout(() => {
+            window.location.href = "login.html"
+          }, 2000);
+        } else {
+          message.error(`网络异常：${res.message}`);
+          reject({
+            type: 'error',
+            info: res
+          });
+          // this.$message.error(error.response.data.msg);
+        }
+
       })
     })
   }
