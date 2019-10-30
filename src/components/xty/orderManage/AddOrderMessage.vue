@@ -153,6 +153,7 @@ export default {
 			this.dataValue = dateString;
 		},
     confirmCancel() {
+      this.fileList = [];
       this.$emit("changeAddOrder", false);
       this.form.resetFields();
     },
