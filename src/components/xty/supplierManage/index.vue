@@ -311,8 +311,7 @@ export default {
         console.log(value, selectedOptions);
         this.addressCodeArr = value;
         if(selectedOptions != ''){
-          let add=selectedOptions.map(item=>item.label);
-          this.address = add.join("/")
+          this.address=selectedOptions.map(item=>item.label);
           console.log(this.address)
         }
         
@@ -390,7 +389,7 @@ export default {
             linkman: values.linkman,
             linkPhone: values.linkPhone,
             areaCode: this.addressCodeArr.join(','),
-            address: this.address +"/" + values.address,
+            address: this.address.join('/') +"/" + values.address,
             email: values.email,
             remark: values.remark
           };
