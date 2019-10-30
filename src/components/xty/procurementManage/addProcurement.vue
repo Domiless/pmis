@@ -351,7 +351,8 @@ export default {
       designIdArr: [],
       designNameArr: [],
       procurementNoWatch: '',
-      totalMoney: 0
+      totalMoney: 0,
+      isOffer: true
     };
   },
   methods: {
@@ -511,6 +512,26 @@ export default {
           // 	return false;
           // }
           let qs = require("qs");
+          let judgeData =  this.data.map(item => {
+              return {
+                delivery: item.deliveryDate,
+                moneyType: item.moneyType,
+                price: item.unitPrice,
+                orderNumber: item.orderNum,
+                priseUnit: item.priceUnit,
+                supplier: item.supplier,
+                taxrate: item.taxrate,
+                unit: item.orderUnit
+              };
+            })
+          for(let i = 0; i < judgeData.length; i++ ) {
+            for(let j in judgeData[i]) {
+              if( typeof(judgeData[i][j]) == "undefined"){
+                this.isOffer = false
+              }
+            }
+          }
+          console.log(judgeData);
           let data = {
             bomIds: this.designIdArr.join(","),
             bomName: this.designNameArr.join(","),
@@ -520,6 +541,7 @@ export default {
             purchaseNo: values.procurementNo,
             remark: values.remark,
             summoney: this.totalMoney,
+            isOffer: this.isOffer,
             purchaseDesDTOList: this.data.map(item => {
               return {
                 drawingNo: item.drawingNo,

@@ -300,6 +300,7 @@ export default {
       block:[],
       options:[],
       address: '',
+      addressPre: '',
       addressCodeArr: []
 
     };
@@ -312,7 +313,7 @@ export default {
         console.log(value, selectedOptions);
         this.addressCodeArr = value;
         if(selectedOptions != ''){
-          this.address=selectedOptions.map(item=>item.label);
+          this.address=selectedOptions.map(item=>item.label).join('/');
           console.log(this.address)
         }
         
@@ -390,7 +391,7 @@ export default {
             linkman: values.linkman,
             linkPhone: values.linkPhone,
             areaCode: this.addressCodeArr.join(','),
-            address: this.address.join('/') +"/" + values.address,
+            address: this.address +";" + values.address,
             email: values.email,
             remark: values.remark
           };
@@ -437,7 +438,7 @@ export default {
             linkman: values.linkman,
             linkPhone: values.linkPhone,
             areaCode: this.addressCodeArr.join(','),
-            address: this.address.join('/') +"/" + values.address,
+            address: this.address +";" + values.address,
             email: values.email,
             remark: values.remark
 					};
@@ -566,14 +567,13 @@ export default {
 								linkman: result.data.data.linkman,
                 linkPhone: result.data.data.linkPhone,
                 addressId: result.data.data.areaCode.split(','),
-                address: result.data.data.address.split('/')[3],
+                address: result.data.data.address.split(';')[1],
                 email: result.data.data.email,
 								remark: result.data.data.remark
 							});
 						}, 100);
           }
-          let add = result.data.data.address.split('/').slice(0,3);
-          this.address = add;
+          this.address = result.data.data.address.split(';')[0];
           this.addressCodeArr = result.data.data.areaCode.split(',');
           console.log(this.address);
           console.log(this.addressCodeArr);
