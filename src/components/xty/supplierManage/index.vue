@@ -89,51 +89,18 @@
         <a-row>
           <a-col :span="24">
             <a-form-item label="地址" :labelCol="{ span: 4}" :wrapperCol="{ span: 18}">
-              <a-row type="flex" justify="space-between">
-                <a-col :span="7">
-                  <a-select
-                    showSearch
-                    placeholder="请选择"
-                    style="width: 100%"
-                    :defaultActiveFirstOption="false"
-                    :notFoundContent="null"
-                    @change="handleProvinceChange"
-                    :defaultValue="provinceData[0]"
-                  >
-                    <a-select-option v-for="province in provinceData" :key="province">{{province}}</a-select-option>
-                  </a-select>
-                </a-col>
-                <a-col :span="7">
-                  <a-select
-                    showSearch
-                    placeholder="请选择"
-                    style="width: 100%"
-                    :defaultActiveFirstOption="false"
-                    :notFoundContent="null"
-                    v-model="secondCity"
-                    @change="handleCityChange"
-                  >
-                    <a-select-option v-for="city in cities" :key="city">{{city}}</a-select-option>
-                  </a-select>
-                </a-col>
-                <a-col :span="7">
-                  <a-select
-                    showSearch
-                    placeholder="请选择"
-                    style="width: 100%"
-                    :defaultActiveFirstOption="false"
-                    :notFoundContent="null"
-                    v-model="thirdCity"
-                  >
-                    <a-select-option v-for="area in thirdCity" :key="area">{{area}}</a-select-option>
-                  </a-select>
-                </a-col>
-              </a-row>
+               <a-cascader
+                :options="options"
+                :showSearch="{filter}"
+                placeholder="请选择"
+                @change="onSelectAddressChange"
+                
+              />
             </a-form-item>
           </a-col>
           <a-col :span="24" :offset="4">
             <a-form-item :wrapperCol="{ span: 18}">
-              <a-input placeholder="详细地址"></a-input>
+              <a-input v-decorator="['address']" placeholder="详细地址"></a-input>
             </a-form-item>
           </a-col>
         </a-row>
@@ -201,58 +168,18 @@
         <a-row>
           <a-col :span="24">
             <a-form-item label="地址" :labelCol="{ span: 4}" :wrapperCol="{ span: 18}">
-              <a-row type="flex" justify="space-between">
-                <a-col :span="7">
-                  <a-select
-                    showSearch
-                    placeholder="请选择"
-                    style="width: 100%"
-                    :defaultActiveFirstOption="false"
-                    :notFoundContent="null"
-                    :showArrow="false"
-                  >
-                    <a-select-option
-                      v-for="i in 25"
-                      :key="(i + 9).toString(36) + i"
-                    >{{(i + 9).toString(36) + i}}</a-select-option>
-                  </a-select>
-                </a-col>
-                <a-col :span="7">
-                  <a-select
-                    showSearch
-                    placeholder="请选择"
-                    style="width: 100%"
-                    :defaultActiveFirstOption="false"
-                    :notFoundContent="null"
-                    :showArrow="false"
-                  >
-                    <a-select-option
-                      v-for="i in 25"
-                      :key="(i + 9).toString(36) + i"
-                    >{{(i + 9).toString(36) + i}}</a-select-option>
-                  </a-select>
-                </a-col>
-                <a-col :span="7">
-                  <a-select
-                    showSearch
-                    placeholder="请选择"
-                    style="width: 100%"
-                    :defaultActiveFirstOption="false"
-                    :notFoundContent="null"
-                    :showArrow="false"
-                  >
-                    <a-select-option
-                      v-for="i in 25"
-                      :key="(i + 9).toString(36) + i"
-                    >{{(i + 9).toString(36) + i}}</a-select-option>
-                  </a-select>
-                </a-col>
-              </a-row>
+              <a-cascader
+                v-decorator="['addressId']"
+                :options="options"
+                :showSearch="{filter}"
+                placeholder="请选择"
+                @change="onSelectAddressChange"
+              />
             </a-form-item>
           </a-col>
           <a-col :span="24" :offset="4">
             <a-form-item :wrapperCol="{ span: 18}">
-              <a-input placeholder="详细地址"></a-input>
+              <a-input v-decorator="['address']" placeholder="详细地址"></a-input>
             </a-form-item>
           </a-col>
         </a-row>
@@ -314,6 +241,9 @@
   </div>
 </template>
 <script>
+import Vue from "vue";
+import { Cascader } from "ant-design-vue";
+Vue.use(Cascader);
 const columns = [
   {
     dataIndex: "supplierNo",
@@ -346,14 +276,6 @@ const columns = [
     key: "remark"
   }
 ];
-const provinceData = ['Zhejiang', 'Jiangsu'];
-const cityData = {
-  Zhejiang: ['Hangzhou', 'Ningbo', 'Wenzhou'],
-  Jiangsu: ['Nanjing', 'Suzhou', 'Zhenjiang'],
-};
-const areaData = {
-  Hangzhou: ['xihu1', 'xihu2', 'xihu3']
-}
 export default {
   data() {
     return {
@@ -371,16 +293,35 @@ export default {
       supplierDetails: [],
       dateValue: [],
       keyWords: '',
-      provinceData,
-      cityData,
-      areaData,
-      cities: cityData[provinceData[0]],
-      secondCity: cityData[provinceData[0]][0],
-      thirdCity: areaData[cityData[provinceData[0]][0]][0]
+      country:[],
+      province:[],
+      city:[],
+      block:[],
+      options:[],
+      address: '',
+      addressCodeArr: []
 
     };
   },
   methods: {
+    displayRender(a,b){
+      console.log(a,b)
+    },
+     onSelectAddressChange(value, selectedOptions) {
+        console.log(value, selectedOptions);
+        this.addressCodeArr = value;
+        if(selectedOptions != ''){
+          let add=selectedOptions.map(item=>item.label);
+          this.address = add.join("/")
+          console.log(this.address)
+        }
+        
+      },
+      filter(inputValue, path) {
+        return path.some(
+          option => option.label.toLowerCase().indexOf(inputValue.toLowerCase()) > -1,
+        );
+      },
     cancelEdit(){
       this.editVisible = false;
       this.form.resetFields();
@@ -448,7 +389,8 @@ export default {
 						supplierName: values.supplierName,
             linkman: values.linkman,
             linkPhone: values.linkPhone,
-            address: values.address,
+            areaCode: this.addressCodeArr.join(','),
+            address: this.address +"/" + values.address,
             email: values.email,
             remark: values.remark
           };
@@ -470,7 +412,7 @@ export default {
 							if (result.data.code === 200) {
                 console.log(result);
                 this.getList();
-                // this.form.resetFields();
+                this.form.resetFields();
                 this.addVisible = false;
 							}
 						},
@@ -494,7 +436,8 @@ export default {
 						supplierName: values.supplierName,
             linkman: values.linkman,
             linkPhone: values.linkPhone,
-            address: values.address,
+            areaCode: this.addressCodeArr.join(','),
+            address: this.address.join('/') +"/" + values.address,
             email: values.email,
             remark: values.remark
 					};
@@ -514,7 +457,9 @@ export default {
 							if (result.data.code === 200) {
                 console.log(result);
                 this.getList();
-								this.editVisible = false;
+                this.form.resetFields();
+                this.editVisible = false;
+                this.selectedRowKeys = [];
 							}
 						},
 						({ type, info }) => {}
@@ -615,17 +560,23 @@ export default {
 					if (result.data.code === 200) {
 						console.log(result.data.data);
 						setTimeout(() => {
-							this.form.setFieldsValue({
-								supplierNo: result.data.data.supplierNo,
+              this.form.setFieldsValue({
+                supplierNo: result.data.data.supplierNo,
 								supplierName: result.data.data.supplierName,
 								linkman: result.data.data.linkman,
-								linkPhone: result.data.data.linkPhone,
-                address: result.data.data.address,
+                linkPhone: result.data.data.linkPhone,
+                addressId: result.data.data.areaCode.split(','),
+                address: result.data.data.address.split('/')[3],
                 email: result.data.data.email,
 								remark: result.data.data.remark
 							});
 						}, 100);
-					}
+          }
+          let add = result.data.data.address.split('/').slice(0,3);
+          this.address = add;
+          this.addressCodeArr = result.data.data.areaCode.split(',');
+          console.log(this.address);
+          console.log(this.addressCodeArr);
 				},
 				({ type, info }) => {}
 			);
@@ -643,7 +594,78 @@ export default {
 				},
 				onCancel() {}
 			});
-		}
+    },
+    getArea() {
+			this.$axios.get("./static/area.json").then(res => {
+				let that = this;
+        let data = res.data.area;
+        
+        data=data.map(item=>{
+          return {
+            label:item.areaName,
+            value:item.adcode
+          }
+        })
+        
+				for (var item in data) {
+					if (data[item].value.match(/100000$/)) {
+						that.country.push({
+							value: data[item].value,
+							label: data[item].label,
+							children: []
+						});
+					} else if (data[item].value.match(/0000$/)) {
+						//省
+						that.province.push({
+							value: data[item].value,
+							label: data[item].label,
+							children: []
+						});
+					} else if (data[item].value.match(/00$/)) {
+						//市
+						that.city.push({
+							value: data[item].value,
+							label: data[item].label,
+							children: []
+						});
+					} else {
+						//区
+						that.block.push({
+							value: data[item].value,
+							label: data[item].label
+						});
+					}
+				}
+				// 分类市级
+				for (var index in that.province) {
+					for (var index1 in that.city) {
+						if (
+							that.province[index].value.slice(0, 2) ===
+							that.city[index1].value.slice(0, 2)
+						) {
+							that.province[index].children.push(that.city[index1]);
+						}
+					}
+				}
+				//  分类区级
+				for (var item1 in that.city) {
+					for (var item2 in that.block) {
+						if (
+							that.block[item2].value.slice(0, 4) ===
+							that.city[item1].value.slice(0, 4)
+						) {
+							that.city[item1].children.push(that.block[item2]);
+						}
+					}
+				}
+        that.country[0].children.push(that.province);
+        that.options=that.country[0].children[0]
+    console.log(that.options)
+				// sessionStorage.setItem("area", JSON.stringify(that.country));
+				// this.$store.commit("getArea", Object.assign({},that.country));
+			});
+		},
+
   },
   computed: {
     rowSelection() {
@@ -667,6 +689,7 @@ export default {
   },
   created() {
     this.getList();
+    this.getArea();
   }
 };
 </script>
