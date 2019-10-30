@@ -29,7 +29,7 @@
 					</a-col>
 					<a-col :span="24" class="case">
 						<span class="audit_label">备注</span>
-						<pre>{{detailsValue.DO.remake}}</pre>
+						<pre style="display:inline-block;vertical-align: top;">{{detailsValue.DO.remake}}</pre>
 					</a-col>
 				</a-col>
 			</a-col>

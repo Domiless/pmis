@@ -301,7 +301,7 @@ export default {
 			).then(
 				result => {
 					if (result.data.code === 200) {
-						console.log(result);
+						// console.log(result);
 						this.pendingValue =
 							result.data.data != null ? result.data.data.data : [];
 						this.totle = parseInt(
@@ -327,7 +327,7 @@ export default {
 			).then(
 				result => {
 					if (result.data.code === 200) {
-						console.log(result);
+						// console.log(result);
 						this.alreadyValue =
 							result.data.data != null ? result.data.data.data : [];
 						this.totle2 = parseInt(
@@ -422,16 +422,19 @@ export default {
 		}
 	},
 	created() {
-		// this.reload();
-		setTimeout(() => {
-			this.getPending();
-			this.getAlready();
-			this.getMessageList();
-		}, 10000);
 		this.getPending();
 		this.getAlready();
 		this.getMessageList();
 		this.getBlackboard();
+	},
+	watch: {
+		pendingValue() {
+			setTimeout(() => {
+				this.getPending();
+				this.getAlready();
+				this.getMessageList();
+			}, 10000);
+		}
 	},
 	components: {
 		designAudit,
@@ -563,6 +566,9 @@ export default {
 		border-radius: 4px;
 		padding: 0 12px;
 		margin-top: 14px;
+		img {
+			width: 100%;
+		}
 	}
 	.blackboard1 {
 		border: 1px solid #dddddd;

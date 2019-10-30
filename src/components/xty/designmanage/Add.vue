@@ -16,7 +16,11 @@
 								style="width: 100%"
 								:filterOption="filterOption"
 							>
-								<a-select-option v-for="(i,j) in orderListValue" :key="j" :value="i.id">{{i.contractName}}</a-select-option>
+								<a-select-option
+									v-for="(i,j) in orderListValue"
+									:key="j"
+									:value="i.id"
+								>{{i.no+" - "+i.contractName}}</a-select-option>
 							</a-select>
 						</a-form-item>
 					</a-row>

@@ -8,16 +8,20 @@
 							<a-select
 								disabled
 								v-decorator="[
-                'workOrderId',
-                {rules: [{ required: true, message: '请选择项目订单' }]}
-                ]"
+									'workOrderId',
+									{rules: [{ required: true, message: '请选择项目订单' }]}
+									]"
 								showSearch
 								placeholder="请选择"
 								optionFilterProp="children"
 								style="width: 100%"
 								:filterOption="filterOption"
 							>
-								<a-select-option v-for="(i,j) in orderListValue" :key="j" :value="i.id">{{i.contractName}}</a-select-option>
+								<a-select-option
+									v-for="(i,j) in orderListValue"
+									:key="j"
+									:value="i.id"
+								>{{i.no+" - "+i.contractName}}</a-select-option>
 							</a-select>
 						</a-form-item>
 					</a-row>
