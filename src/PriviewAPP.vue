@@ -126,7 +126,7 @@
 		<div v-if="priviewType==2">
 			<div class="content_case" v-for="(item,index) in priceMsg" :key="index+66666">
 				<div style="text-align:center;">
-					<h2>{{enterpriseName}}制造报价单</h2>
+					<h2>{{item.title}}</h2>
 				</div>
 				<a-col :span="24">
 					<a-col :span="12">
@@ -135,23 +135,23 @@
 					</a-col>
 					<a-col :span="12">
 						<span class="label_style">需方订单号：</span>
-						<span></span>
+						<span>{{item.inquiryNo}}</span>
 					</a-col>
 					<a-col :span="12">
 						<span class="label_style">供方：</span>
-						<span>{{enterpriseName}}</span>
+						<span>{{item.supplier}}</span>
 					</a-col>
 					<a-col :span="12">
 						<span class="label_style">供方订单号：</span>
-						<span></span>
+						<span>{{item.supplierNo}}</span>
 					</a-col>
 					<a-col :span="12">
 						<span class="label_style">项目名称：</span>
-						<span>{{item.address}}</span>
+						<span>{{item.projectName}}</span>
 					</a-col>
 					<a-col :span="12">
 						<span class="label_style">协议编号：</span>
-						<span>{{item.address}}</span>
+						<span>{{item.agreementNo}}</span>
 					</a-col>
 					<a-col :span="24">
 						<span class="label_style">签订时间：</span>

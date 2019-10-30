@@ -143,6 +143,7 @@
 			:visible="orderAuditVisible"
 			:footer="null"
 			@cancel="cancel(2)"
+			class="audit_modal_body_style"
 		>
 			<orderAudit v-on:auditParams="auditParams" :auditValue="auditValue1"></orderAudit>
 		</a-modal>
@@ -154,6 +155,7 @@
 			:visible="designAuditVisible"
 			:footer="null"
 			@cancel="cancel(3)"
+			class="audit_modal_body_style"
 		>
 			<designAudit v-on:auditParams="auditParams" :auditValue="auditValue2"></designAudit>
 		</a-modal>
@@ -165,6 +167,7 @@
 			:visible="purchaseContractAuditVisible"
 			:footer="null"
 			@cancel="cancel(5)"
+			class="audit_modal_body_style"
 		>
 			<purchaseContractAudit v-on:auditParams="auditParams" :auditValue="auditValue4"></purchaseContractAudit>
 		</a-modal>
@@ -176,6 +179,7 @@
 			:visible="enquiryAuditVisible"
 			:footer="null"
 			@cancel="cancel(4)"
+			class="audit_modal_body_style"
 		>
 			<enquiryAudit v-on:auditParams="auditParams" :auditValue="auditValue3"></enquiryAudit>
 		</a-modal>
@@ -593,6 +597,11 @@ export default {
 		img {
 			width: 100%;
 		}
+	}
+}
+.audit_modal_body_style {
+	.ant-modal-body {
+		padding: 0;
 	}
 }
 </style>

@@ -67,7 +67,7 @@
 					</a-row>
 				</a-form>
 			</a-tab-pane>
-			<a-tab-pane tab="Bom" key="2" style="margin-bottom: 20px">
+			<a-tab-pane tab="BOM" key="2" style="margin-bottom: 20px">
 				<a-row>
 					<a-col style="text-align: right; margin-bottom: 10px">
 						<a-button @click="addVisible=true">导入BOM</a-button>
@@ -79,7 +79,7 @@
 						:pagination="false"
 						row-key="drawingNo"
 					></a-table>
-					<a-pagination
+					<!-- <a-pagination
 						style="padding-top:12px;text-align: right;"
 						size="small"
 						:total="30"
@@ -87,7 +87,7 @@
 						showSizeChanger
 						:pageSizeOptions="['10','20','50','100']"
 						:showTotal="total => `共 ${total} 条`"
-					></a-pagination>
+					></a-pagination>-->
 				</a-row>
 			</a-tab-pane>
 		</a-tabs>
