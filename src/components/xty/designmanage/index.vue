@@ -57,17 +57,22 @@
 							<span v-if="text==1" style="font-size:14px;color:#999999;">暂存</span>
 							<a-popover title placement="right">
 								<template slot="content">
-									<span>原因：{{record.reason}}</span>
+									<span>审批意见：{{record.comment!=null?record.comment:"无"}}</span>
 								</template>
 								<span v-if="text==4" style="font-size:14px;color:#f6003c;">未通过</span>
 							</a-popover>
 							<a-popover title placement="right">
 								<template slot="content">
-									<span>原因：{{record.reason}}</span>
+									<span>审批意见：{{record.comment!=null?record.comment:"无"}}</span>
 								</template>
 								<span v-if="text==5" style="font-size:14px;color:#E02D2D;">已终止</span>
 							</a-popover>
-							<span v-if="text==3" style="font-size:14px;color:#10CF0C;">已通过</span>
+							<a-popover title placement="right">
+								<template slot="content">
+									<span>审批意见：{{record.comment!=null?record.comment:"无"}}</span>
+								</template>
+								<span v-if="text==3" style="font-size:14px;color:#10CF0C;">已通过</span>
+							</a-popover>
 						</div>
 					</template>
 					<template slot="partName" slot-scope="text, record">
@@ -86,11 +91,25 @@
 					:showTotal="total => `共 ${total} 条`"
 				/>
 			</a-row>
-			<a-modal title="新增" v-model="addVisible" width="1200px" :maskClosable="false" :footer="null">
-				<add-design-manage @changeAddOrder="cancelAddOrder"></add-design-manage>
+			<a-modal
+				title="新增"
+				@cancel="handleCancel(1)"
+				v-model="addVisible"
+				width="1200px"
+				:maskClosable="false"
+				:footer="null"
+			>
+				<add-design-manage @changeAddOrder="cancelAddOrder" ref="addModal"></add-design-manage>
 			</a-modal>
-			<a-modal title="修改" v-model="editVisible" :maskClosable="false" width="1200px" :footer="null">
-				<edit-design-manage @changeAddOrder="cancelEditOrder" :oneMsg="oneMsg"></edit-design-manage>
+			<a-modal
+				title="修改"
+				@cancel="handleCancel(2)"
+				v-model="editVisible"
+				:maskClosable="false"
+				width="1200px"
+				:footer="null"
+			>
+				<edit-design-manage @changeAddOrder="cancelEditOrder" ref="editModal" :oneMsg="oneMsg"></edit-design-manage>
 			</a-modal>
 			<a-modal
 				title="提交审批"
@@ -130,44 +149,50 @@
 				:footer="null"
 				width="1000px"
 				:visible="detailsVisible"
-				@cancel="handleCancel()"
+				@cancel="handleCancel(3)"
 				:maskClosable="false"
 			>
-				<a-row>
-					<a-col :span="24" style="margin-bottom:12px;">
-						<span class="label_right">项目订单：</span>
-						<span>{{partDetails.workOrderNo}}</span>
-					</a-col>
-					<a-col :span="24" style="margin-bottom:12px;">
-						<span class="label_right">设计单号：</span>
-						<span>{{partDetails.bomNo}}</span>
-					</a-col>
-					<a-col :span="24" style="margin-bottom:12px;">
-						<span class="label_right">部件名称：</span>
-						<span>{{partDetails.partName}}</span>
-					</a-col>
-					<a-col :span="24" style="margin-bottom:12px;">
-						<span class="label_right">图号：</span>
-						<span>{{partDetails.bomDrawingNo}}</span>
-					</a-col>
-					<a-col :span="24" style="margin-bottom:12px;">
-						<span class="label_right">需求数量：</span>
-						<span>{{partDetails.number}}</span>
-					</a-col>
-					<a-col :span="24" style="margin-bottom:12px;">
-						<span class="label_right">备注：</span>
-						<span>{{partDetails.remake}}</span>
-					</a-col>
-				</a-row>
-				<a-row>
-					<a-table
-						:scroll="{ x: 1900, y: 400 }"
-						:pagination="false"
-						rowKey="id"
-						:columns="columns1"
-						:dataSource="partDetails.bomDes"
-					></a-table>
-				</a-row>
+				<a-tabs defaultActiveKey="1">
+					<a-tab-pane tab="基础信息" key="1">
+						<a-row>
+							<a-col :span="24" style="margin-bottom:12px;">
+								<span class="label_right">项目订单：</span>
+								<span>{{partDetails.workOrderNo}}</span>
+							</a-col>
+							<a-col :span="24" style="margin-bottom:12px;">
+								<span class="label_right">设计单号：</span>
+								<span>{{partDetails.bomNo}}</span>
+							</a-col>
+							<a-col :span="24" style="margin-bottom:12px;">
+								<span class="label_right">部件名称：</span>
+								<span>{{partDetails.partName}}</span>
+							</a-col>
+							<a-col :span="24" style="margin-bottom:12px;">
+								<span class="label_right">图号：</span>
+								<span>{{partDetails.bomDrawingNo}}</span>
+							</a-col>
+							<a-col :span="24" style="margin-bottom:12px;">
+								<span class="label_right">需求数量：</span>
+								<span>{{partDetails.number}}</span>
+							</a-col>
+							<a-col :span="24" style="margin-bottom:12px;">
+								<span class="label_right">备注：</span>
+								<span>{{partDetails.remake}}</span>
+							</a-col>
+						</a-row>
+					</a-tab-pane>
+					<a-tab-pane tab="BOM" key="2" style="margin-bottom: 20px">
+						<a-row>
+							<a-table
+								:scroll="{ x: 1900, y: 400 }"
+								:pagination="false"
+								rowKey="id"
+								:columns="columns1"
+								:dataSource="partDetails.bomDes"
+							></a-table>
+						</a-row>
+					</a-tab-pane>
+				</a-tabs>
 			</a-modal>
 		</div>
 	</div>
@@ -448,8 +473,16 @@ export default {
 			this.beginDate = dateString[0];
 			this.endDate = dateString[1];
 		},
-		handleCancel() {
-			this.detailsVisible = false;
+		handleCancel(a) {
+			if (a == 1) {
+				this.$refs.addModal.closeAdd();
+			}
+			if (a == 2) {
+				this.$refs.editModal.closeAdd();
+			}
+			if (a == 3) {
+				this.detailsVisible = false;
+			}
 		},
 		cancelAddOrder(params) {
 			this.addVisible = params;
@@ -545,18 +578,25 @@ export default {
 			);
 		},
 		showDeleteConfirm() {
-			let that = this;
-			this.$confirm({
-				title: "确定删除吗？",
-				content: "",
-				okText: "确定",
-				okType: "danger",
-				cancelText: "取消",
-				onOk: function() {
-					that.onDelete();
-				},
-				onCancel() {}
-			});
+			if (
+				this.selectedRows[0].bomReviewSchedule != 1 &&
+				this.selectedRows[0].bomReviewSchedule != 4
+			) {
+				this.$message.error(`只能对暂存、未通过状态的设计单进行删除！`);
+			} else {
+				let that = this;
+				this.$confirm({
+					title: "确定删除吗？",
+					content: "",
+					okText: "确定",
+					okType: "danger",
+					cancelText: "取消",
+					onOk: function() {
+						that.onDelete();
+					},
+					onCancel() {}
+				});
+			}
 		},
 		onSelectChange(selectedRowKeys, selectedRows) {
 			this.selectedRows = selectedRows;
