@@ -379,6 +379,7 @@ export default {
       this.$emit("cancelAdd", false);
       this.form.resetFields();
       this.procurementNoWatch = '';
+      this.data = [];
     },
     onChange(current, pageNumber) {
       console.log("Page: ", pageNumber);
@@ -409,10 +410,10 @@ export default {
        this.designIdArr = value.map(item => {
          return item.key
        })
-      if (value == []) {
+      if (value.length<1) {
         this.data = [];
-      } else 
-      {
+        return false
+      } else {
         console.log(this.designIdArr);
         this.Axios(
           {
