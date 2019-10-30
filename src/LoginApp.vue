@@ -5,7 +5,7 @@
 				<img src="./assets/u8.png" title />
 			</div>
 			<div class="login-wrap">
-				<a-card title="长虹生产管理系统-登录" :bordered="false">
+				<a-card title="长虹协同云-登录" :bordered="false">
 					<p>
 						<a-input placeholder="账号/员工编号" v-model="user.userName" ref="userNameInput" class>
 							<a-icon slot="prefix" type="user" />

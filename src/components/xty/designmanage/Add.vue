@@ -265,61 +265,64 @@ export default {
 			);
 		},
 		closeAdd() {
+			this.getList();
+			this.form.resetFields();
+			this.data = [];
 			this.$emit("changeAddOrder", false);
 		},
 		addDesign() {
-			if (Object.keys(this.data).length == 0 ) {
+			if (Object.keys(this.data).length == 0) {
 				this.$message.error(`请导入BOM！`);
 			} else {
-			this.form.validateFieldsAndScroll((err, values) => {
-				if (!err) {
-					console.log("Received values of form: ", values);
-					// if (!this.checkedKeys.length) {
-					// 	this.$message.error("请分配角色权限");
-					// 	return false;
-					// }
-					let qs = require("qs");
-					let data = {
-						bomNo: values.designNo,
-						workOrderId: values.workOrderId,
-						workOrderNo: this.orderListValue.find(item => {
-							return item.id == values.workOrderId;
-						}).no,
-						projectName: values.projectName,
-						bomDrawingNo: values.bomDrawingNo,
-						partName: values.partName,
-						number: values.number,
-						remake: values.remake,
-						bomDesExcelDTOList: this.data
-					};
-					console.log(data);
+				this.form.validateFieldsAndScroll((err, values) => {
+					if (!err) {
+						console.log("Received values of form: ", values);
+						// if (!this.checkedKeys.length) {
+						// 	this.$message.error("请分配角色权限");
+						// 	return false;
+						// }
+						let qs = require("qs");
+						let data = {
+							bomNo: values.designNo,
+							workOrderId: values.workOrderId,
+							workOrderNo: this.orderListValue.find(item => {
+								return item.id == values.workOrderId;
+							}).no,
+							projectName: values.projectName,
+							bomDrawingNo: values.bomDrawingNo,
+							partName: values.partName,
+							number: values.number,
+							remake: values.remake,
+							bomDesExcelDTOList: this.data
+						};
+						console.log(data);
 
-					this.Axios(
-						{
-							url: "/api-order/bom/add",
-							params: data,
-							type: "post",
-							option: { successMsg: "添加成功！" },
-							config: {
-								headers: { "Content-Type": "application/json" }
-							}
-						},
-						this
-					).then(
-						result => {
-							if (result.data.code === 200) {
-								console.log(result);
-								this.getList();
-								this.closeAdd();
-								this.form.resetFields();
-								this.data = [];
-								this.activeKey = "1";
-							}
-						},
-						({ type, info }) => {}
-					);
-				}
-			});
+						this.Axios(
+							{
+								url: "/api-order/bom/add",
+								params: data,
+								type: "post",
+								option: { successMsg: "添加成功！" },
+								config: {
+									headers: { "Content-Type": "application/json" }
+								}
+							},
+							this
+						).then(
+							result => {
+								if (result.data.code === 200) {
+									console.log(result);
+									this.getList();
+									this.closeAdd();
+									this.form.resetFields();
+									this.data = [];
+									this.activeKey = "1";
+								}
+							},
+							({ type, info }) => {}
+						);
+					}
+				});
 			}
 		},
 		getList() {

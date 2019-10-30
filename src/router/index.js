@@ -369,6 +369,15 @@ export default new Router({
         requireAuth: true,
       },
       children: []
-    }
+    },
+    {
+      path: '/deliverySlip',
+      name: 'deliverySlip',
+      components: require('@/components/workOrder/deliverySlip/index'),
+      meta: {
+        requireAuth: true,
+      },
+      children: []
+    },
   ]
 })

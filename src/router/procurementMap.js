@@ -7,17 +7,18 @@ export default [{
   icon: '&#xe60a;',
   defaultDock: true,
   subMenu: [{
-      menu: '采购列表',
-      route: '/procurement',
-      key: 'procurement',
-      permissionCode: 'workdesk_desk_lookup',
-    },
-    {
       menu: '供应商管理',
       route: '/supplierManage',
       key: 'supplierManage',
       permissionCode: 'workdesk_desk_lookup',
     },
+    {
+      menu: '采购列表',
+      route: '/procurement',
+      key: 'procurement',
+      permissionCode: 'workdesk_desk_lookup',
+    },
+
     {
       menu: '采购合同',
       route: '/procurementContractManage',

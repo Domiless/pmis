@@ -37,6 +37,12 @@ export default [{
         permissionCode: 'workorder_manage_lookup'
       },
       {
+        menu: '送货单',
+        route: '/deliverySlip',
+        key: 'deliverySlip',
+        permissionCode: 'workorder_manage_lookup'
+      },
+      {
         menu: '工单明细',
         routeReg: /^\/WorkOrderList\/WorkOrderDetailsList\/\w{1,}$/i,
         key: 'WorkOrderDetailsList',

@@ -2,32 +2,34 @@
 	<div class="enquiry_audit">
 		<a-col :span="24" style="display: block;overflow: hidden;">
 			<a-col :span="12" style="margin-bottom: -1000px;padding-bottom: 1000px;float: left;">
-				<a-col :span="24" class="case">
-					<span class="audit_label">项目订单</span>
-					<span>{{detailsValue.DO.workOrderNo}}</span>
-				</a-col>
-				<a-col :span="24" class="case">
-					<span class="audit_label">设计单号</span>
-					<span>{{detailsValue.DO.workOrderNo}}</span>
-				</a-col>
-				<a-col :span="24" class="case">
-					<span class="audit_label">采购单号</span>
-					<span>{{detailsValue.DO.purchaseNo}}</span>
-				</a-col>
-				<a-col :span="24" class="case">
-					<span class="audit_label">采购明细</span>
-					<span class="details" @click="detailsVisible=true">查看明细</span>
-				</a-col>
-				<a-col :span="24" class="case">
-					<span class="audit_label">备注</span>
-					<span>{{detailsValue.DO.remark}}</span>
+				<a-col :span="24" style="padding-top:20px;padding-bottom:20px;">
+					<a-col :span="24" class="case">
+						<span class="audit_label">项目订单</span>
+						<span>{{detailsValue.DO.workOrderNo}}</span>
+					</a-col>
+					<a-col :span="24" class="case">
+						<span class="audit_label">设计单号</span>
+						<span>{{detailsValue.DO.workOrderNo}}</span>
+					</a-col>
+					<a-col :span="24" class="case">
+						<span class="audit_label">采购单号</span>
+						<span>{{detailsValue.DO.purchaseNo}}</span>
+					</a-col>
+					<a-col :span="24" class="case">
+						<span class="audit_label">采购明细</span>
+						<span class="details" @click="detailsVisible=true">查看明细</span>
+					</a-col>
+					<a-col :span="24" class="case">
+						<span class="audit_label">备注</span>
+						<pre>{{detailsValue.DO.remark}}</pre>
+					</a-col>
 				</a-col>
 			</a-col>
 			<a-col
 				:span="12"
 				style="margin-bottom: -1000px;padding-bottom: 1000px;float: left;background-color:rgba(242, 242, 242, 0.435294117647059)"
 			>
-				<a-tabs defaultActiveKey="1">
+				<a-tabs defaultActiveKey="1" style="padding-bottom:20px;">
 					<a-tab-pane tab="审批意见" key="1" v-if="auditType!=2">
 						<a-col :span="24">
 							<span class="opinion_style">发起人：</span>
