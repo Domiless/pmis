@@ -121,7 +121,7 @@ export default ({
           message.error(`登录失效，即将跳转至登录页`);
           window.setTimeout(() => {
             window.location.href = "/login.html"
-          }, 1000);
+          }, 2000);
         } else {
           //faild && faild(res.data);
           console.log(res.data.msg);
@@ -135,7 +135,7 @@ export default ({
       }).catch(res => {
         //error && error(res);
         loadingConfig.done();
-        console.log(res.response);
+        // console.log(res.response);
         if (res.response.status === 401) {
           message.error(`授权过期，即将跳转至登录页`);
           window.setTimeout(() => {

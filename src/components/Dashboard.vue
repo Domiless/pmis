@@ -77,7 +77,7 @@
 							<a-col :span="20">
 								<a-col :span="2" style="color:#999999">[{{item.type}}]</a-col>
 								<a-col :span="22">
-									<i class="iconfont" style="color:red;">&#xe607;</i>
+									<i class="iconfont" :style="{color:item.isRead==0?'red':''}">&#xe607;</i>
 									<span class="content_style" @click="msgShow(item)">{{item.title}}</span>
 								</a-col>
 							</a-col>
@@ -248,8 +248,9 @@ export default {
 			}
 		},
 		msgShow(item) {
-			this.msgValue = item;
-			this.msgVisible = true;
+			// console.log(item);
+
+			this.readMsg(item.id);
 		},
 		cancel(a) {
 			if (a == 1) {
@@ -375,6 +376,29 @@ export default {
 						// console.log(result);
 						this.messageValue = result.data.data.content;
 						this.totle1 = result.data.data.totalElement;
+					}
+				},
+				({ type, info }) => {}
+			);
+		},
+		readMsg(id) {
+			this.Axios(
+				{
+					url: "/api-order/message/findOne",
+					params: {
+						id: id
+					},
+					type: "get",
+					option: { enableMsg: false }
+				},
+				this
+			).then(
+				result => {
+					if (result.data.code === 200) {
+						// console.log(result.data);
+						this.msgValue = result.data.data;
+						this.msgVisible = true;
+						this.getMessageList();
 					}
 				},
 				({ type, info }) => {}
