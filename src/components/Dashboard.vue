@@ -20,10 +20,10 @@
 									<a-col :span="3">{{item.id}}</a-col>
 									<a-col
 										:span="3"
-									>{{item.type==1?"项目订单":item.type==2?"项目设计":item.type==3?"采购询价":item.type==4?"采购合同":""}}</a-col>
+									>{{item.type==1?"订单审批":item.type==2?"设计审批":item.type==3?"采购审批":item.type==4?"采购合同审批":""}}</a-col>
 									<a-col :span="10">{{item.name}}</a-col>
 									<a-col :span="4">{{item.startTime}}</a-col>
-									<a-col :span="4">{{item.time}}</a-col>
+									<a-col :span="4">耗时：{{item.time}}</a-col>
 								</li>
 							</ul>
 							<div style="text-align:center;line-height:384px;" v-else>暂无待办事项</div>
@@ -48,10 +48,10 @@
 									<a-col :span="3">{{item.id}}</a-col>
 									<a-col
 										:span="3"
-									>{{item.type==1?"项目订单":item.type==2?"项目设计":item.type==3?"采购询价":item.type==4?"采购合同":""}}</a-col>
+									>{{item.type==1?"订单审批":item.type==2?"设计审批":item.type==3?"采购审批":item.type==4?"采购合同审批":""}}</a-col>
 									<a-col :span="10">{{item.name}}</a-col>
 									<a-col :span="4">{{item.startTime}}</a-col>
-									<a-col :span="4">{{item.time}}</a-col>
+									<a-col :span="4">耗时：{{item.time}}</a-col>
 								</li>
 							</ul>
 							<div style="text-align:center;line-height:384px;" v-else>暂无已办事项</div>

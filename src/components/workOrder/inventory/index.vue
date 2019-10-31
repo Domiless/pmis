@@ -402,6 +402,7 @@ export default {
 								workOrderId: this.workOrderId,
 								quotations: this.data.map(item => {
 									return {
+										qwProportion: item.qwProportion,
 										demandTime: item.time,
 										demandWay: item.way,
 										materialCode: item.materialCode,

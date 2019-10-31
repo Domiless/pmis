@@ -927,12 +927,18 @@ export default {
 			);
 		},
 		getList(id) {
+			let data = {
+				workOrderId:
+					this.$route.params.id == 9527 ? null : this.$route.params.id,
+				keyword:
+					this.$route.params.id == 9527
+						? sessionStorage.getItem("drawingNo")
+						: null
+			};
 			this.Axios(
 				{
 					url: "/api-workorder/workOrderDes/list",
-					params: {
-						workOrderId: id
-					},
+					params: data,
 					type: "get",
 					option: { enableMsg: false }
 				},
@@ -942,6 +948,15 @@ export default {
 					if (result.data.code === 200) {
 						console.log(result);
 						this.data = result.data.data;
+						this.data = this.data.map(item => {
+							return {
+								...item,
+								processNames:
+									item.processNames != null
+										? item.processNames.replace(/,/g, ">")
+										: item.processNames
+							};
+						});
 						// this.total = result.data.data.totalElement;
 					}
 				},
