@@ -12,10 +12,11 @@
 					<a-icon style="color:#1890ff;" type />BOM管理
 				</a-button>-->
 				<a-button :disabled="selectedRowKeys.length!=1" @click="download">
-					<a-icon style="color:#1890ff;" type />BOM导出
+					<i style="color:#1890ff;margin-right:4px;" class="iconfont">&#xe611;</i>BOM导出
 				</a-button>
 				<a-button :disabled="selectedRowKeys.length!=1" @click="approveShow">
-					<a-icon style="color:#1890ff;" type />提交审批
+					<i style="color:#1890ff;margin-right:4px;" class="iconfont">&#xe8ad;</i>
+					提交审批
 				</a-button>
 				<a-button @click="showDeleteConfirm" :disabled="selectedRowKeys.length!=1">
 					<a-icon style="color:#1890ff;" type="delete" />删除
