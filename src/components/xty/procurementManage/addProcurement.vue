@@ -122,10 +122,11 @@
             <div key="taxrate">
               <a-input
                 maxlength="20"
-                style="margin: -5px 0"
+                style="margin: -5px 0;width:80px"
                 :value="text"
                 @change="e => handleChangeTable(e.target.value, record.id, 'taxrate')"
               />
+              <span>%</span>
             </div>
           </template>
           <template slot="supplier" slot-scope="text,record">
@@ -232,9 +233,9 @@ const columns = [
     width: 100
   },
   {
-    dataIndex: "number",
+    dataIndex: "addNum",
     title: "需求数量",
-    key: "number",
+    key: "adNum",
     width: 100
   },
   {
@@ -244,9 +245,9 @@ const columns = [
     width: 100
   },
   {
-    dataIndex: "designer",
+    dataIndex: "planner",
     title: "设计师",
-    key: "designer",
+    key: "planner",
     width: 100
   },
   {
@@ -365,7 +366,7 @@ export default {
       const target = newData.filter(item => key === item.id)[0];
       if (target) {
         target[column] = value;
-        target.summation = target.orderNum * target.unitPrice * target.taxrate + target.orderNum * target.unitPrice;
+        target.summation = target.orderNum * target.unitPrice * (target.taxrate/100) + target.orderNum * target.unitPrice;
         if(isNaN( target.summation )){
           target.summation = 0 ;
         }
@@ -381,6 +382,7 @@ export default {
       this.form.resetFields();
       this.procurementNoWatch = '';
       this.data = [];
+      this.idArr = [];
     },
     onChange(current, pageNumber) {
       console.log("Page: ", pageNumber);
@@ -546,9 +548,9 @@ export default {
               return {
                 drawingNo: item.drawingNo,
                 name: item.name,
-                number: item.number,
+                number: item.addNum,
                 brand: item.brand,
-                designer: item.designer,
+                designer: item.planner,
                 delivery: item.deliveryDate,
                 moneyType: item.moneyType,
                 price: item.unitPrice,
