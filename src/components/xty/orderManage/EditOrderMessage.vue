@@ -255,7 +255,7 @@ export default {
 								docPosition: item.docPosition,
 								url: item.docPositionTrueUrl
 							};
-						});
+            });
             setTimeout(()=> {
               this.defaultType = this.editMsg.orderType;
               this.form.setFieldsValue({
@@ -266,8 +266,8 @@ export default {
                 totalMoney: this.editMsg.totalMoney,
                 measureUnit: this.editMsg.measureUnit,
                 transportType: this.editMsg.transportType,
-                deliveryPlace:this.editMsg.deliveryPlace,
-                gmtSign: moment(
+                deliveryPlace: this.editMsg.deliveryPlace,
+                gmtSign: this.editMsg.gmtSign == null ? undefined : moment(
                   this.editMsg.gmtSign,
                   "YYYY/MM/DD"
                 ),
@@ -291,7 +291,7 @@ export default {
 				},
 				({ type, info }) => {}
 			);
-		},
+    }
   },
   created() {
     this.findOne(this.OrderMessageId)

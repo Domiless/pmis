@@ -126,7 +126,7 @@
       </a-tab-pane>
     </a-tabs>
     <a-row>
-      <a-form-item :wrapper-col="{ span: 20,offset: 2 }" style="text-align:right">
+      <a-form-item :wrapper-col="{ span: 22,offset: 2 }" style="text-align:right">
         <a-button style="margin-right:12px;" @click="close">关闭</a-button>
         <a-button type="primary" @click="editProcurement">提交</a-button>
       </a-form-item>
@@ -324,10 +324,10 @@ export default {
                 signPlace: msg.place,
                 supplyMode: msg.sendway,
                 remark: msg.remark,
-                gmtSign: moment(
-                  msg.digndate,
-                  "YYYY/MM/DD"
-                ),
+                gmtSign: msg.digndate == null ? undefined : moment(
+                          msg.digndate,
+                          "YYYY/MM/DD"
+                        ),
                 });
             },100)
 					}

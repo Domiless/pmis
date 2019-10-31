@@ -122,10 +122,11 @@
             <div key="taxrate">
               <a-input
                 maxlength="20"
-                style="margin: -5px 0"
+                style="margin: -5px 0;width: 80px"
                 :value="text"
                 @change="e => handleChangeTable(e.target.value, record.id, 'taxrate')"
               />
+              <span>%</span>
             </div>
           </template>
           <template slot="supplier" slot-scope="text,record">
@@ -297,7 +298,7 @@ const columns = [
     key: "supplier",
     slots: { title: "supplierTitle" },
     scopedSlots: { customRender: "supplier" },
-    width: 100
+    width: 120
   },
   {
     dataIndex: "priseUnit",
@@ -351,7 +352,8 @@ export default {
       bomName: "",
       designIdArr: [],
       designNameArr: [],
-      totalMoney: 0
+      totalMoney: 0,
+      isOffer: true
     };
   },
   methods: {
@@ -365,7 +367,7 @@ export default {
       console.log(target);
       if (target) {
         target[column] = value;
-        target.total = target.orderNumber * target.price * target.taxrate + target.orderNumber * target.price;
+        target.total = target.orderNumber * target.price * (target.taxrate/100) + target.orderNumber * target.price;
         if(isNaN( target.total )){
           target.total = 0 ;
         }
@@ -517,7 +519,29 @@ export default {
               }
             }
           }
-          console.log(values.bomIdS);
+          //判断采购必填是否为空
+          let judgeData =  this.data.map(item => {
+              return {
+                delivery: item.delivery,
+                moneyType: item.moneyType,
+                price: item.price,
+                orderNumber: item.orderNumber,
+                priseUnit: item.priseUnit,
+                supplier: item.supplier,
+                taxrate: item.taxrate,
+                unit: item.unit
+              };
+            })
+          for(let i = 0; i < judgeData.length; i++ ) {
+            for(let j in judgeData[i]) {
+              if( judgeData[i][j] == null || judgeData[i][j] == ""){
+                this.isOffer = false
+              }else{
+                this.isOffer = true
+              }
+            }
+          }
+          console.log(judgeData);
           console.log(this.designIdArr);
           let qs = require("qs");
           let data = {
@@ -530,6 +554,7 @@ export default {
             purchaseNo: values.procurementNo,
             remark: values.remark,
             summoney: this.totalMoney,
+            isOffer: this.isOffer,
             purchaseDesDTOList: this.data.map(item => {
               return {
                 drawingNo: item.drawingNo,
@@ -598,6 +623,7 @@ export default {
             this.bomName = msg.bomName;
             this.workOrderId = msg.workOrderId;
             this.totalMoney = msg.summoney;
+            this.isOffer = msg.isOffer;
             console.log(this.data);
             setTimeout(() => {
               this.form.setFieldsValue({

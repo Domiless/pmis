@@ -107,6 +107,7 @@
 						 :multiple="true"
 						 :fileList="fileList"
 						 @change="handleChange"
+             accept=".pdf, .jpg, .doc, .docx"
             >
               <a-button>
                 <a-icon type="upload" />选择文件
