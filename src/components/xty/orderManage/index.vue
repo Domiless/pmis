@@ -38,7 +38,12 @@
               </a-select>
             </a-input-group>
             <span>关键词 :</span>
-            <a-input placeholder="合同号/订单编号/项目名称/承接部门" style="width: 250px" v-model="keyWords"></a-input>
+            <a-input
+             placeholder="合同号/订单编号/项目名称/承接部门"
+             style="width: 250px" 
+             v-model="keyWords"
+             @keyup.enter.native="getList" 
+             ></a-input>
             <a-button @click="getList">搜索</a-button>
           </a-col>
         </a-row>

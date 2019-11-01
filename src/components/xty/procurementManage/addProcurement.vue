@@ -11,7 +11,7 @@
                 showSearch
                 @change="sendOrderId"
               >
-                <a-select-option v-for="item in ProjectId" :key="item.no">{{ item.no }}-{{ item.contractName }}</a-select-option>
+                <a-select-option v-for="item in ProjectId" :key="item.no">{{ item.no+" - "+item.contractName }}</a-select-option>
               </a-select>
             </a-form-item>
           </a-row>
@@ -353,7 +353,8 @@ export default {
       designNameArr: [],
       procurementNoWatch: '',
       totalMoney: 0,
-      isOffer: true
+      isOffer: true,
+      workOrderId: ''
     };
   },
   methods: {

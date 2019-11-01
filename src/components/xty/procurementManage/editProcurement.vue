@@ -10,8 +10,9 @@
                 placeholder="请选择"
                 showSearch
                 @change="sendOrderId"
+                disabled
               >
-                <a-select-option v-for="item in ProjectId" :key="item.no">{{ item.no }}</a-select-option>
+                <a-select-option v-for="item in ProjectId" :key="item.no">{{ item.no+" - "+item.contractName }}</a-select-option>
               </a-select>
             </a-form-item>
           </a-row>
@@ -22,6 +23,7 @@
                 v-decorator="['bomIdS', { rules: [{ required:'true', message: '请选择设计单号'}]}]"
                 placeholder="请选择"
                 @change="sendId"
+                disabled
               >
                 <a-select-option v-for="item in idArr" :key="item.bomNo">{{ item.bomNo }}</a-select-option>
               </a-select>
@@ -30,6 +32,7 @@
           <a-row>
             <a-form-item label="采购单号" :labelCol="{ span: 3}" :wrapperCol="{ span: 19 }">
               <a-input
+                disabled
                 v-decorator="['procurementNo', { rules: [{ required:'true', message: '请填写采购单号'}]}]"
               ></a-input>
             </a-form-item>
@@ -122,7 +125,7 @@
             <div key="taxrate">
               <a-input
                 maxlength="20"
-                style="margin: -5px 0;width: 80px"
+                style="margin: -5px 0;width: 95px"
                 :value="text"
                 @change="e => handleChangeTable(e.target.value, record.id, 'taxrate')"
               />
@@ -353,10 +356,19 @@ export default {
       designIdArr: [],
       designNameArr: [],
       totalMoney: 0,
-      isOffer: true
+      isOffer: true,
+      workOrderId: '',
+      totalNumber: 0
     };
   },
   methods: {
+    filterOption(input, option) {
+			return (
+				option.componentOptions.children[0].text
+					.toLowerCase()
+					.indexOf(input.toLowerCase()) >= 0
+			);
+		},
     handleChangeTable(value, key, column) {
       // console.log(value);
       // console.log(key);
@@ -402,6 +414,7 @@ export default {
         }
       }
       console.log(this.workOrderId);
+      this.getDesignId(this.workOrderId);
     },
     getUnitArr(){
       this.Axios(
@@ -473,6 +486,9 @@ export default {
         }
       }
       console.log(this.designIdArr);
+      if(value.length < 1) {
+        this.data = []
+      } else {
       this.Axios(
         {
           url: "/api-order/bom/getBomdes",
@@ -487,6 +503,26 @@ export default {
         result => {
           if (result.data.code === 200) {
             console.log(result);
+            this.data = result.data.data;
+            this.total = result.data.data.length;
+            this.designIdArr = [];
+            this.data = this.data.map(item=>{
+                return {
+                  ...item,
+                  number: item.addNum,
+                  designer: item.planner,
+                  moneyType: "RMB",
+                  summation: 0
+                }
+              })
+            this.data = this.data.map(item => {
+              delete item.addNum;
+              delete item.planner;
+              return {
+                ...item
+              }
+            })
+            console.log(this.data);
           }
         },
         ({ type, info }) => {}
@@ -499,6 +535,7 @@ export default {
       this.getUnitArr();
       this.getSupplierArr();
       this.getPriceArr();
+      }
     },
     editProcurement() {
       const that = this;
@@ -534,10 +571,9 @@ export default {
             })
           for(let i = 0; i < judgeData.length; i++ ) {
             for(let j in judgeData[i]) {
+              console.log(judgeData[i][j]);
               if( judgeData[i][j] == null || judgeData[i][j] == ""){
                 this.isOffer = false
-              }else{
-                this.isOffer = true
               }
             }
           }
@@ -547,7 +583,7 @@ export default {
           let data = {
             id: this.procurementId,
             bomIds: this.designIdArr.join(","),
-            bomName: values.bomIdS,
+            bomName: typeof(values.bomIdS) == "string" ? values.bomIdS : values.bomIdS.join(','),
             desCount: this.total,
             workOrderId: this.workOrderId,
             workOrderNo: values.workOrderNo,
@@ -617,14 +653,13 @@ export default {
           if (result.data.code === 200) {
             console.log(result);
             let msg = result.data.data;
+            this.getDesignId(msg.workOrderId);
             this.data = msg.purchaseDesDOList;
             this.total = msg.purchaseDesDOList.length;
             this.bomIds = msg.bomIds;
             this.bomName = msg.bomName;
             this.workOrderId = msg.workOrderId;
             this.totalMoney = msg.summoney;
-            this.isOffer = msg.isOffer;
-            console.log(this.data);
             setTimeout(() => {
               this.form.setFieldsValue({
                 workOrderNo: msg.workOrderNo,
@@ -638,20 +673,25 @@ export default {
         ({ type, info }) => {}
       );
     },
-    getDesignId() {
+    getDesignId(id) {
       this.Axios(
         {
           url: "/api-order/bom/list",
           type: "get",
-          params: {},
+          params: {
+						page: 1,
+						size: -1,
+            auditState: 3,
+            orderId: id
+					},
           option: { enableMsg: false }
         },
         this
       ).then(
         result => {
           if (result.data.code === 200) {
-            // console.log(result);
-            this.idArr = result.data.data.content;
+            console.log(result);
+            this.idArr = result.data.data;
           }
         },
         ({ type, info }) => {}
@@ -662,49 +702,54 @@ export default {
         {
           url: "/api-order/order/getOrderList",
           type: "get",
-          params: {},
+           params: {
+						page: 1,
+						size: -1,
+						reviewState: 3
+					},
           option: { enableMsg: false }
         },
         this
       ).then(
         result => {
           if (result.data.code === 200) {
-            // console.log(result);
-            this.ProjectId = result.data.data.content;
+            console.log(result);
+            this.ProjectId = result.data.data;
           }
         },
         ({ type, info }) => {}
       );
     },
-    getProcurementId() {
-      this.Axios(
-        {
-          url: "/api-order/supplier/getNo",
-          type: "get",
-          params: {},
-          option: { enableMsg: false }
-        },
-        this
-      ).then(
-        result => {
-          if (result.data.code === 200) {
-            // console.log(result);
-            this.form.setFieldsValue({
-              procurementNo: result.data.data
-            })
-          }
-        },
-        ({ type, info }) => {}
-      );
-    }
+    // getProcurementId() {
+    //   this.Axios(
+    //     {
+    //       url: "/api-order/supplier/getNo",
+    //       type: "get",
+    //       params: {
+    //       num: "CG"
+    //      },
+    //       option: { enableMsg: false }
+    //     },
+    //     this
+    //   ).then(
+    //     result => {
+    //       if (result.data.code === 200) {
+    //         // console.log(result);
+    //         this.form.setFieldsValue({
+    //           procurementNo: result.data.data
+    //         })
+    //       }
+    //     },
+    //     ({ type, info }) => {}
+    //   );
+    // }
   },
   created() {
     this.getUnitArr();
     this.getSupplierArr();
     this.getPriceArr();
-    this.getDesignId();
     this.getProjectId();
-    this.getProcurementId();
+    // this.getProcurementId();
     this.findOne(this.procurementId);
   },
   watch: {

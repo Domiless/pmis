@@ -14,7 +14,12 @@
     <a-row>
         <a-col :span="24">
           <span>关键词 :</span>
-          <a-input placeholder="供应商编码/名称/联系人/电话" style="width: 250px" v-model="keyWords"></a-input>
+          <a-input
+           placeholder="供应商编码/名称/联系人/电话" 
+           style="width: 250px" 
+           v-model="keyWords"
+           @keyup.enter.native="getList"
+           ></a-input>
           <a-button @click="getList">搜索</a-button>
         </a-col>
       </a-row>
