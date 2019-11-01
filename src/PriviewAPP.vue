@@ -56,8 +56,11 @@
 							>{{Math.ceil(item.workOrderDesDO.amount/item.drawingDO.inTheEmbryoComponents)}}</td>
 							<td colspan="3" style="width:30%">
 								<tr style="display: block;overflow: hidden;">
-									<td class="td_style" style="border-left:none;">单件零件重量</td>
-									<td class="td_style" style="border-left:1px solid #000000;">单件表面积</td>
+									<td class="td_style" style="border-left:none;">{{item.weightAndArea.weight}}</td>
+									<td
+										class="td_style"
+										style="border-left:1px solid #000000;"
+									>{{item.weightAndArea.surfaceArea}}</td>
 								</tr>
 							</td>
 						</tr>
@@ -219,9 +222,9 @@
 						</a-col>
 						<a-col :span="12">
 							<span>需方：</span>
-							<span
+							<pre
 								style="display:inline-block;width:200px;border-bottom:1px solid #000000;height:24px;vertical-align: top;"
-							></span>
+							></pre>
 						</a-col>
 					</div>
 				</a-col>

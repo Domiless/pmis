@@ -9,7 +9,7 @@
 					</a-col>
 					<a-col :span="24" class="case">
 						<span class="audit_label">设计单号</span>
-						<span>{{detailsValue.DO.workOrderNo}}</span>
+						<span>{{detailsValue.DO.bomName}}</span>
 					</a-col>
 					<a-col :span="24" class="case">
 						<span class="audit_label">采购单号</span>
@@ -160,80 +160,63 @@ const columns = [
 		width: 100
 	},
 	{
-		dataIndex: "orderNum",
+		dataIndex: "orderNumber",
 		title: "订单数量",
-		key: "orderNum",
-		slots: { title: "orderNumTitle" },
-		scopedSlots: { customRender: "orderNum" },
+		key: "orderNumber",
 		width: 100
 	},
 	{
-		dataIndex: "orderUnit",
+		dataIndex: "unit",
 		title: "订单单位",
-		key: "orderUnit",
-		slots: { title: "orderUnitTitle" },
-		scopedSlots: { customRender: "orderUnit" },
+		key: "unit",
 		width: 100
 	},
 	{
-		dataIndex: "deliveryDate",
+		dataIndex: "delivery",
 		title: "交货日期",
-		key: "deliveryDate",
-		slots: { title: "deliveryDateTitle" },
-		scopedSlots: { customRender: "deliveryDate" },
+		key: "delivery",
 		width: 120
 	},
 	{
-		dataIndex: "unitPrice",
+		dataIndex: "price",
 		title: "单价",
-		key: "unitPrice",
-		slots: { title: "unitPriceTitle" },
-		scopedSlots: { customRender: "unitPrice" },
+		key: "price",
 		width: 100
 	},
 	{
 		dataIndex: "taxrate",
 		title: "税率",
 		key: "taxrate",
-		slots: { title: "taxrateTitle" },
-		scopedSlots: { customRender: "taxrate" },
 		width: 100
 	},
 	{
 		dataIndex: "supplier",
 		title: "供应商",
 		key: "supplier",
-		slots: { title: "supplierTitle" },
-		scopedSlots: { customRender: "supplier" },
 		width: 100
 	},
 	{
-		dataIndex: "priceUnit",
+		dataIndex: "priseUnit",
 		title: "价格单位",
-		key: "priceUnit",
-		slots: { title: "priceUnitTitle" },
-		scopedSlots: { customRender: "priceUnit" },
+		key: "priseUnit",
 		width: 100
 	},
 	{
 		dataIndex: "moneyType",
 		title: "货币类型",
 		key: "moneyType",
-		slots: { title: "moneyTypeTitle" },
-		scopedSlots: { customRender: "moneyType" },
 		width: 100
 	},
 	{
 		dataIndex: "remark",
 		title: "备注",
 		key: "remark",
-		scopedSlots: { customRender: "remark" },
 		width: 100
 	},
 	{
-		dataIndex: "summation",
+		dataIndex: "total",
 		title: "小计",
-		key: "summation",
+		key: "total",
 		width: 100
 	}
 ];
