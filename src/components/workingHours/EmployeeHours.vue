@@ -2,7 +2,11 @@
 	<div class="employee_hours">
 		<a-row>
 			员工：
-			<a-input style="width:200px;margin-right:20px;" v-model="employeeName"></a-input>时间：
+			<a-input
+				style="width:200px;margin-right:20px;"
+				v-model="employeeName"
+				@keyup.enter.native="getList"
+			></a-input>时间：
 			<a-range-picker @change="getTime" format="YYYY/MM/DD" />
 			<a-button @click="getList">查询</a-button>
 			<permission-button

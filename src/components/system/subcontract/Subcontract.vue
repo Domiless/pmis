@@ -33,7 +33,13 @@
 					</a-col>
 					<a-col :span="16" style="text-align:right">
 						关键字：
-						<a-input type="text" v-model="keyword" style="width:300px" placeholder="委外单位名称，联系人，电话"></a-input>
+						<a-input
+							type="text"
+							@keyup.enter.native="getList"
+							v-model="keyword"
+							style="width:300px"
+							placeholder="委外单位名称，联系人，电话"
+						></a-input>
 						<a-button type="primary" icon="search" @click="getList">搜索</a-button>
 					</a-col>
 				</div>

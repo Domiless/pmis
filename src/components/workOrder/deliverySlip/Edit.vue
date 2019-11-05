@@ -54,6 +54,7 @@
 					</a-col>
 					<a-col :span="24">
 						<a-table
+							class="table_1"
 							:scroll="{ x: 800, y: 258 }"
 							size="small"
 							rowKey="workOrderDesId"
@@ -69,7 +70,7 @@
 				</a-col>
 				<a-col :span="11" style="padding: 12px;height:400px;background-color:#FAFAFA;">
 					<a-col :span="24" style="overflow:hidden;padding:7px 0;">
-						<span style="font-size:14px;">已选择：{{selectedRows.length}}</span>
+						<span style="font-size:14px;">已选择：{{selectedRowsRight.length}}</span>
 						<span style="float:right;">
 							<a-button size="small" @click="delSelect">删除已选</a-button>
 							<a-button size="small" @click="delAll">清空全部</a-button>
@@ -77,12 +78,13 @@
 					</a-col>
 					<a-col :span="24">
 						<a-table
+							class="table_2"
 							:scroll="{ x: 800, y: 300 }"
 							size="small"
 							rowKey="workOrderDesId"
 							:columns="columns"
 							:pagination="false"
-							:dataSource="selectedRows"
+							:dataSource="selectedRowsRight"
 							:rowSelection="{selectedRowKeys:selectedRowKeysRight,onChange:  (a,b)=>onSelectChange(a,b,2)}"
 						></a-table>
 					</a-col>
@@ -149,9 +151,10 @@ export default {
 			form: this.$form.createForm(this),
 			selectedRowKeysLeft: [],
 			selectedRowKeysRight: [],
+			selectedRowsRight: [],
 			selectedRows: [],
 			gongzuolings: [],
-			gongZuoLingNo: "",
+			gongZuoLingNo: undefined,
 			workType: "-1"
 		};
 	},
@@ -159,15 +162,16 @@ export default {
 		cancle() {
 			this.form.resetFields();
 			this.selectedRowKeysRight = [];
+			this.selectedRowsRight = [];
 			this.selectedRows = [];
 			this.selectedRowKeysLeft = [];
-			this.gongZuoLingNo = "";
+			this.gongZuoLingNo = undefined;
 			this.workType = "-1";
 			this.getProcesslist();
 			this.$emit("editModal", false);
 		},
 		add() {
-			if (this.selectedRows.length < 1) {
+			if (this.selectedRowsRight.length < 1) {
 				this.$message.error(`请选择工单明细`);
 			} else {
 				this.form.validateFieldsAndScroll((err, values) => {
@@ -181,7 +185,7 @@ export default {
 							receivingPerson: values.receivingPerson,
 							receivingUnit: values.receivingUnit,
 							title: values.title,
-							workOrderDesIds: this.selectedRows.map(
+							workOrderDesIds: this.selectedRowsRight.map(
 								item => item.workOrderDesId
 							)
 						};
@@ -205,7 +209,7 @@ export default {
 									this.selectedRowKeysRight = [];
 									this.selectedRows = [];
 									this.selectedRowKeysLeft = [];
-									this.gongZuoLingNo = "";
+									this.gongZuoLingNo = undefined;
 									this.workType = "-1";
 									this.getProcesslist();
 									this.$emit("editModal", false);
@@ -221,10 +225,11 @@ export default {
 			this.selectedRowKeysRight = [];
 			this.selectedRows = [];
 			this.selectedRowKeysLeft = [];
+			this.selectedRowsRight = [];
 		},
 		delSelect() {
 			for (let i = 0; i < this.selectedRowKeysRight.length; i++) {
-				this.selectedRows = this.selectedRows.filter(item => {
+				this.selectedRowsRight = this.selectedRowsRight.filter(item => {
 					return item.workOrderDesId != this.selectedRowKeysRight[i];
 				});
 				this.selectedRowKeysLeft = this.selectedRowKeysLeft.filter(item => {
@@ -246,6 +251,23 @@ export default {
 			if (c == 1) {
 				this.selectedRowKeysLeft = a;
 				this.selectedRows = b;
+
+				let arr = new Array();
+				arr = [...this.selectedRowsRight];
+				this.selectedRowsRight = [];
+				arr = arr.concat(b);
+				arr = Array.from(new Set(arr));
+				if (this.selectedRowKeysLeft.length < 1) {
+					this.selectedRowsRight = [];
+				} else {
+					for (let i = 0; i < this.selectedRowKeysLeft.length; i++) {
+						this.selectedRowsRight.push(
+							arr.find(item => {
+								return item.workOrderDesId == this.selectedRowKeysLeft[i];
+							})
+						);
+					}
+				}
 			}
 			if (c == 2) {
 				this.selectedRowKeysRight = a;
@@ -325,7 +347,7 @@ export default {
 								deliveryPerson: result.data.data.deliveryPerson
 							});
 						}, 100);
-						this.selectedRows = result.data.data.deliveryNoteItems;
+						this.selectedRowsRight = result.data.data.deliveryNoteItems;
 						this.selectedRowKeysLeft = result.data.data.deliveryNoteItems.map(
 							item => item.workOrderDesId
 						);
@@ -358,6 +380,24 @@ export default {
 	}
 	.ant-form-item {
 		margin-bottom: 20px;
+	}
+	.table_1 {
+		.ant-table-body {
+			min-height: 258px;
+		}
+		.ant-table-placeholder {
+			position: relative;
+			top: -150px;
+		}
+	}
+	.table_2 {
+		.ant-table-body {
+			min-height: 300px;
+		}
+		.ant-table-placeholder {
+			position: relative;
+			top: -190px;
+		}
 	}
 }
 </style>
