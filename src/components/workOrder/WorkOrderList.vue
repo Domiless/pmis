@@ -101,6 +101,7 @@
 									v-model="keyword"
 									style="width:300px"
 									:placeholder="type==1?'工作令、工单号、名称、交期':'图号'"
+									@keyup.enter.native="select"
 								></a-input>
 								<a-button type="primary" @click="select">查询</a-button>
 							</a-col>
@@ -419,6 +420,7 @@ export default {
 					return false;
 				}
 				sessionStorage.drawingNo = this.keyword;
+				this.keyword = "";
 				this.$router.push({
 					path: "/WorkOrderList/WorkOrderDetailsList/" + 9527
 				});

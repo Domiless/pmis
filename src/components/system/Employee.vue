@@ -40,7 +40,13 @@
 
 						<a-col :span="16" style="text-align:right">
 							关键字：
-							<a-input type="text" v-model="param" style="width:300px" placeholder="姓名，员工编号"></a-input>
+							<a-input
+								@keyup.enter.native="getList"
+								type="text"
+								v-model="param"
+								style="width:300px"
+								placeholder="姓名，员工编号"
+							></a-input>
 							<a-button type="primary" icon="search" @click="getList">搜索</a-button>
 						</a-col>
 					</div>

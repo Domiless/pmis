@@ -87,7 +87,7 @@
 						<a-table
 							rowKey="workOrderDesId"
 							:columns="columns"
-							:pagination="false"
+							:pagination="pagination"
 							:dataSource="data"
 							:rowSelection="{selectedRowKeys:selectedRowKeys,onChange: onSelectChange}"
 						>
@@ -153,7 +153,10 @@
 						</a-table>
 					</a-row>
 				</a-col>
-				<a-col :span="24" style="padding-top:12px;padding-left:20px;">提示：以上信息全部完成排配后，工单才能投产。</a-col>
+				<a-col
+					:span="24"
+					style="padding-top:12px;padding-left:20px;position: relative;top: -64px;"
+				>提示：以上信息全部完成排配后，工单才能投产。</a-col>
 			</a-row>
 		</div>
 
@@ -463,6 +466,10 @@ const columns = [
 export default {
 	data() {
 		return {
+			pagination: {
+				defaultPageSize: 50,
+				showTotal: total => `共 ${total} 条`
+			},
 			isHideList: this.$route.params.id !== undefined ? false : true,
 			columns,
 			data: [],

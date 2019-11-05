@@ -330,7 +330,7 @@ export default {
 		showDeleteConfirm() {
 			let that = this;
 			this.$confirm({
-				title: "只能删除待产的工单,确定删除吗?",
+				title: "确定删除吗?",
 				content: "",
 				okText: "确定",
 				okType: "danger",

@@ -206,10 +206,10 @@
 						</tr>
 					</table>
 					<div style="line-height:32px;">
-						<span style="text-align:right;width:200px;display:inline-block;">合计（不含税）：</span>
+						<span style="text-align:right;width:100px;display:inline-block;">合计(不含税)：</span>
 						<span style="font-size:18px;color:red;padding-right:12px;">{{item.total}}</span>
 						<p>
-							<span style="text-align:right;width:200px;display:inline-block;">大写（不含税）：</span>
+							<span style="text-align:right;width:100px;display:inline-block;">大写(不含税)：</span>
 							<span style="font-size:18px;color:red;padding-right:12px;">{{number_chinese(item.total)}}</span>
 						</p>
 					</div>
@@ -222,15 +222,17 @@
 						</a-col>
 						<a-col :span="12">
 							<span>需方：</span>
-							<pre
+							<span
 								style="display:inline-block;width:200px;border-bottom:1px solid #000000;height:24px;vertical-align: top;"
-							></pre>
+							></span>
 						</a-col>
 					</div>
 				</a-col>
 				<a-col :span="24">
-					注：
-					<pre style="display:inline-block;vertical-align: top;">{{item.remark}}</pre>
+					<span style>注：</span>
+					<span style="display:inline-block;vertical-align: top;width:97%;">
+						<pre>{{item.remark}}</pre>
+					</span>
 				</a-col>
 				<!-- <a-col :span="24" style="border:1px solid #dde2eb;padding:4px 0;border-top:none;">
 					<a-col :span="12">
@@ -480,5 +482,12 @@ export default {
 		padding-bottom: 1000px;
 		float: left;
 	}
+}
+pre {
+	white-space: pre-wrap; /* css3.0 */
+	white-space: -moz-pre-wrap; /* Firefox */
+	white-space: -pre-wrap; /* Opera 4-6 */
+	white-space: -o-pre-wrap; /* Opera 7 */
+	word-wrap: break-word; /* Internet Explorer 5.5+ */
 }
 </style>
