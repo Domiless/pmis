@@ -56,8 +56,9 @@
             <a-input
 							v-decorator="[
 							'supplierNo',
-							{rules: [{ required: true, message: '请填写供应商编码' }]}
+							{rules: [{ required: true, message: '请填写供应商编码' },{validator: checkSupplierNo}]}
 							]"
+              maxlength="20"
 						></a-input>
           </a-form-item>
         </a-row>
@@ -86,7 +87,7 @@
             <a-input
 							v-decorator="[
 							'linkPhone',
-							{rules: [{ required: true, message: '请填写联系电话' }]}
+							{rules: [{ required: true, message: '请填写联系电话' }, {validator: checkPhone}]}
 							]"
 						></a-input>
           </a-form-item>
@@ -112,7 +113,10 @@
         </a-row>
         <a-row>
           <a-form-item label="电子邮箱" :labelCol="{ span: 4}" :wrapperCol="{ span: 18}">
-            <a-input v-decorator="['email']"></a-input>
+            <a-input v-decorator="[
+            'email',
+            {rules: [{validator: checkEmail}]}
+            ]"></a-input>
           </a-form-item>
         </a-row>
         <a-row>
@@ -166,7 +170,7 @@
             <a-input
 							v-decorator="[
 							'linkPhone',
-							{rules: [{ required: true, message: '请填写联系电话' }]}
+							{rules: [{ required: true, message: '请填写联系电话' }, {validator: checkPhone}]}
 							]"
 						></a-input>
           </a-form-item>
@@ -191,7 +195,10 @@
         </a-row>
         <a-row>
           <a-form-item label="电子邮箱" :labelCol="{ span: 4}" :wrapperCol="{ span: 18}">
-            <a-input v-decorator="['email']"></a-input>
+            <a-input v-decorator="[
+            'email',
+            {rules: [{validator: checkEmail}]}
+            ]"></a-input>
           </a-form-item>
         </a-row>
         <a-row>
@@ -311,6 +318,39 @@ export default {
     };
   },
   methods: {
+    checkSupplierNo(ruel, value, callback) {
+       if (
+				/^[a-zA-Z0-9\-]{1,20}$/.test(value) == false &&
+				value != "" &&
+				value != null
+			) {
+				callback(new Error("请输入1到20位字母数字或中划线的编号"));
+			} else {
+				callback();
+			}
+    },
+    checkPhone(rule, value, callback) {
+			if (
+				/^1[23456789]\d{9}$/.test(value) == false &&
+				value != "" &&
+				value != null
+			) {
+				callback(new Error("请输入正确的电话号码"));
+			} else {
+				callback();
+			}
+    },
+    checkEmail(rule, value, callback) {
+      if (
+				/^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/.test(value) == false &&
+				value != "" &&
+				value != null
+			) {
+				callback(new Error("请输入正确的电子邮箱"));
+			} else {
+				callback();
+			}
+    },
     displayRender(a,b){
       console.log(a,b)
     },

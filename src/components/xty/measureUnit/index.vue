@@ -42,7 +42,8 @@
       <a-form :form="form">
         <a-form-item label="计量单位" :labelCol="{span:5}" :wrapperCol="{span:17}" required>
           <a-input
-            v-decorator="['name', { rules: [{ required:'true', message: '请填写计量单位'}]}]"
+            v-decorator="['name',
+             { rules: [{ required:'true', message: '请填写计量单位'}, {validator: checkName}]}]"
           ></a-input>
         </a-form-item>
         <a-form-item label="备注" :labelCol="{span:5}" :wrapperCol="{span:17}">
@@ -61,7 +62,8 @@
       <a-form :form="form">
         <a-form-item label="计量单位" :labelCol="{span:5}" :wrapperCol="{span:17}" required>
           <a-input
-            v-decorator="['name', { rules: [{ required:'true', message: '请填写计量单位'}]}]"
+            v-decorator="['name', { 
+              rules: [{ required:'true', message: '请填写计量单位'}, {validator: checkName}]}]"
           ></a-input>
         </a-form-item>
         <a-form-item label="备注" :labelCol="{span:5}" :wrapperCol="{span:17}">
@@ -102,6 +104,17 @@ export default {
     };
   },
   methods: {
+    checkName(rule, value, callback) {
+      if (
+				/^[\u4e00-\u9fa5]{0,}$/.test(value) == false &&
+				value != "" &&
+				value != null
+			) {
+				callback(new Error("请输入汉字"));
+			} else {
+				callback();
+			}
+    },
     onChange(current, pageNumber) {
       console.log("Page: ", pageNumber);
       console.log("第几页: ", current);

@@ -55,7 +55,8 @@
       </a-row>
       <a-row>
         <a-form-item label="合同金额" :labelCol="{span:3}" :wrapperCol="{span:21}">
-          <a-input v-decorator="['totalMoney']" addonAfter="元" style="width:90%"></a-input>
+          <a-input
+             v-decorator="['totalMoney', { rules: [{ validator: checkTotalMoney}]}]" addonAfter="元" style="width:90%"></a-input>
         </a-form-item>
       </a-row>
       <a-row>
@@ -68,7 +69,7 @@
       <a-row>
         <a-form-item label="订单数量" :labelCol="{span:3}" :wrapperCol="{span:21}" required>
           <a-input
-            v-decorator="['orderQuantity', { rules: [{ required:'true', message: '请填写订单数量'}]}]"
+            v-decorator="['orderQuantity', { rules: [{ required:'true', message: '请填写订单数量'},{validator: checkOrderQuantity}]}]"
           ></a-input>
         </a-form-item>
       </a-row>
@@ -142,6 +143,28 @@ export default {
     };
   },
   methods: {
+    checkTotalMoney(rule, value, callback) {
+      if (
+				/^[0-9]{1,10}$/.test(value) == false &&
+				value != "" &&
+				value != null
+			) {
+				callback(new Error("请输入1到10位数字的合同金额"));
+			} else {
+				callback();
+			}
+    },
+    checkOrderQuantity(rule, value, callback) {
+      if (
+				/^[0-9]{1,10}$/.test(value) == false &&
+				value != "" &&
+				value != null
+			) {
+				callback(new Error("请输入1到10位数字的订单数量"));
+			} else {
+				callback();
+			}
+    },
     onChangeSign(data,dateString) {
       this.signDate = dateString;
     },

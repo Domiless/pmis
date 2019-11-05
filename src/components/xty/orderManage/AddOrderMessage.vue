@@ -3,7 +3,10 @@
       <a-form :form="form">
         <a-row>
           <a-form-item label="合同号" :labelCol="{span:3}" :wrapperCol="{span:21}" required>
-            <a-input v-decorator="['contractNo', { rules: [{ required:'true', message: '请填写合同号'}]}]"></a-input>
+            <a-input
+             v-decorator="['contractNo', { rules: [{ required:'true', message: '请填写合同号'},{ validator: checkNo}]}]"
+             maxlength="10"
+             ></a-input>
           </a-form-item>
         </a-row>
         <a-row>
@@ -35,7 +38,10 @@
             :wrapperCol="{span:21}"
             required
           >
-            <a-input v-decorator="['no', { rules: [{ required:'true', message: '请填写订单编号'}]}]"></a-input>
+            <a-input
+             v-decorator="['no', { rules: [{ required:'true', message: '请填写订单编号'}, {validator: checkOrderNo}]}]"
+             maxlength="20"
+             ></a-input>
             <a-button style="margin-left:5px" @click="getOrderNo()">生成</a-button>
           </a-form-item>
         </a-row>
@@ -65,7 +71,8 @@
         </a-row>
         <a-row>
           <a-form-item label="合同金额" :labelCol="{span:3}" :wrapperCol="{span:21}">
-            <a-input v-decorator="['totalMoney']" addonAfter="元" style="width:90%"></a-input>
+            <a-input
+             v-decorator="['totalMoney', { rules: [{ validator: checkTotalMoney}]}]" addonAfter="元" style="width:90%"></a-input>
           </a-form-item>
         </a-row>
         <a-row>
@@ -75,7 +82,8 @@
         </a-row>
         <a-row>
           <a-form-item label="订单数量" :labelCol="{span:3}" :wrapperCol="{span:21}" required>
-            <a-input v-decorator="['orderQuantity', { rules: [{ required:'true', message: '请填写订单数量'}]}]"></a-input>
+            <a-input
+             v-decorator="['orderQuantity', { rules: [{ required:'true', message: '请填写订单数量'}, {validator: checkOrderQuantity}]}]"></a-input>
           </a-form-item>
         </a-row>
         <a-row>
@@ -143,6 +151,50 @@ export default {
     };
   },
   methods: {
+    checkNo(rule, value, callback) {
+			if (
+				/^[a-zA-Z0-9\-]{1,10}$/.test(value) == false &&
+				value != "" &&
+				value != null
+			) {
+				callback(new Error("请输入1到10位字母数字或中划线的合同号"));
+			} else {
+				callback();
+			}
+    },
+    checkOrderNo(rule, value, callback) {
+      if (
+				/^[a-zA-Z0-9\-]{1,20}$/.test(value) == false &&
+				value != "" &&
+				value != null
+			) {
+				callback(new Error("请输入1到20位字母数字或中划线的订单号"));
+			} else {
+				callback();
+			}
+    },
+    checkTotalMoney(rule, value, callback) {
+      if (
+				/^[0-9]{1,10}$/.test(value) == false &&
+				value != "" &&
+				value != null
+			) {
+				callback(new Error("请输入1到10位数字的合同金额"));
+			} else {
+				callback();
+			}
+    },
+    checkOrderQuantity(rule, value, callback) {
+      if (
+				/^[0-9]{1,10}$/.test(value) == false &&
+				value != "" &&
+				value != null
+			) {
+				callback(new Error("请输入1到10位数字的订单数量"));
+			} else {
+				callback();
+			}
+    },
     closeAdd() {
      this.$emit("changeAddOrder", false);
     },
