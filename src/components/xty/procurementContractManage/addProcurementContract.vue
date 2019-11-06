@@ -18,7 +18,8 @@
           <a-row>
             <a-form-item label="合同编号" :labelCol="{ span: 3}" :wrapperCol="{ span: 19 }">
               <a-input
-               v-decorator="['contractNo', { rules: [{ required:'true', message: '请输入合同编号'}]}]"></a-input>
+               v-decorator="['contractNo',
+                { rules: [{ required:'true', message: '请输入合同编号'}, {validator: checkContractNo}]}]"></a-input>
             </a-form-item>
           </a-row>
           <a-row>
@@ -237,6 +238,17 @@ export default {
     };
   },
   methods: {
+    checkContractNo(rule, value, callback) {
+      if (
+				/^[a-zA-Z0-9\-]{1,20}$/.test(value) == false &&
+				value != "" &&
+				value != null
+			) {
+				callback(new Error("请输入1到20位字母数字或中划线的订单号"));
+			} else {
+				callback();
+			}
+    },
     number_chinese(str) {
 			var num = parseFloat(str);
 			var strOutput = "",

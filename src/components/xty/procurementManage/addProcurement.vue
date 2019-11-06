@@ -31,7 +31,8 @@
           <a-row>
             <a-form-item label="采购单号" :labelCol="{ span: 3}" :wrapperCol="{ span: 19 }">
               <a-input
-                v-decorator="['procurementNo', { rules: [{ required:'true', message: '请填写采购单号'}]}]"
+                v-decorator="['procurementNo',
+                 { rules: [{ required:'true', message: '请填写采购单号'}, {validator: checkProcurementNo}]}]"
               ></a-input>
             </a-form-item>
           </a-row>
@@ -358,6 +359,17 @@ export default {
     };
   },
   methods: {
+    checkProcurementNo(rule, value, callback) {
+      if (
+				/^[a-zA-Z0-9\-]{1,20}$/.test(value) == false &&
+				value != "" &&
+				value != null
+			) {
+				callback(new Error("请输入1到20位字母数字或中划线的采购单号"));
+			} else {
+				callback();
+			}
+    },
     handleChangeTable(value, key, column) {
       // console.log(value);
       // console.log(key);
@@ -398,6 +410,9 @@ export default {
     },
     sendOrderId(value) {
       console.log(value);
+      this.form.setFieldsValue({
+        bomIdS: []
+      })
       for (let i = 0; i < this.ProjectId.length; i++) {
         if (value === this.ProjectId[i].no) {
           this.workOrderId = this.ProjectId[i].id;
