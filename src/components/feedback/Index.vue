@@ -2,7 +2,7 @@
 	<div class="feedback">
 		<div style="line-height:50px;">
 			<permission-button
-				permCode="advise_list_lookup.advice_reply"
+				permCode="advise_lookup.advise_reply"
 				banType="hide"
 				@click="replyShow"
 				:disabled="selectedRowKeys.length!=1"
@@ -10,7 +10,7 @@
 				<a-icon style="color:#1890ff;" type="edit" />回复
 			</permission-button>
 			<permission-button
-				permCode="advise_list_lookup.advice_delete"
+				permCode="advise_lookup.advise_delete"
 				banType="hide"
 				@click="showDeleteConfirm"
 				:disabled="selectedRowKeys.length!=1"

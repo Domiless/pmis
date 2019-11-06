@@ -2,11 +2,7 @@
 	<div class="order_price">
 		<a-row style="padding: 20px;">
 			<a-button @click="$router.back(-1)" icon="left">返回</a-button>
-			<permission-button
-				permCode="workorder_offer_lookup.workorder_offer_watch"
-				banType="hide"
-				@click="findOne"
-			>
+			<permission-button permCode="offer_lookup.offer_watch" banType="hide" @click="findOne">
 				<i class="iconfont" style="color:#1890ff;margin-right:8px;">&#xe60c;</i>打印预览
 			</permission-button>
 		</a-row>
@@ -207,7 +203,7 @@
 			</div>
 			<div style="line-height:60px;">
 				<permission-button
-					permCode="workorder_offer_lookup.workorder_offer_save"
+					permCode="offer_lookup.offer_save"
 					banType="hide"
 					:loading="loadingShow"
 					type="primary"

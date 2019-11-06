@@ -1,18 +1,18 @@
 <template>
   <div class="procurementContractManage">
     <a-row style="line-height:50px;">
-      <a-button @click="addVisible=true">
+      <permission-button permCode="shopcontract_lookup.shopcontract_add" banType="hide" @click="addVisible=true">
         <a-icon style="color:#1890ff;" type="plus" />新增
-      </a-button>
-      <a-button @click="editShow" :disabled="selectedRowKeys.length!=1">
+      </permission-button>
+      <permission-button permCode="shopcontract_lookup.shopcontract_update" banType="hide" @click="editShow" :disabled="selectedRowKeys.length!=1">
         <a-icon style="color:#1890ff;" type="edit" />修改
-      </a-button>
-      <a-button :disabled="selectedRowKeys.length!=1" @click="approveShow">
+      </permission-button>
+      <permission-button permCode="shopcontract_lookup.shopcontract_audit" banType="hide" :disabled="selectedRowKeys.length!=1" @click="approveShow">
         <a-icon style="color:#1890ff;" type="submit" />提交审批
-      </a-button>
-      <a-button @click="showDeleteConfirm" :disabled="selectedRowKeys.length<1">
+      </permission-button>
+      <permission-button permCode="shopcontract_lookup.shopcontract_delete" banType="hide" @click="showDeleteConfirm" :disabled="selectedRowKeys.length<1">
         <a-icon style="color:#1890ff;" type="delete" />删除
-      </a-button>
+      </permission-button>
     </a-row>
     <a-row>
       <a-col :span="24">

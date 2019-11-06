@@ -5,37 +5,37 @@ export default [{
   menu: '采购管理',
   permissionCode: 'procurement',
   icon: '&#xe60a;',
-  defaultDock: true,
+  defaultDock: false,
   subMenu: [{
       menu: '供应商管理',
       route: '/supplierManage',
       key: 'supplierManage',
-      permissionCode: 'workdesk_desk_lookup',
+      permissionCode: 'supplier_lookup',
     },
     {
       menu: '采购列表',
       route: '/procurement',
       key: 'procurement',
-      permissionCode: 'workdesk_desk_lookup',
+      permissionCode: 'shop_lookup',
     },
 
     {
       menu: '采购合同',
       route: '/procurementContractManage',
       key: 'procurementContractManage',
-      permissionCode: 'workdesk_desk_lookup',
+      permissionCode: 'shopcontract_lookup',
     },
     {
       menu: '合同管理',
       route: '/contractManage',
       key: 'contractManage',
-      permissionCode: 'workdesk_desk_lookup',
+      permissionCode: 'contractmodel_lookup',
     },
     {
       menu: '计量单位',
       route: '/measureUnit',
       key: 'measureUnit',
-      permissionCode: 'workdesk_desk_lookup',
+      permissionCode: 'unit_lookup',
     }
   ]
 }, ]

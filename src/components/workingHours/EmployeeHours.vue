@@ -10,7 +10,7 @@
 			<a-range-picker @change="getTime" format="YYYY/MM/DD" />
 			<a-button @click="getList">查询</a-button>
 			<permission-button
-				permCode="workhours_lookup.workhour_daochu"
+				permCode="workhouradd_lookup.workhouradd_explore"
 				banType="hide"
 				@click="download"
 			>导出</permission-button>

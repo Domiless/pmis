@@ -5,18 +5,18 @@ export default [{
   menu: '设计管理',
   permissionCode: 'design',
   icon: '&#xe60a;',
-  defaultDock: true,
+  defaultDock: false,
   subMenu: [{
       menu: '设计列表',
       route: '/designmanage',
       key: 'designmanage',
-      permissionCode: 'workdesk_desk_lookup',
+      permissionCode: 'bom_lookup',
     },
     {
       menu: '图纸列表',
       route: '/DrawingsList',
       key: 'drawingsList',
-      permissionCode: 'drawing_drawing_lookup'
+      permissionCode: 'drawing_lookup'
     }
   ]
 }, ]

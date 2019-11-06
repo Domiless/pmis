@@ -2,25 +2,45 @@
 	<div class="designManage">
 		<div class="design_header">
 			<a-row style="line-height:50px;">
-				<a-button @click="addVisible=true">
+				<permission-button permCode="bom_lookup.bom_add" banType="hide" @click="addVisible=true">
 					<a-icon style="color:#1890ff;" type="plus" />新增
-				</a-button>
-				<a-button @click="edit" :disabled="selectedRowKeys.length!=1">
+				</permission-button>
+				<permission-button
+					permCode="bom_lookup.bom_update"
+					banType="hide"
+					@click="edit"
+					:disabled="selectedRowKeys.length!=1"
+				>
 					<a-icon style="color:#1890ff;" type="edit" />修改
-				</a-button>
+				</permission-button>
 				<!-- <a-button @click="addBomVisible=true">
 					<a-icon style="color:#1890ff;" type />BOM管理
 				</a-button>-->
-				<a-button :disabled="selectedRowKeys.length!=1" @click="download">
+				<permission-button
+					permCode="bom_lookup.bom_bomout"
+					banType="hide"
+					:disabled="selectedRowKeys.length!=1"
+					@click="download"
+				>
 					<i style="color:#1890ff;margin-right:4px;" class="iconfont">&#xe611;</i>BOM导出
-				</a-button>
-				<a-button :disabled="selectedRowKeys.length!=1" @click="approveShow">
+				</permission-button>
+				<permission-button
+					permCode="bom_lookup.bom_audit"
+					banType="hide"
+					:disabled="selectedRowKeys.length!=1"
+					@click="approveShow"
+				>
 					<i style="color:#1890ff;margin-right:4px;" class="iconfont">&#xe8ad;</i>
 					提交审批
-				</a-button>
-				<a-button @click="showDeleteConfirm" :disabled="selectedRowKeys.length!=1">
+				</permission-button>
+				<permission-button
+					permCode="bom_lookup.bom_delete"
+					banType="hide"
+					@click="showDeleteConfirm"
+					:disabled="selectedRowKeys.length!=1"
+				>
 					<a-icon style="color:#1890ff;" type="delete" />删除
-				</a-button>
+				</permission-button>
 			</a-row>
 		</div>
 		<div class="design_content">
@@ -40,7 +60,12 @@
 						</a-select>
 					</span>
 					<span>关键词：</span>
-					<a-input placeholder="订单编号/项目名称/部件名称/图号" @keyup.enter.native="getList" v-model="keyword" style="width: 250px" ></a-input>
+					<a-input
+						placeholder="订单编号/项目名称/部件名称/图号"
+						@keyup.enter.native="getList"
+						v-model="keyword"
+						style="width: 250px"
+					></a-input>
 					<a-button @click="getList">搜索</a-button>
 				</a-col>
 			</a-row>

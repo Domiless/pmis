@@ -11,7 +11,7 @@
 			<template slot="operation" slot-scope="text, record, index">
 				<div>
 					<permission-button
-						permCode="raw_raw_lookup.raw_raw_update"
+						permCode="raw_lookup.raw_update"
 						banType="disabled"
 						class="button_text btn_disabled"
 						@click="handleEdit(record)"

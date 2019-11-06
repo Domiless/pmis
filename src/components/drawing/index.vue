@@ -8,14 +8,14 @@
 						<div style="line-height:50px;">
 							<a-col :span="8">
 								<permission-button
-									permCode="drawing_drawing_lookup.drawing_drawing_add"
+									permCode="drawing_lookup.drawing_add"
 									banType="hide"
 									@click="addVisible=true"
 								>
 									<a-icon style="color:#1890ff;" type="plus" />新增
 								</permission-button>
 								<permission-button
-									permCode="drawing_drawing_lookup.drawing_drawing_update"
+									permCode="drawing_lookup.drawing_update"
 									banType="hide"
 									@click="showEdit"
 									:disabled="selectedRowKeys.length!=1"

@@ -6,11 +6,15 @@
 					<!-- <a-button type="primary" @click="$router.push({path:'/Employee/AddEmployee'})">
 								<a-icon type="plus-circle"/>添加
 					</a-button>-->
-					<permission-button permCode banType="hide" @click="addVisible = true;">
+					<permission-button
+						permCode="message_lookup.message_add"
+						banType="hide"
+						@click="addVisible = true;"
+					>
 						<a-icon style="color:#1890ff;" type="plus" />新增
 					</permission-button>
 					<permission-button
-						permCode
+						permCode="message_lookup.message_update"
 						banType="hide"
 						@click="findOne"
 						:disabled="selectedRowKeys.length!=1"
@@ -18,7 +22,7 @@
 						<a-icon style="color:#1890ff;" type="edit" />修改
 					</permission-button>
 					<permission-button
-						permCode="worktype_worktype_lookup.worktype_delete"
+						permCode="message_lookup.message_delete"
 						banType="hide"
 						@click="showDeleteConfirm"
 						:disabled="selectedRowKeys.length!=1"

@@ -2,7 +2,7 @@
 	<div class="coefficient">
 		<a-row style="padding-bottom:12px;">
 			<permission-button
-				permCode="workorder_worktime_lookup.workorder_workhour_num_add"
+				permCode="workhour_lookup.workhour_add"
 				banType="hide"
 				@click="addVisible=true"
 			>新增</permission-button>
@@ -11,7 +11,7 @@
 			<a-table rowKey="id" :columns="columns" :pagination="false" :dataSource="data" size="small">
 				<template slot="operation" slot-scope="text, record, index">
 					<permission-button
-						permCode="workorder_worktime_lookup.workorder_workhour_num_update"
+						permCode="workhour_lookup.workhour_update"
 						banType="hide"
 						class="button_text"
 						style="margin-right:8px;"
@@ -25,7 +25,7 @@
 						cancelText="取消"
 					>
 						<permission-button
-							permCode="workorder_worktime_lookup.workorder_workhour_num_delete"
+							permCode="workhour_lookup.workhour_delete"
 							banType="hide"
 							class="button_text"
 						>删除</permission-button>

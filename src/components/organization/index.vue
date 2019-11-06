@@ -22,7 +22,7 @@
 								<span>添加子级</span>
 							</template>
 							<permission-button
-								permCode="system_org_lookup.system_orginaze_add"
+								permCode="organize_lookup.organize_add"
 								banType="hide"
 								class="button_text"
 								@click="modalSublevelShow(item)"
@@ -35,7 +35,7 @@
 								<span>修改</span>
 							</template>
 							<permission-button
-								permCode="system_org_lookup.system_orginaze_update"
+								permCode="organize_lookup.organize_update"
 								banType="hide"
 								class="button_text"
 								v-if="item.organizeParentCode!=0"
@@ -50,7 +50,7 @@
 									<span>删除</span>
 								</template>
 								<permission-button
-									permCode="system_org_lookup.system_orginaze_delete"
+									permCode="organize_lookup.organize_delete"
 									banType="hide"
 									class="button_text"
 									v-if="item.organizeParentCode!=0"

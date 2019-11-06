@@ -8,14 +8,14 @@
 						<div style="line-height:50px;">
 							<a-col :span="12">
 								<permission-button
-									permCode="workorder_manage_lookup.workorder_manager_add"
+									permCode="workorder_lookup.workorder_add"
 									banType="hide"
 									@click="addVisible=true"
 								>
 									<a-icon style="color:#1890ff;" type="plus" />新增
 								</permission-button>
 								<permission-button
-									permCode="workorder_manage_lookup.workorder_manager_update"
+									permCode="workorder_lookup.workorder_update"
 									banType="hide"
 									@click="editShow"
 									:disabled="selectedRowKeys.length!=1"
@@ -23,7 +23,7 @@
 									<a-icon style="color:#1890ff;" type="edit" />修改
 								</permission-button>
 								<permission-button
-									permCode="workorder_manage_lookup.workorder_manager_delete"
+									permCode="workorder_lookup.workorder_delete"
 									banType="hide"
 									@click="showDeleteConfirm"
 									:disabled="selectedRows.length==0"

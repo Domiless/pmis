@@ -9,14 +9,14 @@
 							<a-col :span="24">
 								<a-button @click="$router.back(-1)" icon="left" style="margin-right:20px;">返回</a-button>
 								<permission-button
-									permCode="workorder_detail_lookup.workorder_detail_add"
+									permCode="workorderitem_lookup.workorderitem_add"
 									banType="hide"
 									@click="addShow"
 								>
 									<a-icon style="color:#1890ff;" type="plus" />新增
 								</permission-button>
 								<permission-button
-									permCode="workorder_detail_lookup.workorder_detail_update"
+									permCode="workorderitem_lookup.workorderitem_update"
 									banType="hide"
 									@click="editShow"
 									:disabled="selectedRowKeys.length!=1"
@@ -25,7 +25,7 @@
 								</permission-button>
 
 								<permission-button
-									permCode="workorder_detail_lookup.workorder_detail_delete"
+									permCode="workorderitem_lookup.workorderitem_delete"
 									banType="hide"
 									@click="showDeleteConfirm"
 									:disabled="selectedRowKeys.length!=1"
@@ -41,7 +41,7 @@
 									<i class="iconfont" style="color:#1890ff;margin-right:8px;">&#xea06;</i>工时管理
 								</permission-button>
 								<permission-button
-									permCode="workorder_detail_lookup.workorder_detail_watch"
+									permCode="workorderitem_lookup.workorderitem_watch"
 									banType="hide"
 									@click="toPriview"
 									:disabled="selectedRowKeys.length<1"
@@ -49,7 +49,7 @@
 									<i class="iconfont" style="color:#1890ff;margin-right:8px;">&#xe60c;</i>预览
 								</permission-button>
 								<permission-button
-									permCode="workorder_detail_lookup.workorder_detail_touchan"
+									permCode="workorderitem_lookup.workorderitem_touchan"
 									banType="hide"
 									@click="goIntoOperation"
 									:disabled="selectedRows.length==0"
@@ -57,7 +57,7 @@
 									<i class="iconfont" style="color:#1890ff;margin-right:8px;">&#xe6fd;</i>投产
 								</permission-button>
 								<permission-button
-									permCode="workorder_detail_lookup.workorder_detail_huifu"
+									permCode="workorderitem_lookup.workorderitem_huifu"
 									banType="hide"
 									@click="regain"
 									:disabled="selectedRows.length==0"
@@ -65,7 +65,7 @@
 									<i class="iconfont" style="color:#1890ff;margin-right:8px;">&#xe625;</i>恢复
 								</permission-button>
 								<permission-button
-									permCode="workorder_detail_lookup.workorder_detail_zanting"
+									permCode="workorderitem_lookup.workorderitem_zanting"
 									banType="hide"
 									@click="showPauseConfirm"
 									:disabled="selectedRows.length!=1"
@@ -73,7 +73,7 @@
 									<i class="iconfont" style="color:#1890ff;margin-right:8px;">&#xe62d;</i>暂停
 								</permission-button>
 								<permission-button
-									permCode="workorder_detail_lookup.workorder_detail_zhongzhi"
+									permCode="workorderitem_lookup.workorderitem_zhongzhi"
 									banType="hide"
 									@click="showTerminationConfirm"
 									:disabled="selectedRows.length!=1"
@@ -143,7 +143,7 @@
 							</template>
 							<template slot="detail" slot-scope="text, record, index">
 								<permission-button
-									permCode="workorder_detail_lookup.workorder_paipei"
+									permCode="workorderitem_lookup.workorderitem_paipei"
 									banType="disabled"
 									class="button_text btn_disabled"
 									@click="technologyModalShow(record)"
@@ -153,10 +153,10 @@
 						</a-table>
 					</a-row>
 				</a-col>
-				<a-col
+				<!-- <a-col
 					:span="24"
 					style="padding-top:12px;padding-left:20px;position: relative;top: -64px;"
-				>提示：以上信息全部完成排配后，工单才能投产。</a-col>
+				>提示：以上信息全部完成排配后，工单才能投产。</a-col> -->
 			</a-row>
 		</div>
 
@@ -761,13 +761,14 @@ export default {
 		},
 		moment,
 		addShow() {
-			if (this.data[0] == undefined) {
-				this.addVisible = true;
-			} else if (this.data[0].state != 0) {
-				this.$message.error(`工单当前状态无法进行新增操作`);
-			} else {
-				this.addVisible = true;
-			}
+			// if (this.data[0] == undefined) {
+			// 	this.addVisible = true;
+			// } else if (this.data[0].state != 0) {
+			// 	this.$message.error(`工单当前状态无法进行新增操作`);
+			// } else {
+			// 	this.addVisible = true;
+			// }
+			this.addVisible = true;
 		},
 		add() {
 			this.form.validateFieldsAndScroll((err, values) => {

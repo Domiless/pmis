@@ -80,8 +80,8 @@
 				</a-col>
 				<a-col :span="12">
 					<a-form-item label="毛坯外形尺寸长度">
-						<span>{{detailsMsg.lengthOrRadius}}</span>&nbsp;±
-						<span>{{detailsMsg.lengthOrRadiusError}}</span>
+						<span>{{detailsMsg.heightOrLength}}</span>&nbsp;±
+						<span>{{detailsMsg.heightOrLengthError}}</span>
 					</a-form-item>
 				</a-col>
 			</a-col>
@@ -111,9 +111,16 @@
 					<template slot="employeeName" slot-scope="text, record, index">
 						<a-popover title placement="right">
 							<template slot="content">
-								<span>完工时间：{{record.executives.map(item=>item.gmtModified).join(",")}}</span>
+								<span
+									v-if="record.workType!='STORAGE'"
+								>派工时间：{{record.executives.length>0?record.executives[0].gmtCreated:""}}</span>
+								<br v-if="record.workType!='STORAGE'" />
+								<span>完工时间：{{record.executives.length>0?record.executives[0].gmtModified:""}}</span>
 							</template>
-							<span class="serial_number">{{record.executives.map(item=>item.employeeName).join(",")}}</span>
+							<span
+								class="serial_number"
+								v-if="record.workType=='STORAGE'&&record.executives.length>0?record.executives[0].gmtCreated!=record.executives[0].gmtModified:true"
+							>{{record.executives.map(item=>item.employeeName).join("、")}}</span>
 						</a-popover>
 					</template>
 				</a-table>
@@ -153,7 +160,7 @@ const columns = [
 	{
 		dataIndex: "employeeName",
 		key: "employeeName",
-		title: "加工者",
+		title: "操作者",
 		width: 80,
 		scopedSlots: { customRender: "employeeName" }
 	},

@@ -8,14 +8,14 @@
 							<a-icon type="plus-circle"/>添加
 						</a-button>-->
 						<permission-button
-							permCode="collaboration_col_lookup.collaboration_col_add"
+							permCode="cooperate_lookup.cooperate_add"
 							banType="hide"
 							@click="modalNewVisible=true"
 						>
 							<a-icon style="color:#1890ff;" type="plus" />新增
 						</permission-button>
 						<permission-button
-							permCode="collaboration_col_lookup.collaboration_col_update"
+							permCode="cooperate_lookup.cooperate_update"
 							banType="hide"
 							@click="editShow"
 							:disabled="selectedRowKeys.length!=1"
@@ -23,7 +23,7 @@
 							<a-icon style="color:#1890ff;" type="edit" />修改
 						</permission-button>
 						<permission-button
-							permCode="collaboration_col_lookup.collaboration_col_delete"
+							permCode="cooperate_lookup.cooperate_delete"
 							banType="hide"
 							@click="showDeleteConfirm"
 							:disabled="selectedRowKeys.length!=1"

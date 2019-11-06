@@ -15,7 +15,7 @@
 					<img alt="example" src="../../assets/u1663.svg" slot="cover" />
 					<template class="ant-card-actions" slot="actions">
 						<permission-button
-							permCode="raw_raw_lookup.raw_raw_add"
+							permCode="raw_lookup.raw_add"
 							banType="hide"
 							class="button_text"
 							@click="addBoardVisible=true"
@@ -32,7 +32,7 @@
 					<img alt="example" src="../../assets/u1672.svg" slot="cover" />
 					<template class="ant-card-actions" slot="actions">
 						<permission-button
-							permCode="raw_raw_lookup.raw_raw_add"
+							permCode="raw_lookup.raw_add"
 							banType="hide"
 							class="button_text"
 							@click="addStickVisible=true"
@@ -49,7 +49,7 @@
 					<img alt="example" src="../../assets/u2378.svg" slot="cover" />
 					<template class="ant-card-actions" slot="actions">
 						<permission-button
-							permCode="raw_raw_lookup.raw_raw_add"
+							permCode="raw_lookup.raw_add"
 							banType="hide"
 							class="button_text"
 							@click="addProfileVisible=true"

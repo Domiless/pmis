@@ -3,7 +3,7 @@
 		<a-row>
 			<div style="line-height:50px;">
 				<a-col :span="24">
-					<permission-button permCode banType="hide" @click="save">
+					<permission-button permCode="blackborad_lookup.blackborad_save" banType="hide" @click="save">
 						<a-icon style="color:#1890ff;" type="plus" />保存
 					</permission-button>
 				</a-col>

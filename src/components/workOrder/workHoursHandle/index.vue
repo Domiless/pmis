@@ -3,11 +3,7 @@
 		<a-row style="padding:0 20px;">
 			<a-button @click="$router.back(-1)" icon="left">返回</a-button>
 			<permission-button permCode banType="hide" @click="coefficientVisible=true">工时系数</permission-button>
-			<permission-button
-				permCode="workorder_worktime_lookup.workorder_workhour_save"
-				banType="hide"
-				@click="save"
-			>
+			<permission-button permCode="workhour_lookup.workhour_save" banType="hide" @click="save">
 				<i class="iconfont" style="color:#1890ff;margin-right:8px;">&#xe60d;</i>保存修改
 			</permission-button>
 		</a-row>
@@ -145,11 +141,7 @@
 			</div>
 		</a-row>
 		<a-row style="padding:20px 20px 0;">
-			<permission-button
-				permCode="workorder_worktime_lookup.workorder_workhour_save"
-				banType="hide"
-				@click="save"
-			>
+			<permission-button permCode="workhour_lookup.workhour_save" banType="hide" @click="save">
 				<i class="iconfont" style="color:#1890ff;margin-right:8px;">&#xe60d;</i>保存修改
 			</permission-button>
 		</a-row>

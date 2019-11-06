@@ -5,7 +5,7 @@ export default [{
   menu: '订单管理',
   permissionCode: 'project',
   icon: '&#xe60a;',
-  defaultDock: true,
+  defaultDock: false,
   subMenu: [{
     menu: '订单列表',
     route: '/orderManage',

@@ -25,7 +25,7 @@
 								<a-icon style="color:#1890ff;" type="edit" />修改
 							</permission-button>
 							<permission-button
-								permCode="system_role_list_lookup.system_role_delete"
+								permCode="role_lookup.role_delete"
 								banType="hide"
 								:disabled="selectedRowKeys.length!=1"
 								@click="showDeleteConfirm"

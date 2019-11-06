@@ -6,14 +6,14 @@
 					<div style="line-height:50px;">
 						<a-col :span="15">
 							<permission-button
-								permCode="workorder_manage_lookup.workorder_manager_add"
+								permCode="delivery_lookup.delivery_add"
 								banType="hide"
 								@click="addVisible=true"
 							>
 								<a-icon style="color:#1890ff;" type="plus" />新增
 							</permission-button>
 							<permission-button
-								permCode="workorder_manage_lookup.workorder_manager_update"
+								permCode="delivery_lookup.delivery_update"
 								banType="hide"
 								@click="editVisible=true"
 								:disabled="selectedRowKeys.length!=1"
@@ -21,7 +21,7 @@
 								<a-icon style="color:#1890ff;" type="edit" />修改
 							</permission-button>
 							<permission-button
-								permCode="workorder_manage_lookup.workorder_manager_delete"
+								permCode="delivery_lookup.delivery_delete"
 								banType="hide"
 								@click="showDeleteConfirm"
 								:disabled="selectedRowKeys.length<1"
@@ -29,7 +29,7 @@
 								<a-icon style="color:#1890ff;" type="delete" />删除
 							</permission-button>
 							<permission-button
-								permCode
+								permCode="delivery_lookup.delivery_explore"
 								banType="hide"
 								@click="download"
 								:disabled="selectedRowKeys.length!=1"

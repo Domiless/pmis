@@ -2,13 +2,9 @@
 	<div class="inventory">
 		<a-row style="line-height:50px;">
 			<a-button @click="$router.back(-1)" icon="left">返回</a-button>
+			<permission-button permCode="partlist_lookup.partlist_save" banType="hide" @click="save">保存</permission-button>
 			<permission-button
-				permCode="workorder_partlist_lookup.partlist_save"
-				banType="hide"
-				@click="save"
-			>保存</permission-button>
-			<permission-button
-				permCode="workorder_partlist_lookup.workorder_partlist_watch"
+				permCode="partlist_lookup.partlist_watch"
 				banType="hide"
 				@click="getPreviewList"
 			>
@@ -167,16 +163,17 @@ const columns = [
 	// 	dataIndex: "name",
 	// 	width: 140
 	// },
-	{
-		title: "材料规格",
-		dataIndex: "rawInfoStr",
-		width: 120
-	},
+
 	{
 		title: "所需物资",
 		dataIndex: "materials",
 		width: 120,
 		scopedSlots: { customRender: "materials" }
+	},
+	{
+		title: "材料规格",
+		dataIndex: "rawInfoStr",
+		width: 120
 	},
 	{
 		title: "计量单位",

@@ -34,41 +34,41 @@ export default [{
         menu: '工单列表',
         route: '/WorkOrderList',
         key: 'workOrderList',
-        permissionCode: 'workorder_manage_lookup'
+        permissionCode: 'workorder_lookup'
       },
       {
         menu: '送货单',
         route: '/deliverySlip',
         key: 'deliverySlip',
-        permissionCode: 'workorder_manage_lookup'
+        permissionCode: 'delivery_lookup'
       },
       {
         menu: '工单明细',
         routeReg: /^\/WorkOrderList\/WorkOrderDetailsList\/\w{1,}$/i,
         key: 'WorkOrderDetailsList',
         visible: true,
-        permissionCode: 'workorder_detail_lookup'
+        permissionCode: 'workorderitem_lookup'
       },
       {
         menu: '工时管理',
         routeReg: /^\/WorkOrderList\/WorkOrderDetailsList\/\w{1,}\/WorkHoursHandle\/.{1,}$/i,
         key: 'WorkHoursHandle',
         visible: true,
-        permissionCode: 'workorder_worktime_lookup'
+        permissionCode: 'workhour_lookup'
       },
       {
         menu: '物资清单',
         routeReg: /^\/WorkOrderList\/Inventory\/\w{1,}$/i,
         key: 'Inventory',
         visible: true,
-        permissionCode: 'workorder_partlist_lookup'
+        permissionCode: 'partlist_lookup'
       },
       {
         menu: '生产报价单',
         routeReg: /^\/WorkOrderList\/OrderPrice\/\w{1,}$/i,
         key: 'OrderPrice',
         visible: true,
-        permissionCode: 'workorder_offer_lookup'
+        permissionCode: 'offer_lookup'
       },
     ]
   },
@@ -102,7 +102,7 @@ export default [{
       menu: '工种列表',
       route: '/ProcessTypes',
       key: 'ProcessTypes',
-      permissionCode: 'worktype_worktype_lookup'
+      permissionCode: 'worktype_lookup'
     }, ]
   },
   // {
@@ -141,7 +141,7 @@ export default [{
       menu: '原材料列表',
       route: '/materialManagementList',
       key: 'materialManagementList',
-      permissionCode: 'raw_raw_lookup'
+      permissionCode: 'raw_lookup'
     }, ]
   },
   // {
@@ -165,7 +165,7 @@ export default [{
       menu: '工时统计',
       route: '/WorkingHours',
       key: 'workingHours',
-      permissionCode: 'workhours_lookup'
+      permissionCode: 'workhouradd_lookup'
     }, ]
   },
   // {

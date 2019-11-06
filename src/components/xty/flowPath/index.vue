@@ -4,11 +4,11 @@
 			<a-row>
 				<div style="line-height:50px;">
 					<a-col :span="8">
-						<permission-button permCode banType="hide" @click="add">
+						<permission-button permCode="process_lookup.process_add" banType="hide" @click="add">
 							<a-icon style="color:#1890ff;" type="plus" />新增
 						</permission-button>
 						<permission-button
-							permCode
+							permCode="process_lookup.process_update"
 							banType="hide"
 							@click="findOne"
 							:disabled="selectedRowKeys.length!=1"
@@ -16,7 +16,7 @@
 							<a-icon style="color:#1890ff;" type="edit" />修改
 						</permission-button>
 						<permission-button
-							permCode
+							permCode="process_lookup.process_user"
 							banType="hide"
 							:disabled="selectedRowKeys.length!=1"
 							@click="updateProcessState"

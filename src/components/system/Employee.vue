@@ -25,7 +25,7 @@
 								<a-icon style="color:#1890ff;" type="edit" />修改
 							</permission-button>
 							<permission-button
-								permCode="employee_list_lookup.employee_list_reset"
+								permCode="employee_lookup.employee_reset"
 								banType="hide"
 								@click="resetPwd"
 								:disabled="selectedRowKeys.length!=1"
