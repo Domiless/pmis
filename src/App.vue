@@ -46,7 +46,7 @@
 								v-for="(item,index) in headerMenuGroup"
 								:key="index"
 								@click="getMenu(item.key)"
-								:class="[{hide:item.disable}]"
+								:class="[{hide:item.disable,header_active_style:item.key==activeValue}]"
 							>
 								<span>
 									<i class="iconfont anticon" v-html="item.icon"></i>
@@ -293,12 +293,12 @@ export default {
 			],
 			userType: JSON.parse(sessionStorage.getItem("user")).userType,
 			userName: JSON.parse(sessionStorage.getItem("user")).userName,
-			enterpriseName: JSON.parse(sessionStorage.getItem("user")).enterpriseName
+			enterpriseName: JSON.parse(sessionStorage.getItem("user")).enterpriseName,
+			activeValue: ""
 		};
 	},
 	methods: {
 		getMenu(key) {
-			sessionStorage.menuKey = key;
 			this.menuSourceMap =
 				key == "production"
 					? productionMap
@@ -313,7 +313,7 @@ export default {
 					: key == "system"
 					? systemMap
 					: [];
-			this.initPermission();
+			this.initPermission(key);
 		},
 		encryptByDES(message, key) {
 			const keyHex = CryptoJS.enc.Utf8.parse(key);
@@ -430,7 +430,7 @@ export default {
 				this.isShow = true;
 			}, 100);
 		},
-		initPermission() {
+		initPermission(key) {
 			const permissionUrl = JSON.parse(
 				sessionStorage.getItem("permissionUrl") || "[]"
 			);
@@ -454,7 +454,13 @@ export default {
 					}
 				}
 			});
-			this.menuSource = _menuSource;
+			if (_menuSource.length < 1) {
+				this.$message.error(`您无权访问该模块！`);
+			} else {
+				sessionStorage.menuKey = key;
+				this.menuSource = _menuSource;
+				this.activeValue = sessionStorage.getItem("menuKey");
+			}
 		}
 		// initHeaderMenu() {
 		// 	let _headerMenuGroup = []; //clone(this.headerMenuGroup);
@@ -499,7 +505,11 @@ export default {
 		}
 	},
 	created() {
-		let menuKey = sessionStorage.getItem("menuKey");
+		let menuKey =
+			sessionStorage.getItem("menuKey") != null
+				? sessionStorage.getItem("menuKey")
+				: "home";
+		this.activeValue = menuKey != null ? menuKey : "home";
 		if (this.userType == 0) {
 			this.menuSourceMap = productionMap;
 		} else {
@@ -519,7 +529,7 @@ export default {
 					: homeMap;
 		}
 
-		this.initPermission();
+		this.initPermission(menuKey);
 		// this.initHeaderMenu();
 	}
 };
@@ -567,6 +577,9 @@ input[type="number"] {
 		i {
 			font-size: 24px;
 		}
+	}
+	.header_active_style {
+		background-color: #14202b;
 	}
 }
 </style>

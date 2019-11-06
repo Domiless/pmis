@@ -10,6 +10,6 @@ export default [{
     menu: '订单列表',
     route: '/orderManage',
     key: 'orderManage',
-    permissionCode: 'workdesk_desk_lookup',
+    permissionCode: 'order_lookup',
   }, ]
 }, ]
