@@ -5,7 +5,7 @@
         <a-input v-decorator="['contractName', { rules: [{ required:'true', message: '请填写合同名称'}]}]"></a-input>
       </a-form-item>
       <a-form-item label="合同内容" :labelCol="{span:3}" :wrapperCol="{span:19}">
-        <editor v-on:tinymceValue="tinymceValue"></editor>
+        <editor v-on:tinymceValue="tinymceValue" ref="clearContent"></editor>
       </a-form-item>
       <a-form-item :wrapper-col="{ span: 20,offset: 2 }" style="text-align:right">
         <a-button @click="confirmCancel" style="margin-right:12px;">关闭</a-button>
@@ -62,8 +62,9 @@ export default {
             result => {
               if (result.data.code === 200) {
                 console.log(result);
+                this.content = '';
+                this.$refs.clearContent.clearValue();
                 this.confirmCancel();
-                this.form.resetFields();
               }
             },
             ({ type, info }) => {}

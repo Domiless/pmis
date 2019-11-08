@@ -401,8 +401,12 @@ export default {
 		},
 		showDetails(row) {
 			this.supplierDetails = row;
+			this.supplierDetails.address = this.supplierDetails.address.replace(/;/g,"/");
+			if( this.supplierDetails.address.indexOf("undefined") != -1) {
+				this.supplierDetails.address = '';
+			}
 			this.detailsVisible = true;
-			console.log("row:" + this.supplierDetails);
+			console.log(this.supplierDetails);
 		},
 		onChangeRange(date, datestring) {
 			this.dateValue = datestring;
