@@ -87,5 +87,11 @@ export default [{
       key: 'Blackboard',
       permissionCode: 'blackborad_lookup',
     },
+    {
+      menu: '系统日志',
+      route: '/log',
+      key: 'log',
+      permissionCode: 'blackborad_lookup',
+    },
   ]
 }, ]

@@ -379,5 +379,14 @@ export default new Router({
       },
       children: []
     },
+    {
+      path: '/log',
+      name: 'log',
+      components: require('@/components/system/log/index'),
+      meta: {
+        requireAuth: true,
+      },
+      children: []
+    },
   ]
 })

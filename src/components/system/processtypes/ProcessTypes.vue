@@ -287,23 +287,23 @@ export default {
 				this.selectValue = "";
 			}
 		},
-		// chickNumber(rule, value, callback) {
-		// 	if (
-		// 		(/^\d+(\.\d{0,2})?$/.test(value) == false || value <= 0) &&
-		// 		(value != null) & (value != "")
-		// 	) {
-		// 		callback(new Error("只能输入大于0且只能保留两位小数"));
-		// 	} else {
-		// 		callback();
-		// 	}
-		// },
 		chickNumber(rule, value, callback) {
-			if (/^\d+?$/.test(value) == false && (value != null) & (value != "")) {
-				callback(new Error("只能输入大于等于0的整数"));
+			if (
+				(/^\d+(\.\d{0,2})?$/.test(value) == false || value <= 0) &&
+				(value != null) & (value != "")
+			) {
+				callback(new Error("只能输入大于0且只能保留两位小数"));
 			} else {
 				callback();
 			}
 		},
+		// chickNumber(rule, value, callback) {
+		// 	if (/^\d+?$/.test(value) == false && (value != null) & (value != "")) {
+		// 		callback(new Error("只能输入大于等于0的整数"));
+		// 	} else {
+		// 		callback();
+		// 	}
+		// },
 		showDeleteConfirm() {
 			let that = this;
 			this.$confirm({
