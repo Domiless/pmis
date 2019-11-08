@@ -212,6 +212,7 @@ export default {
 									console.log(result);
 									this.$emit("addCancel", {});
 									this.form.resetFields();
+									this.num = 1;
 									this.node = [
 										{
 											label: "流程节点1",
