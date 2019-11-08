@@ -250,7 +250,9 @@ export default {
 						result => {
 							if (result.data.code === 200) {
 								console.log(result);
+								this.form.resetFields();
 								this.editVisible = false;
+								this.selectedRowKeys = [];
 								this.getList();
 							}
 						},
