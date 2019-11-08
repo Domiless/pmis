@@ -66,16 +66,18 @@
 							>{{item.name}}</a-select-option>
 						</a-select>
 					</a-form-item>
-					<a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 22 }" label="工种">
+					<a-form-item
+						:label-col=" { span: 2 }"
+						:wrapper-col="{ span: 22 }"
+						label="工种"
+						style="position: relative;"
+					>
 						<a-select
 							mode="multiple"
 							showSearch
 							placeholder="请选择"
 							optionFilterProp="children"
-							v-decorator="[
-							'workTypeIds',
-							{rules: [{ required: true, message: '请选择工种' }]}
-							]"
+							v-decorator="['workTypeIds']"
 						>
 							<a-select-option
 								v-for="(item, index) in ProcessTypesList"
@@ -83,6 +85,15 @@
 								:value="item.id"
 							>{{item.workTypeName}}</a-select-option>
 						</a-select>
+						<a-tooltip placement="top">
+							<template slot="title">
+								<span>制造部必填</span>
+							</template>
+							<a-icon type="info-circle" style="color:rgb(24, 144, 255)" class="tool_tip" />
+						</a-tooltip>
+					</a-form-item>
+					<a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 22 }" label="岗位">
+						<a-input maxlength="20" v-decorator="['jobName']"></a-input>
 					</a-form-item>
 					<a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 22 }" label="年龄">
 						<a-input
@@ -252,6 +263,7 @@ export default {
 					let qs = require("qs");
 					let data = {
 						employeeId: this.$route.params.id,
+						jobName: values.jobName,
 						userName: values.userName,
 						phone: values.phone,
 						organizeId: values.organizeId,
@@ -400,6 +412,7 @@ export default {
 						});
 						setTimeout(() => {
 							this.form.setFieldsValue({
+								jobName: result.data.data.jobName,
 								employeeNo: result.data.data.employeeNo,
 								userName: result.data.data.userName,
 								phone: result.data.data.phone,
@@ -478,6 +491,11 @@ export default {
 		.ant-form-item {
 			margin-bottom: 20px;
 		}
+	}
+	.tool_tip {
+		position: absolute;
+		top: 3px;
+		right: -18px;
 	}
 }
 </style>

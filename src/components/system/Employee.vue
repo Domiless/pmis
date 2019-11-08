@@ -396,11 +396,11 @@ export default {
 		this.getList();
 		this.roleSwitch =
 			JSON.parse(sessionStorage.getItem("permissionUrl")).find(
-				item => item.module == "employee_list_lookup"
+				item => item.module == "employee_lookup"
 			) != undefined
 				? JSON.parse(sessionStorage.getItem("permissionUrl"))
-						.find(item => item.module == "employee_list_lookup")
-						.permissionItem.find(item => item == "employee_list_switch")
+						.find(item => item.module == "employee_lookup")
+						.permissionItem.find(item => item == "employee_delete")
 				: undefined;
 		let a = this.$route.matched.find(item => item.name === "AddEmployee")
 			? true
