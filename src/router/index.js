@@ -388,5 +388,14 @@ export default new Router({
       },
       children: []
     },
+    {
+      path: '/enquiry',
+      name: 'enquiry',
+      components: require('@/components/xty/enquiry/index'),
+      meta: {
+        requireAuth: true,
+      },
+      children: []
+    },
   ]
 })

@@ -104,7 +104,7 @@
 				</div>
 				<div class="blackboard">
 					<h2>小黑板</h2>
-					<div v-html="blackboardValue"></div>
+					<div v-html="blackboardValue" style="word-wrap:break-word"></div>
 				</div>
 				<div class="erweima">
 					<a-col :span="10">

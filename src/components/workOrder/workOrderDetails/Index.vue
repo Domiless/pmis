@@ -156,7 +156,7 @@
 				<!-- <a-col
 					:span="24"
 					style="padding-top:12px;padding-left:20px;position: relative;top: -64px;"
-				>提示：以上信息全部完成排配后，工单才能投产。</a-col> -->
+				>提示：以上信息全部完成排配后，工单才能投产。</a-col>-->
 			</a-row>
 		</div>
 
@@ -715,7 +715,7 @@ export default {
 			}
 		},
 		onDelete() {
-			if (this.data[0].state != 0) {
+			if (this.selectedRows[0].state != 0) {
 				this.$message.error(`工单当前状态无法进行删除操作`);
 			} else {
 				let qs = require("qs");

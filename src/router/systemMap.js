@@ -91,7 +91,7 @@ export default [{
       menu: '系统日志',
       route: '/log',
       key: 'log',
-      permissionCode: 'blackborad_lookup',
+      permissionCode: 'log_lookup',
     },
   ]
 }, ]

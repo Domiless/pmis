@@ -36,6 +36,12 @@ export default [{
       route: '/measureUnit',
       key: 'measureUnit',
       permissionCode: 'unit_lookup',
-    }
+    },
+    {
+      menu: '询价',
+      route: '/enquiry',
+      key: 'enquiry',
+      permissionCode: 'shop_lookup',
+    },
   ]
 }, ]
