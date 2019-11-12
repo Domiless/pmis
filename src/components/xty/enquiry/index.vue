@@ -6,12 +6,14 @@
 				permCode
 				banType="hide"
 				:disabled="selectedRowKeys.length<1"
+				@click="add(selectedRowKeys)"
 			>批量询价</permission-button>
 			<permission-button
 				v-if="activeKey==2"
 				permCode
 				banType="hide"
 				:disabled="selectedRowKeys1.length<1"
+				@click="eidt(selectedRowKeys1)"
 			>批量修改</permission-button>
 		</a-row>
 		<a-row style="margin-bottom: 10px;">
@@ -40,7 +42,7 @@
 					>
 						<template slot="operation" slot-scope="text, record, index">
 							<div>
-								<a-button class="button_text">询价</a-button>
+								<a-button class="button_text" @click="add(record.id)">询价</a-button>
 							</div>
 						</template>
 					</a-table>
@@ -65,7 +67,12 @@
 						:pagination="false"
 						:rowSelection="{selectedRowKeys:selectedRowKeys1,onChange: onSelectChange1}"
 					>
-						<a-button slot="operation" slot-scope="text" class="button_text">修改</a-button>
+						<a-button
+							slot="operation"
+							slot-scope="text, record, index"
+							class="button_text"
+							@click="eidt(record.id)"
+						>修改</a-button>
 					</a-table>
 					<a-pagination
 						style="padding-top:12px;text-align: right;"
@@ -81,9 +88,30 @@
 				</a-tab-pane>
 			</a-tabs>
 		</a-row>
+		<a-modal
+			title="询价"
+			:footer="null"
+			width="1200px"
+			:visible="addVisible"
+			@cancel="handleCancel(1)"
+			:maskClosable="false"
+		>
+			<add v-on:addModal="addModal" ref="addEnquiry"></add>
+		</a-modal>
+		<a-modal
+			title="询价修改"
+			:footer="null"
+			width="1200px"
+			:visible="editVisible"
+			@cancel="handleCancel(2)"
+			:maskClosable="false"
+		>
+			<add v-on:addModal="addModal"></add>
+		</a-modal>
 	</div>
 </template>
 <script>
+import add from "./add";
 const columns = [
 	{
 		title: "项目订单编号",
@@ -276,6 +304,8 @@ const columns1 = [
 export default {
 	data() {
 		return {
+			editVisible: false,
+			addVisible: false,
 			activeKey: "1",
 			columns,
 			total: 0,
@@ -303,6 +333,18 @@ export default {
 		};
 	},
 	methods: {
+		addModal() {
+			this.addVisible = false;
+		},
+		handleCancel(a) {
+			if (a == 1) {
+				this.$refs.addEnquiry.quxiao();
+				// this.addVisible = false;
+			}
+			if (a == 2) {
+				this.editVisible = false;
+			}
+		},
 		callback(key) {
 			this.activeKey = key;
 			console.log(this.activeKey);
@@ -364,13 +406,24 @@ export default {
 				},
 				({ type, info }) => {}
 			);
+		},
+		add(key) {
+			this.addVisible = true;
+		},
+		eidt(key) {
+			console.log(key);
+			this.editVisible = true;
 		}
 	},
-	created() {}
+	created() {},
+	components: {
+		add
+	}
 };
 </script>
 <style lang="less">
 .enquiry_list {
 	overflow: hidden;
+	padding: 0 20px;
 }
 </style>
