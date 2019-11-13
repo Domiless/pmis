@@ -387,6 +387,7 @@ export default {
 								this.getList();
 								this.modalEditVisible = false;
 								this.selectedRowKeys = [];
+								this.form.resetFields();
 							}
 						},
 						({ type, info }) => {}
