@@ -353,6 +353,24 @@ export default new Router({
       children: []
     },
     {
+      path: '/buyer',
+      name: 'buyer',
+      components: require('@/components/xty/buyer/index'),
+      meta: {
+        requireAuth: true,
+      },
+      children: []
+    },
+    {
+      path: '/procurementPlan',
+      name: 'procurementPlan',
+      components: require('@/components/xty/procurementPlan/index'),
+      meta: {
+        requireAuth: true,
+      },
+      children: []
+    },
+    {
       path: '/Message',
       name: 'Message',
       components: require('@/components/system/message'),

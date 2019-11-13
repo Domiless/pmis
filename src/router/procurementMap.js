@@ -18,7 +18,6 @@ export default [{
       key: 'procurement',
       permissionCode: 'shop_lookup',
     },
-
     {
       menu: '采购合同',
       route: '/procurementContractManage',
@@ -35,6 +34,18 @@ export default [{
       menu: '计量单位',
       route: '/measureUnit',
       key: 'measureUnit',
+      permissionCode: 'unit_lookup',
+    },
+    {
+      menu: '采购员',
+      route: '/buyer',
+      key: 'buyer',
+      permissionCode: 'unit_lookup',
+    },
+    {
+      menu: '采购计划',
+      route: '/procurementPlan',
+      key: 'procurementPlan',
       permissionCode: 'unit_lookup',
     }
   ]

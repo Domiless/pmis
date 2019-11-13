@@ -34,7 +34,7 @@
 				<span>日期 :</span>
 				<a-range-picker style="width:240px" @change="onChangeRange" format="YYYY/MM/DD"></a-range-picker>
 				<a-input-group class="changeDis">
-					<span>审批状态 :</span>
+					<span>审批状态 : </span>
 					<a-select
 						:defaultValue="-1"
 						v-model="reviewSchedule"
