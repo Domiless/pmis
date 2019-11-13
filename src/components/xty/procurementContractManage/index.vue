@@ -87,11 +87,22 @@
             :showTotal="total => `共 ${total} 条`"
           />
     </a-row>
-    </a-row>
-    <a-modal title="新增" v-model="addVisible" style="top:20px" width="1200px" :footer="null" @cancel="handleCancel(1)">
+    <a-modal
+     title="新增"
+     v-model="addVisible" 
+     style="top:20px" width="1200px" 
+     :footer="null"
+     :maskClosable="false"
+     @cancel="handleCancel(1)">
       <add-procurement-contract @cancelAdd="closeAdd" ref="addProcurementContract"></add-procurement-contract>
     </a-modal>
-    <a-modal title="修改" v-model="editVisible" style="top:20px" width="1200px" :footer="null" @cancel="handleCancel(2)">
+    <a-modal 
+     title="修改" 
+     v-model="editVisible" 
+     style="top:20px" width="1200px" 
+     :footer="null" 
+     :maskClosable="false"
+     @cancel="handleCancel(2)">
       <edit-procurement-contract @cancelEdit="closeEdit" :procurementContractId="selectedRowKeys[0]" ref="editProcurementContract"></edit-procurement-contract>
     </a-modal>
     <a-modal
