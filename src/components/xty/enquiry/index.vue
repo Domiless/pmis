@@ -27,7 +27,7 @@
 					v-model="keyWords"
 					@keyup.enter.native="getList"
 				></a-input>
-				<a-button @click="getList">搜索</a-button>
+				<a-button @click="search">搜索</a-button>
 			</a-col>
 		</a-row>
 		<a-row>
@@ -329,10 +329,19 @@ export default {
 			start: "",
 			end: "",
 			selectedRowKeys: [],
-			selectedRowKeys1: []
+			selectedRowKeys1: [],
+			dateValue: ""
 		};
 	},
 	methods: {
+		search() {
+			if (this.activeKey == 1) {
+				this.getList();
+			}
+			if (this.activeKey == 2) {
+				this.getList1();
+			}
+		},
 		addModal() {
 			this.addVisible = false;
 		},
@@ -356,6 +365,7 @@ export default {
 			this.selectedRowKeys1 = a;
 		},
 		onChangeRange(date, datestring) {
+			this.dateValue = datestring;
 			console.log(datestring);
 		},
 		onChange(current, pageNumber) {
@@ -383,12 +393,11 @@ export default {
 		getList() {
 			this.Axios(
 				{
-					url: "/api-order/purchase/list",
+					url: "/api-order/bom/getMybomdes",
 					type: "get",
 					params: {
 						page: this.current,
 						size: this.pageSize,
-						auditState: this.reviewSchedule != -1 ? this.reviewSchedule : null,
 						keyword: this.keyWords,
 						start: this.dateValue[0] != "" ? this.dateValue[0] : null,
 						end: this.dateValue[1] != "" ? this.dateValue[1] : null
@@ -407,6 +416,32 @@ export default {
 				({ type, info }) => {}
 			);
 		},
+		getList1() {
+			this.Axios(
+				{
+					url: "/api-order/purchase/offerList",
+					type: "get",
+					params: {
+						page: this.current,
+						size: this.pageSize,
+						keyword: this.keyWords,
+						start: this.dateValue[0] != "" ? this.dateValue[0] : null,
+						end: this.dateValue[1] != "" ? this.dateValue[1] : null
+					},
+					option: { enableMsg: false }
+				},
+				this
+			).then(
+				result => {
+					if (result.data.code === 200) {
+						console.log(result);
+						this.data1 = result.data.data.content;
+						this.total1 = result.data.data.totalElement;
+					}
+				},
+				({ type, info }) => {}
+			);
+		},
 		add(key) {
 			this.addVisible = true;
 		},
@@ -415,7 +450,10 @@ export default {
 			this.editVisible = true;
 		}
 	},
-	created() {},
+	created() {
+		this.getList();
+		this.getList1();
+	},
 	components: {
 		add
 	}

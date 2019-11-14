@@ -47,10 +47,17 @@ export default [{
       route: '/procurementPlan',
       key: 'procurementPlan',
       permissionCode: 'unit_lookup',
-    },{
+    },
+    {
       menu: '询价',
       route: '/enquiry',
       key: 'enquiry',
+      permissionCode: 'shop_lookup',
+    },
+    {
+      menu: '报审单',
+      route: '/declaration',
+      key: 'declaration',
       permissionCode: 'shop_lookup',
     },
   ]

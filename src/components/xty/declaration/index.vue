@@ -1,8 +1,13 @@
 <template>
 	<div class="declaration_list">
 		<a-row style="line-height:50px;">
-			<permission-button permCode banType="hide" :disabled="selectedRowKeys.length<1">新增</permission-button>
-			<permission-button permCode banType="hide">提交审批</permission-button>
+			<permission-button permCode banType="hide" @click="addVisible=true">
+				<a-icon style="color:#1890ff;" type="plus" />新增
+			</permission-button>
+			<permission-button permCode banType="hide" :disabled="selectedRowKeys.length!=1">
+				<a-icon style="color:#1890ff;" type="edit" />修改
+			</permission-button>
+			<permission-button permCode banType="hide" :disabled="selectedRowKeys.length<1">提交审批</permission-button>
 		</a-row>
 		<a-row style="margin-bottom: 10px;">
 			<a-col :span="24">
@@ -26,10 +31,11 @@
 				:pagination="false"
 				:rowSelection="{selectedRowKeys:selectedRowKeys,onChange: onSelectChange}"
 			>
-				<template slot="operation" slot-scope="text, record, index">
-					<div>
-						<a-button class="button_text" @click="add(record.id)">询价</a-button>
-					</div>
+				<template slot="titleName" slot-scope="text, record, index">
+					<a href="javascript:">{{text}}</a>
+				</template>
+				<template slot="remark" slot-scope="text, record, index">
+					<div class="content_style" style="max-width:200px;">{{text}}</div>
 				</template>
 			</a-table>
 			<a-pagination
@@ -44,21 +50,53 @@
 				:showTotal="total => `共 ${total} 条`"
 			/>
 		</a-row>
+		<a-modal
+			title="新增"
+			:footer="null"
+			width="1200px"
+			:visible="addVisible"
+			@cancel="handleCancel(1)"
+			:maskClosable="false"
+		>
+			<add v-on:addModal="addModal" ref="addEnquiry"></add>
+		</a-modal>
+		<a-modal
+			title="修改"
+			:footer="null"
+			width="1200px"
+			:visible="editVisible"
+			@cancel="handleCancel(2)"
+			:maskClosable="false"
+		>
+			<add v-on:addModal="addModal"></add>
+		</a-modal>
+		<a-modal
+			title="详情"
+			:footer="null"
+			width="1200px"
+			:visible="detailsVisible"
+			@cancel="handleCancel(3)"
+			:maskClosable="false"
+		>
+			<add v-on:addModal="addModal"></add>
+		</a-modal>
 	</div>
 </template>
 <script>
+import add from "./add";
 const columns = [
 	{
 		title: "报审单编号",
 		key: "no",
 		dataIndex: "no",
-		width: "14%"
+		width: "18%"
 	},
 	{
 		title: "标题",
-		key: "daringNo",
-		dataIndex: "daringNo",
-		width: "20%"
+		key: "title",
+		dataIndex: "title",
+		width: "30%",
+		scopedSlots: { customRender: "titleName" }
 	},
 	{
 		title: "拟制",
@@ -68,29 +106,32 @@ const columns = [
 	},
 	{
 		title: "填报日期",
-		key: "number",
+		key: "time",
 		dataIndex: "number",
-		width: "12%"
+		width: "13%"
 	},
 	{
 		title: "审批状态",
-		key: "brand",
-		dataIndex: "brand",
+		key: "state",
+		dataIndex: "state",
 		width: "10%"
 	},
 	{
 		title: "备注",
-		key: "stylist ",
-		dataIndex: "stylist ",
-		width: 200,
-		scopedSlots: { customRender: "operation" }
+		key: "remark",
+		dataIndex: "remark ",
+		width: "16%",
+		scopedSlots: { customRender: "remark" }
 	}
 ];
 export default {
 	data() {
 		return {
+			addVisible: false,
+			editVisible: false,
+			detailsVisible: false,
 			columns,
-			data: [],
+			data: [{ no: 111, title: 222 }],
 			total: 0,
 			current: 1,
 			selectedRowKeys: [],
@@ -98,6 +139,18 @@ export default {
 		};
 	},
 	methods: {
+		addModal() {
+			this.addVisible = false;
+		},
+		handleCancel(a) {
+			if (a == 1) {
+				this.addVisible = false;
+			}
+			if (a == 2) {
+			}
+			if (a == 3) {
+			}
+		},
 		onChange(current, pageNumber) {
 			console.log("Page: ", pageNumber);
 			console.log("第几页: ", current);
@@ -143,7 +196,10 @@ export default {
 			);
 		}
 	},
-	created() {}
+	created() {},
+	components: {
+		add
+	}
 };
 </script>
 <style lang="less">

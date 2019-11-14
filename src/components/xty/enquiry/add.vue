@@ -1,7 +1,7 @@
 <template>
 	<div class="enquiry_add">
 		<a-table
-			:scroll="{ x: 2230,y:600}"
+			:scroll="{ x: 2350,y:600}"
 			rowKey="id"
 			:columns="columns"
 			:dataSource="data"
@@ -25,6 +25,9 @@
 			</span>
 			<span slot="jiagedanweiTitle">
 				<span style="color: #f5222d">*</span>价格单位
+			</span>
+			<span slot="jianyigongyingshangTitle">
+				<span style="color: #f5222d">*</span>建议供应商
 			</span>
 			<template
 				v-for="col in ['caigoumingcheng', 'dingdanshuliang','diyibaojia','dierbaojia','disanbaojia','beizhu']"
@@ -97,6 +100,17 @@
 						@change="(a,b)=>onChange(a,b,record.id, k)"
 						style="width:100%;"
 					/>
+				</div>
+			</template>
+			<template v-for="r in ['jianyigongyingshang']" :slot="r" slot-scope="text, record, index">
+				<div :key="r">
+					<a-select
+						style="width:100%;margin: -5px 0"
+						:value="text"
+						@change="e => handleChange(e, record.id, r)"
+					>
+						<a-select-option value="lucy">Lucy</a-select-option>
+					</a-select>
 				</div>
 			</template>
 		</a-table>
@@ -224,6 +238,14 @@ const columns = [
 		scopedSlots: { customRender: "disanbaojia" }
 	},
 	{
+		// title: "建议供应商",
+		key: "jianyigongyingshang",
+		dataIndex: "jianyigongyingshang",
+		width: 120,
+		slots: { title: "jianyigongyingshangTitle" },
+		scopedSlots: { customRender: "jianyigongyingshang" }
+	},
+	{
 		// title: "价格单位",
 		key: "jiagedanwei",
 		dataIndex: "jiagedanwei",
@@ -263,7 +285,7 @@ export default {
 				{ name: 1111, id: 3 },
 				{ name: 1111, id: 4 },
 				{ name: 1111, id: 5 },
-				{ name: 1111, id: 6 },
+				{ name: 1111, id: 6 }
 				// { name: 1111, id: 7 },
 				// { name: 1111, id: 8 },
 				// { name: 1111, id: 9 },

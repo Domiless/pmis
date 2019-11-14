@@ -415,5 +415,14 @@ export default new Router({
       },
       children: []
     },
+    {
+      path: '/declaration',
+      name: 'declaration',
+      components: require('@/components/xty/declaration/index'),
+      meta: {
+        requireAuth: true,
+      },
+      children: []
+    },
   ]
 })
