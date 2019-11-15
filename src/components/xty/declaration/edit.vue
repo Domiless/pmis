@@ -1,10 +1,11 @@
 <template>
-	<div class="declaration_add">
+	<div class="declaration_edit">
 		<a-form :form="form">
 			<a-tabs :activeKey="activeKey" @change="callback">
 				<a-tab-pane tab="基础信息" key="1">
 					<a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 21 }" label="报审单编号">
 						<a-input
+							disabled
 							v-decorator="[
 							'purchaseNo',
 							{rules: [{ required: true, message: '请填写报审单编号' }]}
@@ -21,11 +22,11 @@
 						></a-input>
 					</a-form-item>
 					<a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 21 }" label="拟制">
-						<a-input v-decorator="['person']" disabled></a-input>
+						<a-input v-decorator="['production']" disabled></a-input>
 					</a-form-item>
 					<a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 21 }" label="填报日期">
 						<a-date-picker
-							v-decorator="['time']"
+							v-decorator="['gmtDelivery']"
 							@change="onChangeDate"
 							format="YYYY/MM/DD"
 							style="width:100%;"
@@ -76,6 +77,7 @@
 	</div>
 </template>
 <script>
+import moment from "moment";
 let columns = [
 	{
 		title: "项目订单编号",
@@ -232,6 +234,11 @@ let columns = [
 	}
 ];
 export default {
+	props: {
+		rowId: {
+			default: ""
+		}
+	},
 	data() {
 		return {
 			pagination: {},
@@ -293,22 +300,24 @@ export default {
 		};
 	},
 	methods: {
+		moment,
 		quxiao() {
-			this.form.resetFields();
-			this.selectedRowKeysRight = [];
-			this.selectedRowsRight = [];
-			this.selectedRows = [];
-			this.selectedRowKeysLeft = [];
-			this.dateValue = "";
-			setTimeout(() => {
-				this.form.setFieldsValue({
-					person: JSON.parse(sessionStorage.getItem("user")).userName
-				});
-			}, 100);
+			// this.form.resetFields();
+			// this.selectedRowKeysRight = [];
+			// this.selectedRowsRight = [];
+			// this.selectedRows = [];
+			// this.selectedRowKeysLeft = [];
+			// this.dateValue = "";
+			// setTimeout(() => {
+			// 	this.form.setFieldsValue({
+			// 		person: JSON.parse(sessionStorage.getItem("user")).userName
+			// 	});
+			// }, 100);
 			this.activeKey = "1";
-			this.$emit("addModal", false);
-			this.getList1();
-			this.getNum();
+			this.$emit("addModal", 1);
+			// this.getList1();
+			// this.findOne(this.rowId);
+			// this.getNum();
 		},
 		onSelectChange(a, b, c) {
 			if (c == 1) {
@@ -365,7 +374,8 @@ export default {
 					type: "get",
 					params: {
 						page: 1,
-						size: -1
+						size: -1,
+						id: this.rowId
 					},
 					option: { enableMsg: false }
 				},
@@ -417,6 +427,7 @@ export default {
 							purchaseNo: values.purchaseNo,
 							remark: values.remark,
 							title: values.title,
+							id: this.rowId,
 							purchaseDesDTOList: this.selectedRowsRight.map(item => {
 								return {
 									id: item.id
@@ -425,10 +436,10 @@ export default {
 						};
 						this.Axios(
 							{
-								url: "/api-order/purchase/add",
+								url: "/api-order/purchase/update",
 								params: data,
 								type: "post",
-								option: { successMsg: "添加成功！" },
+								option: { successMsg: "修改成功！" },
 								config: {
 									headers: { "Content-Type": "application/json" }
 								}
@@ -438,7 +449,19 @@ export default {
 							result => {
 								if (result.data.code === 200) {
 									console.log(result);
-									this.quxiao();
+									this.form.resetFields();
+									this.selectedRowKeysRight = [];
+									this.selectedRowsRight = [];
+									this.selectedRows = [];
+									this.selectedRowKeysLeft = [];
+									this.dateValue = "";
+									// setTimeout(() => {
+									// 	this.form.setFieldsValue({
+									// 		person: JSON.parse(sessionStorage.getItem("user")).userName
+									// 	});
+									// }, 100);
+                                    this.activeKey = "1";
+                                    this.$emit("addModal", 2);
 								}
 							},
 							({ type, info }) => {}
@@ -446,21 +469,71 @@ export default {
 					}
 				}
 			});
+		},
+		findOne(id) {
+			this.Axios(
+				{
+					url: "/api-order/purchase/findone",
+					type: "get",
+					params: {
+						id: id
+					},
+					option: { enableMsg: false }
+				},
+				this
+			).then(
+				result => {
+					if (result.data.code === 200) {
+						console.log(result);
+						this.selectedRowsRight = result.data.data.purchaseDesDOList;
+						this.selectedRowKeysLeft = result.data.data.purchaseDesDOList.map(
+							item => {
+								return item.id;
+							}
+						);
+						// this.data = result.data.data;
+						this.dateValue = result.data.data.gmtDelivery;
+						setTimeout(() => {
+							this.form.setFieldsValue({
+								purchaseNo: result.data.data.purchaseNo,
+								remark: result.data.data.remark,
+								gmtDelivery:
+									result.data.data.gmtDelivery != "" &&
+									result.data.data.gmtDelivery != null
+										? moment(result.data.data.gmtDelivery, "YYYY/MM/DD")
+										: undefined,
+								title: result.data.data.title,
+								production: result.data.data.production
+							});
+						}, 100);
+					}
+				},
+				({ type, info }) => {}
+			);
 		}
 	},
 	created() {
 		this.getList1();
-		this.getNum();
-		setTimeout(() => {
-			this.form.setFieldsValue({
-				person: JSON.parse(sessionStorage.getItem("user")).userName
-			});
-		}, 100);
+		this.findOne(this.rowId);
+		// this.getNum();
+		// setTimeout(() => {
+		// 	this.form.setFieldsValue({
+		// 		person: JSON.parse(sessionStorage.getItem("user")).userName
+		// 	});
+		// }, 100);
+	},
+	watch: {
+		rowId() {
+			if (this.rowId != "" && this.rowId != null) {
+				this.findOne(this.rowId);
+				this.getList1();
+			}
+		}
 	}
 };
 </script>
 <style lang="less">
-.declaration_add {
+.declaration_edit {
 	.ant-table-small
 		> .ant-table-content
 		> .ant-table-scroll

@@ -8,6 +8,7 @@
 // const apiImport = "http://114.116.238.150:8010/import";
 
 // const apiSrc = "http://192.168.1.182:8012";
+
 const apiSrc = "http://119.3.255.22:8010";
 const apiImg = "http://119.3.255.22:8010/fastdfs/upload/file";
 const apiImport = "http://119.3.255.22:8010/import";

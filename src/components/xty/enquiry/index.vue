@@ -34,6 +34,7 @@
 			<a-tabs :activeKey="activeKey" @change="callback">
 				<a-tab-pane tab="待询价" key="1">
 					<a-table
+						@change="sortValue"
 						rowKey="id"
 						:columns="columns"
 						:dataSource="data"
@@ -60,6 +61,7 @@
 				</a-tab-pane>
 				<a-tab-pane tab="已询价" key="2" forceRender>
 					<a-table
+						@change="sortValue1"
 						:scroll="{ x: 2710}"
 						rowKey="id"
 						:columns="columns1"
@@ -118,25 +120,29 @@ const columns = [
 		title: "项目订单编号",
 		key: "workOrderNo",
 		dataIndex: "workOrderNo",
-		width: "12%"
+		width: "12%",
+		sorter: true
 	},
 	{
 		title: "图号",
 		key: "drawingNo",
 		dataIndex: "drawingNo",
-		width: "15%"
+		width: "15%",
+		sorter: true
 	},
 	{
 		title: "需求名称",
 		key: "name",
 		dataIndex: "name",
-		width: "15%"
+		width: "15%",
+		sorter: true
 	},
 	{
 		title: "需求数量",
 		key: "addNum",
 		dataIndex: "addNum",
-		width: "8%"
+		width: "8%",
+		sorter: true
 	},
 	{
 		title: "指定品牌",
@@ -148,19 +154,28 @@ const columns = [
 		title: "设计师",
 		key: "planner",
 		dataIndex: "planner",
-		width: "8%"
+		width: "8%",
+		sorter: true
 	},
 	{
 		title: "任务指派人",
 		key: "assigner",
 		dataIndex: "assigner",
-		width: "8%"
+		width: "8%",
+		sorter: true
 	},
 	{
 		title: "任务指派时间",
 		key: "assignerTime",
 		dataIndex: "assignerTime",
-		width: "11%"
+		width: "11%",
+		sorter: true
+	},
+	{
+		title: "采购员",
+		key: "appointName",
+		dataIndex: "appointName",
+		width: "8%"
 	},
 	{
 		title: "操作",
@@ -183,20 +198,23 @@ const columns1 = [
 		key: "drawingNo",
 		dataIndex: "drawingNo",
 		width: 150,
-		fixed: "left"
+		fixed: "left",
+		sorter: true
 	},
 	{
-		title: "名称",
+		title: "需求名称",
 		key: "name",
 		dataIndex: "name",
 		width: 150,
-		fixed: "left"
+		fixed: "left",
+		sorter: true
 	},
 	{
 		title: "需求数量",
 		key: "number",
 		dataIndex: "number",
-		width: 80
+		width: 80,
+		sorter: true
 	},
 	{
 		title: "指定品牌",
@@ -208,14 +226,16 @@ const columns1 = [
 		title: "设计师",
 		key: "planner",
 		dataIndex: "planner",
-		width: 80
+		width: 80,
+		sorter: true
 	},
 	{
 		title: "采购名称",
 		key: "shopName",
 		dataIndex: "shopName",
 		width: 120,
-		scopedSlots: { customRender: "shopName" }
+		scopedSlots: { customRender: "shopName" },
+		sorter: true
 	},
 	{
 		title: "订单数量",
@@ -223,7 +243,8 @@ const columns1 = [
 		dataIndex: "orderNumber",
 		width: 80,
 		scopedSlots: { customRender: "orderNumber" },
-		slots: { title: "dingdanshuliangTitle" }
+		slots: { title: "dingdanshuliangTitle" },
+		sorter: true
 	},
 	{
 		title: "订单单位",
@@ -239,7 +260,8 @@ const columns1 = [
 		dataIndex: "delivery",
 		width: 140,
 		slots: { title: "jiaohuoriqiTitle" },
-		scopedSlots: { customRender: "delivery" }
+		scopedSlots: { customRender: "delivery" },
+		sorter: true
 	},
 	{
 		title: "第1供应商",
@@ -247,7 +269,8 @@ const columns1 = [
 		dataIndex: "firstSupplier",
 		width: 150,
 		slots: { title: "diyigongyingshangTitle" },
-		scopedSlots: { customRender: "firstSupplierId" }
+		scopedSlots: { customRender: "firstSupplierId" },
+		sorter: true
 	},
 	{
 		title: "第1报价(元)",
@@ -255,35 +278,40 @@ const columns1 = [
 		dataIndex: "firstOffer",
 		width: 100,
 		slots: { title: "diyibaojiaTitle" },
-		scopedSlots: { customRender: "firstOffer" }
+		scopedSlots: { customRender: "firstOffer" },
+		sorter: true
 	},
 	{
 		title: "第2供应商",
 		key: "secondSupplier",
 		dataIndex: "secondSupplier",
 		width: 150,
-		scopedSlots: { customRender: "secondSupplierId" }
+		scopedSlots: { customRender: "secondSupplierId" },
+		sorter: true
 	},
 	{
 		title: "第2报价(元)",
 		key: "secondOffer",
 		dataIndex: "secondOffer",
 		width: 100,
-		scopedSlots: { customRender: "secondOffer" }
+		scopedSlots: { customRender: "secondOffer" },
+		sorter: true
 	},
 	{
 		title: "第3供应商",
 		key: "thirdSupplier",
 		dataIndex: "thirdSupplier",
 		width: 150,
-		scopedSlots: { customRender: "thirdSupplierId" }
+		scopedSlots: { customRender: "thirdSupplierId" },
+		sorter: true
 	},
 	{
 		title: "第3报价(元)",
 		key: "thirdOffer",
 		dataIndex: "thirdOffer",
 		width: 100,
-		scopedSlots: { customRender: "thirdOffer" }
+		scopedSlots: { customRender: "thirdOffer" },
+		sorter: true
 	},
 	{
 		title: "建议供应商",
@@ -345,21 +373,11 @@ export default {
 			columns,
 			total: 0,
 			current: 1,
-			data: [
-				{
-					name: 111,
-					id: 1
-				}
-			],
+			data: [],
 			columns1,
 			total1: 0,
 			current1: 1,
-			data1: [
-				{
-					name: 111,
-					id: 1
-				}
-			],
+			data1: [],
 			keyWords: "",
 			start: "",
 			end: "",
@@ -373,6 +391,20 @@ export default {
 		};
 	},
 	methods: {
+		sortValue(a, b, c) {
+			console.log(c);
+			this.getList(
+				c.columnKey,
+				c.order == "ascend" ? "ASC" : c.order == "descend" ? "DESC" : ""
+			);
+		},
+		sortValue1(a, b, c) {
+			console.log(c);
+			this.getList1(
+				c.columnKey,
+				c.order == "ascend" ? "ASC" : c.order == "descend" ? "DESC" : ""
+			);
+		},
 		search() {
 			if (this.activeKey == 1) {
 				this.getList();
@@ -435,19 +467,21 @@ export default {
 			this.current = current;
 			this.selectedRowKeys1 = [];
 			this.selectedRows1 = [];
-			this.getList();
+			this.getList1();
 		},
 		onShowSizeChange1(current, pageSize) {
 			this.pageSize = pageSize;
 			this.current = 1;
-			this.getList();
+			this.getList1();
 		},
-		getList() {
+		getList(sortname, sortway) {
 			this.Axios(
 				{
 					url: "/api-order/bom/getMybomdes",
 					type: "get",
 					params: {
+						sortname: sortname,
+						sortway: sortway,
 						page: this.current,
 						size: this.pageSize,
 						keyword: this.keyWords,
@@ -473,12 +507,14 @@ export default {
 				({ type, info }) => {}
 			);
 		},
-		getList1() {
+		getList1(sortname, sortway) {
 			this.Axios(
 				{
 					url: "/api-order/purchase/offerList",
 					type: "get",
 					params: {
+						sortname: sortname,
+						sortway: sortway,
 						page: this.current,
 						size: this.pageSize,
 						keyword: this.keyWords,

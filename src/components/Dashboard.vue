@@ -20,7 +20,7 @@
 									<a-col :span="3">{{item.id}}</a-col>
 									<a-col
 										:span="3"
-									>{{item.type==1?"订单审批":item.type==2?"设计审批":item.type==3?"采购审批":item.type==4?"采购合同审批":""}}</a-col>
+									>{{item.type==1?"订单审批":item.type==2?"设计审批":item.type==3?"报审单审批":item.type==4?"采购合同审批":""}}</a-col>
 									<a-col :span="10">{{item.name}}</a-col>
 									<a-col :span="4">{{item.startTime}}</a-col>
 									<a-col :span="4">耗时：{{item.time}}</a-col>

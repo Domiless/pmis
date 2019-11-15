@@ -371,7 +371,8 @@ export default {
 		saveEnquiry() {
 			let data = this.data.map(item => {
 				return {
-					addNum: item.addNum,
+					id: item.id,
+					addNum: item.number,
 					appointId: item.appointId,
 					appointName: item.appointName,
 					bomDesId: item.id,
@@ -401,10 +402,10 @@ export default {
 			// console.log(data);
 			this.Axios(
 				{
-					url: "/api-order/purchase/offer",
+					url: "/api-order/purchase/updateOffer",
 					params: data,
 					type: "post",
-					option: { successMsg: "添加成功！" },
+					option: { successMsg: "修改成功！" },
 					config: {
 						headers: { "Content-Type": "application/json" }
 					}
@@ -415,7 +416,7 @@ export default {
 					if (result.data.code === 200) {
 						console.log(result);
 						// this.data = [];
-						this.$emit("addModal", false);
+						this.$emit("editModal", false);
 					}
 				},
 				({ type, info }) => {}
@@ -429,7 +430,7 @@ export default {
 			);
 		},
 		quxiao() {
-			this.$emit("addModal", false);
+			this.$emit("editModal", false);
 		},
 		moment,
 		onChange(a, b, key, column) {
@@ -560,6 +561,7 @@ export default {
 				]
 			};
 		});
+		console.log(this.data);
 	},
 	watch: {
 		dataArray() {
@@ -582,6 +584,7 @@ export default {
 					]
 				};
 			});
+			console.log(this.data);
 		}
 	}
 };

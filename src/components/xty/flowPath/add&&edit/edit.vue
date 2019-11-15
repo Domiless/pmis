@@ -12,12 +12,13 @@
 				>
 					<a-select-option value="1">订单审批</a-select-option>
 					<a-select-option value="2">设计审批</a-select-option>
-					<a-select-option value="3">采购审批</a-select-option>
+					<a-select-option value="3">报审单审批</a-select-option>
 					<a-select-option value="4">采购合同审批</a-select-option>
 				</a-select>
 			</a-form-item>
 			<a-form-item :label-col=" { span: 4 }" :wrapper-col="{ span: 18 }" label="流程名称">
 				<a-input
+					autocomplete="off"
 					v-decorator="[
 							'name',
 							{rules: [{ required: true, message: '请填写流程类型' }]}
