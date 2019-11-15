@@ -154,10 +154,10 @@ export default {
                         console.log(result);
                         this.close();
                         this.form.resetFields();
+                        
                     }
                     },
-                        ({ type, info }) => {}
-                            );
+                        ({ type, info }) => {});
                         }
                     });
         },

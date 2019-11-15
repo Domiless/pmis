@@ -306,7 +306,8 @@ export default {
 			);
 		},
         closeAssign(params) {
-            this.assignVisible = params;
+			this.assignVisible = params;
+			this.getList();
 		},
 		onChange(current, pageNumber) {
 			console.log("Page: ", pageNumber);
