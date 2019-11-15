@@ -1,5 +1,5 @@
 <template>
-	<div class="enquiry_add">
+	<div class="enquiry_edit">
 		<a-table
 			:scroll="{ x: 3000,y:500}"
 			rowKey="id"
@@ -158,8 +158,8 @@ const columns = [
 	},
 	{
 		title: "需求数量",
-		key: "addNum",
-		dataIndex: "addNum",
+		key: "number",
+		dataIndex: "number",
 		width: 80
 	},
 	{
@@ -544,23 +544,20 @@ export default {
 		this.data = this.dataArray.map(item => {
 			return {
 				...item,
-				shopName: "",
-				orderNumber: "",
-				unitId: "",
-				delivery: "",
-				firstSupplierId: "",
-				firstOffer: "",
-				secondSupplierId: "",
-				secondOffer: "",
-				thirdSupplierId: "",
-				thirdOffer: "",
-				supplierId: "",
-				price: "",
-				priseUnitId: "",
-				moneyType: "RMB",
-				remark: "",
-				total: "",
-				supplierListValue: []
+				supplierListValue: [
+					{
+						id: item.firstSupplierId,
+						supplierName: item.firstSupplier
+					},
+					{
+						id: item.secondSupplierId,
+						supplierName: item.secondSupplier
+					},
+					{
+						id: item.thirdSupplierId,
+						supplierName: item.thirdSupplier
+					}
+				]
 			};
 		});
 	},
@@ -569,23 +566,20 @@ export default {
 			this.data = this.dataArray.map(item => {
 				return {
 					...item,
-					shopName: "",
-					orderNumber: "",
-					unitId: "",
-					delivery: "",
-					firstSupplierId: "",
-					firstOffer: "",
-					secondSupplierId: "",
-					secondOffer: "",
-					thirdSupplierId: "",
-					thirdOffer: "",
-					supplierId: "",
-					price: "",
-					priseUnitId: "",
-					moneyType: "RMB",
-					remark: "",
-					total: "",
-					supplierListValue: []
+					supplierListValue: [
+						{
+							id: item.firstSupplierId,
+							supplierName: item.firstSupplier
+						},
+						{
+							id: item.secondSupplierId,
+							supplierName: item.secondSupplier
+						},
+						{
+							id: item.thirdSupplierId,
+							supplierName: item.thirdSupplier
+						}
+					]
 				};
 			});
 		}
@@ -593,7 +587,7 @@ export default {
 };
 </script>
 <style lang="less">
-.enquiry_add {
+.enquiry_edit {
 	.ant-table-fixed-left,
 	.ant-table-fixed-right {
 		z-index: 2;

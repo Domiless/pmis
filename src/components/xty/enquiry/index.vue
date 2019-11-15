@@ -6,14 +6,14 @@
 				permCode
 				banType="hide"
 				:disabled="selectedRowKeys.length<1"
-				@click="add(selectedRowKeys)"
+				@click="add(selectedRows,1)"
 			>批量询价</permission-button>
 			<permission-button
 				v-if="activeKey==2"
 				permCode
 				banType="hide"
 				:disabled="selectedRowKeys1.length<1"
-				@click="eidt(selectedRowKeys1)"
+				@click="eidt(selectedRows1,1)"
 			>批量修改</permission-button>
 		</a-row>
 		<a-row style="margin-bottom: 10px;">
@@ -42,7 +42,7 @@
 					>
 						<template slot="operation" slot-scope="text, record, index">
 							<div>
-								<a-button class="button_text" @click="add(record.id)">询价</a-button>
+								<a-button class="button_text" @click="add(record,2)">询价</a-button>
 							</div>
 						</template>
 					</a-table>
@@ -60,7 +60,7 @@
 				</a-tab-pane>
 				<a-tab-pane tab="已询价" key="2" forceRender>
 					<a-table
-						:scroll="{ x: 2270}"
+						:scroll="{ x: 2710}"
 						rowKey="id"
 						:columns="columns1"
 						:dataSource="data1"
@@ -71,7 +71,7 @@
 							slot="operation"
 							slot-scope="text, record, index"
 							class="button_text"
-							@click="eidt(record.id)"
+							@click="eidt(record,2)"
 						>修改</a-button>
 					</a-table>
 					<a-pagination
@@ -96,7 +96,7 @@
 			@cancel="handleCancel(1)"
 			:maskClosable="false"
 		>
-			<add v-on:addModal="addModal" ref="addEnquiry"></add>
+			<add v-on:addModal="addModal" :dataArray="addArray" ref="addEnquiry"></add>
 		</a-modal>
 		<a-modal
 			title="询价修改"
@@ -106,23 +106,24 @@
 			@cancel="handleCancel(2)"
 			:maskClosable="false"
 		>
-			<add v-on:addModal="addModal"></add>
+			<edit v-on:editModal="editModal" :dataArray="editArray"></edit>
 		</a-modal>
 	</div>
 </template>
 <script>
 import add from "./add";
+import edit from "./edit";
 const columns = [
 	{
 		title: "项目订单编号",
-		key: "no",
-		dataIndex: "no",
+		key: "workOrderNo",
+		dataIndex: "workOrderNo",
 		width: "12%"
 	},
 	{
 		title: "图号",
-		key: "daringNo",
-		dataIndex: "daringNo",
+		key: "drawingNo",
+		dataIndex: "drawingNo",
 		width: "15%"
 	},
 	{
@@ -133,8 +134,8 @@ const columns = [
 	},
 	{
 		title: "需求数量",
-		key: "number",
-		dataIndex: "number",
+		key: "addNum",
+		dataIndex: "addNum",
 		width: "8%"
 	},
 	{
@@ -145,20 +146,20 @@ const columns = [
 	},
 	{
 		title: "设计师",
-		key: "stylist ",
-		dataIndex: "stylist ",
+		key: "planner",
+		dataIndex: "planner",
 		width: "8%"
 	},
 	{
 		title: "任务指派人",
-		key: "person",
-		dataIndex: "person",
+		key: "assigner",
+		dataIndex: "assigner",
 		width: "8%"
 	},
 	{
 		title: "任务指派时间",
-		key: "time",
-		dataIndex: "time",
+		key: "assignerTime",
+		dataIndex: "assignerTime",
 		width: "11%"
 	},
 	{
@@ -172,15 +173,15 @@ const columns = [
 const columns1 = [
 	{
 		title: "项目订单编号",
-		key: "no",
-		dataIndex: "no",
+		key: "workOrderNo",
+		dataIndex: "workOrderNo",
 		width: 150,
 		fixed: "left"
 	},
 	{
 		title: "图号",
-		key: "daringNo",
-		dataIndex: "daringNo",
+		key: "drawingNo",
+		dataIndex: "drawingNo",
 		width: 150,
 		fixed: "left"
 	},
@@ -205,100 +206,134 @@ const columns1 = [
 	},
 	{
 		title: "设计师",
-		key: "stylist ",
-		dataIndex: "stylist ",
+		key: "planner",
+		dataIndex: "planner",
 		width: 80
 	},
 	{
 		title: "采购名称",
-		key: "person",
-		dataIndex: "person",
-		width: 120
+		key: "shopName",
+		dataIndex: "shopName",
+		width: 120,
+		scopedSlots: { customRender: "shopName" }
 	},
 	{
 		title: "订单数量",
-		key: "time",
-		dataIndex: "time",
-		width: 80
+		key: "orderNumber",
+		dataIndex: "orderNumber",
+		width: 80,
+		scopedSlots: { customRender: "orderNumber" },
+		slots: { title: "dingdanshuliangTitle" }
 	},
 	{
 		title: "订单单位",
-		key: "dingdandanwei",
-		dataIndex: "dingdandanwei",
-		width: 80
+		key: "unit",
+		dataIndex: "unit",
+		width: 80,
+		slots: { title: "dingdandanweiTitle" },
+		scopedSlots: { customRender: "unitId" }
 	},
 	{
 		title: "交货日期",
-		key: "jiaohuoriqi",
-		dataIndex: "jiaohuoriqi",
-		width: 100
+		key: "delivery",
+		dataIndex: "delivery",
+		width: 140,
+		slots: { title: "jiaohuoriqiTitle" },
+		scopedSlots: { customRender: "delivery" }
 	},
 	{
 		title: "第1供应商",
-		key: "diyigongyingshang",
-		dataIndex: "diyigongyingshang",
-		width: 120
+		key: "firstSupplier",
+		dataIndex: "firstSupplier",
+		width: 150,
+		slots: { title: "diyigongyingshangTitle" },
+		scopedSlots: { customRender: "firstSupplierId" }
 	},
 	{
 		title: "第1报价(元)",
-		key: "diyibaojia",
-		dataIndex: "diyibaojia",
-		width: 90
+		key: "firstOffer",
+		dataIndex: "firstOffer",
+		width: 100,
+		slots: { title: "diyibaojiaTitle" },
+		scopedSlots: { customRender: "firstOffer" }
 	},
 	{
 		title: "第2供应商",
-		key: "diergongyingshang",
-		dataIndex: "diyigongyingshang",
-		width: 120
+		key: "secondSupplier",
+		dataIndex: "secondSupplier",
+		width: 150,
+		scopedSlots: { customRender: "secondSupplierId" }
 	},
 	{
 		title: "第2报价(元)",
-		key: "dierbaojia",
-		dataIndex: "diyibaojia",
-		width: 90
+		key: "secondOffer",
+		dataIndex: "secondOffer",
+		width: 100,
+		scopedSlots: { customRender: "secondOffer" }
 	},
 	{
 		title: "第3供应商",
-		key: "disangongyingshang",
-		dataIndex: "diyigongyingshang",
-		width: 120
+		key: "thirdSupplier",
+		dataIndex: "thirdSupplier",
+		width: 150,
+		scopedSlots: { customRender: "thirdSupplierId" }
 	},
 	{
 		title: "第3报价(元)",
-		key: "disanbaojia",
-		dataIndex: "diyibaojia",
+		key: "thirdOffer",
+		dataIndex: "thirdOffer",
+		width: 100,
+		scopedSlots: { customRender: "thirdOffer" }
+	},
+	{
+		title: "建议供应商",
+		key: "supplier",
+		dataIndex: "supplier",
+		width: 150,
+		slots: { title: "jianyigongyingshangTitle" },
+		scopedSlots: { customRender: "supplierId" }
+	},
+	{
+		title: "建议价格",
+		key: "price",
+		dataIndex: "price",
 		width: 90
 	},
 	{
 		title: "价格单位",
-		key: "jiagedanwei",
-		dataIndex: "jiagedanwei",
-		width: 80
+		key: "priseUnit",
+		dataIndex: "priseUnit",
+		width: 90,
+		slots: { title: "jiagedanweiTitle" },
+		scopedSlots: { customRender: "priseUnitId" }
 	},
 	{
 		title: "货币类型",
-		key: "type",
-		dataIndex: "type",
-		width: 80
+		key: "moneyType",
+		dataIndex: "moneyType",
+		width: 90,
+		scopedSlots: { customRender: "moneyType" }
 	},
 	{
 		title: "备注",
-		key: "beizhu",
-		dataIndex: "beizhu",
-		width: 140
+		key: "remark",
+		dataIndex: "remark",
+		width: 140,
+		scopedSlots: { customRender: "remark" }
 	},
 	{
 		title: "小计",
-		key: "xiaoji",
-		dataIndex: "xiaoji",
+		key: "total",
+		dataIndex: "total",
 		width: 80
 	},
 	{
 		title: "操作",
 		key: "operation",
+		dataIndex: "operation",
 		width: 80,
-		scopedSlots: { customRender: "operation" },
-		fixed: "right"
+		fixed: "right",
+		scopedSlots: { customRender: "operation" }
 	}
 ];
 export default {
@@ -330,7 +365,11 @@ export default {
 			end: "",
 			selectedRowKeys: [],
 			selectedRowKeys1: [],
-			dateValue: ""
+			selectedRows: [],
+			selectedRows1: [],
+			dateValue: "",
+			addArray: [],
+			editArray: []
 		};
 	},
 	methods: {
@@ -344,6 +383,13 @@ export default {
 		},
 		addModal() {
 			this.addVisible = false;
+			this.getList();
+			this.getList1();
+		},
+		editModal() {
+			this.editVisible = false;
+			this.getList();
+			this.getList1();
 		},
 		handleCancel(a) {
 			if (a == 1) {
@@ -360,9 +406,11 @@ export default {
 		},
 		onSelectChange(a, b) {
 			this.selectedRowKeys = a;
+			this.selectedRows = b;
 		},
 		onSelectChange1(a, b) {
 			this.selectedRowKeys1 = a;
+			this.selectedRows1 = b;
 		},
 		onChangeRange(date, datestring) {
 			this.dateValue = datestring;
@@ -372,6 +420,8 @@ export default {
 			console.log("Page: ", pageNumber);
 			console.log("第几页: ", current);
 			this.current = current;
+			this.selectedRowKeys = [];
+			this.selectedRows = [];
 			this.getList();
 		},
 		onShowSizeChange(current, pageSize) {
@@ -383,6 +433,8 @@ export default {
 			console.log("Page: ", pageNumber);
 			console.log("第几页: ", current);
 			this.current = current;
+			this.selectedRowKeys1 = [];
+			this.selectedRows1 = [];
 			this.getList();
 		},
 		onShowSizeChange1(current, pageSize) {
@@ -409,7 +461,12 @@ export default {
 				result => {
 					if (result.data.code === 200) {
 						console.log(result);
-						this.data = result.data.data.content;
+						this.data = result.data.data.content.map(item => {
+							return {
+								...item,
+								workOrderNo: item.bom.bomNo
+							};
+						});
 						this.total = result.data.data.totalElement;
 					}
 				},
@@ -442,12 +499,27 @@ export default {
 				({ type, info }) => {}
 			);
 		},
-		add(key) {
-			this.addVisible = true;
+		add(row, a) {
+			this.addArray = [];
+			if (a == 1) {
+				this.addArray = [...row];
+				this.addVisible = true;
+			}
+			if (a == 2) {
+				this.addArray.push(row);
+				this.addVisible = true;
+			}
 		},
-		eidt(key) {
-			console.log(key);
-			this.editVisible = true;
+		eidt(row, a) {
+			this.editArray = [];
+			if (a == 1) {
+				this.editArray = [...row];
+				this.editVisible = true;
+			}
+			if (a == 2) {
+				this.editArray.push(row);
+				this.editVisible = true;
+			}
 		}
 	},
 	created() {
@@ -455,7 +527,8 @@ export default {
 		this.getList1();
 	},
 	components: {
-		add
+		add,
+		edit
 	}
 };
 </script>
