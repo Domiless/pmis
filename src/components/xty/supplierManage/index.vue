@@ -64,7 +64,8 @@
 			v-model="addVisible"
 			:maskClosable="false"
 			:footer="null"
-			width="800px"
+			width="1000px"
+			style="top:20px"
 			@cancel="cancelAdd"
 		>
 			<a-form :form="form">
@@ -105,6 +106,44 @@
 							v-decorator="[
 							'linkPhone',
 							{rules: [{ required: true, message: '请填写联系电话' }, {validator: checkPhone}]}
+							]"
+						></a-input>
+					</a-form-item>
+				</a-row>
+				<a-row>
+					<a-form-item label="法定代表人" :labelCol="{ span: 4}" :wrapperCol="{ span: 18}">
+						<a-input
+							v-decorator="['']"
+						></a-input>
+					</a-form-item>
+				</a-row>
+				<a-row>
+					<a-form-item label="委托代理人" :labelCol="{ span: 4}" :wrapperCol="{ span: 18}">
+						<a-input
+							v-decorator="['']"
+						></a-input>
+					</a-form-item>
+				</a-row>
+				<a-row>
+					<a-form-item label="开户银行" :labelCol="{ span: 4}" :wrapperCol="{ span: 18}">
+						<a-input
+							v-decorator="['']"
+						></a-input>
+					</a-form-item>
+				</a-row>
+				<a-row>
+					<a-form-item label="账号" :labelCol="{ span: 4}" :wrapperCol="{ span: 18}">
+						<a-input
+							v-decorator="['']"
+						></a-input>
+					</a-form-item>
+				</a-row>
+				<a-row>
+					<a-form-item label="邮政编码" :labelCol="{ span: 4}" :wrapperCol="{ span: 18}">
+						<a-input
+							v-decorator="[
+							'',
+							{rules: [{ required: true, message: '请填写联系电话' }]}
 							]"
 						></a-input>
 					</a-form-item>
@@ -155,7 +194,8 @@
 			v-model="editVisible"
 			:maskClosable="false"
 			:footer="null"
-			width="800px"
+			width="1000px"
+			style="top:20px"
 			@cancel="cancelEdit"
 		>
 			<a-form :form="form">
@@ -196,6 +236,44 @@
 							v-decorator="[
 							'linkPhone',
 							{rules: [{ required: true, message: '请填写联系电话' }, {validator: checkPhone}]}
+							]"
+						></a-input>
+					</a-form-item>
+				</a-row>
+				<a-row>
+					<a-form-item label="法定代表人" :labelCol="{ span: 4}" :wrapperCol="{ span: 18}">
+						<a-input
+							v-decorator="['']"
+						></a-input>
+					</a-form-item>
+				</a-row>
+				<a-row>
+					<a-form-item label="委托代理人" :labelCol="{ span: 4}" :wrapperCol="{ span: 18}">
+						<a-input
+							v-decorator="['']"
+						></a-input>
+					</a-form-item>
+				</a-row>
+				<a-row>
+					<a-form-item label="开户银行" :labelCol="{ span: 4}" :wrapperCol="{ span: 18}">
+						<a-input
+							v-decorator="['']"
+						></a-input>
+					</a-form-item>
+				</a-row>
+				<a-row>
+					<a-form-item label="账号" :labelCol="{ span: 4}" :wrapperCol="{ span: 18}">
+						<a-input
+							v-decorator="['']"
+						></a-input>
+					</a-form-item>
+				</a-row>
+				<a-row>
+					<a-form-item label="邮政编码" :labelCol="{ span: 4}" :wrapperCol="{ span: 18}">
+						<a-input
+							v-decorator="[
+							'',
+							{rules: [{ required: true, message: '请填写联系电话' }]}
 							]"
 						></a-input>
 					</a-form-item>
@@ -774,6 +852,12 @@ export default {
 	}
 	.ant-row:nth-child(2) {
 		margin-bottom: 10px;
+	}
+	.ant-form {
+		.ant-row {
+			height: 45px;
+			margin-bottom: 5px;
+		}
 	}
 }
 .label_right {

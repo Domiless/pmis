@@ -1,23 +1,30 @@
 <template>
     <div class="assignBuyer">
-        <a-row>
+    <a-form :form="form">
+        <a-row style="margin-bottom: 10px">
             <a-col :span="12">
                 <span class="label_right">项目订单编号: </span>
+				<span>{{orderMsg.workOrderNo}}</span>
             </a-col>
             <a-col :span="12">
                 <span class="label_right">设计单号: </span>
+				<span>{{orderMsg.bomNo}}</span>
             </a-col>
             <a-col :span="12">
                 <span class="label_right">部件名称: </span>
+				<span>{{orderMsg.partName}}</span>
             </a-col>
             <a-col :span="12">
                 <span class="label_right">图号: </span>
+				<span>{{orderMsg.bomDrawingNo}}</span>
             </a-col>
             <a-col :span="12">
                 <span class="label_right">设计负责人: </span>
+				<span>{{orderMsg.production}}</span>
             </a-col>
             <a-col :span="12">
                 <span class="label_right">创建时间: </span>
+				<span>{{orderMsg.gmtCreated}}</span>
             </a-col>
         </a-row>
         <a-row>
@@ -27,6 +34,26 @@
                 :dataSource="data"
                 :pagination="false"
             >
+                <span slot="appointNameTitle">
+                    <span style="color: #f5222d">*</span>指派采购员
+                </span>
+                <template slot="appointName" slot-scope="text,record">
+                    <a-select
+                    style="width: 100%"
+                    @change="(value,option) => {
+                        let value1 = value;
+                        handleChangeTable(value1, record.id, 'appointName')
+                        }"
+                    >
+                        <a-select-option
+                            v-for="item in buyerArr"
+                            :value="item.name"
+                            :key="item.id"
+                        >
+                            {{ item.name }}
+                        </a-select-option>
+                    </a-select>
+                </template>
             </a-table>
         </a-row>
         <a-row>
@@ -35,48 +62,57 @@
                 <a-button type="primary" @click="submit">提交</a-button>
             </a-form-item>
         </a-row>
+    </a-form>    
     </div>
 </template>
 <script>
 const columns = [
     {
-		dataIndex: "workOrderNo",
+		dataIndex: "drawingNo",
 		title: "图号",
-		key: "workOrderNo",
+		key: "drawingNo",
 		width: "20%"
 	},
 	{
-		dataIndex: "purchaseNo",
+		dataIndex: "name",
 		title: "名称",
-		key: "purchaseNo",
-		scopedSlots: { customRender: "purchaseNo" },
+		key: "name",
 		width: "20%"
 	},
 	{
-		dataIndex: "production",
+		dataIndex: "brand",
 		title: "指定品牌",
-		key: "production",
+		key: "brand",
 		width: "30%"
 	},
 	{
-		dataIndex: "drawNo",
+		dataIndex: "addNum",
 		title: "需求数量",
-		key: "drawNo",
+		key: "addNum",
 		width: "10%"
 	},
 	{
-		dataIndex: "isOffer",
+		dataIndex: "appointName",
 		title: "指派采购员",
-		key: "isOffer",
-		scopedSlots: { customRender: "isOffer" },
+        key: "appointName",
+        slots: { title: "appointNameTitle" },
+		scopedSlots: { customRender: "appointName" },
 		width: "20%"
 	},
 ]
 export default {
+    props: {
+        orderMsg: {
+            default: ''
+        }
+    },
     data() {
         return {
+            form: this.$form.createForm(this),
             data: [],
             columns,
+            buyerArr: [],
+            appointId: ''
         }
     },
     methods: {
@@ -84,8 +120,114 @@ export default {
             this.$emit("cancelAssign", false);
         },
         submit() {
-            
+            const that = this;
+                this.form.validateFieldsAndScroll((err, values) => {
+                if (!err) {
+                console.log("Received values of form: ", values);
+                // if (!this.checkedKeys.length) {
+                // 	this.$message.error("请分配角色权限");
+                // 	return false;
+                // }
+                let qs = require("qs");
+                let data = this.data.map(item => {
+                                return {
+                                    id: item.id,
+                                    appointId: item.appointId,
+                                    appointName: item.appointName
+                                }
+                            })
+                console.log(data);
+                this.Axios(
+                    {
+                    url: "/api-order/bom/setBomPoint",
+                    params: data,
+                    type: "post",
+                    option: { successMsg: "添加成功！" },
+                    config: {
+                        headers: { "Content-Type": "application/json" }
+                    }
+                    },
+                    this
+                ).then(
+                    result => {
+                    if (result.data.code === 200) {
+                        console.log(result);
+                        this.close();
+                        this.form.resetFields();
+                        
+                    }
+                    },
+                        ({ type, info }) => {});
+                        }
+                    });
+        },
+        handleChangeTable(value, key, column) {
+            console.log(value);
+            console.log(key);
+            console.log(column);
+
+            const newData = [...this.data];
+            const target = newData.filter(item => key === item.id)[0];
+            if (target) {
+                target[column] = value;
+                this.data = newData;
+            }
+            for(let i = 0; i < this.buyerArr.length; i++) {
+                if(this.buyerArr[i].name == value) {
+                    this.appointId = this.buyerArr[i].userId;
+                }
+            }
+            for(let i = 0; i < this.data.length; i++) {
+                if(this.data[i].appointName == value) {
+                    this.data[i].appointId = this.appointId;
+                }
+            }
+            console.log(this.data);
+        },
+        getBuyer() {
+            this.Axios(
+				{
+					url: "/api-order/buyer/list",
+					type: "get",
+					params: {},
+					option: { enableMsg: false }
+				},
+				this
+			).then(
+				result => {
+					if (result.data.code === 200) {
+                        console.log(result);
+                        this.buyerArr = result.data.data.content;
+					}
+				},
+				({ type, info }) => {}
+			);
+        },
+        getList() {
+            this.Axios(
+				{
+					url: "/api-order/bom/getBomdes",
+					type: "get",
+					params: {
+						bomIdS: this.orderMsg.id
+					},
+					option: { enableMsg: false }
+				},
+				this
+			).then(
+				result => {
+					if (result.data.code === 200) {
+						console.log(result);
+						this.data = result.data.data;
+					}
+				},
+				({ type, info }) => {}
+			);
         }
+    },
+    created() {
+        this.getList();
+        this.getBuyer();
     }
 }
 </script>

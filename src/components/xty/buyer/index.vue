@@ -8,6 +8,7 @@
 				permCode
 				banType="hide"
 				@click="showDeleteConfirm"
+				:disabled="selectedRowKeys.length != 1"
 			>
 				<a-icon style="color:#1890ff;" type="delete" />删除
 			</permission-button>
@@ -48,9 +49,9 @@
 import addBuyer from "./add"
 const columns = [
 	{
-		dataIndex: "buyerName",
+		dataIndex: "name",
 		title: "姓名",
-		key: "buyerName",
+		key: "name",
 		width: "100%"
 	}
 ];
@@ -77,7 +78,8 @@ export default {
 			this.addVisible = true;
         },
         closeAdd(params) {
-            this.addVisible = params;
+			this.addVisible = params;
+			this.getList();
         },
         onChange(current, pageNumber) {
 			console.log("Page: ", pageNumber);
@@ -99,7 +101,7 @@ export default {
         getList() {
 			this.Axios(
 				{
-					url: "",
+					url: "/api-order/buyer/list",
 					type: "get",
 					params: {
 						page: this.current,
@@ -141,7 +143,7 @@ export default {
 			});
 			this.Axios(
 				{
-					url: "/api-order/",
+					url: "/api-order/buyer/delete",
 					params: data,
 					type: "post",
 					option: { successMsg: "删除成功！" }
@@ -161,7 +163,10 @@ export default {
     },
     components: {
         addBuyer
-    }
+	},
+	created() {
+		this.getList();
+	}
 }
 </script>
 <style lang="less" scoped>

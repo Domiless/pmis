@@ -13,6 +13,7 @@
 				permCode
 				banType="hide"
 				@click="showAssign"
+				:disabled="selectedRowKeys1.length != 1"
 			>
 				<a-icon style="color:#1890ff;" type="submit" />指派采购员
 			</permission-button>
@@ -42,9 +43,9 @@
                             :columns="columns"
                             :dataSource="data"
                             :pagination="false"
-                            :rowSelection="{selectedRowKeys:selectedRowKeys,onChange: onSelectChange}"
+                            :rowSelection="{selectedRowKeys:selectedRowKeys1,onChange: onSelectChange1}"
                         >
-                            <template slot="production" slot-scope="text, record">
+                            <template slot="partName" slot-scope="text, record">
 					            <a href="javascript:" @click="showDetails(record)">{{text}}</a>
 				            </template>
                         </a-table>
@@ -66,20 +67,22 @@
                             :columns="columns"
                             :dataSource="data2"
                             :pagination="false"
-                            :rowSelection="{selectedRowKeys:selectedRowKeys,onChange: onSelectChange}"
+                            :rowSelection="{selectedRowKeys:selectedRowKeys2,onChange: onSelectChange2}"
                         >
-
+							<template slot="partName" slot-scope="text, record">
+					            <a href="javascript:" @click="showDetails(record)">{{text}}</a>
+				            </template>
                         </a-table>
                         <a-pagination
                             style="padding-top:12px;text-align: right;"
                             showQuickJumper
-                            :defaultCurrent="current"
-                            :total="total"
-                            @change="onChange"
+                            :defaultCurrent="current2"
+                            :total="total2"
+                            @change="onChange2"
                             showSizeChanger
                             :pageSizeOptions="['10','20','30']"
                             @showSizeChange="onShowSizeChange"
-                            :showTotal="total => `共 ${total} 条`"
+                            :showTotal="total2 => `共 ${total2} 条`"
                         />
                     </a-tab-pane>
                 </a-tabs>
@@ -93,7 +96,7 @@
 			:maskClosable="false"
 			@cancel="handleCancel(1)"
 		>
-			<assign-buyer @cancelAssign="closeAssign" ref="assignBuyer"></assign-buyer>
+			<assign-buyer :orderMsg="selectedRows1[0]" @cancelAssign="closeAssign" ref="assignBuyer"></assign-buyer>
 		</a-modal>
         <a-modal
 			title="采购单号详情"
@@ -106,21 +109,27 @@
 			<a-row style="margin-bottom: 10px">
                 <a-col :span="12">
                     <span class="label_right">项目订单编号: </span>
+					<span>{{details.workOrderNo}}</span>
                 </a-col>
                 <a-col :span="12">
                     <span class="label_right">设计单号: </span>
+					<span>{{details.bomNo}}</span>
                 </a-col>
                 <a-col :span="12">
                     <span class="label_right">部件名称: </span>
+					<span>{{details.partName}}</span>
                 </a-col>
                 <a-col :span="12">
                     <span class="label_right">图号: </span>
+					<span>{{details.bomDrawingNo}}</span>
                 </a-col>
                 <a-col :span="12">
                     <span class="label_right">设计负责人: </span>
+					<span>{{details.production}}</span>
                 </a-col>
                 <a-col :span="12">
                     <span class="label_right">创建时间: </span>
+					<span>{{details.gmtCreated}}</span>
                 </a-col>
             </a-row>
             <a-row>
@@ -129,6 +138,7 @@
                     :columns="detailsColumns"
                     :dataSource="detailsData"
                     :pagination="false"
+					:scroll="{y: 400}"
                 >
                 </a-table>
             </a-row>
@@ -145,34 +155,34 @@ const columns = [
 		width: "15%"
 	},
 	{
-		dataIndex: "purchaseNo",
+		dataIndex: "bomNo",
 		title: "设计单号",
-		key: "purchaseNo",
+		key: "bomNo",
 		width: "15%"
 	},
 	{
-		dataIndex: "production",
+		dataIndex: "partName",
 		title: "部件名称",
-        key: "production",
-        scopedSlots: { customRender: "production" },
+        key: "partName",
+        scopedSlots: { customRender: "partName" },
 		width: "10%"
 	},
 	{
-		dataIndex: "drawNo",
+		dataIndex: "bomDrawingNo",
 		title: "图号",
-		key: "drawNo",
+		key: "bomDrawingNo",
 		width: "10%"
 	},
 	{
-		dataIndex: "isOffer",
+		dataIndex: "number",
 		title: "需求数量",
-		key: "isOffer",
+		key: "number",
 		width: "8%"
 	},
 	{
-		dataIndex: "reviewSchedule",
+		dataIndex: "production",
 		title: "设计负责人",
-		key: "reviewSchedule",
+		key: "production",
 		width: "8%"
     },
     {
@@ -182,42 +192,40 @@ const columns = [
 		width: "10%"
 	},
 	{
-		dataIndex: "remark",
+		dataIndex: "remake",
 		title: "备注",
-		key: "remark"
+		key: "remake"
 	}
 ];
 const detailsColumns = [
     {
-		dataIndex: "workOrderNo",
+		dataIndex: "drawingNo",
 		title: "图号",
-		key: "workOrderNo",
+		key: "drawingNo",
 		width: "20%"
 	},
 	{
-		dataIndex: "purchaseNo",
+		dataIndex: "name",
 		title: "名称",
-		key: "purchaseNo",
-		scopedSlots: { customRender: "purchaseNo" },
+		key: "name",
 		width: "20%"
 	},
 	{
-		dataIndex: "production",
+		dataIndex: "brand",
 		title: "指定品牌",
-		key: "production",
+		key: "brand",
 		width: "10%"
 	},
 	{
-		dataIndex: "drawNo",
+		dataIndex: "addNum",
 		title: "需求数量",
-		key: "drawNo",
+		key: "addNum",
 		width: "10%"
 	},
 	{
-		dataIndex: "isOffer",
+		dataIndex: "appointName",
 		title: "指派采购员",
-		key: "isOffer",
-		scopedSlots: { customRender: "isOffer" },
+		key: "appointName",
 		width: "20%"
     },
     {
@@ -242,15 +250,20 @@ export default {
             detailsData: [],
             columns,
             detailsColumns,
-            selectedRowKeys: [],
-            selectedRows: [],
+			selectedRowKeys1: [],
+			selectedRowKeys2: [],
+			selectedRows1: [],
+			selectedRows2: [],
             defaultValue: [],
 			assignVisible: false,
             editVisible: false,
             detailsVisible: false,
 			current: 1,
+			current2:1,
 			pageSize: 10,
-            total: 0,
+			pageSize2:10,
+			total: 0,
+			total2: 0,
             dateValue: [],
             keyWords: '',
             details: []
@@ -272,37 +285,80 @@ export default {
 			this.details = row;
 			this.detailsVisible = true;
 			console.log(this.details);
+			this.Axios(
+				{
+					url: "/api-order/bom/getBomdes",
+					type: "get",
+					params: {
+						bomIdS: this.details.id
+					},
+					option: { enableMsg: false }
+				},
+				this
+			).then(
+				result => {
+					if (result.data.code === 200) {
+						console.log(result);
+						this.detailsData = result.data.data;
+					}
+				},
+				({ type, info }) => {}
+			);
 		},
         closeAssign(params) {
-            this.assignVisible = params;
-        },
+			this.assignVisible = params;
+			this.getList();
+		},
+		onChange(current, pageNumber) {
+			console.log("Page: ", pageNumber);
+			console.log("第几页: ", current);
+			this.current = current;
+			this.getList();
+		},
+		onChange2(current, pageNumber) {
+			console.log("Page: ", pageNumber);
+			console.log("第几页: ", current);
+			this.current2 = current;
+			this.getList2();
+		},
         onChangeRange(date, datestring) {
 			this.dateValue = datestring;
 			console.log(this.dateValue);
 		},
-        onSelectChange(selectedRowKeys, selectedRows) {
-			this.selectedRowKeys = selectedRowKeys;
-			this.selectedRows = selectedRows;
-			console.log(this.selectedRowKeys);
-			console.log(this.selectedRows);
+        onSelectChange1(selectedRowKeys, selectedRows) {
+			this.selectedRowKeys1 = selectedRowKeys;
+			this.selectedRows1 = selectedRows;
+			console.log(this.selectedRowKeys1);
+			console.log(this.selectedRows1);
 		},
-        onChange() {
-
-        },
+		onSelectChange2(selectedRowKeys, selectedRows) {
+			this.selectedRowKeys2 = selectedRowKeys;
+			this.selectedRows2 = selectedRows;
+			console.log(this.selectedRowKeys2);
+			console.log(this.selectedRows2);
+		},
         onShowSizeChange(current, pageSize) {
 			this.pageSize = pageSize;
 			this.current = 1;
 			this.getList();
 		},
+		onShowSizeChange2(current, pageSize) {
+			this.pageSize2 = pageSize;
+			this.current2 = 1;
+			this.getList2();
+		},
         getList() {
 			this.Axios(
 				{
-					url: "/api-order/",
+					url: "/api-order/bom/list",
 					type: "get",
 					params: {
 						page: this.current,
 						size: this.pageSize,
 						keyword: this.keyWords,
+						type: 0,
+						auditState: 3,
+						isAppiont: 0,
 						start: this.dateValue[0] != "" ? this.dateValue[0] : null,
 						end: this.dateValue[1] != "" ? this.dateValue[1] : null
 					},
@@ -320,10 +376,43 @@ export default {
 				({ type, info }) => {}
 			);
 		},
+		getList2() {
+			this.Axios(
+				{
+					url: "/api-order/bom/list",
+					type: "get",
+					params: {
+						page: this.current2,
+						size: this.pageSize2,
+						keyword: this.keyWords2,
+						type: 0,
+						auditState: 3,
+						isAppiont: 1,
+						start: this.dateValue[0] != "" ? this.dateValue[0] : null,
+						end: this.dateValue[1] != "" ? this.dateValue[1] : null
+					},
+					option: { enableMsg: false }
+				},
+				this
+			).then(
+				result => {
+					if (result.data.code === 200) {
+						console.log(result);
+						this.data2 = result.data.data.content;
+						this.total2 = result.data.data.totalElement;
+					}
+				},
+				({ type, info }) => {}
+			);
+		},
     },
     components: {
         assignBuyer
-    }
+	},
+	created(){
+		this.getList();
+		this.getList2();
+	}
 }
 </script>
 <style lang="less" scoped>

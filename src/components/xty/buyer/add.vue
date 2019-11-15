@@ -1,6 +1,6 @@
 <template>
     <div class="addBuyer">
-        <a-row>
+        <a-row class="first_row">
             <a-col :span="12" class="table_case">
 				<a-col :span="24">
 					<a-tree-select
@@ -114,7 +114,8 @@ export default {
             treeData: [],
             columns,
             selectedRowKeys: [],
-            selectedRows: [],
+			selectedRows: [],
+			organizeId: ""
         }
     },
     methods: {
@@ -122,7 +123,35 @@ export default {
             this.$emit("cancelAdd",false);
         },
         submit() {
-
+			let data = this.selectedRows.map(item => {
+				return {
+					userId: item.id,
+					name: item.userName
+				}
+			})
+			console.log(data);
+			this.Axios(
+            {
+              url: "/api-order/buyer/add",
+              params: data,
+              type: "post",
+              option: { successMsg: "添加成功！" },
+              config: {
+                headers: { "Content-Type": "application/json" }
+              }
+            },
+            this
+          ).then(
+            result => {
+              if (result.data.code === 200) {
+                console.log(result);
+				this.cancel();
+				this.selectedRowKeys = [];
+				this.selectedRows = [];
+              }
+            },
+            ({ type, info }) => {}
+          );
         },
         tableTreeselect(e) {
 			console.log(e);
@@ -130,18 +159,111 @@ export default {
         onSelectChange(selectedRowKeys, a) {
 			this.selectedRowKeys = selectedRowKeys;
 			this.selectedRows = a;
+			console.log(this.selectedRowKeys);
 			console.log(a);
         },
         delUserId(index) {
 			this.selectedRowKeys.splice(index, 1);
 			this.selectedRows.splice(index, 1);
-        },
-    }
+		},
+		getTreeDataList() {
+			this.Axios(
+				{
+					url: "/api-platform/organize/list",
+					params: {},
+					type: "get",
+					option: { enableMsg: false }
+				},
+				this
+			).then(
+				result => {
+					if (result.data.code === 200) {
+						console.log(result);
+						this.treeData = result.data.data.map(item => {
+							return {
+								title: item.organizeName,
+								key: item.id,
+								value: item.id,
+								organizeCode: parseInt(item.organizeCode),
+								organizeParentCode: parseInt(item.organizeParentCode),
+								disabled: item.organizeParentCode == 0
+							};
+						});
+						let code = Math.min.apply(
+							null,
+							this.treeData.map(item => {
+								return item.organizeParentCode;
+							})
+						);
+						this.treeData = this.filterArray(this.treeData, code);
+					}
+				},
+				({ type, info }) => {}
+			);
+		},
+		filterArray(data, parent) {
+			let vm = this;
+			var tree = [];
+			var temp;
+			for (var i = 0; i < data.length; i++) {
+				if (data[i].organizeParentCode == parent) {
+					var obj = data[i];
+					temp = this.filterArray(data, data[i].organizeCode);
+					if (temp.length > 0) {
+						obj.children = temp;
+					}
+					tree.push(obj);
+				}
+			}
+			return tree;
+		},
+		tableTreeselect(e) {
+			console.log(e);
+			this.organizeId = e != undefined ? e : "";
+			this.selectedRowKeys = [];
+			this.selectedRows = [];
+			this.getEmployeeList();
+		},
+		getEmployeeList() {
+			this.Axios(
+				{
+					url: "/api-platform/employee/organize?organizeId=" + this.organizeId,
+					params: {},
+					type: "get",
+					option: { enableMsg: false }
+				},
+				this
+			).then(
+				result => {
+					if (result.data.code === 200) {
+						console.log(result);
+						this.data = result.data.data;
+
+						for (let i = 0; i < this.data.length; i++) {
+							this.data[i].workTypeName = "";
+							if (this.data[i].workType != null) {
+								for (let j = 0; j < this.data[i].workType.length; j++) {
+									this.data[i].workTypeName +=
+										this.data[i].workType[j].workTypeName +
+										(j == this.data[i].workType.length - 1 ? "" : "、");
+								}
+							}
+						}
+					}
+				},
+				({ type, info }) => {}
+			);
+		}
+	},
+	created() {
+		this.getTreeDataList();
+		this.getEmployeeList();
+	}
 }
 </script>
-<style lang="less" scoped>
+<style lang="less">
 .addBuyer {
-    .ant-row:nth-child(1) {
+    .first_row {
         margin-bottom: 10px;
     }
     .table_case {
