@@ -41,7 +41,7 @@
 			:footer="null"
 			@cancel="handle(1)"
 		>
-            <add-buyer @cancelAdd="closeAdd"></add-buyer>
+            <add-buyer @cancelAdd="closeAdd" ref="addBuyer"></add-buyer>
 		</a-modal>
     </div>    
 </template>
@@ -71,7 +71,8 @@ export default {
     methods: {
         handle(num) {
             if(num == 1) {
-                this.addVisible = false;
+				// this.addVisible = false;
+				this.$refs.addBuyer.cancel();
             }
         },
         showAdd() {

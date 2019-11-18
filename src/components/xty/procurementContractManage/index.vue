@@ -7,11 +7,14 @@
       <permission-button permCode="shopcontract_lookup.shopcontract_update" banType="hide" @click="editShow" :disabled="selectedRowKeys.length!=1">
         <a-icon style="color:#1890ff;" type="edit" />修改
       </permission-button>
+      <permission-button permCode="shopcontract_lookup.shopcontract_delete" banType="hide" @click="showDeleteConfirm" :disabled="selectedRowKeys.length<1">
+        <a-icon style="color:#1890ff;" type="delete" />删除
+      </permission-button>
       <permission-button permCode="shopcontract_lookup.shopcontract_audit" banType="hide" :disabled="selectedRowKeys.length!=1" @click="approveShow">
         <a-icon style="color:#1890ff;" type="submit" />提交审批
       </permission-button>
-      <permission-button permCode="shopcontract_lookup.shopcontract_delete" banType="hide" @click="showDeleteConfirm" :disabled="selectedRowKeys.length<1">
-        <a-icon style="color:#1890ff;" type="delete" />删除
+      <permission-button permCode="shopcontract_lookup.shopcontract_audit" banType="hide" :disabled="selectedRowKeys.length!=1">
+        <a-icon style="color:#1890ff;" type="submit" />打印预览
       </permission-button>
     </a-row>
     <a-row>
@@ -47,8 +50,8 @@
         :pagination="false"
         :rowSelection="{selectedRowKeys:selectedRowKeys,onChange: onSelectChange}"
       >
-        <template slot="shopContractNo" slot-scope="text, record">
-          <a href="javascript:" @click="showDetails(record)">{{text}}</a>
+        <template slot="supplier" slot-scope="text, record">
+          <a href="javascript:" @click="showDetails(record.id)">{{text}}</a>
         </template>
         <template slot="reviewSchedule" slot-scope="text, record">
           <div style="padding-left: 15px">
@@ -146,100 +149,56 @@
       @cancel="handleCancel(3)"
       :maskClosable="false"
     >
-    <a-tabs defaultActiveKey="1">
-      <a-tab-pane tab="基础信息" key="1">
-        <a-row>
-        <a-col :span="24" style="margin-bottom:12px;">
-          <span class="label_right">采购单号：</span>
-          <span>{{contractDetails.purchaseNo}}</span>
-        </a-col>
-        <a-col :span="24" style="margin-bottom:12px;">
-          <span class="label_right">合同编号：</span>
-          <span>{{contractDetails.shopContractNo}}</span>
-        </a-col>
-        <a-col :span="24" style="margin-bottom:12px;">
-          <span class="label_right">合同模板：</span>
-          <span>{{contractDetails.model}}</span>
-        </a-col>
-        <a-col :span="24" style="margin-bottom:12px;">
-          <span class="label_right">供应商：</span>
-          <span>{{contractDetails.supplier}}</span>
-        </a-col>
-        <a-col :span="24" style="margin-bottom:12px;">
-          <span class="label_right">需求方：</span>
-          <span>{{contractDetails.demand}}</span>
-        </a-col>
-        <a-col :span="24" style="margin-bottom:12px;">
-          <span class="label_right">业务员：</span>
-          <span>{{contractDetails.salesman}}</span>
-        </a-col>
-        <a-col :span="24" style="margin-bottom:12px;">
-          <span class="label_right">总金额：</span>
-          <span>{{contractDetails.summoney}}</span>
-        </a-col>
-        <a-col :span="24" style="margin-bottom:12px;">
-          <span class="label_right">金额大写：</span>
-          <span>{{contractDetails.chineseMoney}}</span>
-        </a-col>
-        <a-col :span="24" style="margin-bottom:12px;">
-          <span class="label_right">签订地点：</span>
-          <span>{{contractDetails.place}}</span>
-        </a-col>
-        <a-col :span="24" style="margin-bottom:12px;">
-          <span class="label_right">签订日期：</span>
-          <span>{{contractDetails.digndate}}</span>
-        </a-col>
-        <a-col :span="24" style="margin-bottom:12px;">
-          <span class="label_right">供货方式：</span>
-          <span>{{contractDetails.sendway}}</span>
-        </a-col>
-        <a-col :span="24" style="margin-bottom:12px;">
-          <span class="label_right">备注：</span>
-          <span>{{contractDetails.remark}}</span>
-        </a-col>
-      </a-row>
-      </a-tab-pane>
-      <a-tab-pane tab="采购明细" key="2" style="margin-bottom: 20px">
-        <a-table rowKey="id" :columns="columns2" :dataSource="data2" :scroll="{ x: 1900, y: 500 }" :pagination="true"/>
-      </a-tab-pane>
-    </a-tabs>
-      
+      <Details :rowId="contractDetailsId" :defaultActiveKey="activeKey"></Details>
     </a-modal>
   </div>
 </template>
 <script>
 import AddProcurementContract from "./addProcurementContract";
 import EditProcurementContract from "./editProcurementContract";
+import Details from "./details"
 const columns = [
-  {
-    dataIndex: "purchaseNo",
-    title: "采购单号",
-    key: "purchaseNo",
-    width: "15%"
-  },
+  // {
+  //   dataIndex: "purchaseNo",
+  //   title: "采购单号",
+  //   key: "purchaseNo",
+  //   width: "15%"
+  // },
   {
     dataIndex: "shopContractNo",
     title: "合同编号",
     key: "shopContractNo",
-    scopedSlots: { customRender: "shopContractNo" },
     width: "15%"
   },
   {
     dataIndex: "supplier",
-    title: "供方",
+    title: "供应商",
     key: "supplier",
-    width: "20%"
+    scopedSlots: { customRender: "supplier" },
+    width: "15%"
   },
-  {
-    dataIndex: "salesman",
-    title: "业务员",
-    key: "salesman",
-    width: "10%"
-  },
+  // {
+  //   dataIndex: "salesman",
+  //   title: "业务员",
+  //   key: "salesman",
+  //   width: "10%"
+  // },
   {
     dataIndex: "digndate",
     title: "签订日期",
     key: "digndate",
+    width: "8%"
+  },
+  {
+    dataIndex: "validity",
+    title: "合同有效期",
+    key: "validity",
+    width: "16%"
+  },
+  {
+    dataIndex: "summoney",
+    title: "合计贷款(不含税)",
+    key: "summoney",
     width: "8%"
   },
   {
@@ -251,7 +210,7 @@ const columns = [
   },
   {
     dataIndex: "gmtCreated",
-    title: "创建日期",
+    title: "创建时间",
     key: "gmtCreated",
     width: "12%"
   },
@@ -261,104 +220,17 @@ const columns = [
     key: "remark"
   }
 ];
-const columns2 = [
-  {
-    dataIndex: "drawingNo",
-    title: "图号",
-    key: "drawingNo",
-    width: 100
-  },
-  {
-    dataIndex: "name",
-    title: "名称",
-    key: "name",
-    width: 100
-  },
-  {
-    dataIndex: "number",
-    title: "需求数量",
-    key: "number",
-    width: 100
-  },
-  {
-    dataIndex: "brand",
-    title: "指定品牌",
-    key: "brand",
-    width: 100
-  },
-  {
-    dataIndex: "designer",
-    title: "设计师",
-    key: "designer",
-    width: 100
-  },
-  {
-    dataIndex: "orderNumber",
-    title: "订单数量",
-    key: "orderNumber",
-    width: 100
-  },
-  {
-    dataIndex: "unit",
-    title: "订单单位",
-    key: "unit",
-    width: 100
-  },
-  {
-    dataIndex: "delivery",
-    title: "交货日期",
-    key: "delivery",
-    width: 120
-  },
-  {
-    dataIndex: "price",
-    title: "单价",
-    key: "price",
-    width: 100
-  },
-  {
-    dataIndex: "taxrate",
-    title: "税率",
-    key: "taxrate",
-    width: 100
-  },
-  {
-    dataIndex: "supplier",
-    title: "供应商",
-    key: "supplier",
-    width: 100
-  },
-  {
-    dataIndex: "priseUnit",
-    title: "价格单位",
-    key: "priseUnit",
-    width: 100
-  },
-  {
-    dataIndex: "moneyType",
-    title: "货币类型",
-    key: "moneyType",
-    width: 100
-  },
-  {
-    dataIndex: "remark",
-    title: "备注",
-    key: "remark",
-    width: 100
-  }
-];
 export default {
   data() {
     return {
       form: this.$form.createForm(this),
       columns,
-      columns2,
       data: [],
       data2: [],
       selectedRowKeys: [],
       selectedRows: [],
-      contractDetails: [],
       dateValue: [],
+      contractDetailsId: '',
       addVisible: false,
       editVisible: false,
       detailsVisible: false,
@@ -368,7 +240,8 @@ export default {
       total: 0,
       reviewSchedule: -1,
       keyWords: '',
-      userProcess: []
+      userProcess: [],
+      activeKey: '1'
     };
   },
   methods: {
@@ -471,32 +344,10 @@ export default {
        console.log(this.selectedRowKeys);
        console.log(this.selectedRows);
     },
-    showDetails(row) {
-      this.contractDetails = row;
+    showDetails(id) {
+      this.contractDetailsId = id;
       this.detailsVisible = true;
-      console.log(this.contractDetails);
-      this.findOne(row.id);
-    },
-    findOne(id){
-      this.Axios(
-				{
-					url: '/api-order/shopContract/findone',
-					params: {
-            id: id
-          },
-					type: "get",
-					option: { enableMsg: false }
-				},
-				this
-			).then(
-				result => {
-					if (result.data.code === 200) {
-            console.log(result);
-            this.data2 = result.data.data.shopContractDesDOList
-					}
-				},
-				({ type, info }) => {}
-			);
+      console.log(this.contractDetailsId);
     },
     getList() {
 			this.Axios(
@@ -593,7 +444,8 @@ export default {
   },
   components: {
     AddProcurementContract,
-    EditProcurementContract
+    EditProcurementContract,
+    Details
   },
   created() {
     this.getList();
@@ -615,9 +467,4 @@ export default {
     margin: 0px 50px 0px 50px;
   }
 }
-.label_right{
-    display: inline-block;
-	  width: 120px;
-	  text-align: right;
-    }
 </style>

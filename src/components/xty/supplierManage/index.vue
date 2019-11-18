@@ -16,7 +16,7 @@
 				permCode="supplier_lookup.supplier_delete"
 				banType="hide"
 				@click="showDeleteConfirm"
-				:disabled="selectedRowKeys.length<1"
+				:disabled="selectedRowKeys.length!=1"
 			>
 				<a-icon style="color:#1890ff;" type="delete" />删除
 			</permission-button>
@@ -113,38 +113,35 @@
 				<a-row>
 					<a-form-item label="法定代表人" :labelCol="{ span: 4}" :wrapperCol="{ span: 18}">
 						<a-input
-							v-decorator="['']"
+							v-decorator="['representative']"
 						></a-input>
 					</a-form-item>
 				</a-row>
 				<a-row>
 					<a-form-item label="委托代理人" :labelCol="{ span: 4}" :wrapperCol="{ span: 18}">
 						<a-input
-							v-decorator="['']"
+							v-decorator="['entrusted']"
 						></a-input>
 					</a-form-item>
 				</a-row>
 				<a-row>
 					<a-form-item label="开户银行" :labelCol="{ span: 4}" :wrapperCol="{ span: 18}">
 						<a-input
-							v-decorator="['']"
+							v-decorator="['bank']"
 						></a-input>
 					</a-form-item>
 				</a-row>
 				<a-row>
 					<a-form-item label="账号" :labelCol="{ span: 4}" :wrapperCol="{ span: 18}">
 						<a-input
-							v-decorator="['']"
+							v-decorator="['bankAccount']"
 						></a-input>
 					</a-form-item>
 				</a-row>
 				<a-row>
 					<a-form-item label="邮政编码" :labelCol="{ span: 4}" :wrapperCol="{ span: 18}">
 						<a-input
-							v-decorator="[
-							'',
-							{rules: [{ required: true, message: '请填写联系电话' }]}
-							]"
+							v-decorator="['postalcode']"
 						></a-input>
 					</a-form-item>
 				</a-row>
@@ -165,16 +162,6 @@
 							<a-input v-decorator="['address']" placeholder="详细地址"></a-input>
 						</a-form-item>
 					</a-col>
-				</a-row>
-				<a-row>
-					<a-form-item label="电子邮箱" :labelCol="{ span: 4}" :wrapperCol="{ span: 18}">
-						<a-input
-							v-decorator="[
-            'email',
-            {rules: [{validator: checkEmail}]}
-            ]"
-						></a-input>
-					</a-form-item>
 				</a-row>
 				<a-row>
 					<a-form-item label="备注" :labelCol="{ span: 4}" :wrapperCol="{ span: 18}">
@@ -243,38 +230,35 @@
 				<a-row>
 					<a-form-item label="法定代表人" :labelCol="{ span: 4}" :wrapperCol="{ span: 18}">
 						<a-input
-							v-decorator="['']"
+							v-decorator="['representative']"
 						></a-input>
 					</a-form-item>
 				</a-row>
 				<a-row>
 					<a-form-item label="委托代理人" :labelCol="{ span: 4}" :wrapperCol="{ span: 18}">
 						<a-input
-							v-decorator="['']"
+							v-decorator="['entrusted']"
 						></a-input>
 					</a-form-item>
 				</a-row>
 				<a-row>
 					<a-form-item label="开户银行" :labelCol="{ span: 4}" :wrapperCol="{ span: 18}">
 						<a-input
-							v-decorator="['']"
+							v-decorator="['bank']"
 						></a-input>
 					</a-form-item>
 				</a-row>
 				<a-row>
 					<a-form-item label="账号" :labelCol="{ span: 4}" :wrapperCol="{ span: 18}">
 						<a-input
-							v-decorator="['']"
+							v-decorator="['bankAccount']"
 						></a-input>
 					</a-form-item>
 				</a-row>
 				<a-row>
 					<a-form-item label="邮政编码" :labelCol="{ span: 4}" :wrapperCol="{ span: 18}">
 						<a-input
-							v-decorator="[
-							'',
-							{rules: [{ required: true, message: '请填写联系电话' }]}
-							]"
+							v-decorator="['postalcode']"
 						></a-input>
 					</a-form-item>
 				</a-row>
@@ -295,16 +279,6 @@
 							<a-input v-decorator="['address']" placeholder="详细地址"></a-input>
 						</a-form-item>
 					</a-col>
-				</a-row>
-				<a-row>
-					<a-form-item label="电子邮箱" :labelCol="{ span: 4}" :wrapperCol="{ span: 18}">
-						<a-input
-							v-decorator="[
-            'email',
-            {rules: [{validator: checkEmail}]}
-            ]"
-						></a-input>
-					</a-form-item>
 				</a-row>
 				<a-row>
 					<a-form-item label="备注" :labelCol="{ span: 4}" :wrapperCol="{ span: 18}">
@@ -340,16 +314,32 @@
 				<span>{{ supplierDetails.linkman }}</span>
 			</a-row>
 			<a-row>
+				<span class="label_right" style="margin-bottom:12px;">法定代表人：</span>
+				<span>{{ supplierDetails.representative }}</span>
+			</a-row>
+			<a-row>
+				<span class="label_right" style="margin-bottom:12px;">委托联系人：</span>
+				<span>{{ supplierDetails.entrusted }}</span>
+			</a-row>
+			<a-row>
+				<span class="label_right" style="margin-bottom:12px;">开户银行：</span>
+				<span>{{ supplierDetails.bank }}</span>
+			</a-row>
+			<a-row>
+				<span class="label_right" style="margin-bottom:12px;">账号：</span>
+				<span>{{ supplierDetails.bankAccount }}</span>
+			</a-row>
+			<a-row>
+				<span class="label_right" style="margin-bottom:12px;">邮政编码：</span>
+				<span>{{ supplierDetails.postalcode }}</span>
+			</a-row>
+			<a-row>
 				<span class="label_right" style="margin-bottom:12px;">联系电话：</span>
 				<span>{{ supplierDetails.linkPhone }}</span>
 			</a-row>
 			<a-row>
 				<span class="label_right" style="margin-bottom:12px;">地址：</span>
 				<span>{{ supplierDetails.address }}</span>
-			</a-row>
-			<a-row>
-				<span class="label_right" style="margin-bottom:12px;">电子邮箱：</span>
-				<span>{{ supplierDetails.email }}</span>
 			</a-row>
 			<a-row>
 				<span class="label_right" style="margin-bottom:12px;">备注：</span>
@@ -479,10 +469,10 @@ export default {
 		},
 		showDetails(row) {
 			this.supplierDetails = row;
-			this.supplierDetails.address = this.supplierDetails.address.replace(/;/g,"/");
 			if( this.supplierDetails.address.indexOf("undefined") != -1) {
-				this.supplierDetails.address = '';
+				this.supplierDetails.address = this.supplierDetails.address.replace("undefined","");
 			}
+			this.supplierDetails.address = this.supplierDetails.address.replace(/;/g,"/");
 			this.detailsVisible = true;
 			console.log(this.supplierDetails);
 		},
@@ -542,9 +532,13 @@ export default {
 						supplierName: values.supplierName,
 						linkman: values.linkman,
 						linkPhone: values.linkPhone,
+						representative: values.representative,
+						entrusted: values.entrusted,
+						bank: values.bank,
+						bankAccount: values.bankAccount,
+						postalcode: values.postalcode,
 						areaCode: this.addressCodeArr.join(","),
 						address: this.address + ";" + values.address,
-						email: values.email,
 						remark: values.remark
 					};
 					console.log(data);
@@ -589,9 +583,13 @@ export default {
 						supplierName: values.supplierName,
 						linkman: values.linkman,
 						linkPhone: values.linkPhone,
+						representative: values.representative,
+						entrusted: values.entrusted,
+						bank: values.bank,
+						bankAccount: values.bankAccount,
+						postalcode: values.postalcode,
 						areaCode: this.addressCodeArr.join(","),
 						address: this.address + ";" + values.address,
-						email: values.email,
 						remark: values.remark
 					};
 					this.Axios(
@@ -718,9 +716,13 @@ export default {
 								supplierName: result.data.data.supplierName,
 								linkman: result.data.data.linkman,
 								linkPhone: result.data.data.linkPhone,
+								representative: result.data.data.representative,
+								entrusted: result.data.data.entrusted,
+								bank: result.data.data.bank,
+								bankAccount: result.data.data.bankAccount,
+								postalcode: result.data.data.postalcode,
 								addressId: result.data.data.areaCode.split(","),
-								address: result.data.data.address.split(";")[1],
-								email: result.data.data.email,
+								address: result.data.data.address.split(";")[1] == "undefined" ? "" : result.data.data.address.split(";")[1],
 								remark: result.data.data.remark
 							});
 						}, 100);
