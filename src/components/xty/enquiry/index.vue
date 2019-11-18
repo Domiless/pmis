@@ -121,7 +121,7 @@ const columns = [
 		key: "workOrderNo",
 		dataIndex: "workOrderNo",
 		width: "12%",
-		sorter: true
+		// sorter: true
 	},
 	{
 		title: "图号",
