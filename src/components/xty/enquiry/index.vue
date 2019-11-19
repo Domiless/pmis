@@ -1,6 +1,6 @@
 <template>
   <div class="enquiry_list">
-    <a-row style="line-height:50px;">
+    <a-row style="line-height:50px;margin-bottom: 10px;">
       <permission-button
         v-if="activeKey==1"
         permCode

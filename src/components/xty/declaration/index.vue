@@ -1,6 +1,6 @@
 <template>
   <div class="declaration_list">
-    <a-row style="line-height:50px;">
+    <a-row style="line-height:50px;margin-bottom: 10px;">
       <permission-button permCode banType="hide" @click="addVisible=true">
         <a-icon style="color:#1890ff;" type="plus" />新增
       </permission-button>
