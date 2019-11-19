@@ -158,6 +158,29 @@ export default {
     };
   },
   methods: {
+    getCode() {
+      this.Axios(
+        {
+          url: "/api-workorder/delivery/code",
+          params: {},
+          type: "get",
+          option: { enableMsg: false }
+        },
+        this
+      ).then(
+        result => {
+          if (result.data.code === 200) {
+            console.log(result);
+            setTimeout(() => {
+              this.form.setFieldsValue({
+                docNo: result.data.data
+              });
+            }, 100);
+          }
+        },
+        ({ type, info }) => {}
+      );
+    },
     cancle() {
       this.form.resetFields();
       this.selectedRowKeysRight = [];
@@ -168,6 +191,7 @@ export default {
       this.workType = "-1";
       this.getProcesslist();
       this.$emit("addModal", false);
+      this.getCode();
     },
     add() {
       if (this.selectedRows.length < 1) {
@@ -212,6 +236,7 @@ export default {
                   this.getProcesslist();
                   this.selectedRowsRight = [];
                   this.$emit("addModal", false);
+                  this.getCode();
                 }
               },
               ({ type, info }) => {}
@@ -321,6 +346,7 @@ export default {
   },
   created() {
     this.getGongZuoLing();
+    this.getCode();
     // this.getProcesslist();
   }
 };
