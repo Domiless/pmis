@@ -19,9 +19,9 @@ const imgPath = "http://119.3.255.22:8030/";
 // const imgPath = "http://118.25.217.48:8080/";
 // const apiImg = "http://118.25.217.48:9886/upload";
 export default {
-	apiSrc,
-	apiImg,
-	imgPath,
-	apiImport
+  apiSrc,
+  apiImg,
+  imgPath,
+  apiImport
 };
 </script>
