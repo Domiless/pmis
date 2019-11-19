@@ -10,10 +10,10 @@
       <permission-button permCode="shopcontract_lookup.shopcontract_delete" banType="hide" @click="showDeleteConfirm" :disabled="selectedRowKeys.length<1">
         <a-icon style="color:#1890ff;" type="delete" />删除
       </permission-button>
-      <permission-button permCode="shopcontract_lookup.shopcontract_audit" banType="hide" :disabled="selectedRowKeys.length!=1" @click="approveShow">
+      <permission-button permCode="shopcontract_lookup.shopcontract_audit" banType="hide"  @click="approveShow" :disabled="selectedRowKeys.length!=1" >
         <a-icon style="color:#1890ff;" type="submit" />提交审批
       </permission-button>
-      <permission-button permCode="shopcontract_lookup.shopcontract_audit" banType="hide" :disabled="selectedRowKeys.length!=1">
+      <permission-button permCode="shopcontract_lookup.shopcontract_audit" banType="hide"  @click="toPreview" :disabled="selectedRowKeys.length!=1">
         <a-icon style="color:#1890ff;" type="submit" />打印预览
       </permission-button>
     </a-row>
@@ -245,6 +245,29 @@ export default {
     };
   },
   methods: {
+    toPreview() {
+      this.Axios(
+				{
+					url: '/api-order/shopContract/findone',
+					params: {
+            id: this.selectedRowKeys[0]
+          },
+					type: "get",
+					option: { enableMsg: false }
+				},
+				this
+			).then(
+				result => {
+					if (result.data.code === 200) {
+            console.log(result);
+            sessionStorage.priview = JSON.stringify(result.data.data);
+						sessionStorage.priviewType = 4;
+						window.open("/priview.html", "_blank");
+					}
+				},
+				({ type, info }) => {}
+			);
+    },
     handleCancel(num) {
       if( num == 1 ) {
         this.$refs.addProcurementContract.close();

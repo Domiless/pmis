@@ -562,25 +562,6 @@ export default {
 				},
 				({ type, info }) => {}
 			);
-			// this.Axios(
-			// 	{
-			// 		url: '/api-order/shopContract/print',
-			// 		params: {
-      //       id: id
-      //     },
-			// 		type: "get",
-			// 		option: { enableMsg: false }
-			// 	},
-			// 	this
-			// ).then(
-			// 	result => {
-			// 		if (result.data.code === 200) {
-      //       console.log(result);
-						
-			// 		}
-			// 	},
-			// 	({ type, info }) => {}
-			// );
     },
     editProcurement() {
       const that = this;
