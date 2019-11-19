@@ -23,406 +23,415 @@ Vue.use(Router)
 export default new Router({
   mode: 'history',
   routes: [{
-      path: '/',
-      redirect: '/Enterprise',
+    path: '/',
+    redirect: '/Enterprise',
+  },
+  {
+    path: '/DrawingsList',
+    name: 'DrawingsList',
+    components: require('../components/drawing/index.vue'),
+    meta: {
+      requireAuth: true,
     },
-    {
-      path: '/DrawingsList',
-      name: 'DrawingsList',
-      components: require('../components/drawing/index.vue'),
+  },
+  {
+    path: '/Feedback',
+    name: 'Feedback',
+    components: require('../components/feedback/Index.vue'),
+    meta: {
+      requireAuth: true,
+    },
+  },
+  {
+    path: '/ModuleCustomization',
+    name: 'ModuleCustomization',
+    components: require('../components/system/moduleCustomization/ModuleCustomization.vue'),
+    meta: {
+      requireAuth: true,
+    },
+  },
+  {
+    path: '/Enterprise',
+    name: 'Enterprise',
+    components: require('../components/enterprise/index.vue'),
+    meta: {
+      requireAuth: true,
+    },
+  },
+  {
+    path: '/Dashboard',
+    name: 'Dashboard',
+    components: require('../components/Dashboard'),
+    meta: {
+      requireAuth: true,
+    },
+  },
+  {
+    path: '/OrderList',
+    name: 'OrderList',
+    component: OrderList,
+    meta: {
+      requireAuth: true,
+    },
+    children: [{
+      path: 'OrderAdd',
+      name: 'OrderAdd',
+      component: OrderAdd,
       meta: {
         requireAuth: true,
       },
     },
     {
-      path: '/Feedback',
-      name: 'Feedback',
-      components: require('../components/feedback/Index.vue'),
+      path: 'OrderEdit/:id/',
+      name: 'OrderEdit',
+      component: OrderEdit,
+      meta: {
+        requireAuth: true,
+      },
+    },
+    ]
+  },
+  {
+    path: '/MyDevice',
+    name: 'MyDevice',
+    component: MyDevice,
+    meta: {
+      requireAuth: true,
+    },
+    children: [{
+      path: 'AddEquipment',
+      name: 'AddEquipment',
+      component: AddEquipment,
       meta: {
         requireAuth: true,
       },
     },
     {
-      path: '/ModuleCustomization',
-      name: 'ModuleCustomization',
-      components: require('../components/system/moduleCustomization/ModuleCustomization.vue'),
+      path: 'EditEquipment/:id/',
+      name: 'EditEquipment',
+      component: EditEquipment,
+      meta: {
+        requireAuth: true,
+      },
+    }
+    ]
+  },
+  {
+    path: '/DeviceCategory',
+    name: 'DeviceCategory',
+    component: DeviceCategory,
+    meta: {
+      requireAuth: true,
+    },
+  },
+  {
+    path: '/Organization',
+    name: 'Organization',
+    component: Organization,
+    meta: {
+      requireAuth: true,
+    },
+  },
+  {
+    path: '/Employee',
+    name: 'Employee',
+    component: Employee,
+    meta: {
+      requireAuth: true,
+    },
+    children: [{
+      path: 'AddEmployee',
+      name: 'AddEmployee',
+      component: AddEmployee,
       meta: {
         requireAuth: true,
       },
     },
     {
-      path: '/Enterprise',
-      name: 'Enterprise',
-      components: require('../components/enterprise/index.vue'),
+      path: 'EditEmployee/:id/',
+      name: 'EditEmployee',
+      component: EditEmployee,
+      meta: {
+        requireAuth: true,
+      },
+    }
+    ]
+  },
+  {
+    path: '/Authority',
+    name: 'Authority',
+    component: Authority,
+    meta: {
+      requireAuth: true,
+    },
+    children: [{
+      path: 'AddAuthority',
+      name: 'AddAuthority',
+      component: AddAuthority,
       meta: {
         requireAuth: true,
       },
     },
     {
-      path: '/Dashboard',
-      name: 'Dashboard',
-      components: require('../components/Dashboard'),
+      path: 'EditAuthority/:id/',
+      name: 'EditAuthority',
+      component: EditAuthority,
+      meta: {
+        requireAuth: true,
+      },
+    }
+    ]
+  },
+  {
+    path: '/ProcessTypes',
+    name: 'ProcessTypes',
+    component: ProcessTypes,
+    meta: {
+      requireAuth: true,
+    },
+  },
+  {
+    path: '/Subcontract',
+    name: 'Subcontract',
+    component: Subcontract,
+    meta: {
+      requireAuth: true,
+    },
+  },
+  {
+    path: '/OrderPrice',
+    name: 'OrderPrice',
+    components: require('@/components/orderPrice/Index.vue'),
+    meta: {
+      requireAuth: true,
+    },
+  },
+  {
+    path: '/HistoricalQuote',
+    name: 'HistoricalQuote',
+    components: require('@/components/orderPrice/HistoricalQuote.vue'),
+    meta: {
+      requireAuth: true,
+    },
+  },
+  {
+    path: '/WorkingHours',
+    name: 'workingHours',
+    components: require('@/components/workingHours/index.vue'),
+    meta: {
+      requireAuth: true,
+    },
+  },
+  {
+    path: '/WorkOrderList',
+    name: 'WorkOrderList',
+    components: require('@/components/workOrder/WorkOrderList.vue'),
+    meta: {
+      requireAuth: true,
+    },
+    children: [{
+      path: 'TransferOrder/:id/',
+      name: 'TransferOrder',
+      components: require('../components/workOrder/transferForm/TransferForm.vue'),
       meta: {
         requireAuth: true,
       },
     },
     {
-      path: '/OrderList',
-      name: 'OrderList',
-      component: OrderList,
+      path: 'WorkOrderDetailsList/:id/',
+      name: 'WorkOrderDetailsList',
+      components: require('../components/workOrder/workOrderDetails/Index.vue'),
       meta: {
         requireAuth: true,
       },
       children: [{
-          path: 'OrderAdd',
-          name: 'OrderAdd',
-          component: OrderAdd,
-          meta: {
-            requireAuth: true,
-          },
+        path: 'WorkHoursHandle/:id/',
+        name: 'WorkHoursHandle',
+        components: require('../components/workOrder/workHoursHandle/index.vue'),
+        meta: {
+          requireAuth: true,
         },
-        {
-          path: 'OrderEdit/:id/',
-          name: 'OrderEdit',
-          component: OrderEdit,
-          meta: {
-            requireAuth: true,
-          },
-        },
-      ]
+      }]
     },
     {
-      path: '/MyDevice',
-      name: 'MyDevice',
-      component: MyDevice,
-      meta: {
-        requireAuth: true,
-      },
-      children: [{
-          path: 'AddEquipment',
-          name: 'AddEquipment',
-          component: AddEquipment,
-          meta: {
-            requireAuth: true,
-          },
-        },
-        {
-          path: 'EditEquipment/:id/',
-          name: 'EditEquipment',
-          component: EditEquipment,
-          meta: {
-            requireAuth: true,
-          },
-        }
-      ]
-    },
-    {
-      path: '/DeviceCategory',
-      name: 'DeviceCategory',
-      component: DeviceCategory,
+      path: 'Inventory/:id/',
+      name: 'Inventory',
+      components: require('../components/workOrder/inventory/index.vue'),
       meta: {
         requireAuth: true,
       },
     },
     {
-      path: '/Organization',
-      name: 'Organization',
-      component: Organization,
-      meta: {
-        requireAuth: true,
-      },
-    },
-    {
-      path: '/Employee',
-      name: 'Employee',
-      component: Employee,
-      meta: {
-        requireAuth: true,
-      },
-      children: [{
-          path: 'AddEmployee',
-          name: 'AddEmployee',
-          component: AddEmployee,
-          meta: {
-            requireAuth: true,
-          },
-        },
-        {
-          path: 'EditEmployee/:id/',
-          name: 'EditEmployee',
-          component: EditEmployee,
-          meta: {
-            requireAuth: true,
-          },
-        }
-      ]
-    },
-    {
-      path: '/Authority',
-      name: 'Authority',
-      component: Authority,
-      meta: {
-        requireAuth: true,
-      },
-      children: [{
-          path: 'AddAuthority',
-          name: 'AddAuthority',
-          component: AddAuthority,
-          meta: {
-            requireAuth: true,
-          },
-        },
-        {
-          path: 'EditAuthority/:id/',
-          name: 'EditAuthority',
-          component: EditAuthority,
-          meta: {
-            requireAuth: true,
-          },
-        }
-      ]
-    },
-    {
-      path: '/ProcessTypes',
-      name: 'ProcessTypes',
-      component: ProcessTypes,
-      meta: {
-        requireAuth: true,
-      },
-    },
-    {
-      path: '/Subcontract',
-      name: 'Subcontract',
-      component: Subcontract,
-      meta: {
-        requireAuth: true,
-      },
-    },
-    {
-      path: '/OrderPrice',
+      path: 'OrderPrice/:id',
       name: 'OrderPrice',
       components: require('@/components/orderPrice/Index.vue'),
       meta: {
         requireAuth: true,
       },
     },
-    {
-      path: '/HistoricalQuote',
-      name: 'HistoricalQuote',
-      components: require('@/components/orderPrice/HistoricalQuote.vue'),
-      meta: {
-        requireAuth: true,
-      },
+    ]
+  },
+  {
+    path: '/materialManagementList',
+    name: 'materialManagementList',
+    components: require('@/components/materialManagement/Index'),
+    meta: {
+      requireAuth: true,
     },
-    {
-      path: '/WorkingHours',
-      name: 'workingHours',
-      components: require('@/components/workingHours/index.vue'),
-      meta: {
-        requireAuth: true,
-      },
+    children: []
+  },
+  {
+    path: '/designmanage',
+    name: 'designmanage',
+    components: require('@/components/xty/designmanage/index'),
+    meta: {
+      requireAuth: true,
     },
-    {
-      path: '/WorkOrderList',
-      name: 'WorkOrderList',
-      components: require('@/components/workOrder/WorkOrderList.vue'),
-      meta: {
-        requireAuth: true,
-      },
-      children: [{
-          path: 'TransferOrder/:id/',
-          name: 'TransferOrder',
-          components: require('../components/workOrder/transferForm/TransferForm.vue'),
-          meta: {
-            requireAuth: true,
-          },
-        },
-        {
-          path: 'WorkOrderDetailsList/:id/',
-          name: 'WorkOrderDetailsList',
-          components: require('../components/workOrder/workOrderDetails/Index.vue'),
-          meta: {
-            requireAuth: true,
-          },
-          children: [{
-            path: 'WorkHoursHandle/:id/',
-            name: 'WorkHoursHandle',
-            components: require('../components/workOrder/workHoursHandle/index.vue'),
-            meta: {
-              requireAuth: true,
-            },
-          }]
-        },
-        {
-          path: 'Inventory/:id/',
-          name: 'Inventory',
-          components: require('../components/workOrder/inventory/index.vue'),
-          meta: {
-            requireAuth: true,
-          },
-        },
-        {
-          path: 'OrderPrice/:id',
-          name: 'OrderPrice',
-          components: require('@/components/orderPrice/Index.vue'),
-          meta: {
-            requireAuth: true,
-          },
-        },
-      ]
+    children: []
+  },
+  {
+    path: '/orderManage',
+    name: 'orderManage',
+    components: require('@/components/xty/orderManage/index'),
+    meta: {
+      requireAuth: true,
     },
-    {
-      path: '/materialManagementList',
-      name: 'materialManagementList',
-      components: require('@/components/materialManagement/Index'),
-      meta: {
-        requireAuth: true,
-      },
-      children: []
+    children: []
+  },
+  {
+    path: '/procurement',
+    name: 'procurement',
+    components: require('@/components/xty/procurementManage/index'),
+    meta: {
+      requireAuth: true,
     },
-    {
-      path: '/designmanage',
-      name: 'designmanage',
-      components: require('@/components/xty/designmanage/index'),
-      meta: {
-        requireAuth: true,
-      },
-      children: []
+    children: []
+  },
+  {
+    path: '/supplierManage',
+    name: 'supplierManage',
+    components: require('@/components/xty/supplierManage/index'),
+    meta: {
+      requireAuth: true,
     },
-    {
-      path: '/orderManage',
-      name: 'orderManage',
-      components: require('@/components/xty/orderManage/index'),
-      meta: {
-        requireAuth: true,
-      },
-      children: []
+    children: []
+  },
+  {
+    path: '/FlowPath',
+    name: 'FlowPath',
+    components: require('@/components/xty/flowPath/index'),
+    meta: {
+      requireAuth: true,
     },
-    {
-      path: '/procurement',
-      name: 'procurement',
-      components: require('@/components/xty/procurementManage/index'),
-      meta: {
-        requireAuth: true,
-      },
-      children: []
+    children: []
+  },
+  {
+    path: '/procurementContractManage',
+    name: 'procurementContractManage',
+    components: require('@/components/xty/procurementContractManage/index'),
+    meta: {
+      requireAuth: true,
     },
-    {
-      path: '/supplierManage',
-      name: 'supplierManage',
-      components: require('@/components/xty/supplierManage/index'),
-      meta: {
-        requireAuth: true,
-      },
-      children: []
+    children: []
+  },
+  {
+    path: '/contractManage',
+    name: 'contractManage',
+    components: require('@/components/xty/contractManage/index'),
+    meta: {
+      requireAuth: true,
     },
-    {
-      path: '/FlowPath',
-      name: 'FlowPath',
-      components: require('@/components/xty/flowPath/index'),
-      meta: {
-        requireAuth: true,
-      },
-      children: []
+    children: []
+  },
+  {
+    path: '/measureUnit',
+    name: 'measureUnit',
+    components: require('@/components/xty/measureUnit/index'),
+    meta: {
+      requireAuth: true,
     },
-    {
-      path: '/procurementContractManage',
-      name: 'procurementContractManage',
-      components: require('@/components/xty/procurementContractManage/index'),
-      meta: {
-        requireAuth: true,
-      },
-      children: []
+    children: []
+  },
+  {
+    path: '/buyer',
+    name: 'buyer',
+    components: require('@/components/xty/buyer/index'),
+    meta: {
+      requireAuth: true,
     },
-    {
-      path: '/contractManage',
-      name: 'contractManage',
-      components: require('@/components/xty/contractManage/index'),
-      meta: {
-        requireAuth: true,
-      },
-      children: []
+    children: []
+  },
+  {
+    path: '/procurementPlan',
+    name: 'procurementPlan',
+    components: require('@/components/xty/procurementPlan/index'),
+    meta: {
+      requireAuth: true,
     },
-    {
-      path: '/measureUnit',
-      name: 'measureUnit',
-      components: require('@/components/xty/measureUnit/index'),
-      meta: {
-        requireAuth: true,
-      },
-      children: []
+    children: []
+  },
+  {
+    path: '/Message',
+    name: 'Message',
+    components: require('@/components/system/message'),
+    meta: {
+      requireAuth: true,
     },
-    {
-      path: '/buyer',
-      name: 'buyer',
-      components: require('@/components/xty/buyer/index'),
-      meta: {
-        requireAuth: true,
-      },
-      children: []
+    children: []
+  },
+  {
+    path: '/Blackboard',
+    name: 'Blackboard',
+    components: require('@/components/system/Blackboard'),
+    meta: {
+      requireAuth: true,
     },
-    {
-      path: '/procurementPlan',
-      name: 'procurementPlan',
-      components: require('@/components/xty/procurementPlan/index'),
-      meta: {
-        requireAuth: true,
-      },
-      children: []
+    children: []
+  },
+  {
+    path: '/deliverySlip',
+    name: 'deliverySlip',
+    components: require('@/components/workOrder/deliverySlip/index'),
+    meta: {
+      requireAuth: true,
     },
-    {
-      path: '/Message',
-      name: 'Message',
-      components: require('@/components/system/message'),
-      meta: {
-        requireAuth: true,
-      },
-      children: []
+    children: []
+  },
+  {
+    path: '/log',
+    name: 'log',
+    components: require('@/components/system/log/index'),
+    meta: {
+      requireAuth: true,
     },
-    {
-      path: '/Blackboard',
-      name: 'Blackboard',
-      components: require('@/components/system/Blackboard'),
-      meta: {
-        requireAuth: true,
-      },
-      children: []
+    children: []
+  },
+  {
+    path: '/enquiry',
+    name: 'enquiry',
+    components: require('@/components/xty/enquiry/index'),
+    meta: {
+      requireAuth: true,
     },
-    {
-      path: '/deliverySlip',
-      name: 'deliverySlip',
-      components: require('@/components/workOrder/deliverySlip/index'),
-      meta: {
-        requireAuth: true,
-      },
-      children: []
+    children: []
+  },
+  {
+    path: '/declaration',
+    name: 'declaration',
+    components: require('@/components/xty/declaration/index'),
+    meta: {
+      requireAuth: true,
     },
-    {
-      path: '/log',
-      name: 'log',
-      components: require('@/components/system/log/index'),
-      meta: {
-        requireAuth: true,
-      },
-      children: []
+    children: []
+  },
+  {
+    path: '/warehouse',
+    name: 'warehouse',
+    components: require('@/components/warehouse/basicSetting/warehouse/index'),
+    meta: {
+      requireAuth: true,
     },
-    {
-      path: '/enquiry',
-      name: 'enquiry',
-      components: require('@/components/xty/enquiry/index'),
-      meta: {
-        requireAuth: true,
-      },
-      children: []
-    },
-    {
-      path: '/declaration',
-      name: 'declaration',
-      components: require('@/components/xty/declaration/index'),
-      meta: {
-        requireAuth: true,
-      },
-      children: []
-    },
+    children: []
+  },
   ]
 })
