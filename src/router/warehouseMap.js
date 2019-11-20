@@ -11,5 +11,18 @@ export default [{
         route: '/warehouse',
         key: 'warehouse',
         permissionCode: 'order_lookup',
-    },]
+    },
+    {
+        menu: '采购入库单',
+        route: '/procurementStock',
+        key: 'procurementStock',
+        permissionCode: 'order_lookup',
+    },
+    {
+        menu: '生产入库单',
+        route: '/productionStock',
+        key: 'productionStock',
+        permissionCode: 'order_lookup',
+    },
+]
 },]

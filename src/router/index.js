@@ -433,5 +433,23 @@ export default new Router({
     },
     children: []
   },
+  {
+    path: '/procurementStock',
+    name: 'procurementStock',
+    components: require('@/components/warehouse/stockManage/procurementStock/index'),
+    meta: {
+      requireAuth: true,
+    },
+    children: []
+  },
+  {
+    path: '/productionStock',
+    name: 'productionStock',
+    components: require('@/components/warehouse/stockManage/productionStock/index'),
+    meta: {
+      requireAuth: true,
+    },
+    children: []
+  },
   ]
 })

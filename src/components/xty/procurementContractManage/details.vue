@@ -249,8 +249,8 @@ export default {
   data() {
     return {
         columns2,
-		data2: [],
-		contractDetails: {},
+				data2: [],
+				contractDetails: {},
         activeKey: "1"
     };
   },
@@ -296,8 +296,8 @@ export default {
 .details {
     .label_right{
       display: inline-block;
-	  width: 120px;
-	  text-align: right;
+	  	width: 120px;
+	  	text-align: right;
     }
 	.table_1 {
 		.ant-table-body {

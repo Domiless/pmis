@@ -60,34 +60,33 @@
         <a-row>
             <a-col :span="24">
                 <a-col :span="8" class="msg_col">
-                    <p>供方：</p>
+                    <pre style="text-align: center">供  方</pre>
                     <p>单位名称：</p>
                     <p>单位地址：</p>
                     <p>法定代表人：</p>
                     <p>委托代理人：</p>
-                    <p>电话：</p>
+                    <pre>电    话：</pre>
                     <p>开户银行：</p>
-                    <p>账号：</p>
+                    <pre>账    号：</pre>
                     <p>邮政编码：</p>
                 </a-col>
                 <a-col :span="8" class="msg_col msg_col2">
-                    <p>需方：</p>
+                    <pre style="text-align: center">需  方</pre>
                     <p>单位名称：</p>
                     <p>单位地址：</p>
                     <p>法定代表人：</p>
                     <p>经办人：</p>
-                    <p>传真：</p>
-                    <p>电话：</p>
+                    <pre>传    真：</pre>
+                    <pre>电    话：</pre>
                     <p>开户银行：</p>
-                    <p>账号：</p>
+                    <pre>账    号：</pre>
                     <p>邮政编码：</p>
                 </a-col>
                 <a-col :span="8" class="msg_col msg_col3">
-                    <p></p>
-                    <p>鉴（公）证意见：</p>
-                    <p>经办人：</p>
-                    <p>鉴（公）证机关（章）：</p>
-                    <p>年 月 日</p>
+                    <p style="margin-top: 35px;margin-bottom: 150px">鉴（公）证意见：</p>
+                    <p style="text-align: center">经办人：</p>
+                    <p style="text-align: center">鉴（公）证机关（章）</p>
+                    <pre style="margin-left: 400px">     年     月     日</pre>
                 </a-col>
             </a-col>
             <a-col :span="24">
@@ -99,21 +98,25 @@
             <a-col :span="24">
                 <table class="table_contract">
                     <tr>
-                        <td colspan="8" style="text-align: center">合同清单</td>
+                        <td colspan="8" style="text-align: center;font-size: 20px">合同清单</td>
                     </tr>
-                    <tr>
-                        <td colspan="8">
-                            <span>供方：SMC(中国)有限公司 10578</span>
-                            <span>合同编号：ZN-GG-1911 2830</span>
+                    <tr style="font-size: 16px">
+                        <td colspan="5">
+                            <span>供方：{{ contractMsg.supplierName }}</span>
+                        </td>
+                        <td colspan="3" style="border-left:none">
+                            <span>合同编号：{{ contractMsg.shopContractNo }}</span>
                         </td>
                     </tr>
                     <tr>
-                        <td colspan="8">
-                            <span>需方：四川长虹智能制造技术有限公司 10578</span>
-                            <span>签订时间：2019年11月5日</span>
+                        <td colspan="5">
+                            <span>需方：{{ contractMsg.demand }}</span>
+                        </td>
+                        <td colspan="3" style="border-left:none">
+                            <span>签订时间：{{ contractMsg.digndate }}</span>
                         </td>
                     </tr>
-                    <tr>
+                    <tr style="text-align:center">
                         <td>序号</td>
                         <td>工作令</td>
                         <td>名称型号</td>
@@ -123,14 +126,24 @@
                         <td>不含税总价</td>
                         <td>交货时间</td>
                     </tr>
-                    <tr></tr>
-                    <tr>
+                    <tr v-for="(item,index) in contractMsg.purchaseDesDOList" :key="item.id" style="text-align: center">
+                        <td>{{ index + 1 }}</td>
+                        <td>{{ item.workOrderNo }}</td>
+                        <td>{{ item.name }}</td>
+                        <td>{{ item.priseUnit }}</td>
+                        <td>{{ item.orderNumber }}</td>
+                        <td>{{ item.total/item.orderNumber }}</td>
+                        <td>{{ item.total }}</td>
+                        <td>{{ item.delivery }}</td>
+                    </tr>
+                    <tr style="text-align: center">
                         <td colspan="6">合计：</td>
+                        <td>{{ totalMoney }}</td>
                         <td></td>
                     </tr>
-                    <tr>
+                    <tr style="text-align: center">
                         <td colspan="8">
-                            合计（不含13%增值税，含运费、贵司物流或快递至我司指定地点）：元
+                            合计（不含13%增值税，含运费、贵司物流或快递至我司指定地点）：{{ totalMoney }}元
                         </td>
                     </tr>
                 </table>
@@ -142,14 +155,16 @@
 export default {
     data() {
         return {
-            contractMsg: []
+            contractMsg: [],
+            totalMoney: ''
         }
     },
     created() {
         this.priviewType = sessionStorage.getItem("priviewType");
         if (this.priviewType == 4) {
 			this.contractMsg = JSON.parse(sessionStorage.getItem("priview"));
-			console.log(this.contractMsg);
+            console.log(this.contractMsg);
+            this.totalMoney = this.contractMsg.summoney;
 		}
     }    
 }
@@ -173,11 +188,14 @@ export default {
     }
     .msg_col {
         border: 1px solid #000000;
+        p,pre {
+            margin-left: 10px;
+        }
     }
     .msg_col2 {
         border-left: 0px ;
         height: 317px;
-        p {
+        p,pre {
             margin-bottom: 10px;
         }
     }

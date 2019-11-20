@@ -134,14 +134,18 @@
 				<a-row>
 					<a-form-item label="账号" :labelCol="{ span: 4}" :wrapperCol="{ span: 18}">
 						<a-input
-							v-decorator="['bankAccount']"
+							v-decorator="['bankAccount',
+							{rules: [{validator: checkbankAccount}]}
+							]"
 						></a-input>
 					</a-form-item>
 				</a-row>
 				<a-row>
 					<a-form-item label="邮政编码" :labelCol="{ span: 4}" :wrapperCol="{ span: 18}">
 						<a-input
-							v-decorator="['postalcode']"
+							v-decorator="['postalcode',
+							{rules: [{validator: checkpostalCode}]}
+							]"
 						></a-input>
 					</a-form-item>
 				</a-row>
@@ -251,14 +255,18 @@
 				<a-row>
 					<a-form-item label="账号" :labelCol="{ span: 4}" :wrapperCol="{ span: 18}">
 						<a-input
-							v-decorator="['bankAccount']"
+							v-decorator="['bankAccount',
+							{rules: [{validator: checkbankAccount}]}
+							]"
 						></a-input>
 					</a-form-item>
 				</a-row>
 				<a-row>
 					<a-form-item label="邮政编码" :labelCol="{ span: 4}" :wrapperCol="{ span: 18}">
 						<a-input
-							v-decorator="['postalcode']"
+							v-decorator="['postalcode',
+							{rules: [{validator: checkpostalCode}]}
+							]"
 						></a-input>
 					</a-form-item>
 				</a-row>
@@ -339,7 +347,7 @@
 			</a-row>
 			<a-row>
 				<span class="label_right" style="margin-bottom:12px;">地址：</span>
-				<span>{{ supplierDetails.address }}</span>
+				<span>{{ supplierDetails.address == "/" ? "" : supplierDetails.address }}</span>
 			</a-row>
 			<a-row>
 				<span class="label_right" style="margin-bottom:12px;">备注：</span>
@@ -434,6 +442,28 @@ export default {
 				callback();
 			}
 		},
+		checkbankAccount(rule, value, callback) {
+			if (
+				/^[0-9]*$/.test(value) == false &&
+				value != "" &&
+				value != null
+			) {
+				callback(new Error("请输入数字"));
+			} else {
+				callback();
+			}
+		},
+		checkpostalCode(rule, value, callback) {
+			if (
+				/^[0-9]{1,20}$/.test(value) == false &&
+				value != "" &&
+				value != null
+			) {
+				callback(new Error("请输入1到20位数字"));
+			} else {
+				callback();
+			}
+		},
 		checkEmail(rule, value, callback) {
 			if (
 				/^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/.test(value) == false &&
@@ -451,9 +481,11 @@ export default {
 		onSelectAddressChange(value, selectedOptions) {
 			console.log(value, selectedOptions);
 			this.addressCodeArr = value;
-			if (selectedOptions != "") {
+			if (selectedOptions != "" && typeof(selectedOptions) != "undefined") {
 				this.address = selectedOptions.map(item => item.label).join("/");
 				console.log(this.address);
+			}else {
+				this.address = [];
 			}
 		},
 		filter(inputValue, path) {
@@ -470,9 +502,13 @@ export default {
 		showDetails(row) {
 			this.supplierDetails = row;
 			if( this.supplierDetails.address.indexOf("undefined") != -1) {
-				this.supplierDetails.address = this.supplierDetails.address.replace("undefined","");
+				this.supplierDetails.address = this.supplierDetails.address.replace(";undefined","");
 			}
-			this.supplierDetails.address = this.supplierDetails.address.replace(/;/g,"/");
+			if( this.supplierDetails.address.split(";")[0] == "" ) {
+				this.supplierDetails.address = this.supplierDetails.address.replace(/;/g,"");
+			}else{
+				this.supplierDetails.address = this.supplierDetails.address.replace(/;/g,"/");
+			}
 			this.detailsVisible = true;
 			console.log(this.supplierDetails);
 		},
@@ -561,6 +597,8 @@ export default {
 								this.getList();
 								this.form.resetFields();
 								this.addVisible = false;
+								this.addressCodeArr = [];
+								this.address = [];
 							}
 						},
 						({ type, info }) => {}
@@ -592,6 +630,7 @@ export default {
 						address: this.address + ";" + values.address,
 						remark: values.remark
 					};
+					console.log(data);
 					this.Axios(
 						{
 							url: "/api-order/supplier/update",
@@ -611,6 +650,8 @@ export default {
 								this.form.resetFields();
 								this.editVisible = false;
 								this.selectedRowKeys = [];
+								this.addressCodeArr = [];
+								this.address = [];
 							}
 						},
 						({ type, info }) => {}

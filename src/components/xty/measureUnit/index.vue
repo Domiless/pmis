@@ -16,7 +16,7 @@
 				permCode="unit_lookup.unit_delete"
 				banType="hide"
 				@click="showDeleteConfirm"
-				:disabled="selectedRowKeys.length==0"
+				:disabled="selectedRowKeys.length!=1"
 			>
 				<a-icon style="color:#1890ff;" type="delete" />删除
 			</permission-button>

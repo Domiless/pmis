@@ -277,6 +277,7 @@ export default {
       }
       if( num == 3 ) {
         this.detailsVisible = false;
+        this.selectedRowKeys = [];
       }
     },
     editShow(){

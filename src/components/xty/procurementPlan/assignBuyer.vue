@@ -27,14 +27,40 @@
 				<span>{{orderMsg.gmtCreated}}</span>
             </a-col>
         </a-row>
+        <a-row class="second_row">
+            <a-col :span="24">
+                <span>指派采购员：</span>
+                <a-select
+                 style="width: 240px"
+                 @change="handleChange" 
+                 placeholder="请选择"
+                 :labelInValue="true"
+                >
+                    <a-select-option v-for="i in buyerArr" :key="i.id" :value="i.id"
+                    >{{ i.name }}</a-select-option
+                    >
+                </a-select>
+                <permission-button
+                    permCode
+                    banType="hide"
+                    @click="setBuyer"
+                    :disabled="selectedRowKeys.length == 0"
+                    type="primary"
+                >
+				提交
+			</permission-button>
+            </a-col>
+        </a-row>
         <a-row>
             <a-table
                 rowKey="id"
                 :columns="columns"
                 :dataSource="data"
                 :pagination="false"
+                :scroll="{ y: 400 }"
+                :rowSelection="{selectedRowKeys:selectedRowKeys,onChange: onSelectChange}"
             >
-                <span slot="appointNameTitle">
+                <!-- <span slot="appointNameTitle">
                     <span style="color: #f5222d">*</span>指派采购员
                 </span>
                 <template slot="appointName" slot-scope="text,record">
@@ -53,7 +79,7 @@
                             {{ item.name }}
                         </a-select-option>
                     </a-select>
-                </template>
+                </template> -->
             </a-table>
         </a-row>
         <a-row>
@@ -93,10 +119,10 @@ const columns = [
 	},
 	{
 		dataIndex: "appointName",
-		title: "指派采购员",
+		title: "采购员",
         key: "appointName",
-        slots: { title: "appointNameTitle" },
-		scopedSlots: { customRender: "appointName" },
+        // slots: { title: "appointNameTitle" },
+		// scopedSlots: { customRender: "appointName" },
 		width: "20%"
 	},
 ]
@@ -104,7 +130,10 @@ export default {
     props: {
         orderMsg: {
             default: ''
-        }
+        },
+        orderId: {
+            default: ''
+        },
     },
     data() {
         return {
@@ -112,12 +141,32 @@ export default {
             data: [],
             columns,
             buyerArr: [],
-            appointId: ''
+            buyerValue: [],
+            appointId: '',
+            selectedRows: [],
+            selectedRowKeys: [],
         }
     },
     methods: {
          close() {
             this.$emit("cancelAssign", false);
+            this.selectedRowKeys = [];
+        },
+        onSelectChange(selectedRowKeys, selectedRows) {
+			this.selectedRowKeys = selectedRowKeys;
+			this.selectedRows = selectedRows;
+			console.log(this.selectedRowKeys);
+			console.log(this.selectedRows);
+        },
+        setBuyer() {
+            for(let i = 0; i< this.selectedRowKeys.length; i++) {
+                this.handleChangeTable(this.buyerValue.label,this.selectedRowKeys[i],"appointName");
+            }
+            this.selectedRowKeys = [];
+        },
+        handleChange(value, option) {
+            console.log(value);
+            this.buyerValue = value;
         },
         submit() {
             const that = this;
@@ -136,6 +185,7 @@ export default {
                                     appointName: item.appointName
                                 }
                             })
+                data = data.filter((item,index,arr) => { return !(!item.appointName && typeof(item.appointName)!='undefined' && item.appointName!=0) });
                 console.log(data);
                 this.Axios(
                     {
@@ -203,13 +253,13 @@ export default {
 				({ type, info }) => {}
 			);
         },
-        getList() {
+        getList(id) {
             this.Axios(
 				{
 					url: "/api-order/bom/getBomdes",
 					type: "get",
 					params: {
-						bomIdS: this.orderMsg.id
+						bomIdS: id
 					},
 					option: { enableMsg: false }
 				},
@@ -226,8 +276,14 @@ export default {
         }
     },
     created() {
-        this.getList();
+        this.getList(this.orderId);
         this.getBuyer();
+    },
+    watch: {
+        orderId() {
+            this.getList(this.orderId);
+            this.getBuyer();
+        }
     }
 }
 </script>
@@ -238,8 +294,12 @@ export default {
 	}
     .label_right {
         display: inline-block;
-        width: 120px;
+        width: 90px;
         text-align: right;
+    }
+    .second_row {
+        margin-top: 20px;
+        margin-bottom: 10px;
     }
 }
 </style>
