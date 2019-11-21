@@ -11,5 +11,17 @@ export default [{
         route: '/warehouse',
         key: 'warehouse',
         permissionCode: 'order_lookup',
+    },
+    {
+        menu: '库位管理',
+        route: '/location',
+        key: 'location',
+        permissionCode: 'order_lookup',
+    },
+    {
+        menu: '分类管理',
+        route: '/classify',
+        key: 'classify',
+        permissionCode: 'order_lookup',
     },]
 },]
