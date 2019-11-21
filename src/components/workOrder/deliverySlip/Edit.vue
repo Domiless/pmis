@@ -14,7 +14,7 @@
           v-decorator="['title',{rules: [{ required: true, message: '请填写标题' }]}]"
         ></a-input>
       </a-form-item>
-      <a-form-item label="收货单位">
+      <a-form-item label="外协供应商">
         <a-input style="width:335px;" v-decorator="['receivingUnit']"></a-input>
       </a-form-item>
       <a-form-item label="送货单位">

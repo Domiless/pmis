@@ -434,6 +434,24 @@ export default new Router({
     children: []
   },
   {
+    path: '/location',
+    name: 'location',
+    components: require('@/components/warehouse/basicSetting/location/index'),
+    meta: {
+      requireAuth: true,
+    },
+    children: []
+  },
+  {
+    path: '/classify',
+    name: 'classify',
+    components: require('@/components/warehouse/basicSetting/classify/index'),
+    meta: {
+      requireAuth: true,
+    },
+    children: []
+  },
+  {
     path: '/procurementStock',
     name: 'procurementStock',
     components: require('@/components/warehouse/stockManage/procurementStock/index'),

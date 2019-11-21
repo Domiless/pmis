@@ -5,7 +5,7 @@
         <a-row>
           <div style="line-height:50px;">
             <a-col :span="15">
-              <permission-button permCode banType="hide">
+              <permission-button permCode banType="hide" @click="addVisible=true">
                 <a-icon style="color:#1890ff;" type="plus" />新增
               </permission-button>
               <permission-button permCode banType="hide" :disabled="selectedRowKeys.length!=1">
@@ -30,11 +30,17 @@
             :rowSelection="{selectedRowKeys:selectedRowKeys,onChange: onSelectChange}"
             rowKey="id"
           >
-            <template slot="title11" slot-scope="text, record, index">
-              <div>
-                <!-- <a-button class="button_text" @click="showDetails(record)">{{text}}</a-button> -->
-                <a href="jsvascript:" @click="showDetails(record)">{{text}}</a>
-              </div>
+            <template slot="state" slot-scope="text, record, index">
+              <a-switch
+                checkedChildren="启用"
+                unCheckedChildren="禁用"
+                v-model="record.state"
+                @click="switchChange(record,index)"
+                class="qwwe"
+              />
+            </template>
+            <template slot="warehouseNmae" slot-scope="text, record, index">
+              <a href="javascript:">{{text}}</a>
             </template>
           </a-table>
           <a-pagination
@@ -51,9 +57,31 @@
         </a-row>
       </a-col>
     </a-row>
+    <a-modal
+      title="新增"
+      :footer="null"
+      width="800px"
+      :visible="addVisible"
+      @cancel="handleCancel(1)"
+      :maskClosable="false"
+      :destroyOnClose="true"
+    >
+      <add v-on:addModal="addModal" ref="addref"></add>
+    </a-modal>
+    <a-modal
+      title="修改"
+      :footer="null"
+      width="800px"
+      :visible="editVisible"
+      @cancel="handleCancel(2)"
+      :maskClosable="false"
+    >
+      <!-- <edit v-on:editModal="editModal" :msg="selectedRowKeys[0]" ref="editref"></edit> -->
+    </a-modal>
   </div>
 </template>
 <script>
+import add from "./add";
 const columns = [
   {
     dataIndex: "docNo",
@@ -66,7 +94,7 @@ const columns = [
     title: "仓库名称",
     width: "20%",
     key: "title",
-    scopedSlots: { customRender: "hasWorkLoad" }
+    scopedSlots: { customRender: "warehouseNmae" }
   },
   {
     dataIndex: "deliveryUnit",
@@ -82,8 +110,8 @@ const columns = [
     width: "15%"
   },
   {
-    dataIndex: "gmtCreated",
-    key: "gmtCreated",
+    dataIndex: "state",
+    key: "state",
     title: "当前状态",
     width: "10%",
     scopedSlots: { customRender: "state" }
@@ -92,21 +120,46 @@ const columns = [
     dataIndex: "schedule",
     key: "schedule",
     title: "备注",
-    width: 120
+    width: "20%"
   }
 ];
 export default {
   data() {
     return {
+      addVisible: false,
+      editVisible: false,
       columns,
       current: 1,
       total: 0,
-      data: [],
+      data: [
+        {
+          docNo: "111",
+          id: 1,
+          state: false,
+          title: "lalal"
+        },
+        {
+          docNo: "222",
+          id: 2,
+          state: true
+        }
+      ],
       selectedRowKeys: [],
       selectedRows: []
     };
   },
   methods: {
+    addModal() {
+      this.addVisible = false;
+    },
+    handleCancel(a) {
+      if (a == 1) {
+        this.$refs.addref.quxiao();
+      }
+    },
+    switchChange(a, b) {
+      console.log(a, b);
+    },
     onSelectChange(selectedRowKeys, a) {
       this.selectedRowKeys = selectedRowKeys;
       this.selectedRows = a;
@@ -185,7 +238,10 @@ export default {
       );
     }
   },
-  created() {}
+  created() {},
+  components: {
+    add
+  }
 };
 </script>
 <style lang="less">

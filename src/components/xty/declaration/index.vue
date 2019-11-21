@@ -8,7 +8,7 @@
         permCode
         banType="hide"
         :disabled="selectedRowKeys.length!=1"
-        @click="editVisible=true"
+        @click="esitShow"
       >
         <a-icon style="color:#1890ff;" type="edit" />修改
       </permission-button>
@@ -25,7 +25,7 @@
         <a-range-picker style="width:240px" @change="onChangeRange" format="YYYY/MM/DD"></a-range-picker>
         <span>关键词 :</span>
         <a-input
-          placeholder="项目订单编号/设计单号/部件名称/图号/设计负责人"
+          placeholder="报审单编号/标题"
           style="width: 350px"
           v-model="keyWords"
           @keyup.enter.native="getList"
@@ -45,9 +45,29 @@
           <a href="javascript:" @click="showDetails(record.id)">{{text}}</a>
         </template>
         <template slot="reviewSchedule" slot-scope="text, record, index">
-          <span
+          <span v-if="text==2" style="font-size:14px;color:#027DB4;">审批中</span>
+          <span v-if="text==1" style="font-size:14px;color:#999999;">暂存</span>
+          <a-popover title placement="right">
+            <template slot="content">
+              <span>审批意见：{{record.comment!=null?record.comment:"无"}}</span>
+            </template>
+            <span v-if="text==4" style="font-size:14px;color:#f6003c;">未通过</span>
+          </a-popover>
+          <a-popover title placement="right">
+            <template slot="content">
+              <span>审批意见：{{record.comment!=null?record.comment:"无"}}</span>
+            </template>
+            <span v-if="text==5" style="font-size:14px;color:#E02D2D;">已终止</span>
+          </a-popover>
+          <a-popover title placement="right">
+            <template slot="content">
+              <span>审批意见：{{record.comment!=null?record.comment:"无"}}</span>
+            </template>
+            <span v-if="text==3" style="font-size:14px;color:#10CF0C;">已通过</span>
+          </a-popover>
+          <!-- <span
             :style="{color:text==1?'':text==2?'#1890FF':text==3?'#03B615':text==4?'red':'#999999'}"
-          >{{text==1?'暂存':text==2?'审批中':text==3?'已通过':text==4?'未通过':'已终止'}}</span>
+          >{{text==1?'暂存':text==2?'审批中':text==3?'已通过':text==4?'未通过':'已终止'}}</span> -->
         </template>
         <template slot="remark" slot-scope="text, record, index">
           <div class="content_style" style="max-width:200px;">{{record.remark}}</div>
@@ -72,6 +92,7 @@
       :visible="addVisible"
       @cancel="handleCancel(1)"
       :maskClosable="false"
+      :destroyOnClose="true"
     >
       <add v-on:addModal="addModal" ref="addEnquiry"></add>
     </a-modal>
@@ -82,6 +103,7 @@
       :visible="editVisible"
       @cancel="handleCancel(2)"
       :maskClosable="false"
+      :destroyOnClose="true"
     >
       <edit v-on:addModal="editModal" :rowId="selectedRowKeys[0]" ref="editEnquiry"></edit>
     </a-modal>
@@ -92,6 +114,7 @@
       :visible="detailsVisible"
       @cancel="handleCancel(3)"
       :maskClosable="false"
+      :destroyOnClose="true"
     >
       <details1 :rowId="detailsId"></details1>
     </a-modal>
@@ -102,6 +125,7 @@
       width="600px"
       @cancel="handleCancel(4)"
       :maskClosable="false"
+      :destroyOnClose="true"
     >
       <a-form :form="form">
         <a-form-item label="选择流程" :labelCol="{span:4}" :wrapperCol="{span:18}">
@@ -196,6 +220,16 @@ export default {
     };
   },
   methods: {
+    esitShow() {
+      if (
+        this.selectedRows[0].reviewSchedule == 1 ||
+        this.selectedRows[0].reviewSchedule == 4
+      ) {
+        this.editVisible = true;
+      } else {
+        this.$message.error(`只能对暂存、未通过报审单进行修改`);
+      }
+    },
     showDetails(id) {
       this.detailsId = id;
       this.detailsVisible = true;

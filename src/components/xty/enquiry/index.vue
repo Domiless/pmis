@@ -62,7 +62,7 @@
         <a-tab-pane tab="已询价" key="2" forceRender>
           <a-table
             @change="sortValue1"
-            :scroll="{ x: 2810}"
+            :scroll="{ x: 2950}"
             rowKey="id"
             :columns="columns1"
             :dataSource="data1"
@@ -93,20 +93,22 @@
     <a-modal
       title="询价"
       :footer="null"
-      width="1200px"
+      width="1300px"
       :visible="addVisible"
       @cancel="handleCancel(1)"
       :maskClosable="false"
+      :destroyOnClose="true"
     >
       <add v-on:addModal="addModal" :dataArray="addArray" ref="addEnquiry"></add>
     </a-modal>
     <a-modal
       title="询价修改"
       :footer="null"
-      width="1200px"
+      width="1300px"
       :visible="editVisible"
       @cancel="handleCancel(2)"
       :maskClosable="false"
+      :destroyOnClose="true"
     >
       <edit v-on:editModal="editModal" :dataArray="editArray"></edit>
     </a-modal>
@@ -350,7 +352,14 @@ const columns1 = [
     scopedSlots: { customRender: "remark" }
   },
   {
-    title: "小计",
+    title: "询价时间",
+    key: "gmtCreated",
+    dataIndex: "gmtCreated",
+    width: 140,
+    scopedSlots: { customRender: "remark" }
+  },
+  {
+    title: "小计(元)",
     key: "total",
     dataIndex: "total",
     width: 80
@@ -495,12 +504,7 @@ export default {
         result => {
           if (result.data.code === 200) {
             console.log(result);
-            this.data = result.data.data.content.map(item => {
-              return {
-                ...item,
-                workOrderNo: item.bom.bomNo
-              };
-            });
+            this.data = result.data.data.content;
             this.total = result.data.data.totalElement;
           }
         },
@@ -549,10 +553,24 @@ export default {
     eidt(row, a) {
       this.editArray = [];
       if (a == 1) {
+        if (
+          row
+            .map(item => {
+              return item.isCreate;
+            })
+            .find(item => item == 1) != undefined
+        ) {
+          this.$message.error(`所选信息已有业务关联，不可修改`);
+          return false;
+        }
         this.editArray = [...row];
         this.editVisible = true;
       }
       if (a == 2) {
+        if (row.isCreate == 1) {
+          this.$message.error(`当前信息已有业务关联，不可修改`);
+          return false;
+        }
         this.editArray.push(row);
         this.editVisible = true;
       }
