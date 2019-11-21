@@ -79,6 +79,10 @@ export default {
 			this.selectedRows = [];
     },
     submit() {
+      if(this.selectedRowKeys.length === 0) {
+        this.$message.error("请选择员工");
+        return
+      }
       let data = this.selectedRows.map(item => {
         return {
           userId: item.id,

@@ -20,23 +20,21 @@
         </a-row>
         <a-row>
 			<a-col :span="24">
-                <a-col :span="5">
 				    <span>日期 :</span>
 				    <a-range-picker style="width:240px" @change="onChangeRange" format="YYYY/MM/DD"></a-range-picker>
-                </a-col>
-				<span>关键词 :</span>
+				<span style="margin-left: 10px">关键词 :</span>
 				<a-input
-					placeholder="项目订单编号/采购单号/申请人"
-					style="width: 250px"
+					placeholder="项目订单编号/设计单号/部件名称/图号/设计负责人"
+					style="width: 350px"
 					v-model="keyWords"
-					@keyup.enter.native="getList"
+					@keyup.enter.native="search"
 				></a-input>
-				<a-button @click="getList">搜索</a-button>
+				<a-button @click="search">搜索</a-button>
 			</a-col>
 		</a-row>
         <a-row>
             <a-col :span="24">
-                <a-tabs defaultActiveKey="1">
+                <a-tabs :activeKey="currentKey" @change="changeKey">
                     <a-tab-pane tab="未指派" key="1">
                         <a-table
                             rowKey="id"
@@ -96,7 +94,7 @@
 			:maskClosable="false"
 			@cancel="handleCancel(1)"
 		>
-			<assign-buyer :orderMsg="selectedRows1[0]" @cancelAssign="closeAssign" ref="assignBuyer"></assign-buyer>
+			<assign-buyer :orderMsg="selectedRows1[0]" :orderId="selectedRowKeys1[0]" @cancelAssign="closeAssign" ref="assignBuyer"></assign-buyer>
 		</a-modal>
         <a-modal
 			title="采购单号详情"
@@ -186,9 +184,9 @@ const columns = [
 		width: "8%"
     },
     {
-		dataIndex: "gmtCreated",
+		dataIndex: "assignerTime",
 		title: "创建时间",
-		key: "gmtCreated",
+		key: "assignerTime",
 		width: "10%"
 	},
 	{
@@ -229,9 +227,9 @@ const detailsColumns = [
 		width: "20%"
     },
     {
-		dataIndex: "gmtCreated",
+		dataIndex: "assignerTime",
 		title: "指派时间",
-		key: "gmtCreated",
+		key: "assignerTime",
 		width: "20%"
 	},
 ]
@@ -266,16 +264,29 @@ export default {
 			total2: 0,
             dateValue: [],
             keyWords: '',
-            details: []
+			details: [],
+			currentKey: "1"
         }
     },
     methods: {
+		changeKey(activeKey) {
+			console.log(activeKey);
+			this.currentKey = activeKey;
+		},
+		search() {
+			if(this.currentKey == 1 ) {
+				this.getList();
+			}
+			if(this.currentKey == 2 ) {
+				this.getList2();
+			}
+		},
         showAssign() {
             this.assignVisible = true;
         },
         handleCancel(num) {
             if(num == 1) {
-                // this.$refs.assignBuyer.close();
+                this.$refs.assignBuyer.close();
             }
             if(num == 2) {
                 this.detailsVisible = false;
@@ -308,6 +319,7 @@ export default {
         closeAssign(params) {
 			this.assignVisible = params;
 			this.getList();
+			this.selectedRowKeys1 = [];
 		},
 		onChange(current, pageNumber) {
 			console.log("Page: ", pageNumber);
@@ -384,7 +396,7 @@ export default {
 					params: {
 						page: this.current2,
 						size: this.pageSize2,
-						keyword: this.keyWords2,
+						keyword: this.keyWords,
 						type: 0,
 						auditState: 3,
 						isAppiont: 1,

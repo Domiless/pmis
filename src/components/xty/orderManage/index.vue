@@ -42,7 +42,7 @@
 						<span>日期 :</span>
 						<a-range-picker style="width:240px" @change="onChangeRange" format="YYYY/MM/DD"></a-range-picker>
 						<a-input-group class="changeDis">
-							<span>审批状态 :</span>
+							<span>审批状态 : </span>
 							<a-select v-model="reviewState" style="width: 100px" optionFilterProp="children">
 								<a-select-option :value="-1">全部</a-select-option>
 								<a-select-option :value="1">暂存</a-select-option>

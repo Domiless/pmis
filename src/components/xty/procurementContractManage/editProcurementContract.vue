@@ -66,6 +66,7 @@
               <a-select
                 v-decorator="['taxrate', { rules: [{ required:'true', message: '请选择税率'}]}]"
                 placeholder="请选择"
+								@select="getTaxrate"
               >
                 <a-select-option value="0%">0%</a-select-option>
                 <a-select-option value="3%">3%</a-select-option>
@@ -378,11 +379,16 @@ export default {
 			taxMoney: '',
 			chineseTaxMoney: '',
 			supplierId: '',
-			modelId: ''
+			modelId: '',
+			taxrateValue: '',
 
     };
   },
   methods: {
+		getTaxrate(value){
+			console.log(value);
+			this.taxrateValue = value;
+		},
     close() {
       this.form.resetFields();
       this.$emit('cancelEdit',false);
@@ -405,6 +411,30 @@ export default {
       this.pageSize = pageSize;
       this.current = 1;
       this.getList();
+		},
+		number_chinese(str) {
+			var num = parseFloat(str);
+			var strOutput = "",
+				strUnit = "仟佰拾亿仟佰拾万仟佰拾元角分";
+			num += "00";
+			var intPos = num.indexOf(".");
+			if (intPos >= 0) {
+				num = num.substring(0, intPos) + num.substr(intPos + 1, 2);
+			}
+			strUnit = strUnit.substr(strUnit.length - num.length);
+			for (var i = 0; i < num.length; i++) {
+				strOutput +=
+					"零壹贰叁肆伍陆柒捌玖".substr(num.substr(i, 1), 1) +
+					strUnit.substr(i, 1);
+			}
+			return strOutput
+				.replace(/零角零分$/, "整")
+				.replace(/零[仟佰拾]/g, "零")
+				.replace(/零{2,}/g, "零")
+				.replace(/零([亿|万])/g, "$1")
+				.replace(/零+元/, "元")
+				.replace(/亿零{0,3}万/, "亿")
+				.replace(/^元/, "零元");
     },
      onSelectChange(a, b, c) {
 			if (c == 1) {
@@ -438,16 +468,25 @@ export default {
 			if (c == 2) {
 				this.selectedRowKeysRight = a;
 			}
+		},
+		getArrDifference(arr1, arr2) {
+        return arr1.concat(arr2).filter(function(v, i, arr) {
+            return arr.indexOf(v) === arr.lastIndexOf(v);
+        });
     },
     delSelect() {
+			let selectedRowsRightCopy = [...this.selectedRowsRight];
 			for (let i = 0; i < this.selectedRowKeysRight.length; i++) {
 				this.selectedRowsRight = this.selectedRowsRight.filter(item => {
 					return item.id != this.selectedRowKeysRight[i];
 				});
-				this.selectedRowKeysLeft = this.selectedRowKeysLeft.filter(item => {
-					return item != this.selectedRowKeysRight[i];
-				});
+				// this.selectedRowKeysLeft = this.selectedRowKeysLeft.filter(item => {
+				// 	return item != this.selectedRowKeysRight[i];
+				// });
+				
 			}
+			console.log(this.getArrDifference(selectedRowsRightCopy,this.selectedRowsRight))
+			this.data.push(...this.getArrDifference(selectedRowsRightCopy,this.selectedRowsRight));
 			this.selectedRowKeysRight = [];
     },
     delAll() {
@@ -507,7 +546,28 @@ export default {
 		// 		},
 		// 		({ type, info }) => {}
 		// 	);
-    // },
+		// },
+		getDetailMsg(id) {
+      this.Axios(
+				{
+					url: "/api-order/purchase/getDesBysupplier",
+          type: "get",
+         	params: {
+						supplierId: id
+					},
+					option: { enableMsg: false }
+				},
+				this
+			).then(
+				result => {
+					if (result.data.code === 200) {
+            console.log(result);
+            this.data = result.data.data;
+					}
+				},
+				({ type, info }) => {}
+			);
+    },
     setDefalut(id){
       this.Axios(
 				{
@@ -535,6 +595,7 @@ export default {
 						this.chineseTaxMoney =  msg.chineseTaxMoney;
 						this.chineseSumtaxMoney = msg.chineseSumtaxMoney;
 						this.selectedRowsRight = msg.purchaseDesDOList;
+						this.getDetailMsg(msg.supplierId);
             setTimeout(()=> {
               this.form.setFieldsValue({
                 // procurementNo: msg.purchaseNo,
@@ -562,25 +623,6 @@ export default {
 				},
 				({ type, info }) => {}
 			);
-			// this.Axios(
-			// 	{
-			// 		url: '/api-order/shopContract/print',
-			// 		params: {
-      //       id: id
-      //     },
-			// 		type: "get",
-			// 		option: { enableMsg: false }
-			// 	},
-			// 	this
-			// ).then(
-			// 	result => {
-			// 		if (result.data.code === 200) {
-      //       console.log(result);
-						
-			// 		}
-			// 	},
-			// 	({ type, info }) => {}
-			// );
     },
     editProcurement() {
       const that = this;
