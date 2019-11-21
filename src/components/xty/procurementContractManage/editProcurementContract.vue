@@ -485,13 +485,13 @@ export default {
 				this.selectedRowsRight = this.selectedRowsRight.filter(item => {
 					return item.id != this.selectedRowKeysRight[i];
 				});
-				// this.selectedRowKeysLeft = this.selectedRowKeysLeft.filter(item => {
-				// 	return item != this.selectedRowKeysRight[i];
-				// });
+				this.selectedRowKeysLeft = this.selectedRowKeysLeft.filter(item => {
+					return item != this.selectedRowKeysRight[i];
+				});
 				
 			}
-			console.log(this.getArrDifference(selectedRowsRightCopy,this.selectedRowsRight))
-			this.data.push(...this.getArrDifference(selectedRowsRightCopy,this.selectedRowsRight));
+			// console.log(this.getArrDifference(selectedRowsRightCopy,this.selectedRowsRight))
+			// this.data.push(...this.getArrDifference(selectedRowsRightCopy,this.selectedRowsRight));
 			this.selectedRowKeysRight = [];
     },
     delAll() {
