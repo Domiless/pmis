@@ -451,5 +451,23 @@ export default new Router({
     },
     children: []
   },
+  {
+    path: '/backStock',
+    name: 'backStock',
+    components: require('@/components/warehouse/stockManage/backStock/index'),
+    meta: {
+      requireAuth: true,
+    },
+    children: []
+  },
+  {
+    path: '/otherStock',
+    name: 'otherStock',
+    components: require('@/components/warehouse/stockManage/otherStock/index'),
+    meta: {
+      requireAuth: true,
+    },
+    children: []
+  },
   ]
 })

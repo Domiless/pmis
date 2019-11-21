@@ -24,5 +24,17 @@ export default [{
         key: 'productionStock',
         permissionCode: 'order_lookup',
     },
+    {
+        menu: '退料入库单',
+        route: '/backStock',
+        key: 'backStock',
+        permissionCode: 'order_lookup',
+    },
+    {
+        menu: '其它入库单',
+        route: '/otherStock',
+        key: 'otherStock',
+        permissionCode: 'order_lookup',
+    },
 ]
 },]

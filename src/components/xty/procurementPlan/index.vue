@@ -13,7 +13,7 @@
 				permCode
 				banType="hide"
 				@click="showAssign"
-				:disabled="selectedRowKeys1.length != 1"
+				:disabled="selectedRowKeys1.length + selectedRowKeys2.length != 1"
 			>
 				<a-icon style="color:#1890ff;" type="submit" />指派采购员
 			</permission-button>
@@ -94,7 +94,7 @@
 			:maskClosable="false"
 			@cancel="handleCancel(1)"
 		>
-			<assign-buyer :orderMsg="selectedRows1[0]" :orderId="selectedRowKeys1[0]" @cancelAssign="closeAssign" ref="assignBuyer"></assign-buyer>
+			<assign-buyer :orderMsg="orderMsg" :orderId="orderId" @cancelAssign="closeAssign" ref="assignBuyer"></assign-buyer>
 		</a-modal>
         <a-modal
 			title="采购单号详情"
@@ -265,7 +265,10 @@ export default {
             dateValue: [],
             keyWords: '',
 			details: [],
-			currentKey: "1"
+			currentKey: "1",
+			orderMsg: '',
+			orderId: ''
+
         }
     },
     methods: {
@@ -282,7 +285,15 @@ export default {
 			}
 		},
         showAssign() {
-            this.assignVisible = true;
+			this.assignVisible = true;
+			if(this.selectedRowKeys1.length == 0) {
+				this.orderMsg = this.selectedRows2[0];
+				this.orderId = this.selectedRowKeys2[0];
+			} else {
+				this.orderMsg = this.selectedRows1[0];
+				this.orderId = this.selectedRowKeys1[0];
+			}
+			console.log(this.orderId);
         },
         handleCancel(num) {
             if(num == 1) {
@@ -318,8 +329,11 @@ export default {
 		},
         closeAssign(params) {
 			this.assignVisible = params;
-			this.getList();
 			this.selectedRowKeys1 = [];
+			this.selectedRowKeys2 = [];
+			this.orderMsg = '';
+			this.orderId = '';
+			this.getList();
 		},
 		onChange(current, pageNumber) {
 			console.log("Page: ", pageNumber);

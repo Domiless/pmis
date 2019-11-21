@@ -2,7 +2,7 @@
   <div class="procurement_Stock">
     <a-row style="line-height:50px;" >
       <permission-button permCode banType="hide" @click="showStock">
-        <a-icon style="color:#1890ff;" type="submit" />物料入库
+        <a-icon style="color:#1890ff;" type="submit" />采购入库
       </permission-button>
     </a-row>
     <a-row>
@@ -49,7 +49,7 @@
           />
     </a-row>
     <a-modal
-        title="采购入库"
+        title="采购入库单"
         v-model="stockVisible" 
         style="top:20px" width="1200px" 
         :footer="null"
@@ -112,7 +112,6 @@ export default {
   methods: {
     showStock() {
         this.stockVisible = true;
-        console.log("1");
     },
     onChangeRange(date, datestring) {
       this.dateValue = datestring;

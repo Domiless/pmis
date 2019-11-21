@@ -7,7 +7,7 @@
       <permission-button permCode="shopcontract_lookup.shopcontract_update" banType="hide" @click="editShow" :disabled="selectedRowKeys.length!=1">
         <a-icon style="color:#1890ff;" type="edit" />修改
       </permission-button>
-      <permission-button permCode="shopcontract_lookup.shopcontract_delete" banType="hide" @click="showDeleteConfirm" :disabled="selectedRowKeys.length<1">
+      <permission-button permCode="shopcontract_lookup.shopcontract_delete" banType="hide" @click="showDeleteConfirm" :disabled="selectedRowKeys.length!=1">
         <a-icon style="color:#1890ff;" type="delete" />删除
       </permission-button>
       <permission-button permCode="shopcontract_lookup.shopcontract_audit" banType="hide"  @click="approveShow" :disabled="selectedRowKeys.length!=1" >
@@ -266,7 +266,25 @@ export default {
 					}
 				},
 				({ type, info }) => {}
-			);
+      );
+      this.Axios(
+        {
+          url: "/api-order/shopContract/print",
+          type: "get",
+          params: {
+            id: this.selectedRowKeys[0]
+          },
+          option: { enableMsg: false }
+        },
+        this
+      ).then(
+        result => {
+          if (result.data.code === 200) {
+            console.log(result);
+          }
+        },
+        ({ type, info }) => {}
+      );
     },
     handleCancel(num) {
       if( num == 1 ) {

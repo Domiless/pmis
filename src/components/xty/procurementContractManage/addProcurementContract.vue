@@ -567,7 +567,7 @@ export default {
             taxrate: values.taxrate,
             place : values.signPlace,
             digndate: this.signDate,
-            validity: this.dateValue.join(" ~ "),
+            validity: this.dateValue != '' ? this.dateValue.join(" ~ ") : '',
             sendway: values.supplyMode,
 						remark: values.remark,
 						summoney: this.summoney,
@@ -616,7 +616,10 @@ export default {
 							if (result.data.code === 200) {
                 console.log(result);
                 this.form.resetFields();
-                this.close();
+								this.close();
+								this.signDate = '';
+								this.dateValue = '';
+
 							}
 						},
 						({ type, info }) => {}

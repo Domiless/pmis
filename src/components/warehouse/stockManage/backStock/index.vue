@@ -1,8 +1,20 @@
 <template>
-  <div class="production_Stock">
+  <div class="back_Stock">
     <a-row style="line-height:50px;" >
+      <permission-button permCode banType="hide">
+        <a-icon style="color:#1890ff;" type="plus" />新增
+      </permission-button>
+      <permission-button permCode banType="hide">
+        <a-icon style="color:#1890ff;" type="edit" />修改
+      </permission-button>
       <permission-button permCode banType="hide" @click="showStock">
-        <a-icon style="color:#1890ff;" type="submit" />生产入库
+        <a-icon style="color:#1890ff;" type="submit" />审核
+      </permission-button>
+      <permission-button permCode banType="hide">
+        <a-icon style="color:#1890ff;" type="submit" />打印预览
+      </permission-button>
+      <permission-button permCode banType="hide">
+        <a-icon style="color:#1890ff;" type="submit" />导出Excel
       </permission-button>
     </a-row>
     <a-row>
@@ -16,7 +28,7 @@
         <a-range-picker style="width:240px;margin-right: 10px" @change="onChangeRange" format="YYYY/MM/DD"></a-range-picker>
         <span>关键词 :</span>
         <a-input
-          placeholder="单据编号/应商名称"
+          placeholder="单据编号/退料部"
           style="width: 250px"
           v-model="keyWords"
           @keyup.enter.native="getList"
@@ -32,7 +44,7 @@
         :pagination="false"
         :rowSelection="{selectedRowKeys:selectedRowKeys,onChange: onSelectChange}"
       >
-        <template slot="production_department" slot-scope="text, record">
+        <template slot="back_department" slot-scope="text, record">
           <a href="javascript:" @click="showDetails(record.id)">{{text}}</a>
         </template>
       </a-table>
@@ -49,24 +61,22 @@
           />
     </a-row>
     <a-modal
-        title="生产入库单"
+        title="采购入库单"
         v-model="stockVisible" 
         style="top:20px" width="1200px" 
         :footer="null"
         :maskClosable="false"
         @cancel="handleCancel(1)">
-      <stock></stock>
     </a-modal>
   </div>
 </template>
 <script>
-import stock from "./stock"
 const columns = [
   {
     dataIndex: "invoicesNo",
     title: "单据编号",
     key: "invoicesNo",
-    width: "25%"
+    width: "15%"
   },
   {
     dataIndex: "invoicesType",
@@ -75,24 +85,36 @@ const columns = [
     width: "10%"
   },
   {
-    dataIndex: "production_department",
-    title: "生产部门",
-    key: "production_department",
-    scopedSlots: { customRender: "production_department" },
-    width: "30%"
+    dataIndex: "back_department",
+    title: "退料部门",
+    key: "back_department",
+    scopedSlots: { customRender: "back_department" },
+    width: "20%"
   },
   {
     dataIndex: "warehouse",
-    title: "收货仓库",
+    title: "退回仓库",
     key: "warehouse",
     width: "15%"
+  },
+  {
+    dataIndex: "status",
+    title: "状态",
+    key: "status",
+    width: "10%"
   },
   {
     dataIndex: "createDate",
     title: "开单日期",
     key: "createDate",
+    width: "10%"
+  },
+  {
+    dataIndex: "remark",
+    title: "备注",
+    key: "remark",
     width: "15%"
-  }
+  },
 ];
 export default {
   data() {
@@ -166,14 +188,11 @@ export default {
         ({ type, info }) => {}
       );
     }
-  },
-  components: {
-      stock
   }
 };
 </script>
 <style lang="less">
-.production_Stock {
+.back_Stock {
   padding: 0 20px;
   .changeDis {
     display: inline;

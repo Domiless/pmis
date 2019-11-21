@@ -8,7 +8,7 @@
         <span class="label_right">收货仓库：</span>
       </a-col>
       <a-col :span="12">
-        <span class="label_right">供应商：</span>
+        <span class="label_right">生产部门：</span>
       </a-col>
       <a-col :span="12">
         <span class="label_right">开单日期：</span>
@@ -26,21 +26,6 @@
         :dataSource="data"
         :pagination="false"
       >
-        <template slot="stockUnit" slot-scope="text,record">
-          <a-select
-            style="width: 100%"
-            @change="(value,option) => {
-                  let value1 = value;
-                  handleChangeTable(value1, record.id, 'stockUnit')
-                  }"
-          >
-            <a-select-option
-              v-for="item in unitArr"
-              :value="item.name"
-              :key="item.id"
-            >{{ item.name }}</a-select-option>
-          </a-select>
-        </template>
         <template slot="stockNumber" slot-scope="text,record">
           <div key="stockNumber">
             <a-input
@@ -105,21 +90,15 @@ const columns = [
     width: 150
   },
   {
-    title: "需求名称",
+    title: "名称",
     key: "name",
     dataIndex: "name",
     width: 150
   },
   {
-    title: "采购名称",
-    key: "number",
-    dataIndex: "number",
-    width: 150
-  },
-  {
-    title: "供应商",
-    key: "brand",
-    dataIndex: "brand",
+    title: "生产部门",
+    key: "production_department",
+    dataIndex: "production_department",
     width: 150
   },
   {
@@ -145,13 +124,6 @@ const columns = [
     key: "unitId",
     dataIndex: "unitId",
     width: 80
-  },
-  {
-    title: "库存单位",
-    key: "stockUnit",
-    dataIndex: "stockUnit",
-    width: 80,
-    scopedSlots: { customRender: "stockUnit" }
   },
   {
     title: "入库数量",

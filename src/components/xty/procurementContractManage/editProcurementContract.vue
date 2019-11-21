@@ -193,6 +193,7 @@
 </template>
 <script>
 import moment from "moment";
+import { log } from 'util';
 let columns = [
 	{
 		title: "项目订单编号",
@@ -398,8 +399,12 @@ export default {
 			console.log(this.signDate);
     },
     onChangeRange(date,datestring){
-      this.dateValue = datestring.join(" ~ ");
-      console.log(this.dateValue)
+			if(datestring[0] != '') {
+				this.dateValue = datestring.join(" ~ ");
+			}else {
+				this.dateValue = '';
+			}
+			console.log(this.dateValue);
     },
     onChange(current, pageNumber) {
       console.log("Page: ", pageNumber);
@@ -547,27 +552,6 @@ export default {
 		// 		({ type, info }) => {}
 		// 	);
 		// },
-		getDetailMsg(id) {
-      this.Axios(
-				{
-					url: "/api-order/purchase/getDesBysupplier",
-          type: "get",
-         	params: {
-						supplierId: id
-					},
-					option: { enableMsg: false }
-				},
-				this
-			).then(
-				result => {
-					if (result.data.code === 200) {
-            console.log(result);
-            this.data = result.data.data;
-					}
-				},
-				({ type, info }) => {}
-			);
-    },
     setDefalut(id){
       this.Axios(
 				{
@@ -615,10 +599,9 @@ export default {
                           msg.digndate,
                           "YYYY/MM/DD"
 												),
-								usefulTime: [moment(msg.validity.split(" ~ ")[0],"YYYY/MM/DD"),moment(msg.validity.split(" ~ ")[1],"YYYY/MM/DD")]
+								usefulTime: msg.validity == '' ? undefined : [moment(msg.validity.split(" ~ ")[0],"YYYY/MM/DD"),moment(msg.validity.split(" ~ ")[1],"YYYY/MM/DD")]
 								});
 						},100)
-						// this.getDetailMsg(msg.supplierId);
 					}
 				},
 				({ type, info }) => {}
@@ -695,7 +678,9 @@ export default {
 						result => {
 							if (result.data.code === 200) {
                 console.log(result);
-                this.close();
+								this.close();
+								this.dateValue = '';
+								this.signDate = '';
 							}
 						},
 						({ type, info }) => {}

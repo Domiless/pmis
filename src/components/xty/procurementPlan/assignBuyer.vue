@@ -58,7 +58,12 @@
                 :dataSource="data"
                 :pagination="false"
                 :scroll="{ y: 400 }"
-                :rowSelection="{selectedRowKeys:selectedRowKeys,onChange: onSelectChange}"
+                :rowSelection="{selectedRowKeys:selectedRowKeys,onChange: onSelectChange,
+                                getCheckboxProps: record => ({
+                                                props: {
+                                                disabled: record.isOffer === 1,
+                                                }
+                                })}"
             >
                 <!-- <span slot="appointNameTitle">
                     <span style="color: #f5222d">*</span>指派采购员
