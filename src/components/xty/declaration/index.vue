@@ -67,7 +67,7 @@
           </a-popover>
           <!-- <span
             :style="{color:text==1?'':text==2?'#1890FF':text==3?'#03B615':text==4?'red':'#999999'}"
-          >{{text==1?'暂存':text==2?'审批中':text==3?'已通过':text==4?'未通过':'已终止'}}</span> -->
+          >{{text==1?'暂存':text==2?'审批中':text==3?'已通过':text==4?'未通过':'已终止'}}</span>-->
         </template>
         <template slot="remark" slot-scope="text, record, index">
           <div class="content_style" style="max-width:200px;">{{record.remark}}</div>
@@ -270,6 +270,7 @@ export default {
                 this.auditVisible = false;
                 this.form.resetFields();
                 this.getList();
+                this.selectedRowKeys = [];
               }
             },
             ({ type, info }) => {}

@@ -25,7 +25,7 @@
           :placeholder="activeKey==1?'项目订单编号/图号/需求名称/设计师/任务指派人':'项目订单编号/图号/需求名称/供应商名称'"
           style="width: 350px"
           v-model="keyWords"
-          @keyup.enter.native="getList"
+          @keyup.enter.native="search"
         ></a-input>
         <a-button @click="search">搜索</a-button>
       </a-col>
