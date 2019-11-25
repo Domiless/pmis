@@ -257,7 +257,7 @@ export default {
   methods: {
     callback(key) {
 		this.activeKey = key;
-	},
+		},
     findOne(id) {
       this.Axios(
         {
@@ -286,9 +286,9 @@ export default {
     this.activeKey = this.defaultActiveKey;
   },
   watch: {
-	rowId() {
-		this.findOne(this.rowId);
-	}
+		rowId() {
+			this.findOne(this.rowId);
+		}
   }
 };
 </script>

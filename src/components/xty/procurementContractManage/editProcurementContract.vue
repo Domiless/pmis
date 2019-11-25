@@ -506,7 +506,8 @@ export default {
 					url: "/api-order/purchase/getDesBysupplier",
           type: "get",
          	params: {
-						supplierId: id
+						supplierId: id,
+						id: this.procurementContractId
 					},
 					option: { enableMsg: false }
 				},
@@ -579,6 +580,11 @@ export default {
 						this.chineseTaxMoney =  msg.chineseTaxMoney;
 						this.chineseSumtaxMoney = msg.chineseSumtaxMoney;
 						this.selectedRowsRight = msg.purchaseDesDOList;
+						this.selectedRowKeysLeft = result.data.data.purchaseDesDOList.map(
+              item => {
+                return item.id;
+              }
+            );
 						this.getDetailMsg(msg.supplierId);
             setTimeout(()=> {
               this.form.setFieldsValue({

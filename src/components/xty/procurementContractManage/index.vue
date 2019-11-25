@@ -11,10 +11,10 @@
         <a-icon style="color:#1890ff;" type="delete" />删除
       </permission-button>
       <permission-button permCode="shopcontract_lookup.shopcontract_audit" banType="hide"  @click="approveShow" :disabled="selectedRowKeys.length!=1" >
-        <a-icon style="color:#1890ff;" type="submit" />提交审批
+        <i style="color:#1890ff;margin-right:4px;" class="iconfont">&#xe8ad;</i>提交审批
       </permission-button>
       <permission-button permCode="shopcontract_lookup.shopcontract_audit" banType="hide"  @click="toPreview" :disabled="selectedRowKeys.length!=1">
-        <a-icon style="color:#1890ff;" type="submit" />打印预览
+        <i class="iconfont" style="color:#1890ff;margin-right:8px;">&#xe60c;</i>打印预览
       </permission-button>
     </a-row>
     <a-row>
@@ -96,6 +96,7 @@
      style="top:20px" width="1200px" 
      :footer="null"
      :maskClosable="false"
+     :destroyOnClose="true"
      @cancel="handleCancel(1)">
       <add-procurement-contract @cancelAdd="closeAdd" ref="addProcurementContract"></add-procurement-contract>
     </a-modal>
@@ -105,6 +106,7 @@
      style="top:20px" width="1200px" 
      :footer="null" 
      :maskClosable="false"
+     :destroyOnClose="true"
      @cancel="handleCancel(2)">
       <edit-procurement-contract @cancelEdit="closeEdit" :procurementContractId="selectedRowKeys[0]" ref="editProcurementContract"></edit-procurement-contract>
     </a-modal>
@@ -115,6 +117,7 @@
 				width="600px"
 				@cancel="approveVisible=false"
 				:maskClosable="false"
+        :destroyOnClose="true"
 			>
 				<a-form :form="form">
 					<a-form-item label="选择流程" :labelCol="{span:4}" :wrapperCol="{span:18}">
@@ -148,6 +151,7 @@
       :visible="detailsVisible"
       @cancel="handleCancel(3)"
       :maskClosable="false"
+      :destroyOnClose="true"
     >
       <Details :rowId="contractDetailsId" :defaultActiveKey="activeKey"></Details>
     </a-modal>

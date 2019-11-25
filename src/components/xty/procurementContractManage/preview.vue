@@ -7,19 +7,19 @@
     </a-row>
     <a-row>
       <a-col :span="12">
-        <span>供方：{{ contractMsg.supplierName }}</span>
+        <span>供方：[--GF--]</span>
       </a-col>
       <a-col :span="12">
-        <span>合同编号：{{ contractMsg.shopContractNo }}</span>
+        <span>合同编号：[--HTBH--]</span>
       </a-col>
       <a-col :span="12">
-        <span>需方：{{ contractMsg.demand }}</span>
+        <span>需方：[--XF--]</span>
       </a-col>
       <a-col :span="12">
-        <span>签订地点：{{ contractMsg.place }}</span>
+        <span>签订地点：[--QDDD--]</span>
       </a-col>
       <a-col :span="12">
-        <span>签订时间：{{ contractMsg.digndate }}</span>
+        <span>签订时间：[--QDSJ--]</span>
       </a-col>
     </a-row>
     <a-row>
@@ -27,21 +27,21 @@
     </a-row>
     <a-row>
       <span class="msg_money">
-        <p>合计贷款：{{ contractMsg.summoney }}</p>
-        <p>合计税金：{{ contractMsg.taxMoney }}</p>
-        <p>合计人命币金额：{{ contractMsg.sumtaxMoney }}</p>
+        <p>合计贷款：[--HJHK--]</p>
+        <p>合计税金：[--HJSJ--]</p>
+        <p>合计人民币金额：[--HJRMB--]</p>
       </span>
       <span class="msg_chineseMoney">
-        <p>大写：{{ contractMsg.chineseMoney }}</p>
-        <p>大写：{{ contractMsg.chineseTaxMoney }}</p>
-        <p>大写：{{ contractMsg.chineseSumtaxMoney }}</p>
+        <p>大写：[--DXHJHK--]</p>
+        <p>大写：[--DXHJSJ--]</p>
+        <p>大写：[--DXHJRMB--]</p>
       </span>
       <p>（采购清单详见附件）</p>
     </a-row>
     <a-row>
-      <a-col :span="24">
+      <a-col :span="24" class="contractRules2">
         <p>二、质量要求技术标准、供方对质量负责的条件和期限：依照双方签订的《技术协议》、《质量赔偿协议》。</p>
-        <p>三、交（提）货地点、方式：{{ contractMsg.place }}/{{ contractMsg.sendway }}。</p>
+        <p>三、交（提）货地点、方式：[--QDDD--] / [--JHFS--]。</p>
         <p>四、运输方式及到达站港和费用负担：按经济快捷原则选定运输方式，由供负责运杂费及包装费。</p>
         <p>五、合理损耗及计算方式：不得缺数短少，入库后原装短少由需方向供方索赔或在原货款中扣除。</p>
         <p>六、包装标准，包装物的供应与回收：包装应能保护产品，经受运输、标志清楚、方便管理。包装物不回收。</p>
@@ -61,26 +61,26 @@
       <a-col :span="24">
         <a-col :span="8" class="msg_col">
           <pre style="text-align: center">供  方</pre>
-          <p>单位名称：</p>
-          <p>单位地址：</p>
-          <p>法定代表人：</p>
-          <p>委托代理人：</p>
-          <pre>电    话：</pre>
-          <p>开户银行：</p>
-          <pre>账    号：</pre>
-          <p>邮政编码：</p>
+          <p>单位名称：[--DWMC--]</p>
+          <p>单位地址：[--DWDZ--]</p>
+          <p>法定代表人：[--FDDBR--]</p>
+          <p>委托代理人：[--WTDLR--]</p>
+          <pre>电    话：[--DH--]</pre>
+          <p>开户银行：[--KHYH--]</p>
+          <pre>账    号：[--ZH--]</pre>
+          <p>邮政编码：[--YZBM--]</p>
         </a-col>
         <a-col :span="8" class="msg_col msg_col2">
           <pre style="text-align: center">需  方</pre>
-          <p>单位名称：</p>
-          <p>单位地址：</p>
-          <p>法定代表人：</p>
+          <p>单位名称：四川长虹智能制造技术有限公司</p>
+          <p>单位地址：绵阳高新区普明南路东段95号</p>
+          <p>法定代表人：潘晓勇</p>
           <p>经办人：</p>
-          <pre>传    真：</pre>
-          <pre>电    话：</pre>
-          <p>开户银行：</p>
-          <pre>账    号：</pre>
-          <p>邮政编码：</p>
+          <pre>传    真：0816-2416752</pre>
+          <pre>电    话：0816-2416752</pre>
+          <p>开户银行：工行高新区支行</p>
+          <pre>账    号：2308414109100052696</pre>
+          <p>邮政编码：621000</p>
         </a-col>
         <a-col :span="8" class="msg_col msg_col3">
           <p style="margin-top: 35px;margin-bottom: 150px">鉴（公）证意见：</p>
@@ -93,7 +93,7 @@
         <span>备注：本合同不得随意增减、删改，否则合同无效。本合同履行期间，双方以传真件、复印件、扫描件等方式签订的具体实施内容的合同与本合同具有同等法律效力。</span>
       </a-col>
     </a-row>
-    <div style="PAGE-BREAK-AFTER:always"></div>
+    <div style="page-break-after:always"></div>
     <a-row>
       <a-col :span="24">
         <table class="table_contract">
@@ -102,18 +102,18 @@
           </tr>
           <tr style="font-size: 16px">
             <td colspan="5">
-              <span>供方：{{ contractMsg.supplierName }}</span>
+              <span>供方：[--GF--]</span>
             </td>
             <td colspan="3" style="border-left:none">
-              <span>合同编号：{{ contractMsg.shopContractNo }}</span>
+              <span>合同编号：[--HTBH--]</span>
             </td>
           </tr>
           <tr>
             <td colspan="5">
-              <span>需方：{{ contractMsg.demand }}</span>
+              <span>需方：[--XF--]</span>
             </td>
             <td colspan="3" style="border-left:none">
-              <span>签订时间：{{ contractMsg.digndate }}</span>
+              <span>签订时间：[--QDSJ--]</span>
             </td>
           </tr>
           <tr style="text-align:center">
@@ -186,10 +186,16 @@ export default {
   .msg_money {
     width: 40%;
     display: inline-block;
+    p {
+      margin-bottom: 7px;
+    }
   }
   .msg_chineseMoney {
     width: 50%;
     display: inline-block;
+    p {
+      margin-bottom: 7px;
+    }
   }
   .msg_col {
     border: 1px solid #000000;
@@ -215,6 +221,11 @@ export default {
     tr,
     td {
       border: 1px solid #000000;
+    }
+  }
+  .contractRules2 {
+    p {
+      margin-bottom: 7px;
     }
   }
 }

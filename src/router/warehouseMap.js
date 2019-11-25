@@ -42,6 +42,20 @@ export default [{
         permissionCode: 'order_lookup',
     },
     {
+        menu: '退料入库新增',
+        route: '/backStock/addBackStock',
+        key: 'addBackStock',
+        visible: true,
+        permissionCode: 'order_lookup',
+    },
+    {
+        menu: '退料入库修改',
+        route: '/backStock/editBackStock',
+        key: 'editBackStock',
+        visible: true,
+        permissionCode: 'order_lookup',
+    },
+    {
         menu: '其它入库单',
         route: '/otherStock',
         key: 'otherStock',
