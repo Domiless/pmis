@@ -1,20 +1,20 @@
 <template>
   <div class="back_Stock">
     <a-row style="line-height:50px;" >
-      <permission-button permCode banType="hide">
+      <permission-button permCode banType="hide" @click="$router.push({path:'/backStock/addBackStock'})">
         <a-icon style="color:#1890ff;" type="plus" />新增
       </permission-button>
       <permission-button permCode banType="hide">
         <a-icon style="color:#1890ff;" type="edit" />修改
       </permission-button>
       <permission-button permCode banType="hide" @click="showStock">
-        <a-icon style="color:#1890ff;" type="submit" />审核
+        <i style="color:#1890ff;margin-right:4px;" class="iconfont">&#xe8ad;</i>审核
       </permission-button>
       <permission-button permCode banType="hide">
-        <a-icon style="color:#1890ff;" type="submit" />打印预览
+        <i class="iconfont" style="color:#1890ff;margin-right:8px;">&#xe60c;</i>打印预览
       </permission-button>
       <permission-button permCode banType="hide">
-        <a-icon style="color:#1890ff;" type="submit" />导出Excel
+        <i style="color:#1890ff;margin-right:4px;" class="iconfont">&#xe611;</i>导出Excel
       </permission-button>
     </a-row>
     <a-row>

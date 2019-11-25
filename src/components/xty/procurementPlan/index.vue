@@ -97,7 +97,7 @@
 			<assign-buyer :orderMsg="orderMsg" :orderId="orderId" @cancelAssign="closeAssign" ref="assignBuyer"></assign-buyer>
 		</a-modal>
         <a-modal
-			title="采购单号详情"
+			title="设计单详情"
 			:footer="null"
 			width="1000px"
 			:visible="detailsVisible"
@@ -184,9 +184,9 @@ const columns = [
 		width: "8%"
     },
     {
-		dataIndex: "assignerTime",
+		dataIndex: "gmtCreated",
 		title: "创建时间",
-		key: "assignerTime",
+		key: "gmtCreated",
 		width: "10%"
 	},
 	{

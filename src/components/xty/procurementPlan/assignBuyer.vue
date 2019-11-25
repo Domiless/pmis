@@ -35,6 +35,7 @@
                  @change="handleChange" 
                  placeholder="请选择"
                  :labelInValue="true"
+                 v-model="defaultValue"
                 >
                     <a-select-option v-for="i in buyerArr" :key="i.id" :value="i.id"
                     >{{ i.name }}</a-select-option
@@ -150,12 +151,14 @@ export default {
             appointId: '',
             selectedRows: [],
             selectedRowKeys: [],
+            defaultValue: ''
         }
     },
     methods: {
          close() {
             this.$emit("cancelAssign", false);
             this.selectedRowKeys = [];
+            this.defaultValue = ''
         },
         onSelectChange(selectedRowKeys, selectedRows) {
 			this.selectedRowKeys = selectedRowKeys;
@@ -192,6 +195,9 @@ export default {
                             })
                 data = data.filter((item,index,arr) => { return !(!item.appointName && typeof(item.appointName)!='undefined' && item.appointName!=0) });
                 console.log(data);
+                if( data.length == 0 ) {
+                    return this.$message.error(`请指派采购员`);
+                }
                 this.Axios(
                     {
                     url: "/api-order/bom/setBomPoint",
@@ -286,8 +292,10 @@ export default {
     },
     watch: {
         orderId() {
-            this.getList(this.orderId);
-            this.getBuyer();
+            if(this.orderId != '') {
+                this.getList(this.orderId);
+                this.getBuyer();
+            }
         }
     }
 }

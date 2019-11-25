@@ -476,7 +476,23 @@ export default new Router({
     meta: {
       requireAuth: true,
     },
-    children: []
+    children: [{
+      path: 'addBackStock',
+      name: 'addBackStock',
+      component: require('../components/warehouse/stockManage/backStock/addBackStock'),
+      meta: {
+        requireAuth: true,
+      },
+    },
+    {
+      path: 'editBackStock',
+      name: 'editBackStock',
+      component: require('@/components/warehouse/stockManage/backStock/editBackStock'),
+      meta: {
+        requireAuth: true,
+      },
+    }
+    ] 
   },
   {
     path: '/otherStock',

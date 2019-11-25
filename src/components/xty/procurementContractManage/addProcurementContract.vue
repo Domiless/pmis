@@ -1,6 +1,6 @@
 <template>
   <div class="addProcurementContract">
-    <a-tabs defaultActiveKey="1">
+    <a-tabs :activeKey="activeKey" @change="callback">
       <a-tab-pane tab="基础信息" key="1">
         <a-form :form="form">
           <!-- <a-row>
@@ -376,10 +376,14 @@ export default {
 			chineseSumtaxMoney: '',
 			taxMoney: '',
 			chineseTaxMoney: '',
+			activeKey: "1"
 
     };
   },
   methods: {
+		callback(key) {
+      this.activeKey = key;
+    },
 		getTaxrate(value){
 			console.log(value);
 			this.taxrateValue = value;
@@ -488,7 +492,8 @@ export default {
     close() {
       this.form.resetFields();
       this.contractNoWatch = '';
-      this.$emit('cancelAdd',false);
+			this.$emit('cancelAdd',false);
+			this.activeKey = "1";
     },
     onChangeSign(data, dateString) {
       this.signDate = dateString;
@@ -599,6 +604,9 @@ export default {
           };
 					console.log(data);
 					console.log(this.selectedRowsRight);
+					if( this.selectedRowsRight.length == 0 ) {
+						return this.$message.error('请选择采购明细');
+					}
 
 					this.Axios(
 						{
@@ -619,6 +627,9 @@ export default {
 								this.close();
 								this.signDate = '';
 								this.dateValue = '';
+								this.data = [];
+								this.selectedRowsRight = [];
+								this.activeKey = "1";
 
 							}
 						},

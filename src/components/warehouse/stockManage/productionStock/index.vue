@@ -2,7 +2,7 @@
   <div class="production_Stock">
     <a-row style="line-height:50px;" >
       <permission-button permCode banType="hide" @click="showStock">
-        <a-icon style="color:#1890ff;" type="submit" />生产入库
+        <a-icon style="color:#1890ff;" type="plus" />生产入库
       </permission-button>
     </a-row>
     <a-row>
