@@ -479,7 +479,7 @@ export default new Router({
     children: [{
       path: 'addBackStock',
       name: 'addBackStock',
-      component: require('../components/warehouse/stockManage/backStock/addBackStock'),
+      component: require('../components/warehouse/stockManage/backStock/addBackStock.vue'),
       meta: {
         requireAuth: true,
       },
@@ -487,7 +487,7 @@ export default new Router({
     {
       path: 'editBackStock',
       name: 'editBackStock',
-      component: require('@/components/warehouse/stockManage/backStock/editBackStock'),
+      component: require('@/components/warehouse/stockManage/backStock/editBackStock.vue'),
       meta: {
         requireAuth: true,
       },

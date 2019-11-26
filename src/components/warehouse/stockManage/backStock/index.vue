@@ -1,65 +1,68 @@
 <template>
   <div class="back_Stock">
-    <a-row style="line-height:50px;" >
-      <permission-button permCode banType="hide" @click="$router.push({path:'/backStock/addBackStock'})">
-        <a-icon style="color:#1890ff;" type="plus" />新增
-      </permission-button>
-      <permission-button permCode banType="hide">
-        <a-icon style="color:#1890ff;" type="edit" />修改
-      </permission-button>
-      <permission-button permCode banType="hide" @click="showStock">
-        <i style="color:#1890ff;margin-right:4px;" class="iconfont">&#xe8ad;</i>审核
-      </permission-button>
-      <permission-button permCode banType="hide">
-        <i class="iconfont" style="color:#1890ff;margin-right:8px;">&#xe60c;</i>打印预览
-      </permission-button>
-      <permission-button permCode banType="hide">
-        <i style="color:#1890ff;margin-right:4px;" class="iconfont">&#xe611;</i>导出Excel
-      </permission-button>
-    </a-row>
-    <a-row>
-      <a-col :span="24">
-        <a-input-group class="changeDis">
-          <span>仓库 : </span>
-          <a-select style="width: 300px" optionFilterProp="children">
-          </a-select>
-        </a-input-group>
-        <span>日期 :</span>
-        <a-range-picker style="width:240px;margin-right: 10px" @change="onChangeRange" format="YYYY/MM/DD"></a-range-picker>
-        <span>关键词 :</span>
-        <a-input
-          placeholder="单据编号/退料部"
-          style="width: 250px"
-          v-model="keyWords"
-          @keyup.enter.native="getList"
-        ></a-input>
-        <a-button @click="getList">搜索</a-button>
-      </a-col>
-    </a-row>
-    <a-row>
-      <a-table
-        rowKey="id"
-        :columns="columns"
-        :dataSource="data"
-        :pagination="false"
-        :rowSelection="{selectedRowKeys:selectedRowKeys,onChange: onSelectChange}"
-      >
-        <template slot="back_department" slot-scope="text, record">
-          <a href="javascript:" @click="showDetails(record.id)">{{text}}</a>
-        </template>
-      </a-table>
-      <a-pagination
-            style="padding-top:12px;text-align: right;"
-            showQuickJumper
-            :defaultCurrent="current"
-            :total="total"
-            @change="onChange"
-            showSizeChanger
-            :pageSizeOptions="['10','20','30']"
-            @showSizeChange="onShowSizeChange"
-            :showTotal="total => `共 ${total} 条`"
-          />
-    </a-row>
+    <router-view></router-view>
+    <div :class="[{hide:isHideList}]">
+      <a-row style="line-height:50px;" >
+        <permission-button permCode banType="hide" @click="$router.push({path:'/backStock/addBackStock'})">
+          <a-icon style="color:#1890ff;" type="plus" />新增
+        </permission-button>
+        <permission-button permCode banType="hide">
+          <a-icon style="color:#1890ff;" type="edit" />修改
+        </permission-button>
+        <permission-button permCode banType="hide" @click="showStock">
+          <i style="color:#1890ff;margin-right:4px;" class="iconfont">&#xe8ad;</i>审核
+        </permission-button>
+        <permission-button permCode banType="hide">
+          <i class="iconfont" style="color:#1890ff;margin-right:8px;">&#xe60c;</i>打印预览
+        </permission-button>
+        <permission-button permCode banType="hide">
+          <i style="color:#1890ff;margin-right:4px;" class="iconfont">&#xe611;</i>导出Excel
+        </permission-button>
+      </a-row>
+      <a-row>
+        <a-col :span="24">
+          <a-input-group class="changeDis">
+            <span>仓库 : </span>
+            <a-select style="width: 300px" optionFilterProp="children">
+            </a-select>
+          </a-input-group>
+          <span>日期 :</span>
+          <a-range-picker style="width:240px;margin-right: 10px" @change="onChangeRange" format="YYYY/MM/DD"></a-range-picker>
+          <span>关键词 :</span>
+          <a-input
+            placeholder="单据编号/退料部"
+            style="width: 250px"
+            v-model="keyWords"
+            @keyup.enter.native="getList"
+          ></a-input>
+          <a-button @click="getList">搜索</a-button>
+        </a-col>
+      </a-row>
+      <a-row>
+        <a-table
+          rowKey="id"
+          :columns="columns"
+          :dataSource="data"
+          :pagination="false"
+          :rowSelection="{selectedRowKeys:selectedRowKeys,onChange: onSelectChange}"
+        >
+          <template slot="back_department" slot-scope="text, record">
+            <a href="javascript:" @click="showDetails(record.id)">{{text}}</a>
+          </template>
+        </a-table>
+        <a-pagination
+              style="padding-top:12px;text-align: right;"
+              showQuickJumper
+              :defaultCurrent="current"
+              :total="total"
+              @change="onChange"
+              showSizeChanger
+              :pageSizeOptions="['10','20','30']"
+              @showSizeChange="onShowSizeChange"
+              :showTotal="total => `共 ${total} 条`"
+            />
+      </a-row>
+    </div>
     <a-modal
         title="采购入库单"
         v-model="stockVisible" 
@@ -121,6 +124,7 @@ export default {
     return {
       columns,
       data: [],
+      isHideList: this.$route.params.id !== undefined ? true : false,
       stockVisible: false,
       selectedRowKeys: [],
       selectedRows: [],
@@ -188,7 +192,23 @@ export default {
         ({ type, info }) => {}
       );
     }
-  }
+  },
+  created() {
+    let a = this.$route.matched.find(item => item.name === "addBackStock")
+			? true
+			: false;
+		let b = this.$route.params.id !== undefined ? true : false;
+		this.isHideList = a || b ? true : false;
+  },
+  watch: {
+		$route() {
+			let a = this.$route.matched.find(item => item.name === "addBackStock")
+				? true
+				: false;
+			let b = this.$route.params.id !== undefined ? true : false;
+			this.isHideList = a || b ? true : false;
+		}
+	}
 };
 </script>
 <style lang="less">

@@ -667,7 +667,11 @@ export default {
 						purchaseDesId: this.selectedRowsRight.map(item => item.id),
             desCount: this.total,
           };
-          console.log(data);
+					console.log(data);
+					console.log(this.selectedRowsRight);
+					if( this.selectedRowsRight.length == 0 ) {
+						return this.$message.error('请选择采购明细');
+					}
 
 					this.Axios(
 						{
