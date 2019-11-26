@@ -61,5 +61,35 @@ export default [{
         key: 'otherStock',
         permissionCode: 'order_lookup',
     },
-]
+    ]
+},
+{
+    menu: '出库管理',
+    permissionCode: 'putOutStorage',
+    icon: '&#xe60a;',
+    defaultDock: false,
+    subMenu: [{
+        menu: '领料出库',
+        route: '/picking',
+        key: 'picking',
+        permissionCode: 'order_lookup',
+    },
+    {
+        menu: '销售出库单',
+        route: '/market',
+        key: 'market',
+        permissionCode: 'order_lookup',
+    },
+    {
+        menu: '采购退货单',
+        route: '/PurchaseReturn',
+        key: 'PurchaseReturn',
+        permissionCode: 'order_lookup',
+    }, {
+        menu: '其他出库单',
+        route: '/others',
+        key: 'others',
+        permissionCode: 'order_lookup',
+    },
+    ]
 },]

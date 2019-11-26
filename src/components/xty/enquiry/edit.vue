@@ -1,7 +1,7 @@
 <template>
   <div class="enquiry_edit">
     <a-table
-      :scroll="{ x: 3020,y:500}"
+      :scroll="{ x: 2870,y:500}"
       rowKey="id"
       class="table_style"
       :columns="columns"
@@ -153,13 +153,13 @@
 <script>
 import moment from "moment";
 const columns = [
-  {
-    title: "项目订单编号",
-    key: "workOrderNo",
-    dataIndex: "workOrderNo",
-    width: 150,
-    fixed: "left"
-  },
+  // {
+  //   title: "项目订单编号",
+  //   key: "workOrderNo",
+  //   dataIndex: "workOrderNo",
+  //   width: 150,
+  //   fixed: "left"
+  // },
   {
     title: "图号",
     key: "drawingNo",

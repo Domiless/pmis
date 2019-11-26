@@ -503,5 +503,14 @@ export default new Router({
     },
     children: []
   },
+  {
+    path: '/picking',
+    name: 'picking',
+    components: require('@/components/warehouse/putOutStorage/picking/index'),
+    meta: {
+      requireAuth: true,
+    },
+    children: []
+  },
   ]
 })
