@@ -75,7 +75,7 @@
                         :autosize="{ minRows: 4, maxRows: 4}"
                     ></a-textarea>
 				</a-form-item>
-                <a-table :columns="columns" :pagination="false" :dataSource="data" rowKey="id">
+            <a-table :columns="columns" :pagination="false" :dataSource="data" rowKey="id">
                 <span slot="shuliangTitle">
                 <span style="color: #f5222d">*</span>数量
                 </span>

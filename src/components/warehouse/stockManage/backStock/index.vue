@@ -64,16 +64,18 @@
       </a-row>
     </div>
     <a-modal
-        title="采购入库单"
-        v-model="stockVisible" 
+        title="详情"
+        v-model="detailsVisible" 
         style="top:20px" width="1200px" 
         :footer="null"
         :maskClosable="false"
         @cancel="handleCancel(1)">
+        <Details></Details>
     </a-modal>
   </div>
 </template>
 <script>
+import Details from "./details"
 const columns = [
   {
     dataIndex: "invoicesNo",
@@ -125,7 +127,7 @@ export default {
       columns,
       data: [],
       isHideList: this.$route.params.id !== undefined ? true : false,
-      stockVisible: false,
+      detailsVisible: false,
       selectedRowKeys: [],
       selectedRows: [],
       dateValue: "",
@@ -142,7 +144,7 @@ export default {
 			});
 		},
     showStock() {
-        this.stockVisible = true;
+        this.detailsVisible = true;
     },
     onChangeRange(date, datestring) {
       this.dateValue = datestring;
@@ -167,7 +169,7 @@ export default {
     },
     handleCancel(num) {
       if( num == 1 ) {
-        this.stockVisible = false;
+        this.detailsVisible = false;
       }
     },
     getList() {
@@ -197,6 +199,9 @@ export default {
         ({ type, info }) => {}
       );
     }
+  },
+  components: {
+    Details
   },
   created() {
     let a = this.$route.matched.find(item => item.name === "addBackStock")

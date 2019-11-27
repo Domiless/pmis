@@ -52,7 +52,7 @@
 			width="1200px"
 			:footer="null"
 			@cancel="handle(1)"
-			:destoryOnClose="true"
+			:destroyOnClose="true"
 		>
 			<add-contract-manage @changeAddContract="closeAdd" ref="addContractManage"></add-contract-manage>
 		</a-modal>
@@ -63,7 +63,7 @@
 			width="1200px"
 			:footer="null"
 			@cancel="handle(2)"
-			:destoryOnClose="true"
+			:destroyOnClose="true"
 		>
 			<edit-contract-manage
 				@changeEditContract="closeEdit"

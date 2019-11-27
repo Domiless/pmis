@@ -633,7 +633,7 @@ export default {
                 contractNo: msg.shopContractNo,
                 contractTemplate: {
 									key: msg.modelId,
-									value: msg.model
+									label: msg.model
 								},
 								supplier: msg.supplier,
 								supplier2: msg.supplierName,
