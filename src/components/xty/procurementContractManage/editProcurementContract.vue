@@ -40,8 +40,9 @@
               <a-select
                 v-decorator="['contractTemplate', { rules: [{ required:'true', message: '请选择合同模板'}]}]"
                 placeholder="请选择"
+								:labelInValue="true"
               >
-                <a-select-option v-for="item in contractTemplate" :key="item.id" :value="item.title">{{ item.title }}</a-select-option>
+                <a-select-option v-for="item in contractTemplate" :key="item.id" :value="item.id">{{ item.title }}</a-select-option>
               </a-select>
             </a-form-item>
           </a-row>
@@ -630,7 +631,10 @@ export default {
               this.form.setFieldsValue({
                 // procurementNo: msg.purchaseNo,
                 contractNo: msg.shopContractNo,
-                contractTemplate: msg.model,
+                contractTemplate: {
+									key: msg.modelId,
+									value: msg.model
+								},
 								supplier: msg.supplier,
 								supplier2: msg.supplierName,
                 demand: msg.demand,
@@ -669,8 +673,8 @@ export default {
             supplierId: this.supplierId,
             supplier: values.supplier,
             shopContractNo: values.contractNo,
-            model: values.contractTemplate,
-            modelId: this.modelId,
+            model: values.contractTemplate.label,
+            modelId: values.contractTemplate.key,
             supplierName: values.supplier2,
             demand: values.demand,
             salesman : values.salesman,

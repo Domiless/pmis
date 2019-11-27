@@ -485,7 +485,7 @@ export default {
 				this.address = selectedOptions.map(item => item.label).join("/");
 				console.log(this.address);
 			}else {
-				this.address = [];
+				this.address = '';
 			}
 		},
 		filter(inputValue, path) {
@@ -501,6 +501,7 @@ export default {
 		},
 		showDetails(row) {
 			this.supplierDetails = row;
+			console.log(this.supplierDetails);
 			if( this.supplierDetails.address.indexOf("undefined") != -1) {
 				this.supplierDetails.address = this.supplierDetails.address.replace(";undefined","");
 			}
@@ -531,7 +532,6 @@ export default {
 		showEdit() {
 			this.editVisible = true;
 			this.findOne(this.selectedRowKeys[0]);
-			console.log(this.selectedRowKeys[0]);
 		},
 		cancelAdd() {
 			this.addVisible = false;
@@ -563,6 +563,16 @@ export default {
 					// 	return false;
 					// }
 					let qs = require("qs");
+					let addressValue = '';
+					if(this.address == '' && typeof(values.address) == 'undefined' ){
+						addressValue = '';
+					} else if(typeof(values.address) == 'undefined'){
+						addressValue = this.address;
+					} else if(this.address == '') {
+						addressValue = values.address;
+					} else {
+						addressValue = this.address + ";" + values.address;
+					}
 					let data = {
 						supplierNo: values.supplierNo,
 						supplierName: values.supplierName,
@@ -574,7 +584,7 @@ export default {
 						bankAccount: values.bankAccount,
 						postalcode: values.postalcode,
 						areaCode: this.addressCodeArr.join(","),
-						address: this.address + ";" + values.address,
+						address: addressValue,
 						remark: values.remark
 					};
 					console.log(data);
@@ -598,7 +608,7 @@ export default {
 								this.form.resetFields();
 								this.addVisible = false;
 								this.addressCodeArr = [];
-								this.address = [];
+								this.address = '';
 							}
 						},
 						({ type, info }) => {}
@@ -615,6 +625,16 @@ export default {
 					// 	return false;
 					// }
 					let qs = require("qs");
+					let addressValue = '';
+					if(this.address == '' && typeof(values.address) == 'undefined' ){
+						addressValue = '';
+					} else if(typeof(values.address) == 'undefined'){
+						addressValue = this.address;
+					} else if(this.address == '') {
+						addressValue = values.address;
+					} else {
+						addressValue = this.address + ";" + values.address;
+					}
 					let data = {
 						id: this.selectedRowKeys[0],
 						supplierNo: values.supplierNo,
@@ -627,7 +647,7 @@ export default {
 						bankAccount: values.bankAccount,
 						postalcode: values.postalcode,
 						areaCode: this.addressCodeArr.join(","),
-						address: this.address + ";" + values.address,
+						address: addressValue,
 						remark: values.remark
 					};
 					console.log(data);
@@ -651,7 +671,7 @@ export default {
 								this.editVisible = false;
 								this.selectedRowKeys = [];
 								this.addressCodeArr = [];
-								this.address = [];
+								this.address = '';
 							}
 						},
 						({ type, info }) => {}

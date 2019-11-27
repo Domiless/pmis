@@ -1,9 +1,9 @@
 <template>
   <div class="preview">
     <a-row>
-      <a-col :span="24" class="title">
+      <!-- <a-col :span="24" class="title">
         <span>采 购 合 同</span>
-      </a-col>
+      </a-col> -->
     <!-- </a-row>
     <a-row>
       <a-col :span="12">
@@ -175,6 +175,7 @@ export default {
       let data = JSON.parse(sessionStorage.getItem("priview"));
       this.contractTem = data[0];
       this.contractMsg = data[1];
+      console.log(data);
       console.log(this.contractMsg);
       console.log(this.contractTem);
       this.contractMsg.purchaseDesDOList.forEach(item => {

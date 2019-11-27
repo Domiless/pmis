@@ -246,7 +246,7 @@ export default {
       keyWords: '',
       userProcess: [],
       activeKey: '1',
-      contractMsg: []
+      contractTem: []
     };
   },
   methods: {
@@ -265,8 +265,7 @@ export default {
 				result => {
 					if (result.data.code === 200) {
             console.log(result);
-            this.getContractMsg();
-            let sendMsg = [this.contractMsg,result.data.data];
+            let sendMsg = [this.contractTem,result.data.data];
             sessionStorage.priview = JSON.stringify(sendMsg);
 						sessionStorage.priviewType = 4;
 						window.open("/priview.html", "_blank");
@@ -290,7 +289,7 @@ export default {
         result => {
           if (result.data.code === 200) {
             console.log(result);
-            this.contractMsg = result.data.data;
+            this.contractTem = result.data.data;
           }
         },
         ({ type, info }) => {}
@@ -395,6 +394,9 @@ export default {
        this.selectedRows = selectedRows;
        console.log(this.selectedRowKeys);
        console.log(this.selectedRows);
+       if(this.selectedRowKeys.length != 0) {
+         this.getContractMsg();
+       }
     },
     showDetails(id) {
       this.contractDetailsId = id;
