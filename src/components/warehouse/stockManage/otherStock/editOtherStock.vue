@@ -1,5 +1,5 @@
 <template>
-    <div class="edit_backStock">
+    <div class="edit_otherStock">
         <a-row style="line-height:50px;">
 			<a-button @click="$router.back(-1)" icon="left">返回</a-button>
 		</a-row>
@@ -239,7 +239,7 @@ export default {
 }
 </script>
 <style lang="less">
-.edit_backStock {
+.edit_otherStock {
    overflow: hidden;
   .ant-table-thead > tr > th,
   .ant-table-tbody > tr > td {

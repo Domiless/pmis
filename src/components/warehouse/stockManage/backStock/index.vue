@@ -6,10 +6,10 @@
         <permission-button permCode banType="hide" @click="$router.push({path:'/backStock/addBackStock'})">
           <a-icon style="color:#1890ff;" type="plus" />新增
         </permission-button>
-        <permission-button permCode banType="hide">
+        <permission-button permCode banType="hide" @click="edit">
           <a-icon style="color:#1890ff;" type="edit" />修改
         </permission-button>
-        <permission-button permCode banType="hide" @click="showStock">
+        <permission-button permCode banType="hide">
           <i style="color:#1890ff;margin-right:4px;" class="iconfont">&#xe8ad;</i>审核
         </permission-button>
         <permission-button permCode banType="hide">
@@ -136,6 +136,11 @@ export default {
     };
   },
   methods: {
+    edit() {
+			this.$router.push({
+				path: "/backStock/editBackStock/" + this.selectedRowKeys[0]
+			});
+		},
     showStock() {
         this.stockVisible = true;
     },

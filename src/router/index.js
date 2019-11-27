@@ -479,15 +479,15 @@ export default new Router({
     children: [{
       path: 'addBackStock',
       name: 'addBackStock',
-      component: require('../components/warehouse/stockManage/backStock/addBackStock.vue'),
+      component: require('../components/warehouse/stockManage/backStock/addBackStock.vue').default,
       meta: {
         requireAuth: true,
       },
     },
     {
-      path: 'editBackStock',
+      path: 'editBackStock/:id/',
       name: 'editBackStock',
-      component: require('@/components/warehouse/stockManage/backStock/editBackStock.vue'),
+      component: require('../components/warehouse/stockManage/backStock/editBackStock.vue').default,
       meta: {
         requireAuth: true,
       },
@@ -501,7 +501,23 @@ export default new Router({
     meta: {
       requireAuth: true,
     },
-    children: []
+    children: [{
+      path: 'addOtherStock',
+      name: 'addOtherStock',
+      component: require('../components/warehouse/stockManage/otherStock/addOtherStock.vue').default,
+      meta: {
+        requireAuth: true,
+      },
+    },
+    {
+      path: 'editOtherStock/:id/',
+      name: 'editOtherStock',
+      component: require('../components/warehouse/stockManage/otherStock/editOtherStock.vue').default,
+      meta: {
+        requireAuth: true,
+      },
+    }
+    ] 
   },
   {
     path: '/picking',

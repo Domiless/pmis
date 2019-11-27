@@ -50,7 +50,7 @@ export default [{
     },
     {
         menu: '退料入库修改',
-        route: '/backStock/editBackStock',
+        routeReg: /^\/backStock\/editBackStock\/\w{1,}$/i,
         key: 'editBackStock',
         visible: true,
         permissionCode: 'order_lookup',
@@ -59,6 +59,20 @@ export default [{
         menu: '其它入库单',
         route: '/otherStock',
         key: 'otherStock',
+        permissionCode: 'order_lookup',
+    },
+    {
+        menu: '其它入库新增',
+        route: '/otherStock/addOtherStock',
+        key: 'addOtherStock',
+        visible: true,
+        permissionCode: 'order_lookup',
+    },
+    {
+        menu: '其它入库修改',
+        routeReg: /^\/otherStock\/editOtherStock\/\w{1,}$/i,
+        key: 'editOtherStock',
+        visible: true,
         permissionCode: 'order_lookup',
     },
     ]
