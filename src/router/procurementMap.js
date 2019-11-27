@@ -6,60 +6,63 @@ export default [{
   permissionCode: 'procurement',
   icon: '&#xe60a;',
   defaultDock: false,
-  subMenu: [{
-    menu: '供应商管理',
-    route: '/supplierManage',
-    key: 'supplierManage',
-    permissionCode: 'supplier_lookup',
-  },
-  {
-    menu: '询价',
-    route: '/enquiry',
-    key: 'enquiry',
-    permissionCode: 'shop_lookup',
-  },
-  {
-    menu: '报审单',
-    route: '/declaration',
-    key: 'declaration',
-    permissionCode: 'shop_lookup',
-  },
-  // {
-  //   menu: '采购列表',
-  //   route: '/procurement',
-  //   key: 'procurement',
-  //   permissionCode: 'shop_lookup',
-  // },
-  {
-    menu: '采购合同',
-    route: '/procurementContractManage',
-    key: 'procurementContractManage',
-    permissionCode: 'shopcontract_lookup',
-  },
-  {
-    menu: '合同管理',
-    route: '/contractManage',
-    key: 'contractManage',
-    permissionCode: 'contractmodel_lookup',
-  },
-  {
-    menu: '计量单位',
-    route: '/measureUnit',
-    key: 'measureUnit',
-    permissionCode: 'unit_lookup',
-  },
-  {
-    menu: '采购员',
-    route: '/buyer',
-    key: 'buyer',
-    permissionCode: 'unit_lookup',
-  },
-  {
-    menu: '采购计划',
-    route: '/procurementPlan',
-    key: 'procurementPlan',
-    permissionCode: 'unit_lookup',
-  },
+  subMenu: [
+    {
+      menu: '采购计划',
+      route: '/procurementPlan',
+      key: 'procurementPlan',
+      permissionCode: 'unit_lookup',
+    },
+    {
+      menu: '询价',
+      route: '/enquiry',
+      key: 'enquiry',
+      permissionCode: 'shop_lookup',
+    },
+    {
+      menu: '报审单',
+      route: '/declaration',
+      key: 'declaration',
+      permissionCode: 'shop_lookup',
+    },
+    // {
+    //   menu: '采购列表',
+    //   route: '/procurement',
+    //   key: 'procurement',
+    //   permissionCode: 'shop_lookup',
+    // },
+    {
+      menu: '采购合同',
+      route: '/procurementContractManage',
+      key: 'procurementContractManage',
+      permissionCode: 'shopcontract_lookup',
+    },
+    {
+      menu: '合同管理',
+      route: '/contractManage',
+      key: 'contractManage',
+      permissionCode: 'contractmodel_lookup',
+    },
+    {
+      menu: '采购员',
+      route: '/buyer',
+      key: 'buyer',
+      permissionCode: 'unit_lookup',
+    },
+    {
+      menu: '供应商管理',
+      route: '/supplierManage',
+      key: 'supplierManage',
+      permissionCode: 'supplier_lookup',
+    },
+    {
+      menu: '计量单位',
+      route: '/measureUnit',
+      key: 'measureUnit',
+      permissionCode: 'unit_lookup',
+    },
+
+
 
   ]
 },]
