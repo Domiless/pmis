@@ -3,11 +3,11 @@
     <router-view></router-view>
     <div :class="[{hide:isHideList}]">
       <a-row style="line-height:50px;" >
-        <permission-button permCode banType="hide">
-          <a-icon style="color:#1890ff;" type="plus" @click="$router.push({path:'/otherStock/addOtherStock'})" />新增
+        <permission-button permCode banType="hide" @click="$router.push({path:'/otherStock/addOtherStock'})">
+          <a-icon style="color:#1890ff;" type="plus"/>新增
         </permission-button>
-        <permission-button permCode banType="hide">
-          <a-icon style="color:#1890ff;" type="edit" @click="edit"/>修改
+        <permission-button permCode banType="hide" @click="edit">
+          <a-icon style="color:#1890ff;" type="edit"/>修改
         </permission-button>
         <permission-button permCode banType="hide">
           <i style="color:#1890ff;margin-right:4px;" class="iconfont">&#xe8ad;</i>审核

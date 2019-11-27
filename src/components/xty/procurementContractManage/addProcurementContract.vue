@@ -41,6 +41,7 @@
                 v-decorator="['contractTemplate', { rules: [{ required:'true', message: '请选择合同模板'}]}]"
                 placeholder="请选择"
                 :labelInValue="true"
+								@change="change1"
               >
                 <a-select-option v-for="item in contractTemplate" :key="item.id" :value="item.id">{{ item.title }}</a-select-option>
               </a-select>
@@ -381,6 +382,9 @@ export default {
     };
   },
   methods: {
+		change1(val){
+			console.log(val)
+		},
 		callback(key) {
       this.activeKey = key;
     },
@@ -768,7 +772,7 @@ export default {
       ).then(
         result => {
           if(result.data.code ===200) {
-            // console.log(result);
+            console.log(result);
             this.contractTemplate = result.data.data.content;
 
           }
