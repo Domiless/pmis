@@ -238,6 +238,15 @@ export default new Router({
       },
     },
     {
+      path: 'schedule/:id/',
+      name: 'schedule',
+      components: require('@/components/workOrder/schedule/index'),
+      meta: {
+        requireAuth: true,
+      },
+      children: []
+    },
+    {
       path: 'WorkOrderDetailsList/:id/',
       name: 'WorkOrderDetailsList',
       components: require('../components/workOrder/workOrderDetails/Index.vue'),
@@ -492,7 +501,7 @@ export default new Router({
         requireAuth: true,
       },
     }
-    ] 
+    ]
   },
   {
     path: '/otherStock',
@@ -517,7 +526,7 @@ export default new Router({
         requireAuth: true,
       },
     }
-    ] 
+    ]
   },
   {
     path: '/picking',
@@ -528,5 +537,6 @@ export default new Router({
     },
     children: []
   },
+
   ]
 })

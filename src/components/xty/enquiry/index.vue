@@ -353,8 +353,8 @@ const columns1 = [
   },
   {
     title: "询价时间",
-    key: "gmtCreated",
-    dataIndex: "gmtCreated",
+    key: "gmtModified",
+    dataIndex: "gmtModified",
     width: 140,
     scopedSlots: { customRender: "remark" }
   },
