@@ -2,172 +2,179 @@
 //permissionCode为权限映射码，若permissionCode未对应到用户权限则不显示也无跳转访问权限
 //route和routeReg为匹配路由，二者必须有一个，若都有则为“或”逻辑
 export default [{
-    menu: '企业管理',
-    permissionCode: 'enterprise',
-    icon: '&#xe60a;',
-    defaultDock: false,
-    subMenu: [{
-      menu: '企业列表',
-      route: '/Enterprise',
-      key: 'enterprise',
-      permissionCode: 'enterprise_lookup',
-    }, ]
+  menu: '企业管理',
+  permissionCode: 'enterprise',
+  icon: '&#xe60a;',
+  defaultDock: false,
+  subMenu: [{
+    menu: '企业列表',
+    route: '/Enterprise',
+    key: 'enterprise',
+    permissionCode: 'enterprise_lookup',
+  },]
+},
+// {
+//   menu: '默认首页',
+//   permissionCode: 'workdesk',
+//   icon: '&#xe60a;',
+//   defaultDock: true,
+//   subMenu: [{
+//     menu: '首页',
+//     route: '/Dashboard',
+//     key: 'dashboard',
+//     permissionCode: 'workdesk_desk_lookup',
+//   }, ]
+// },
+{
+  menu: '工单管理',
+  defaultDock: false,
+  permissionCode: 'workOrder',
+  icon: '&#xe602;',
+  subMenu: [{
+    menu: '工单列表',
+    route: '/WorkOrderList',
+    key: 'workOrderList',
+    permissionCode: 'workorder_lookup'
   },
-  // {
-  //   menu: '默认首页',
-  //   permissionCode: 'workdesk',
-  //   icon: '&#xe60a;',
-  //   defaultDock: true,
-  //   subMenu: [{
-  //     menu: '首页',
-  //     route: '/Dashboard',
-  //     key: 'dashboard',
-  //     permissionCode: 'workdesk_desk_lookup',
-  //   }, ]
-  // },
   {
-    menu: '工单管理',
-    defaultDock: false,
-    permissionCode: 'workOrder',
-    icon: '&#xe602;',
-    subMenu: [{
-        menu: '工单列表',
-        route: '/WorkOrderList',
-        key: 'workOrderList',
-        permissionCode: 'workorder_lookup'
-      },
-      {
-        menu: '送货单',
-        route: '/deliverySlip',
-        key: 'deliverySlip',
-        permissionCode: 'delivery_lookup'
-      },
-      {
-        menu: '工单明细',
-        routeReg: /^\/WorkOrderList\/WorkOrderDetailsList\/\w{1,}$/i,
-        key: 'WorkOrderDetailsList',
-        visible: true,
-        permissionCode: 'workorderitem_lookup'
-      },
-      {
-        menu: '工时管理',
-        routeReg: /^\/WorkOrderList\/WorkOrderDetailsList\/\w{1,}\/WorkHoursHandle\/.{1,}$/i,
-        key: 'WorkHoursHandle',
-        visible: true,
-        permissionCode: 'workhour_lookup'
-      },
-      {
-        menu: '物资清单',
-        routeReg: /^\/WorkOrderList\/Inventory\/\w{1,}$/i,
-        key: 'Inventory',
-        visible: true,
-        permissionCode: 'partlist_lookup'
-      },
-      {
-        menu: '生产报价单',
-        routeReg: /^\/WorkOrderList\/OrderPrice\/\w{1,}$/i,
-        key: 'OrderPrice',
-        visible: true,
-        permissionCode: 'offer_lookup'
-      },
-    ]
+    menu: '送货单',
+    route: '/deliverySlip',
+    key: 'deliverySlip',
+    permissionCode: 'delivery_lookup'
   },
+  {
+    menu: '工单明细',
+    routeReg: /^\/WorkOrderList\/WorkOrderDetailsList\/\w{1,}$/i,
+    key: 'WorkOrderDetailsList',
+    visible: true,
+    permissionCode: 'workorderitem_lookup'
+  },
+  {
+    menu: '工单进度',
+    routeReg: /^\/WorkOrderList\/schedule\/\w{1,}$/i,
+    key: 'WorkOrderDetailsList',
+    visible: true,
+    permissionCode: 'workorderitem_lookup'
+  },
+  {
+    menu: '工时管理',
+    routeReg: /^\/WorkOrderList\/WorkOrderDetailsList\/\w{1,}\/WorkHoursHandle\/.{1,}$/i,
+    key: 'WorkHoursHandle',
+    visible: true,
+    permissionCode: 'workhour_lookup'
+  },
+  {
+    menu: '物资清单',
+    routeReg: /^\/WorkOrderList\/Inventory\/\w{1,}$/i,
+    key: 'Inventory',
+    visible: true,
+    permissionCode: 'partlist_lookup'
+  },
+  {
+    menu: '生产报价单',
+    routeReg: /^\/WorkOrderList\/OrderPrice\/\w{1,}$/i,
+    key: 'OrderPrice',
+    visible: true,
+    permissionCode: 'offer_lookup'
+  },
+  ]
+},
 
-  // {
-  //   menu: '订单报价',
-  //   defaultDock: false,
-  //   permissionCode: 'offer',
-  //   icon: '&#xe61e;',
-  //   subMenu: [{
-  //       menu: '订单报价',
-  //       route: '/OrderPrice',
-  //       key: 'OrderPrice',
-  //       permissionCode: 'offer_order_lookup'
-  //     },
-  //     {
-  //       menu: '历史报价',
-  //       route: '/HistoricalQuote',
-  //       key: 'HistoricalQuote',
-  //       permissionCode: 'offer_history_lookup'
-  //     },
-  //   ]
-  // },
+// {
+//   menu: '订单报价',
+//   defaultDock: false,
+//   permissionCode: 'offer',
+//   icon: '&#xe61e;',
+//   subMenu: [{
+//       menu: '订单报价',
+//       route: '/OrderPrice',
+//       key: 'OrderPrice',
+//       permissionCode: 'offer_order_lookup'
+//     },
+//     {
+//       menu: '历史报价',
+//       route: '/HistoricalQuote',
+//       key: 'HistoricalQuote',
+//       permissionCode: 'offer_history_lookup'
+//     },
+//   ]
+// },
 
-  {
-    menu: '工种管理',
-    defaultDock: false,
-    permissionCode: 'process',
-    icon: '&#xe605;',
-    subMenu: [{
-      menu: '工种列表',
-      route: '/ProcessTypes',
-      key: 'ProcessTypes',
-      permissionCode: 'worktype_lookup'
-    }, ]
-  },
-  // {
-  //   menu: '员工管理',
-  //   defaultDock: false,
-  //   permissionCode: 'employee',
-  //   icon: '&#xe6de;',
-  //   subMenu: [{
-  //       menu: '员工列表',
-  //       route: '/Employee',
-  //       key: 'employee',
-  //       permissionCode: 'employee_list_lookup'
-  //     },
-  //     {
-  //       menu: '员工添加',
-  //       route: '/Employee/AddEmployee',
-  //       key: 'addEmployee',
-  //       visible: true,
-  //       permissionCode: 'employee_add_lookup'
-  //     },
-  //     {
-  //       menu: '员工修改',
-  //       routeReg: /^\/Employee\/EditEmployee\/\w{1,}$/i,
-  //       key: 'editEmployee',
-  //       visible: true,
-  //       permissionCode: 'employee_update_lookup'
-  //     },
-  //   ]
-  // },
-  {
-    menu: '原材料管理',
-    defaultDock: false,
-    permissionCode: 'materialManagement',
-    icon: '&#xe64a;',
-    subMenu: [{
-      menu: '原材料列表',
-      route: '/materialManagementList',
-      key: 'materialManagementList',
-      permissionCode: 'raw_lookup'
-    }, ]
-  },
-  // {
-  //   menu: '图纸管理',
-  //   defaultDock: false,
-  //   permissionCode: 'workdesk',
-  //   icon: '&#xe616;',
-  //   subMenu: [{
-  //     menu: '图纸列表',
-  //     route: '/DrawingsList',
-  //     key: 'drawingsList',
-  //     permissionCode: 'drawing_drawing_lookup'
-  //   }]
-  // },
-  {
-    menu: '数据分析',
-    defaultDock: false,
-    permissionCode: 'dataAnalysis',
-    icon: '&#xea06;',
-    subMenu: [{
-      menu: '工时统计',
-      route: '/WorkingHours',
-      key: 'workingHours',
-      permissionCode: 'workhouradd_lookup'
-    }, ]
-  },
+{
+  menu: '工种管理',
+  defaultDock: false,
+  permissionCode: 'process',
+  icon: '&#xe605;',
+  subMenu: [{
+    menu: '工种列表',
+    route: '/ProcessTypes',
+    key: 'ProcessTypes',
+    permissionCode: 'worktype_lookup'
+  },]
+},
+// {
+//   menu: '员工管理',
+//   defaultDock: false,
+//   permissionCode: 'employee',
+//   icon: '&#xe6de;',
+//   subMenu: [{
+//       menu: '员工列表',
+//       route: '/Employee',
+//       key: 'employee',
+//       permissionCode: 'employee_list_lookup'
+//     },
+//     {
+//       menu: '员工添加',
+//       route: '/Employee/AddEmployee',
+//       key: 'addEmployee',
+//       visible: true,
+//       permissionCode: 'employee_add_lookup'
+//     },
+//     {
+//       menu: '员工修改',
+//       routeReg: /^\/Employee\/EditEmployee\/\w{1,}$/i,
+//       key: 'editEmployee',
+//       visible: true,
+//       permissionCode: 'employee_update_lookup'
+//     },
+//   ]
+// },
+{
+  menu: '原材料管理',
+  defaultDock: false,
+  permissionCode: 'materialManagement',
+  icon: '&#xe64a;',
+  subMenu: [{
+    menu: '原材料列表',
+    route: '/materialManagementList',
+    key: 'materialManagementList',
+    permissionCode: 'raw_lookup'
+  },]
+},
+// {
+//   menu: '图纸管理',
+//   defaultDock: false,
+//   permissionCode: 'workdesk',
+//   icon: '&#xe616;',
+//   subMenu: [{
+//     menu: '图纸列表',
+//     route: '/DrawingsList',
+//     key: 'drawingsList',
+//     permissionCode: 'drawing_drawing_lookup'
+//   }]
+// },
+{
+  menu: '数据分析',
+  defaultDock: false,
+  permissionCode: 'dataAnalysis',
+  icon: '&#xea06;',
+  subMenu: [{
+    menu: '工时统计',
+    route: '/WorkingHours',
+    key: 'workingHours',
+    permissionCode: 'workhouradd_lookup'
+  },]
+},
   // {
   //   menu: '基础数据',
   //   defaultDock: false,
