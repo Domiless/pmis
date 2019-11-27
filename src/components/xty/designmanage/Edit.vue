@@ -61,7 +61,11 @@
           </a-row>
           <a-row>
             <a-form-item label="需求数量" :labelCol="{span:3}" :wrapperCol="{span:18}">
-              <a-input v-decorator="['number',{rules: [{validator: chickNumber}]}]" maxlength="10"></a-input>
+              <a-input
+                type="number"
+                v-decorator="['number',{rules: [{validator: chickNumber}]}]"
+                oninput="if(value.length>10)value=value.slice(0,10)"
+              ></a-input>
             </a-form-item>
           </a-row>
           <a-row>

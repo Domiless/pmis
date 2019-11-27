@@ -25,7 +25,7 @@
           </a-col>
           <a-col :span="24" class="case">
             <span class="audit_label">备注</span>
-            <pre style="display:inline-block;vertical-align: top;">{{detailsValue.DO.remark}}</pre>
+            <pre style="display:inline-block;vertical-align: top;word-wrap:break-word;width:280px">{{detailsValue.DO.remark}}</pre>
           </a-col>
         </a-col>
       </a-col>
@@ -86,7 +86,9 @@
                 </a-col>
                 <a-col :span="24" v-if="item.state!=0">
                   <span>处理结果：</span>
-                  <span>
+                  <span
+                    :style="{color:item.state=='同意'?'#7ED321':item.state=='驳回'?'#FF9900':item.state=='终止'?'red':''}"
+                  >
                     {{item.state}}
                     <span
                       v-if="item.comment!=null&&item.comment!=''"

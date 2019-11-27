@@ -3,21 +3,21 @@
     <a-col :span="24" style="display: block;overflow: hidden;">
       <a-col :span="12" style="margin-bottom: -1000px;padding-bottom: 1000px;float: left;">
         <a-col :span="24" style="padding-top:20px;padding-bottom:20px;">
-          <a-col :span="24" class="case">
+          <!-- <a-col :span="24" class="case">
             <span class="audit_label">采购单号</span>
             <span>{{detailsValue.DO.purchaseNo}}</span>
-          </a-col>
+          </a-col>-->
           <a-col :span="24" class="case">
             <span class="audit_label">合同编号</span>
             <span>{{detailsValue.DO.shopContractNo}}</span>
           </a-col>
 
           <a-col :span="24" class="case">
-            <span class="audit_label">供应商</span>
+            <span class="audit_label">供方</span>
             <span>{{detailsValue.DO.supplier}}</span>
           </a-col>
           <a-col :span="24" class="case">
-            <span class="audit_label">需求方</span>
+            <span class="audit_label">需方</span>
             <span>{{detailsValue.DO.demand}}</span>
           </a-col>
           <a-col :span="24" class="case">
@@ -26,7 +26,7 @@
           </a-col>
           <a-col :span="24" class="case">
             <span class="audit_label">总金额</span>
-            <span>{{detailsValue.DO.summoney}}</span>
+            <span>{{detailsValue.DO.summoney}}元</span>
           </a-col>
           <a-col :span="24" class="case">
             <span class="audit_label">金额大写</span>
@@ -54,7 +54,7 @@
           </a-col>
           <a-col :span="24" class="case">
             <span class="audit_label">备注</span>
-            <pre style="display:inline-block;vertical-align: top;">{{detailsValue.DO.remark}}</pre>
+            <pre style="display:inline-block;vertical-align: top;word-wrap:break-word;width:280px">{{detailsValue.DO.remark}}</pre>
           </a-col>
         </a-col>
       </a-col>
@@ -115,7 +115,9 @@
                 </a-col>
                 <a-col :span="24" v-if="item.state!=0">
                   <span>处理结果：</span>
-                  <span>
+                  <span
+                    :style="{color:item.state=='同意'?'#7ED321':item.state=='驳回'?'#FF9900':item.state=='终止'?'red':''}"
+                  >
                     {{item.state}}
                     <span
                       v-if="item.comment!=null&&item.comment!=''"
