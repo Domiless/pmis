@@ -45,7 +45,7 @@
                     permCode
                     banType="hide"
                     @click="setBuyer"
-                    :disabled="selectedRowKeys.length == 0"
+                    :disabled="selectedRowKeys.length == 0 || buyerValue.length == 0"
                     type="primary"
                 >
 				提交
@@ -98,6 +98,7 @@
     </div>
 </template>
 <script>
+import { log } from 'util';
 const columns = [
     {
 		dataIndex: "drawingNo",
@@ -151,7 +152,8 @@ export default {
             appointId: '',
             selectedRows: [],
             selectedRowKeys: [],
-            defaultValue: ''
+            defaultValue: '',
+            copyData: []
         }
     },
     methods: {
@@ -167,7 +169,7 @@ export default {
 			console.log(this.selectedRows);
         },
         setBuyer() {
-            for(let i = 0; i< this.selectedRowKeys.length; i++) {
+            for(let i = 0; i < this.selectedRowKeys.length; i++) {
                 this.handleChangeTable(this.buyerValue.label,this.selectedRowKeys[i],"appointName");
             }
             this.selectedRowKeys = [];
@@ -194,14 +196,27 @@ export default {
                                 }
                             })
                 data = data.filter((item,index,arr) => { return !(!item.appointName && typeof(item.appointName)!='undefined' && item.appointName!=0) });
+                let data2 = [];
+                for( let i = 0; i < data.length; i ++) {
+                    var item = data[i];
+                    var num = data[i].id;
+                    var appointNum = data[i].appointId;
+                    for( let j = 0; j < this.copyData.length; j ++) {
+                        if(num == this.copyData[j].id && appointNum !== this.copyData[j].appointId) {
+                            data2.push(item);
+                        }
+                    }
+                }
                 console.log(data);
+                console.log(data2);
+                console.log(this.copyData);
                 if( data.length == 0 ) {
                     return this.$message.error(`请指派采购员`);
                 }
                 this.Axios(
                     {
                     url: "/api-order/bom/setBomPoint",
-                    params: data,
+                    params: data2,
                     type: "post",
                     option: { successMsg: "添加成功！" },
                     config: {
@@ -244,6 +259,7 @@ export default {
                 }
             }
             console.log(this.data);
+            console.log(this.copyData);
         },
         getBuyer() {
             this.Axios(
@@ -279,7 +295,9 @@ export default {
 				result => {
 					if (result.data.code === 200) {
 						console.log(result);
-						this.data = result.data.data;
+                        this.data = result.data.data;
+                        this.copyData = JSON.parse(JSON.stringify(this.data));
+                        console.log(this.copyData);
 					}
 				},
 				({ type, info }) => {}

@@ -373,12 +373,12 @@ export default {
       contractTemplate: [],
 			procurementId: '',
 			dateValue: '',
-			summoney: '',
-			chineseMoney: '',
-			sumtaxMoney: '',
-			chineseSumtaxMoney: '',
-			taxMoney: '',
-			chineseTaxMoney: '',
+			summoney: 0,
+			chineseMoney: '零',
+			sumtaxMoney: 0,
+			chineseSumtaxMoney: '零',
+			taxMoney: 0,
+			chineseTaxMoney: '零',
 			supplierId: '',
 			modelId: '',
 			taxrateValue: '',
@@ -389,6 +389,18 @@ export default {
 		getTaxrate(value){
 			console.log(value);
 			this.taxrateValue = value;
+			if( this.selectedRowsRight.length !== 0 ) {
+				this.summoney = 0;
+				for(let i = 0; i < this.selectedRowsRight.length; i ++) {
+					this.summoney += this.selectedRowsRight[i].total;
+				}
+				this.taxMoney = this.taxrateValue.replace('%','')/100 * this.summoney;
+				this.taxMoney = Math.round(this.taxMoney * 100)/100;
+				this.sumtaxMoney = this.taxMoney + this.summoney;
+				this.chineseMoney = this.number_chinese(this.summoney);
+				this.chineseTaxMoney =  this.number_chinese(this.taxMoney);
+				this.chineseSumtaxMoney = this.number_chinese(this.sumtaxMoney);
+			}
 		},
     close() {
       this.form.resetFields();
@@ -443,6 +455,7 @@ export default {
     },
      onSelectChange(a, b, c) {
 			if (c == 1) {
+				this.summoney = 0;
 				this.selectedRowKeysLeft = a;
 				this.selectedRows = b;
 				let arr = new Array();
@@ -465,6 +478,7 @@ export default {
 					this.summoney += this.selectedRowsRight[i].total;
 				}
 				this.taxMoney = this.taxrateValue.replace('%','')/100 * this.summoney;
+				this.taxMoney = Math.round(this.taxMoney * 100)/100;
 				this.sumtaxMoney = this.taxMoney + this.summoney;
 				this.chineseMoney = this.number_chinese(this.summoney);
 				this.chineseTaxMoney =  this.number_chinese(this.taxMoney);
@@ -480,7 +494,7 @@ export default {
         });
     },
     delSelect() {
-			let selectedRowsRightCopy = [...this.selectedRowsRight];
+			// let selectedRowsRightCopy = [...this.selectedRowsRight];
 			for (let i = 0; i < this.selectedRowKeysRight.length; i++) {
 				this.selectedRowsRight = this.selectedRowsRight.filter(item => {
 					return item.id != this.selectedRowKeysRight[i];
@@ -489,6 +503,25 @@ export default {
 					return item != this.selectedRowKeysRight[i];
 				});
 				
+			}
+			if( this.selectedRowsRight.length !== 0) {
+				this.summoney = 0;
+				for(let i = 0; i < this.selectedRowsRight.length; i ++) {
+					this.summoney += this.selectedRowsRight[i].total;
+				}
+				this.taxMoney = this.taxrateValue.replace('%','')/100 * this.summoney;
+				this.taxMoney = Math.round(this.taxMoney * 100)/100;
+				this.sumtaxMoney = this.taxMoney + this.summoney;
+				this.chineseMoney = this.number_chinese(this.summoney);
+				this.chineseTaxMoney =  this.number_chinese(this.taxMoney);
+				this.chineseSumtaxMoney = this.number_chinese(this.sumtaxMoney);
+			} else {
+				this.summoney = 0;
+				this.taxMoney = 0;
+				this.sumtaxMoney = 0;
+				this.chineseMoney = '零';
+				this.chineseTaxMoney = '零';
+				this.chineseSumtaxMoney = '零';
 			}
 			// console.log(this.getArrDifference(selectedRowsRightCopy,this.selectedRowsRight))
 			// this.data.push(...this.getArrDifference(selectedRowsRightCopy,this.selectedRowsRight));
@@ -499,6 +532,12 @@ export default {
 			this.selectedRows = [];
 			this.selectedRowKeysLeft = [];
 			this.selectedRowsRight = [];
+			this.summoney = 0;
+			this.taxMoney = 0;
+			this.sumtaxMoney = 0;
+			this.chineseMoney = '零';
+			this.chineseTaxMoney = '零';
+			this.chineseSumtaxMoney = '零';
 		},
 		getDetailMsg(id) {
       this.Axios(
@@ -574,6 +613,7 @@ export default {
 						this.summoney = msg.summoney;
 						this.supplierId = msg.supplierId;
 						this.modelId = msg.modelId;
+						this.taxrateValue = msg.taxrate;
 						this.taxMoney = msg.taxMoney;
 						this.sumtaxMoney = msg.sumtaxMoney;
 						this.chineseMoney = msg.chineseMoney;
@@ -667,7 +707,11 @@ export default {
 						purchaseDesId: this.selectedRowsRight.map(item => item.id),
             desCount: this.total,
           };
-          console.log(data);
+					console.log(data);
+					console.log(this.selectedRowsRight);
+					if( this.selectedRowsRight.length == 0 ) {
+						return this.$message.error('请选择采购明细');
+					}
 
 					this.Axios(
 						{
@@ -687,6 +731,12 @@ export default {
 								this.close();
 								this.dateValue = '';
 								this.signDate = '';
+								this.summoney = 0;
+								this.taxMoney = 0;
+								this.sumtaxMoney = 0;
+								this.chineseMoney = '零';
+								this.chineseTaxMoney = '零';
+								this.chineseSumtaxMoney = '零';
 							}
 						},
 						({ type, info }) => {}

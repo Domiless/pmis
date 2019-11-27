@@ -4,7 +4,7 @@
       <a-col :span="24" class="title">
         <span>采 购 合 同</span>
       </a-col>
-    </a-row>
+    <!-- </a-row>
     <a-row>
       <a-col :span="12">
         <span>供方：[--GF--]</span>
@@ -92,7 +92,14 @@
       <a-col :span="24">
         <span>备注：本合同不得随意增减、删改，否则合同无效。本合同履行期间，双方以传真件、复印件、扫描件等方式签订的具体实施内容的合同与本合同具有同等法律效力。</span>
       </a-col>
+    </a-row> -->
     </a-row>
+    <a-row>
+      <a-col :span="24">
+        <span v-html="contractTem"></span>
+      </a-col>
+    </a-row>
+
     <div style="page-break-after:always"></div>
     <a-row>
       <a-col :span="24">
@@ -102,18 +109,18 @@
           </tr>
           <tr style="font-size: 16px">
             <td colspan="5">
-              <span>供方：[--GF--]</span>
+              <span>供方：{{contractMsg.supplier}}</span>
             </td>
             <td colspan="3" style="border-left:none">
-              <span>合同编号：[--HTBH--]</span>
+              <span>合同编号：{{contractMsg.shopContractNo}}</span>
             </td>
           </tr>
           <tr>
             <td colspan="5">
-              <span>需方：[--XF--]</span>
+              <span>需方：{{contractMsg.demand}}</span>
             </td>
             <td colspan="3" style="border-left:none">
-              <span>签订时间：[--QDSJ--]</span>
+              <span>签订时间：{{contractMsg.digndate}}</span>
             </td>
           </tr>
           <tr style="text-align:center">
@@ -158,14 +165,18 @@ export default {
   data() {
     return {
       contractMsg: [],
+      contractTem: '',
       totalMoney: 0
     };
   },
   created() {
     this.priviewType = sessionStorage.getItem("priviewType");
     if (this.priviewType == 4) {
-      this.contractMsg = JSON.parse(sessionStorage.getItem("priview"));
+      let data = JSON.parse(sessionStorage.getItem("priview"));
+      this.contractTem = data[0];
+      this.contractMsg = data[1];
       console.log(this.contractMsg);
+      console.log(this.contractTem);
       this.contractMsg.purchaseDesDOList.forEach(item => {
                                                     this.totalMoney += item.total;
                                                 });

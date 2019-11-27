@@ -245,7 +245,8 @@ export default {
       reviewSchedule: -1,
       keyWords: '',
       userProcess: [],
-      activeKey: '1'
+      activeKey: '1',
+      contractMsg: []
     };
   },
   methods: {
@@ -264,13 +265,17 @@ export default {
 				result => {
 					if (result.data.code === 200) {
             console.log(result);
-            sessionStorage.priview = JSON.stringify(result.data.data);
+            this.getContractMsg();
+            let sendMsg = [this.contractMsg,result.data.data];
+            sessionStorage.priview = JSON.stringify(sendMsg);
 						sessionStorage.priviewType = 4;
 						window.open("/priview.html", "_blank");
 					}
 				},
 				({ type, info }) => {}
       );
+    },
+    getContractMsg() {
       this.Axios(
         {
           url: "/api-order/shopContract/print",
@@ -285,6 +290,7 @@ export default {
         result => {
           if (result.data.code === 200) {
             console.log(result);
+            this.contractMsg = result.data.data;
           }
         },
         ({ type, info }) => {}

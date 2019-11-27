@@ -370,12 +370,12 @@ export default {
       contractNoWatch: '',
 			supplierValue: '',
 			taxrateValue: '',
-			summoney: '',
-			chineseMoney: '',
-			sumtaxMoney: '',
-			chineseSumtaxMoney: '',
-			taxMoney: '',
-			chineseTaxMoney: '',
+			summoney: 0,
+			chineseMoney: '零',
+			sumtaxMoney: 0,
+			chineseSumtaxMoney: '零',
+			taxMoney: 0,
+			chineseTaxMoney: '零',
 			activeKey: "1"
 
     };
@@ -387,6 +387,18 @@ export default {
 		getTaxrate(value){
 			console.log(value);
 			this.taxrateValue = value;
+			if( this.selectedRowsRight.length !== 0 ) {
+				this.summoney = 0;
+				for(let i = 0; i < this.selectedRowsRight.length; i ++) {
+					this.summoney += this.selectedRowsRight[i].total;
+				}
+				this.taxMoney = this.taxrateValue.replace('%','')/100 * this.summoney;
+				this.taxMoney = Math.round(this.taxMoney * 100)/100;
+				this.sumtaxMoney = this.taxMoney + this.summoney;
+				this.chineseMoney = this.number_chinese(this.summoney);
+				this.chineseTaxMoney =  this.number_chinese(this.taxMoney);
+				this.chineseSumtaxMoney = this.number_chinese(this.sumtaxMoney);
+			}
 		},
     checkContractNo(rule, value, callback) {
       if (
@@ -448,6 +460,7 @@ export default {
 					this.summoney += this.selectedRowsRight[i].total;
 				}
 				this.taxMoney = this.taxrateValue.replace('%','')/100 * this.summoney;
+				this.taxMoney = Math.round(this.taxMoney * 100)/100;
 				this.sumtaxMoney = this.taxMoney + this.summoney;
 				this.chineseMoney = this.number_chinese(this.summoney);
 				this.chineseTaxMoney =  this.number_chinese(this.taxMoney);
@@ -466,6 +479,25 @@ export default {
 					return item != this.selectedRowKeysRight[i];
 				});
 			}
+			if( this.selectedRowsRight.length !== 0) {
+				this.summoney = 0;
+				for(let i = 0; i < this.selectedRowsRight.length; i ++) {
+					this.summoney += this.selectedRowsRight[i].total;
+				}
+				this.taxMoney = this.taxrateValue.replace('%','')/100 * this.summoney;
+				this.taxMoney = Math.round(this.taxMoney * 100)/100;
+				this.sumtaxMoney = this.taxMoney + this.summoney;
+				this.chineseMoney = this.number_chinese(this.summoney);
+				this.chineseTaxMoney =  this.number_chinese(this.taxMoney);
+				this.chineseSumtaxMoney = this.number_chinese(this.sumtaxMoney);
+			} else {
+				this.summoney = 0;
+				this.taxMoney = 0;
+				this.sumtaxMoney = 0;
+				this.chineseMoney = '零';
+				this.chineseTaxMoney = '零';
+				this.chineseSumtaxMoney = '零';
+			}
 			this.selectedRowKeysRight = [];
     },
     delAll() {
@@ -473,21 +505,36 @@ export default {
 			this.selectedRows = [];
 			this.selectedRowKeysLeft = [];
 			this.selectedRowsRight = [];
+			this.summoney = 0;
+			this.taxMoney = 0;
+			this.sumtaxMoney = 0;
+			this.chineseMoney = '零';
+			this.chineseTaxMoney = '零';
+			this.chineseSumtaxMoney = '零';
+
 		},
     getSupplierTotal(value) {
       // let totalData = this.data.filter(item => item.supplier === value);
       // let money = 0;
       // for(let i = 0; i < totalData.length; i ++) {
       //   money += totalData[i].total;
-      // }
+			// }
+			this.selectedRowKeysRight = [];
+			this.selectedRows = [];
+			this.selectedRowKeysLeft = [];
+			this.selectedRowsRight = [];
       this.supplierValue = value.label;
       this.form.setFieldsValue({
         supplier2: this.supplierValue
       })
       console.log(value);
       this.getDetailMsg(value.key);
-
-
+			this.summoney = 0;
+			this.taxMoney = 0;
+			this.sumtaxMoney = 0;
+			this.chineseMoney = '零';
+			this.chineseTaxMoney = '零';
+			this.chineseSumtaxMoney = '零';
     },
     close() {
       this.form.resetFields();
@@ -630,6 +677,12 @@ export default {
 								this.data = [];
 								this.selectedRowsRight = [];
 								this.activeKey = "1";
+								this.summoney = 0;
+								this.taxMoney = 0;
+								this.sumtaxMoney = 0;
+								this.chineseMoney = '零';
+								this.chineseTaxMoney = '零';
+								this.chineseSumtaxMoney = '零';
 
 							}
 						},
