@@ -64,7 +64,7 @@
               <a-input
                 type="number"
                 v-decorator="['number',{rules: [{validator: chickNumber}]}]"
-                maxlength="10"
+                oninput="if(value.length>10)value=value.slice(0,10)"
               ></a-input>
             </a-form-item>
           </a-row>

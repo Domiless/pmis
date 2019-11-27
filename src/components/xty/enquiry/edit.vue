@@ -304,7 +304,7 @@ const columns = [
     scopedSlots: { customRender: "remark" }
   },
   {
-    title: "小计",
+    title: "小计(元)",
     key: "total",
     dataIndex: "total",
     width: 100
