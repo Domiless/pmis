@@ -197,7 +197,7 @@
                   banType="disabled"
                   class="button_text btn_disabled"
                   @click="toScheduleList(record)"
-                >工单进度</permission-button>
+                >调度进度</permission-button>
               </template>
             </a-table>
             <a-pagination
@@ -401,7 +401,7 @@ const columns = [
   {
     dataIndex: "jindu",
     key: "jindu",
-    title: "进度详情",
+    title: "调度进度",
     width: 80,
     scopedSlots: { customRender: "jindu" }
   }

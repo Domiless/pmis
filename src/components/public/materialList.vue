@@ -37,6 +37,7 @@
           rowKey="id"
           :customRow="(a,b)=>customRow(a,b)"
         ></a-table>
+        <span class="msg">提示：双击可选择物料信息。</span>
       </a-col>
     </a-row>
   </div>
@@ -121,6 +122,15 @@ export default {
   .ant-table-thead > tr > th,
   .ant-table-tbody > tr > td {
     padding: 4px 4px;
+  }
+  .msg {
+    position: absolute;
+    bottom: 12px;
+    left: -158px;
+  }
+  .ant-table-pagination.ant-pagination {
+    margin: 8px 0;
+    float: right;
   }
 }
 </style>
