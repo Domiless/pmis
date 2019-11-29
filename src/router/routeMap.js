@@ -50,7 +50,7 @@ export default [{
     permissionCode: 'workorderitem_lookup'
   },
   {
-    menu: '工单进度',
+    menu: '调度进度',
     routeReg: /^\/WorkOrderList\/schedule\/\w{1,}$/i,
     key: 'WorkOrderDetailsList',
     visible: true,
