@@ -106,4 +106,63 @@ export default [{
         permissionCode: 'order_lookup',
     },
     ]
+},
+{
+    menu: '库存管理',
+    permissionCode: 'storageManage',
+    icon: '&#xe60a;',
+    defaultDock: false,
+    subMenu: [{
+        menu: '库存列表',
+        route: '/storageList',
+        key: 'storageList',
+        permissionCode: 'order_lookup',
+    },
+    {
+        menu: '库存盘点',
+        route: '/storageCheck',
+        key: 'storageCheck',
+        permissionCode: 'order_lookup',
+    },
+    {
+        menu: '库存盘点新增',
+        route: '/storageCheck/addStorageCheck',
+        key: 'addBackStock',
+        visible: true,
+        permissionCode: 'order_lookup',
+    },
+    {
+        menu: '库存盘点修改',
+        routeReg: /^\/storageCheck\/editStorageCheck\/\w{1,}$/i,
+        key: 'editStorageCheck',
+        visible: true,
+        permissionCode: 'order_lookup',
+    },
+    {
+        menu: '库存调拨',
+        route: '/storageAllot',
+        key: 'storageAllot',
+        permissionCode: 'order_lookup',
+    },
+    {
+        menu: '库存调拨新增',
+        route: '/storageAllot/addStorageAllot',
+        key: 'addStorageAllot',
+        visible: true,
+        permissionCode: 'order_lookup',
+    },
+    {
+        menu: '库存调拨修改',
+        routeReg: /^\/storageAllot\/editStorageAllot\/\w{1,}$/i,
+        key: 'editStorageAllot',
+        visible: true,
+        permissionCode: 'order_lookup',
+    },
+    {
+        menu: '库存调拨通知单',
+        route: '/storageAllotInform',
+        key: 'storageAllotInform',
+        permissionCode: 'order_lookup',
+    },
+    ]
 },]

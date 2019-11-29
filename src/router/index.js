@@ -537,6 +537,73 @@ export default new Router({
     },
     children: []
   },
-
+  {
+    path: '/storageList',
+    name: 'storageList',
+    components: require('@/components/warehouse/storageManage/storageList/index'),
+    meta: {
+      requireAuth: true,
+    },
+    children: []
+  },
+  {
+    path: '/storageCheck',
+    name: 'storageCheck',
+    components: require('@/components/warehouse/storageManage/storageCheck/index'),
+    meta: {
+      requireAuth: true,
+    },
+    children: [{
+      path: 'addStorageCheck',
+      name: 'addStorageCheck',
+      component: require('../components/warehouse/storageManage/storageCheck/addStorageCheck.vue').default,
+      meta: {
+        requireAuth: true,
+      },
+    },
+    {
+      path: 'editStorageCheck/:id/',
+      name: 'editStorageCheck',
+      component: require('../components/warehouse/storageManage/storageCheck/editStorageCheck.vue').default,
+      meta: {
+        requireAuth: true,
+      },
+    }
+    ]
+  },
+  {
+    path: '/storageAllot',
+    name: 'storageAllot',
+    components: require('@/components/warehouse/storageManage/storageAllot/index'),
+    meta: {
+      requireAuth: true,
+    },
+    children: [{
+      path: 'addStorageAllot',
+      name: 'addStorageAllot',
+      component: require('../components/warehouse/storageManage/storageAllot/addStorageAllot.vue').default,
+      meta: {
+        requireAuth: true,
+      },
+    },
+    {
+      path: 'editStorageAllot/:id/',
+      name: 'editStorageAllot',
+      component: require('../components/warehouse/storageManage/storageAllot/editStorageAllot.vue').default,
+      meta: {
+        requireAuth: true,
+      },
+    }
+    ]
+  },
+  {
+    path: '/storageAllotInform',
+    name: 'storageAllotInform',
+    components: require('@/components/warehouse/storageManage/storageAllotInform/index'),
+    meta: {
+      requireAuth: true,
+    },
+    children: []
+  },
   ]
 })

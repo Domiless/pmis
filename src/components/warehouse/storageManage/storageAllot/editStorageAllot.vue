@@ -1,5 +1,5 @@
 <template>
-    <div class="add_backStock">
+    <div class="edit_storageAllot">
         <a-row style="line-height:50px;">
 			<a-button @click="$router.back(-1)" icon="left">返回</a-button>
 		</a-row>
@@ -23,31 +23,25 @@
                         maxlength="20"
                     ></a-input>
 				</a-form-item>
-                <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 12 }" label="原始单据号">
-					<a-input
-                        v-decorator="['originalInvoicesNo']"
-                        maxlength="20"
-                    ></a-input>
-				</a-form-item>
-                <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 12 }" label="退料部门">
+                <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 12 }" label="调出仓库">
 					<a-input
                         v-decorator="[
                         'backDepartment',
-                        {rules: [{ required: true, message: '请填写退料部门' }]}
+                        {rules: [{ required: true, message: '请填写调出仓库' }]}
                         ]"
                         maxlength="10"
                     ></a-input>
 				</a-form-item>
-                <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 12 }" label="返回仓库">
+                <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 12 }" label="调入仓库">
 					<a-input
                         v-decorator="[
                         'backWarehouse',
-                        {rules: [{ required: true, message: '请填写返回仓库' }]}
+                        {rules: [{ required: true, message: '请填写调入仓库' }]}
                         ]"
                         maxlength="10"
                     ></a-input>
 				</a-form-item>
-                <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 12 }" label="入库日期">
+                <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 12 }" label="调拨日期">
                     <a-date-picker 
                         style="width:100%;"
                         @change="onChangeSign" 
@@ -75,9 +69,9 @@
                         :autosize="{ minRows: 4, maxRows: 4}"
                     ></a-textarea>
 				</a-form-item>
-            <a-table :columns="columns" :pagination="false" :dataSource="data" rowKey="id">
+                <a-table :columns="columns" :pagination="false" :dataSource="data" rowKey="id">
                 <span slot="shuliangTitle">
-                <span style="color: #f5222d">*</span>数量
+                <span style="color: #f5222d">*</span>调拨数量
                 </span>
                 <template slot="xuanzewuliao" slot-scope="text, record, index">
                 <div class="choice">
@@ -174,6 +168,12 @@ const columns = [
     width: 80
   },
   {
+    dataIndex: "wuliaofenlei",
+    key: "wuliaofenlei",
+    title: "物料分类",
+    width: 100
+  },
+  {
     dataIndex: "kucunshuliang",
     key: "kucunshuliang",
     title: "库存数量",
@@ -186,12 +186,6 @@ const columns = [
     width: 120,
     scopedSlots: { customRender: "shuliang" },
     slots: { title: "shuliangTitle" }
-  },
-  {
-    dataIndex: "wuliaofenlei",
-    key: "wuliaofenlei",
-    title: "物料分类",
-    width: 100
   },
   {
     dataIndex: "beizhu",
@@ -239,7 +233,7 @@ export default {
 }
 </script>
 <style lang="less">
-.add_backStock {
+.edit_storageAllot {
    overflow: hidden;
   .ant-table-thead > tr > th,
   .ant-table-tbody > tr > td {

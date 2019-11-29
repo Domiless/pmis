@@ -1,18 +1,18 @@
 <template>
   <div class="addContractManage">
     <a-form :form="form">
-      <a-form-item label="合同名称" :labelCol="{span:3}" :wrapperCol="{span:19}" required>
+      <a-form-item label="合同名称" :labelCol="{span:2}" :wrapperCol="{span:21}" required>
         <a-input v-decorator="['contractName', { rules: [{ required:'true', message: '请填写合同名称'}]}]"></a-input>
       </a-form-item>
-      <a-form-item label="合同内容" :labelCol="{span:3}" :wrapperCol="{span:19}">
+      <a-form-item label="合同内容" :labelCol="{span:2}" :wrapperCol="{span:21}" style="margin-bottom: 0px">
         <editor v-on:tinymceValue="tinymceValue" ref="clearContent"></editor>
       </a-form-item>
       <a-row>
-        <a-col :span="24" :offset="3">
+        <a-col :span="24" :offset="2">
           <span style="color: #1890ff;cursor: pointer" @click="checkVariable">查看变量</span>
         </a-col>
       </a-row>
-      <a-form-item :wrapper-col="{ span: 20,offset: 2 }" style="text-align:right">
+      <a-form-item :wrapper-col="{ span: 21,offset: 2 }" style="text-align:right" class="btn">
         <a-button @click="confirmCancel" style="margin-right:12px;">关闭</a-button>
         <a-button type="primary" @click="addContract()">提交</a-button>
       </a-form-item>
@@ -126,9 +126,18 @@ export default {
 };
 </script>
 <style lang="less">
-.label_right{
-    display: inline-block;
-    width: 100px;
-    text-align: right;
+.addContractManage {
+  .label_right{
+      display: inline-block;
+      width: 100px;
+      text-align: right;
+    }
+  .btn {
+    margin-bottom: 0px;
   }
+  .mce-edit-area.mce-container.mce-panel.mce-stack-layout-item {
+    height: 580px;
+  }
+}
+
 </style>
