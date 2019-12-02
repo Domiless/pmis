@@ -157,28 +157,22 @@
 						</a-col>
 					</a-row>
 					<a-row>
-						<a-col :span="3" style="text-align: right">
+						<a-col :span="24">
 							<span>合计货款(不含税): </span>
-						</a-col>
-						<a-col :span="21" style="padding-left: 10px">
 							<span>{{ summoney }}</span>
 							<span>({{ chineseMoney }})</span>
 						</a-col>
 					</a-row>
 					<a-row>
-						<a-col :span="3" style="text-align: right">
+						<a-col :span="24">
 							<span>税金合计: </span>
-						</a-col>
-						<a-col :span="21" style="padding-left: 10px">
 							<span>{{ taxMoney }}</span>
 							<span>({{ chineseTaxMoney }})</span>
 						</a-col>
 					</a-row>
 					<a-row>
-						<a-col :span="3" style="text-align: right">
+						<a-col :span="24">
 							<span>合计货款(含税):</span>
-						</a-col>
-						<a-col :span="21" style="padding-left: 10px">
 							<span>{{ sumtaxMoney }}</span>
 							<span>({{ chineseSumtaxMoney }})</span>
 						</a-col>
@@ -372,11 +366,11 @@ export default {
 			supplierValue: '',
 			taxrateValue: '',
 			summoney: 0,
-			chineseMoney: '零',
+			chineseMoney: '零元',
 			sumtaxMoney: 0,
-			chineseSumtaxMoney: '零',
+			chineseSumtaxMoney: '零元',
 			taxMoney: 0,
-			chineseTaxMoney: '零',
+			chineseTaxMoney: '零元',
 			activeKey: "1"
 
     };
@@ -498,9 +492,9 @@ export default {
 				this.summoney = 0;
 				this.taxMoney = 0;
 				this.sumtaxMoney = 0;
-				this.chineseMoney = '零';
-				this.chineseTaxMoney = '零';
-				this.chineseSumtaxMoney = '零';
+				this.chineseMoney = '零元';
+				this.chineseTaxMoney = '零元';
+				this.chineseSumtaxMoney = '零元';
 			}
 			this.selectedRowKeysRight = [];
     },
@@ -512,9 +506,9 @@ export default {
 			this.summoney = 0;
 			this.taxMoney = 0;
 			this.sumtaxMoney = 0;
-			this.chineseMoney = '零';
-			this.chineseTaxMoney = '零';
-			this.chineseSumtaxMoney = '零';
+			this.chineseMoney = '零元';
+			this.chineseTaxMoney = '零元';
+			this.chineseSumtaxMoney = '零元';
 
 		},
     getSupplierTotal(value) {
@@ -536,9 +530,9 @@ export default {
 			this.summoney = 0;
 			this.taxMoney = 0;
 			this.sumtaxMoney = 0;
-			this.chineseMoney = '零';
-			this.chineseTaxMoney = '零';
-			this.chineseSumtaxMoney = '零';
+			this.chineseMoney = '零元';
+			this.chineseTaxMoney = '零元';
+			this.chineseSumtaxMoney = '零元';
     },
     close() {
       this.form.resetFields();
@@ -547,7 +541,8 @@ export default {
 			this.activeKey = "1";
     },
     onChangeSign(data, dateString) {
-      this.signDate = dateString;
+			this.signDate = dateString;
+			console.log(this.signDate)
     },
     onChangeRange(date,datestring){
       this.dateValue = datestring;
@@ -684,9 +679,9 @@ export default {
 								this.summoney = 0;
 								this.taxMoney = 0;
 								this.sumtaxMoney = 0;
-								this.chineseMoney = '零';
-								this.chineseTaxMoney = '零';
-								this.chineseSumtaxMoney = '零';
+								this.chineseMoney = '零元';
+								this.chineseTaxMoney = '零元';
+								this.chineseSumtaxMoney = '零元';
 
 							}
 						},

@@ -5,7 +5,7 @@
 		</a-row>
         <a-row>
             <a-form :form="form">
-                <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 22 }" label="单据类型">
+                <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 12 }" label="单据类型">
 					<a-input
                         v-decorator="[
                         'invoicesType',
@@ -14,7 +14,7 @@
                         maxlength="10"
                     ></a-input>
 				</a-form-item>
-                <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 22 }" label="单据编号">
+                <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 12 }" label="单据编号">
 					<a-input
                         v-decorator="[
                         'invoicesNo',
@@ -23,38 +23,38 @@
                         maxlength="20"
                     ></a-input>
 				</a-form-item>
-                <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 22 }" label="原始单据号">
+                <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 12 }" label="原始单据号">
 					<a-input
                         v-decorator="['originalInvoicesNo']"
                         maxlength="20"
                     ></a-input>
 				</a-form-item>
-                <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 22 }" label="退料部门">
+                <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 12 }" label="物料来源">
 					<a-input
                         v-decorator="[
                         'backDepartment',
-                        {rules: [{ required: true, message: '请填写退料部门' }]}
+                        {rules: [{ required: true, message: '请填写物料来源' }]}
                         ]"
                         maxlength="10"
                     ></a-input>
 				</a-form-item>
-                <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 22 }" label="返回仓库">
+                <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 12 }" label="收货仓库">
 					<a-input
                         v-decorator="[
                         'backWarehouse',
-                        {rules: [{ required: true, message: '请填写返回仓库' }]}
+                        {rules: [{ required: true, message: '请填写收货仓库' }]}
                         ]"
                         maxlength="10"
                     ></a-input>
 				</a-form-item>
-                <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 22 }" label="入库日期">
+                <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 12 }" label="入库日期">
                     <a-date-picker 
                         style="width:100%;"
                         @change="onChangeSign" 
                         v-decorator="['stockDate']" 
                         format="YYYY/MM/DD"/>
 				</a-form-item>
-                <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 22 }" label="经办人">
+                <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 12 }" label="经办人">
 					<a-input
                         v-decorator="[
                         'transactor',
@@ -62,20 +62,20 @@
                         ]"
                     ></a-input>
 				</a-form-item>
-                <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 22 }" label="制单人">
+                <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 12 }" label="制单人">
 					<a-input
                         v-decorator="['preparedBy']"
                         maxlength="10"
                     ></a-input>
 				</a-form-item>
-                <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 22 }" label="备注">
+                <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 12 }" label="备注">
 					<a-textarea 
                         v-decorator="['remark']" 
                         :rows="4" 
                         :autosize="{ minRows: 4, maxRows: 4}"
                     ></a-textarea>
 				</a-form-item>
-                <a-table :columns="columns" :pagination="false" :dataSource="data" rowKey="id">
+            <a-table :columns="columns" :pagination="false" :dataSource="data" rowKey="id">
                 <span slot="shuliangTitle">
                 <span style="color: #f5222d">*</span>数量
                 </span>
