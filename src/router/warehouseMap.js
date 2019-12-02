@@ -12,6 +12,12 @@ export default [{
         key: 'warehouse',
         permissionCode: 'order_lookup',
     },
+    // {
+    //     menu: '库存单位',
+    //     route: '/unit',
+    //     key: 'unit',
+    //     permissionCode: 'order_lookup',
+    // },
     {
         menu: '库位管理',
         route: '/location',
@@ -23,7 +29,15 @@ export default [{
         route: '/classify',
         key: 'classify',
         permissionCode: 'order_lookup',
-    }, {
+    },
+    ]
+},
+{
+    menu: '入库管理',
+    permissionCode: 'putInStorage',
+    icon: '&#xe60a;',
+    defaultDock: false,
+    subMenu: [{
         menu: '采购入库单',
         route: '/procurementStock',
         key: 'procurementStock',
@@ -89,21 +103,50 @@ export default [{
         permissionCode: 'order_lookup',
     },
     {
+        menu: '领料新增',
+        route: '/picking/add',
+        key: 'pickingAdd',
+        visible: true,
+        permissionCode: 'order_lookup'
+    },
+    {
         menu: '销售出库单',
         route: '/market',
         key: 'market',
         permissionCode: 'order_lookup',
     },
     {
+        menu: '销售新增',
+        route: '/market/add',
+        key: 'marketAdd',
+        visible: true,
+        permissionCode: 'order_lookup'
+    },
+    {
         menu: '采购退货单',
-        route: '/PurchaseReturn',
-        key: 'PurchaseReturn',
+        route: '/purchaseReturn',
+        key: 'purchaseReturn',
         permissionCode: 'order_lookup',
-    }, {
-        menu: '其他出库单',
+    },
+    {
+        menu: '采购退货新增',
+        route: '/purchaseReturn/add',
+        key: 'purchaseReturnAdd',
+        visible: true,
+        permissionCode: 'order_lookup'
+    },
+    {
+        menu: '其它出库单',
         route: '/others',
         key: 'others',
         permissionCode: 'order_lookup',
+    },
+    {
+        menu: '其它新增',
+        route: '/others/add',
+        key: 'othersAdd',
+        visible: true,
+        permissionCode: 'order_lookup'
     },
     ]
 },]

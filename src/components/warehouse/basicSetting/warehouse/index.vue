@@ -178,12 +178,12 @@ export default {
     getList() {
       this.Axios(
         {
-          url: "/api-workorder/workOrder/list",
+          url: "/api-warehouse/warehouse/list",
           params: {
             page: this.current,
-            size: this.pageSize,
-            state: this.state,
-            keyword: this.keyword
+            size: this.pageSize
+            // state: this.state,
+            // keyword: this.keyword
           },
           type: "get",
           option: { enableMsg: false }
@@ -193,7 +193,7 @@ export default {
         result => {
           if (result.data.code === 200) {
             console.log(result);
-            this.data = result.data.data.data;
+            this.data = result.data.data.content;
             this.total = result.data.data.totalElement;
           }
         },
@@ -238,7 +238,9 @@ export default {
       );
     }
   },
-  created() {},
+  created() {
+    this.getList();
+  },
   components: {
     add
   }

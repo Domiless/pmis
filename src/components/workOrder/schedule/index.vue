@@ -33,7 +33,7 @@
                 </template>
                 <div
                   v-if="record.schedule.name!=null"
-                  :style="record.schedule!=null?record.schedule.state==4?'background-color: #c8f3d1;padding:2px;':'padding:2px;':'padding:2px;'"
+                  :style="record.schedule!=null?record.schedule.state==5?'background-color: #c8f3d1;padding:2px;':'padding:2px;':'padding:2px;'"
                 >
                   <span>{{record.schedule!=null?record.schedule.name:''}}</span>
                   <br />
@@ -58,7 +58,7 @@
                 </template>
                 <div
                   v-if="record.schedule1.name!=null"
-                  :style="record.schedule1!=null?record.schedule1.state==4?'background-color: #c8f3d1;padding:2px;':'padding:2px;':'padding:2px;'"
+                  :style="record.schedule1!=null?record.schedule1.state==5?'background-color: #c8f3d1;padding:2px;':'padding:2px;':'padding:2px;'"
                 >
                   <span>{{record.schedule1!=null?record.schedule1.name:''}}</span>
                   <br />
@@ -71,19 +71,19 @@
             <template slot="schedule2" slot-scope="text, record, index">
               <a-popover placement="right">
                 <template slot="content">
-                  <span>工序：{{record.schedule1.name}}</span>
+                  <span>工序：{{record.schedule2.name}}</span>
                   <br />
-                  <span>操作人：{{record.schedule1.executiveName}}</span>
+                  <span>操作人：{{record.schedule2.executiveName}}</span>
                   <br />
-                  <span>单件工时：{{record.schedule1.itemWorkTime}}</span>
+                  <span>单件工时：{{record.schedule2.itemWorkTime}}</span>
                   <br />
-                  <span>派工时间：{{record.schedule1.startTime}}</span>
+                  <span>派工时间：{{record.schedule2.startTime}}</span>
                   <br />
-                  <span>完工时间：{{record.schedule1.startTime!=record.schedule1.endTime?record.schedule1.endTime:""}}</span>
+                  <span>完工时间：{{record.schedule2.startTime!=record.schedule2.endTime?record.schedule2.endTime:""}}</span>
                 </template>
                 <div
                   v-if="record.schedule2.name!=null"
-                  :style="record.schedule2!=null?record.schedule2.state==4?'background-color: #c8f3d1;padding:2px;':'padding:2px;':'padding:2px;'"
+                  :style="record.schedule2!=null?record.schedule2.state==5?'background-color: #c8f3d1;padding:2px;':'padding:2px;':'padding:2px;'"
                 >
                   <span>{{record.schedule2!=null?record.schedule2.name:''}}</span>
                   <br />
@@ -96,19 +96,19 @@
             <template slot="schedule3" slot-scope="text, record, index">
               <a-popover placement="right">
                 <template slot="content">
-                  <span>工序：{{record.schedule1.name}}</span>
+                  <span>工序：{{record.schedule3.name}}</span>
                   <br />
-                  <span>操作人：{{record.schedule1.executiveName}}</span>
+                  <span>操作人：{{record.schedule3.executiveName}}</span>
                   <br />
-                  <span>单件工时：{{record.schedule1.itemWorkTime}}</span>
+                  <span>单件工时：{{record.schedule3.itemWorkTime}}</span>
                   <br />
-                  <span>派工时间：{{record.schedule1.startTime}}</span>
+                  <span>派工时间：{{record.schedule3.startTime}}</span>
                   <br />
-                  <span>完工时间：{{record.schedule1.startTime!=record.schedule1.endTime?record.schedule1.endTime:""}}</span>
+                  <span>完工时间：{{record.schedule3.startTime!=record.schedule3.endTime?record.schedule3.endTime:""}}</span>
                 </template>
                 <div
                   v-if="record.schedule3.name!=null"
-                  :style="record.schedule3!=null?record.schedule3.state==4?'background-color: #c8f3d1;padding:2px;':'padding:2px;':'padding:2px;'"
+                  :style="record.schedule3!=null?record.schedule3.state==5?'background-color: #c8f3d1;padding:2px;':'padding:2px;':'padding:2px;'"
                 >
                   <span>{{record.schedule3!=null?record.schedule3.name:''}}</span>
                   <br />
@@ -133,7 +133,7 @@
                 </template>
                 <div
                   v-if="record.schedule4.name!=null"
-                  :style="record.schedule4!=null?record.schedule4.state==4?'background-color: #c8f3d1;padding:2px;':'padding:2px;':'padding:2px;'"
+                  :style="record.schedule4!=null?record.schedule4.state==5?'background-color: #c8f3d1;padding:2px;':'padding:2px;':'padding:2px;'"
                 >
                   <span>{{record.schedule4!=null?record.schedule4.name:''}}</span>
                   <br />
@@ -158,7 +158,7 @@
                 </template>
                 <div
                   v-if="record.schedule5.name!=null"
-                  :style="record.schedule5!=null?record.schedule5.state==4?'background-color: #c8f3d1;padding:2px;':'padding:2px;':'padding:2px;'"
+                  :style="record.schedule5!=null?record.schedule5.state==5?'background-color: #c8f3d1;padding:2px;':'padding:2px;':'padding:2px;'"
                 >
                   <span>{{record.schedule5!=null?record.schedule5.name:''}}</span>
                   <br />
@@ -183,7 +183,7 @@
                 </template>
                 <div
                   v-if="record.schedule6.name!=null"
-                  :style="record.schedule6!=null?record.schedule6.state==4?'background-color: #c8f3d1;padding:2px;':'padding:2px;':'padding:2px;'"
+                  :style="record.schedule6!=null?record.schedule6.state==5?'background-color: #c8f3d1;padding:2px;':'padding:2px;':'padding:2px;'"
                 >
                   <span>{{record.schedule6!=null?record.schedule6.name:''}}</span>
                   <br />
@@ -204,11 +204,11 @@
                   <br />
                   <!-- <span>派工时间：{{record.schedule7.startTime}}</span> -->
                   <!-- <br /> -->
-                  <span>完工时间：{{record.schedule7.startTime!=record.schedule7.endTime?record.schedule7.endTime:""}}</span>
+                  <span>完工时间：{{record.schedule7.endTime}}</span>
                 </template>
                 <div
                   v-if="record.schedule7.name!=null"
-                  :style="record.schedule7!=null?record.schedule7.state==4?'background-color: #c8f3d1;padding:2px;':'padding:2px;':'padding:2px;'"
+                  :style="record.schedule7!=null?record.schedule7.state==5?'background-color: #c8f3d1;padding:2px;':'padding:2px;':'padding:2px;'"
                 >
                   <span>{{record.schedule7!=null?record.schedule7.name:''}}</span>
                   <br />
@@ -409,15 +409,15 @@ export default {
                           .split(" ")[0]
                           .split("/")[1] +
                         "." +
-                        item.processResultArr[0].startTime
+                        item.processResultArr[1].startTime
                           .split(" ")[0]
                           .split("/")[2] +
                         "~" +
-                        item.processResultArr[0].endTime
+                        item.processResultArr[1].endTime
                           .split(" ")[0]
                           .split("/")[1] +
                         "." +
-                        item.processResultArr[0].endTime
+                        item.processResultArr[1].endTime
                           .split(" ")[0]
                           .split("/")[2]
                       : ""
@@ -433,15 +433,15 @@ export default {
                           .split(" ")[0]
                           .split("/")[1] +
                         "." +
-                        item.processResultArr[0].startTime
+                        item.processResultArr[2].startTime
                           .split(" ")[0]
                           .split("/")[2] +
                         "~" +
-                        item.processResultArr[0].endTime
+                        item.processResultArr[2].endTime
                           .split(" ")[0]
                           .split("/")[1] +
                         "." +
-                        item.processResultArr[0].endTime
+                        item.processResultArr[2].endTime
                           .split(" ")[0]
                           .split("/")[2]
                       : ""
@@ -457,15 +457,15 @@ export default {
                           .split(" ")[0]
                           .split("/")[1] +
                         "." +
-                        item.processResultArr[0].startTime
+                        item.processResultArr[3].startTime
                           .split(" ")[0]
                           .split("/")[2] +
                         "~" +
-                        item.processResultArr[0].endTime
+                        item.processResultArr[3].endTime
                           .split(" ")[0]
                           .split("/")[1] +
                         "." +
-                        item.processResultArr[0].endTime
+                        item.processResultArr[3].endTime
                           .split(" ")[0]
                           .split("/")[2]
                       : ""
@@ -475,21 +475,21 @@ export default {
                   time:
                     item.processResultArr[4] != null &&
                     item.processResultArr[4].startTime !=
-                      item.processResultArr[3].endTime &&
+                      item.processResultArr[4].endTime &&
                     item.processResultArr[4].startTime != null
-                      ? item.processResultArr[3].startTime
+                      ? item.processResultArr[4].startTime
                           .split(" ")[0]
                           .split("/")[1] +
                         "." +
-                        item.processResultArr[0].startTime
+                        item.processResultArr[4].startTime
                           .split(" ")[0]
                           .split("/")[2] +
                         "~" +
-                        item.processResultArr[0].endTime
+                        item.processResultArr[4].endTime
                           .split(" ")[0]
                           .split("/")[1] +
                         "." +
-                        item.processResultArr[0].endTime
+                        item.processResultArr[4].endTime
                           .split(" ")[0]
                           .split("/")[2]
                       : ""
@@ -505,15 +505,15 @@ export default {
                           .split(" ")[0]
                           .split("/")[1] +
                         "." +
-                        item.processResultArr[0].startTime
+                        item.processResultArr[5].startTime
                           .split(" ")[0]
                           .split("/")[2] +
                         "~" +
-                        item.processResultArr[0].endTime
+                        item.processResultArr[5].endTime
                           .split(" ")[0]
                           .split("/")[1] +
                         "." +
-                        item.processResultArr[0].endTime
+                        item.processResultArr[5].endTime
                           .split(" ")[0]
                           .split("/")[2]
                       : ""
@@ -529,15 +529,15 @@ export default {
                           .split(" ")[0]
                           .split("/")[1] +
                         "." +
-                        item.processResultArr[0].startTime
+                        item.processResultArr[6].startTime
                           .split(" ")[0]
                           .split("/")[2] +
                         "~" +
-                        item.processResultArr[0].endTime
+                        item.processResultArr[6].endTime
                           .split(" ")[0]
                           .split("/")[1] +
                         "." +
-                        item.processResultArr[0].endTime
+                        item.processResultArr[6].endTime
                           .split(" ")[0]
                           .split("/")[2]
                       : ""
@@ -549,19 +549,11 @@ export default {
                     item.processResultArr[7].startTime !=
                       item.processResultArr[7].endTime &&
                     item.processResultArr[7].startTime != null
-                      ? item.processResultArr[7].startTime
+                      ? item.processResultArr[7].endTime
                           .split(" ")[0]
                           .split("/")[1] +
                         "." +
-                        item.processResultArr[0].startTime
-                          .split(" ")[0]
-                          .split("/")[2] +
-                        "~" +
-                        item.processResultArr[0].endTime
-                          .split(" ")[0]
-                          .split("/")[1] +
-                        "." +
-                        item.processResultArr[0].endTime
+                        item.processResultArr[7].endTime
                           .split(" ")[0]
                           .split("/")[2]
                       : ""

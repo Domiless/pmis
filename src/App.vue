@@ -107,7 +107,7 @@
         >
           <a-menu
             mode="inline"
-            :defaultOpenKeys="['putOutStorage','workdesk','system','enterprise','workOrder','process','materialManagement','dataAnalysis','project','procurement','design','warehouse']"
+            :defaultOpenKeys="['putInStorage','putOutStorage','workdesk','system','enterprise','workOrder','process','materialManagement','dataAnalysis','project','procurement','design','warehouse']"
             :selectable="false"
             :style="{ height: '100%', borderRight: 0 }"
           >

@@ -5,7 +5,7 @@
         <a-input v-decorator="['warehouseNo',{rules: [{ required: true, message: '请填写仓库编号' }]}]"></a-input>
       </a-form-item>
       <a-form-item :label-col=" { span: 4 }" :wrapper-col="{ span: 19 }" label="仓库名称">
-        <a-input v-decorator="['warehouseName',{rules: [{ required: true, message: '请填写仓库名称' }]}]"></a-input>
+        <a-input v-decorator="['name',{rules: [{ required: true, message: '请填写仓库名称' }]}]"></a-input>
       </a-form-item>
       <a-form-item :label-col=" { span: 4 }" :wrapper-col="{ span: 19 }" label="库管员">
         <span
@@ -51,9 +51,12 @@ export default {
   data() {
     return {
       addPerson: false,
-      radioValue: "1",
+      radioValue: true,
       form: this.$form.createForm(this),
-      options: [{ label: "启用", value: "1" }, { label: "禁用", value: "2" }],
+      options: [
+        { label: "启用", value: true },
+        { label: "禁用", value: false }
+      ],
       personName: []
     };
   },
@@ -80,19 +83,13 @@ export default {
       this.form.validateFieldsAndScroll((err, values) => {
         if (!err) {
           let data = {
-            gmtDelivery: this.dateValue,
-            purchaseNo: values.purchaseNo,
-            remark: values.remark,
-            title: values.title,
-            purchaseDesDTOList: this.selectedRowsRight.map(item => {
-              return {
-                id: item.id
-              };
-            })
+            clerkIds: this.personName.map(item => item.id),
+            isAvailable: this.radioValue,
+            name: values.name
           };
           this.Axios(
             {
-              url: "/api-order/purchase/add",
+              url: "/api-warehouse/warehouse/add",
               params: data,
               type: "post",
               option: { successMsg: "添加成功！" },
