@@ -1,5 +1,5 @@
 <template>
-  <div class="picking_add">
+  <div class="others_add">
     <a-col :span="24" style="padding:0 20px;">
       <a-row>
         <div style="line-height:50px;">
@@ -27,16 +27,17 @@
             maxlength="20"
           ></a-input>
         </a-form-item>
-        <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 21 }" label="领料部门">
+        <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 21 }" label="原单据编号">
           <a-input
             v-decorator="['bumen',{rules: [{ required: true, message: '请填写领料部门' }]}]"
             autocomplete="off"
             maxlength="20"
           ></a-input>
         </a-form-item>
-        <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 21 }" label="领用原因">
+        <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 21 }" label="单位">
           <a-input
-            v-decorator="['yuanyin',{rules: [{ required: true, message: '请填写领用原因' }]}]"
+            placeholder="填写单位或部门"
+            v-decorator="['yuanyin',{rules: [{ required: true, message: '请填写单位' }]}]"
             autocomplete="off"
             maxlength="20"
           ></a-input>
@@ -272,7 +273,7 @@ export default {
 };
 </script>
 <style lang="less">
-.picking_add {
+.others_add {
   overflow: hidden;
   .ant-table-thead > tr > th,
   .ant-table-tbody > tr > td {

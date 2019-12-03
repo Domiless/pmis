@@ -1,5 +1,5 @@
 <template>
-  <div class="picking_list">
+  <div class="market_list">
     <router-view></router-view>
     <div :class="[{hide:isHideList}]">
       <a-row>
@@ -10,7 +10,7 @@
                 <permission-button
                   permCode
                   banType="hide"
-                  @click="$router.push({path:'/picking/add'})"
+                  @click="$router.push({path:'/market/add'})"
                 >
                   <a-icon style="color:#1890ff;" type="plus" />新增
                 </permission-button>
@@ -42,7 +42,7 @@
                 <a-range-picker style="width:240px" @change="onChangeRange" format="YYYY/MM/DD"></a-range-picker>
                 <span>关键词 :</span>
                 <a-input
-                  placeholder="单据编号/领用部门/领用原因"
+                  placeholder="单据编号/客户名称/联系人/联系电话"
                   style="width: 250px"
                   v-model="keyWords"
                   @keyup.enter.native="getList"
@@ -97,7 +97,7 @@
             @cancel="handleCancel(2)"
             :maskClosable="false"
             :destroyOnClose="true"
-          ></a-modal> -->
+          ></a-modal>-->
         </a-col>
       </a-row>
     </div>
@@ -120,7 +120,7 @@ const columns = [
   },
   {
     dataIndex: "bumen",
-    title: "领用部门",
+    title: "客户名称",
     width: "15%",
     key: "bumen",
     scopedSlots: { customRender: "lingyongbumen" }
@@ -129,12 +129,18 @@ const columns = [
   {
     dataIndex: "yuanying",
     key: "yuanying",
-    title: "领用原因",
-    width: "15%"
+    title: "联系人",
+    width: "8%"
   },
   {
     dataIndex: "chuhuocangku",
     key: "chuhuocangku",
+    title: "联系电话",
+    width: "10%"
+  },
+  {
+    dataIndex: "chuhuo",
+    key: "chuhuo",
     title: "出货仓库",
     width: "8%"
   },
@@ -250,7 +256,7 @@ export default {
 };
 </script>
 <style lang="less">
-.picking_list {
+.market_list {
   overflow: hidden;
 }
 </style>

@@ -189,9 +189,8 @@
                   banType="disabled"
                   class="button_text btn_disabled"
                   @click="toWorkOrderDetailsList(record)"
+                  style="margin-right:8px;"
                 >工单明细</permission-button>
-              </template>
-              <template slot="jindu" slot-scope="text, record, index">
                 <permission-button
                   permCode
                   banType="disabled"
@@ -199,6 +198,7 @@
                   @click="toScheduleList(record)"
                 >调度进度</permission-button>
               </template>
+              <template slot="jindu" slot-scope="text, record, index"></template>
             </a-table>
             <a-pagination
               style="padding-top:12px;text-align: right;"
@@ -394,16 +394,10 @@ const columns = [
   {
     dataIndex: "detail",
     key: "detail",
-    title: "工单明细",
-    width: 80,
-    scopedSlots: { customRender: "detail" }
-  },
-  {
-    dataIndex: "jindu",
-    key: "jindu",
-    title: "调度进度",
-    width: 80,
-    scopedSlots: { customRender: "jindu" }
+    title: "操作",
+    width: 160,
+    scopedSlots: { customRender: "detail" },
+    align: "center"
   }
 ];
 export default {

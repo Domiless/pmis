@@ -443,6 +443,15 @@ export default new Router({
     children: []
   },
   {
+    path: '/unit',
+    name: 'unit',
+    components: require('@/components/warehouse/basicSetting/unit/index'),
+    meta: {
+      requireAuth: true,
+    },
+    children: []
+  },
+  {
     path: '/location',
     name: 'location',
     components: require('@/components/warehouse/basicSetting/location/index'),
@@ -535,7 +544,62 @@ export default new Router({
     meta: {
       requireAuth: true,
     },
-    children: []
+    children: [{
+      path: 'add',
+      name: 'add',
+      component: require('../components/warehouse/putOutStorage/picking/add.vue').default,
+      meta: {
+        requireAuth: true,
+      },
+    },]
+  },
+  {
+    path: '/market',
+    name: 'market',
+    components: require('@/components/warehouse/putOutStorage/market/index'),
+    meta: {
+      requireAuth: true,
+    },
+    children: [{
+      path: 'add',
+      name: 'add',
+      component: require('../components/warehouse/putOutStorage/market/add.vue').default,
+      meta: {
+        requireAuth: true,
+      },
+    },]
+  },
+  {
+    path: '/others',
+    name: 'others',
+    components: require('@/components/warehouse/putOutStorage/others/index'),
+    meta: {
+      requireAuth: true,
+    },
+    children: [{
+      path: 'add',
+      name: 'add',
+      component: require('../components/warehouse/putOutStorage/others/add.vue').default,
+      meta: {
+        requireAuth: true,
+      },
+    },]
+  },
+  {
+    path: '/purchaseReturn',
+    name: 'purchaseReturn',
+    components: require('@/components/warehouse/putOutStorage/purchaseReturn/index'),
+    meta: {
+      requireAuth: true,
+    },
+    children: [{
+      path: 'add',
+      name: 'add',
+      component: require('../components/warehouse/putOutStorage/purchaseReturn/add.vue').default,
+      meta: {
+        requireAuth: true,
+      },
+    },]
   },
   {
     path: '/storageList',

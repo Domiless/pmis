@@ -1,5 +1,5 @@
 <template>
-  <div class="picking_list">
+  <div class="others_list">
     <router-view></router-view>
     <div :class="[{hide:isHideList}]">
       <a-row>
@@ -10,7 +10,7 @@
                 <permission-button
                   permCode
                   banType="hide"
-                  @click="$router.push({path:'/picking/add'})"
+                  @click="$router.push({path:'/others/add'})"
                 >
                   <a-icon style="color:#1890ff;" type="plus" />新增
                 </permission-button>
@@ -97,7 +97,7 @@
             @cancel="handleCancel(2)"
             :maskClosable="false"
             :destroyOnClose="true"
-          ></a-modal> -->
+          ></a-modal>-->
         </a-col>
       </a-row>
     </div>
@@ -110,7 +110,7 @@ const columns = [
     dataIndex: "bianhao",
     key: "bianhao",
     title: "单据编号",
-    width: "15%"
+    width: "20%"
   },
   {
     dataIndex: "leixing",
@@ -120,18 +120,12 @@ const columns = [
   },
   {
     dataIndex: "bumen",
-    title: "领用部门",
-    width: "15%",
+    title: "单位",
+    width: "20%",
     key: "bumen",
     scopedSlots: { customRender: "lingyongbumen" }
   },
 
-  {
-    dataIndex: "yuanying",
-    key: "yuanying",
-    title: "领用原因",
-    width: "15%"
-  },
   {
     dataIndex: "chuhuocangku",
     key: "chuhuocangku",
@@ -154,7 +148,7 @@ const columns = [
     dataIndex: "remark",
     key: "remark",
     title: "备注",
-    width: "14%",
+    width: "19%",
     scopedSlots: { customRender: "remark" }
   }
 ];
@@ -250,7 +244,7 @@ export default {
 };
 </script>
 <style lang="less">
-.picking_list {
+.others_list {
   overflow: hidden;
 }
 </style>

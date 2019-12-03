@@ -1,5 +1,5 @@
 <template>
-  <div class="picking_list">
+  <div class="purchase_return_list">
     <router-view></router-view>
     <div :class="[{hide:isHideList}]">
       <a-row>
@@ -10,7 +10,7 @@
                 <permission-button
                   permCode
                   banType="hide"
-                  @click="$router.push({path:'/picking/add'})"
+                  @click="$router.push({path:'/purchaseReturn/add'})"
                 >
                   <a-icon style="color:#1890ff;" type="plus" />新增
                 </permission-button>
@@ -42,7 +42,7 @@
                 <a-range-picker style="width:240px" @change="onChangeRange" format="YYYY/MM/DD"></a-range-picker>
                 <span>关键词 :</span>
                 <a-input
-                  placeholder="单据编号/领用部门/领用原因"
+                  placeholder="单据编号/供应商"
                   style="width: 250px"
                   v-model="keyWords"
                   @keyup.enter.native="getList"
@@ -97,7 +97,7 @@
             @cancel="handleCancel(2)"
             :maskClosable="false"
             :destroyOnClose="true"
-          ></a-modal> -->
+          ></a-modal>-->
         </a-col>
       </a-row>
     </div>
@@ -110,7 +110,7 @@ const columns = [
     dataIndex: "bianhao",
     key: "bianhao",
     title: "单据编号",
-    width: "15%"
+    width: "20%"
   },
   {
     dataIndex: "leixing",
@@ -120,17 +120,10 @@ const columns = [
   },
   {
     dataIndex: "bumen",
-    title: "领用部门",
-    width: "15%",
+    title: "供应商",
+    width: "20%",
     key: "bumen",
     scopedSlots: { customRender: "lingyongbumen" }
-  },
-
-  {
-    dataIndex: "yuanying",
-    key: "yuanying",
-    title: "领用原因",
-    width: "15%"
   },
   {
     dataIndex: "chuhuocangku",
@@ -154,7 +147,7 @@ const columns = [
     dataIndex: "remark",
     key: "remark",
     title: "备注",
-    width: "14%",
+    width: "20%",
     scopedSlots: { customRender: "remark" }
   }
 ];
@@ -250,7 +243,7 @@ export default {
 };
 </script>
 <style lang="less">
-.picking_list {
+.purchase_return_list {
   overflow: hidden;
 }
 </style>
