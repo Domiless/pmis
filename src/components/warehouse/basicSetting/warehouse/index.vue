@@ -8,14 +8,19 @@
               <permission-button permCode banType="hide" @click="addVisible=true">
                 <a-icon style="color:#1890ff;" type="plus" />新增
               </permission-button>
-              <permission-button permCode banType="hide" :disabled="selectedRowKeys.length!=1">
+              <permission-button
+                permCode
+                banType="hide"
+                @click="editVisible=true"
+                :disabled="selectedRowKeys.length!=1"
+              >
                 <a-icon style="color:#1890ff;" type="edit" />修改
               </permission-button>
               <permission-button
                 permCode
                 banType="hide"
                 @click="showDeleteConfirm"
-                :disabled="selectedRowKeys.length<1"
+                :disabled="selectedRowKeys.length!=1"
               >
                 <a-icon style="color:#1890ff;" type="delete" />删除
               </permission-button>
@@ -34,8 +39,8 @@
               <a-switch
                 checkedChildren="启用"
                 unCheckedChildren="禁用"
-                v-model="record.state"
-                @click="switchChange(record,index)"
+                v-model="record.isAvailable"
+                @click="switchChange(text,record,index)"
                 class="qwwe"
               />
             </template>
@@ -75,53 +80,55 @@
       :visible="editVisible"
       @cancel="handleCancel(2)"
       :maskClosable="false"
+      :destroyOnClose="true"
     >
-      <!-- <edit v-on:editModal="editModal" :msg="selectedRowKeys[0]" ref="editref"></edit> -->
+      <edit v-on:editModal="editModal" :msg="selectedRowKeys[0]" ref="editref"></edit>
     </a-modal>
   </div>
 </template>
 <script>
 import add from "./add";
+import edit from "./edit";
 const columns = [
   {
-    dataIndex: "docNo",
-    key: "docNo",
+    dataIndex: "warehouseCode",
+    key: "warehouseCode",
     title: "仓库编码",
     width: "20%"
   },
   {
-    dataIndex: "title",
+    dataIndex: "name",
     title: "仓库名称",
-    width: "20%",
-    key: "title",
+    width: "30%",
+    key: "name",
     scopedSlots: { customRender: "warehouseNmae" }
   },
   {
-    dataIndex: "deliveryUnit",
+    dataIndex: "warehouseAdmins",
     title: "管理员",
-    width: "10%",
-    key: "deliveryUnit"
+    width: "20%",
+    key: "warehouseAdmins"
   },
 
   {
-    dataIndex: "receivingPerson",
-    key: "receivingPerson",
+    dataIndex: "phone",
+    key: "phone",
     title: "联系方式",
     width: "15%"
   },
   {
-    dataIndex: "state",
-    key: "state",
+    dataIndex: "isAvailable",
+    key: "isAvailable",
     title: "当前状态",
     width: "10%",
     scopedSlots: { customRender: "state" }
-  },
-  {
-    dataIndex: "schedule",
-    key: "schedule",
-    title: "备注",
-    width: "20%"
   }
+  // {
+  //   dataIndex: "schedule",
+  //   key: "schedule",
+  //   title: "备注",
+  //   width: "20%"
+  // }
 ];
 export default {
   data() {
@@ -131,19 +138,7 @@ export default {
       columns,
       current: 1,
       total: 0,
-      data: [
-        {
-          docNo: "111",
-          id: 1,
-          state: false,
-          title: "lalal"
-        },
-        {
-          docNo: "222",
-          id: 2,
-          state: true
-        }
-      ],
+      data: [],
       selectedRowKeys: [],
       selectedRows: []
     };
@@ -151,14 +146,27 @@ export default {
   methods: {
     addModal() {
       this.addVisible = false;
+      this.getList();
+    },
+    editModal() {
+      this.editVisible = false;
+      this.getList();
     },
     handleCancel(a) {
       if (a == 1) {
         this.$refs.addref.quxiao();
       }
+      if (a == 2) {
+        this.$refs.editref.quxiao();
+      }
     },
-    switchChange(a, b) {
-      console.log(a, b);
+    switchChange(c, a, b) {
+      if (c == true) {
+        this.disable(a.id);
+      } else if (c == false) {
+        this.enable(a.id);
+      }
+      console.log(c, a, b);
     },
     onSelectChange(selectedRowKeys, a) {
       this.selectedRowKeys = selectedRowKeys;
@@ -194,6 +202,14 @@ export default {
           if (result.data.code === 200) {
             console.log(result);
             this.data = result.data.data.content;
+            this.data = this.data.map(item => {
+              return {
+                ...item,
+                warehouseAdmins: item.warehouseAdmins
+                  .map(item => item.employeeName)
+                  .join("、")
+              };
+            });
             this.total = result.data.data.totalElement;
           }
         },
@@ -217,8 +233,8 @@ export default {
     onDelete() {
       this.Axios(
         {
-          url: "/api-workorder/delivery/del",
-          params: { data: this.selectedRowKeys },
+          url: "/api-warehouse/warehouse/del/" + this.selectedRowKeys,
+          params: {},
           type: "delete",
           option: { successMsg: "删除成功！" }
           // config: {
@@ -236,13 +252,52 @@ export default {
         },
         ({ type, info }) => {}
       );
+    },
+    disable(id) {
+      this.Axios(
+        {
+          url: "/api-warehouse/warehouse/disable/" + id,
+          params: {},
+          type: "put",
+          option: { enableMsg: false }
+        },
+        this
+      ).then(
+        result => {
+          if (result.data.code === 200) {
+            // console.log(result);
+            this.getList();
+          }
+        },
+        ({ type, info }) => {}
+      );
+    },
+    enable(id) {
+      this.Axios(
+        {
+          url: "/api-warehouse/warehouse/enable/" + id,
+          params: {},
+          type: "put",
+          option: { enableMsg: false }
+        },
+        this
+      ).then(
+        result => {
+          if (result.data.code === 200) {
+            // console.log(result);
+            this.getList();
+          }
+        },
+        ({ type, info }) => {}
+      );
     }
   },
   created() {
     this.getList();
   },
   components: {
-    add
+    add,
+    edit
   }
 };
 </script>

@@ -2,7 +2,7 @@
   <div class="warehouse_add">
     <a-form :form="form">
       <a-form-item :label-col=" { span: 4 }" :wrapper-col="{ span: 19 }" label="仓库编号">
-        <a-input v-decorator="['code',{rules: [{ required: true, message: '请填写仓库编号' }]}]"></a-input>
+        <a-input disabled v-decorator="['code',{rules: [{ required: true, message: '请填写仓库编号' }]}]"></a-input>
       </a-form-item>
       <a-form-item :label-col=" { span: 4 }" :wrapper-col="{ span: 19 }" label="仓库名称">
         <a-input v-decorator="['name',{rules: [{ required: true, message: '请填写仓库名称' }]}]"></a-input>
@@ -48,6 +48,11 @@
 <script>
 import addperson from "./addPerson";
 export default {
+  props: {
+    msg: {
+      default: null
+    }
+  },
   data() {
     return {
       addPerson: false,
@@ -75,7 +80,7 @@ export default {
     },
     quxiao() {
       this.form.resetFields();
-      this.$emit("addModal", false);
+      this.$emit("editModal", false);
       this.personName = [];
       //   this.getNum();
     },
@@ -83,6 +88,7 @@ export default {
       this.form.validateFieldsAndScroll((err, values) => {
         if (!err) {
           let data = {
+            warehouseId: this.msg,
             code: values.code,
             clerkIds: this.personName.map(item => item.id),
             isAvailable: this.radioValue,
@@ -91,10 +97,10 @@ export default {
           };
           this.Axios(
             {
-              url: "/api-warehouse/warehouse/add",
+              url: "/api-warehouse/warehouse/update",
               params: data,
-              type: "post",
-              option: { successMsg: "添加成功！" },
+              type: "put",
+              option: { successMsg: "修改成功！" },
               config: {
                 headers: { "Content-Type": "application/json" }
               }
@@ -112,10 +118,10 @@ export default {
         }
       });
     },
-    getCode() {
+    findOne() {
       this.Axios(
         {
-          url: "/api-warehouse/warehouse/code",
+          url: "/api-warehouse/warehouse/findOne/" + this.msg,
           params: {},
           type: "get",
           option: { enableMsg: false }
@@ -125,9 +131,20 @@ export default {
         result => {
           if (result.data.code === 200) {
             console.log(result);
+            this.personName = result.data.data.warehouseAdmins.map(item => {
+              return {
+                ...item,
+                id: item.employeeId,
+                userName: item.employeeName
+              };
+            });
+            this.radioValue = result.data.data.isAvailable;
             setTimeout(() => {
               this.form.setFieldsValue({
-                code: result.data.data
+                code: result.data.data.warehouseCode,
+                name: result.data.data.name,
+                phone: result.data.data.phone,
+                personName: result.data.data.isAvailable
               });
             }, 100);
           }
@@ -137,7 +154,7 @@ export default {
     }
   },
   created() {
-    this.getCode();
+    this.findOne();
   },
   components: {
     addperson
