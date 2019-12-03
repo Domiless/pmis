@@ -139,18 +139,38 @@ export default {
         this.stockVisible = false;
       }
     },
+    getWareHouseList() {
+      this.Axios(
+        {
+          url: "/api-warehouse/warehouse/list",
+          type: "get",
+          params: {
+            page: -1
+          },
+          option: { enableMsg: false }
+        },
+        this
+      ).then(
+        result => {
+          if (result.data.code === 200) {
+            console.log(result);
+          }
+        },
+        ({ type, info }) => {}
+      );
+    },
     getList() {
       this.Axios(
         {
-          url: "",
+          url: "/api-warehouse/order/list",
           type: "get",
           params: {
+            warehouseId: '',
             page: this.current,
             size: this.pageSize,
-            auditState: this.reviewSchedule != -1 ? this.reviewSchedule : null,
             keyword: this.keyWords,
-            start: this.dateValue[0] != "" ? this.dateValue[0] : null,
-            end: this.dateValue[1] != "" ? this.dateValue[1] : null
+            startTime: this.dateValue[0] != "" ? this.dateValue[0] : null,
+            endTime: this.dateValue[1] != "" ? this.dateValue[1] : null
           },
           option: { enableMsg: false }
         },
@@ -169,6 +189,10 @@ export default {
   },
   components: {
       stock
+  },
+  created() {
+    this.getWareHouseList();
+    this.getList();
   }
 };
 </script>

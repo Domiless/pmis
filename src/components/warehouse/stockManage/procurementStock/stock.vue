@@ -14,12 +14,12 @@
         <span class="label_right">开单日期：</span>
       </a-col>
     </a-row>
-    <a-row style="line-height:50px;">
-      <permission-button permCode banType="hide" type="primary">批量保存</permission-button>
-    </a-row>
+    <!-- <a-row style="line-height:50px;">
+      <permission-button permCode banType="hide" type="primary">批量入库</permission-button>
+    </a-row> -->
     <a-row>
       <a-table
-        :scroll="{ x: 1500,y:500}"
+        :scroll="{ x: 1550,y:500}"
         rowKey="id"
         class="table_style"
         :columns="columns"
@@ -76,15 +76,8 @@
             >{{ item.name }}</a-select-option>
           </a-select>
         </template>
-        <template slot="remark" slot-scope="text,record">
-          <div key="remark">
-            <a-input
-              maxlength="20"
-              style="margin: -5px 0"
-              :value="text"
-              @change="e => handleChange(e.target.value, record.id, 'remark')"
-            />
-          </div>
+        <template slot="ruku" slot-scope="text,record">
+           <a href="javascript:" @click="showDetails(record.id)">入库</a>
         </template>
       </a-table>
     </a-row>
@@ -180,6 +173,14 @@ const columns = [
     dataIndex: "remark",
     width: 140,
     scopedSlots: { customRender: "remark" }
+  },
+  {
+    title: "入库",
+    key: "ruku",
+    dataIndex: "ruku",
+    fixed: 'right',
+    width: 50,
+    scopedSlots: { customRender: "ruku" }
   }
 ];
 export default {

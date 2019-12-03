@@ -91,7 +91,7 @@
           </a-row> -->
           <a-row>
             <a-form-item label="签订地点" :labelCol="{ span: 3}" :wrapperCol="{ span: 19 }">
-              <a-input v-decorator="['signPlace']"></a-input>
+              <a-input v-decorator="['signPlace', { rules: [{ required:'true', message: '请填写签订地点'}]}]"></a-input>
             </a-form-item>
           </a-row>
           <a-row>
@@ -99,19 +99,30 @@
               <a-date-picker
                 @change="onChangeSign"
                 style="width:100%"
-                v-decorator="['gmtSign']"
+                v-decorator="['gmtSign', { rules: [{ required:'true', message: '请选择签订日期'}]}]"
                 format="YYYY/MM/DD"
               />
             </a-form-item>
           </a-row>
           <a-row>
             <a-form-item label="合同有效期" :labelCol="{ span: 3}" :wrapperCol="{ span: 19 }">
-              <a-range-picker  v-decorator="['usefulTime']" @change="onChangeRange" format="YYYY/MM/DD"/>
+              <a-range-picker  v-decorator="['usefulTime', { rules: [{ required:'true', message: '请选择合同有效期'}]}]" @change="onChangeRange" format="YYYY/MM/DD"/>
             </a-form-item>
           </a-row>
           <a-row>
             <a-form-item label="供货方式" :labelCol="{ span: 3}" :wrapperCol="{ span: 19 }">
               <a-input v-decorator="['supplyMode']"></a-input>
+            </a-form-item>
+          </a-row>
+					<a-row>
+            <a-form-item label="收货仓库" :labelCol="{ span: 3}" :wrapperCol="{ span: 19 }">
+              <a-select
+                v-decorator="['receiveWarehouse', { rules: [{ required:'true', message: '请选择收货仓库'}]}]"
+                placeholder="请选择"
+                :labelInValue="true"
+              >
+                <a-select-option v-for="item in contractTemplate" :key="item.id" :value="item.id">{{ item.title }}</a-select-option>
+              </a-select>
             </a-form-item>
           </a-row>
           <a-row>
@@ -773,6 +784,26 @@ export default {
           }
         }
       )
+		},
+		getWarehouse(){
+      this.Axios(
+        {
+          url: "/api-warehouse/warehouse/list",
+          type: "get",
+          params: {
+            page: -1
+          },
+          option: { enableMsg: false }
+        },
+        this
+      ).then(
+        result => {
+          if (result.data.code === 200) {
+            console.log(result);
+          }
+        },
+        ({ type, info }) => {}
+      )
     },
     getContractId() {
       this.Axios(
@@ -803,7 +834,8 @@ export default {
     // this.getProcurementNo();
     this.getSupplierName();
     this.getContract();
-    this.getContractId()
+		this.getContractId();
+		this.getWarehouse();
   },
   watch: {
     contractNoWatch() {
