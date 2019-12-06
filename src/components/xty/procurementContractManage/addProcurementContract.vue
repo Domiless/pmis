@@ -121,7 +121,7 @@
                 placeholder="请选择"
                 :labelInValue="true"
               >
-                <a-select-option v-for="item in contractTemplate" :key="item.id" :value="item.id">{{ item.title }}</a-select-option>
+                <a-select-option v-for="item in warehouseArr" :key="item.id" :value="item.id">{{ item.name }}</a-select-option>
               </a-select>
             </a-form-item>
           </a-row>
@@ -371,7 +371,8 @@ export default {
       dateValue: '',
       procurementNo: [],
       supplierName: [],
-      contractTemplate: [],
+			contractTemplate: [],
+			warehouseArr:[],
       procurementId: '',
       contractNoWatch: '',
 			supplierValue: '',
@@ -799,7 +800,8 @@ export default {
       ).then(
         result => {
           if (result.data.code === 200) {
-            console.log(result);
+						console.log(result);
+						this.warehouseArr = result.data.data;
           }
         },
         ({ type, info }) => {}

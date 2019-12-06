@@ -113,9 +113,6 @@ export default {
         ({ type, info }) => {}
       );
     },
-    tableTreeselect(e) {
-      console.log(e);
-    },
     onSelectChange(selectedRowKeys, a) {
       this.selectedRowKeys = selectedRowKeys;
       this.selectedRows = a;

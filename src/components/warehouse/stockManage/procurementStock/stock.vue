@@ -1,17 +1,21 @@
 <template>
   <div class="stock">
-    <a-row>
+    <a-row class="detailsMsg">
       <a-col :span="12">
         <span class="label_right">单据编号：</span>
+        <span>{{detailsMsg.orderCode}}</span>
       </a-col>
       <a-col :span="12">
         <span class="label_right">收货仓库：</span>
+        <span>{{warehouseName}}</span>
       </a-col>
       <a-col :span="12">
         <span class="label_right">供应商：</span>
+        <span>{{detailsMsg.fromName}}</span>
       </a-col>
       <a-col :span="12">
         <span class="label_right">开单日期：</span>
+        <span>{{detailsMsg.gmtCreated}}</span>
       </a-col>
     </a-row>
     <!-- <a-row style="line-height:50px;">
@@ -19,26 +23,30 @@
     </a-row> -->
     <a-row>
       <a-table
-        :scroll="{ x: 1550,y:500}"
+        :scroll="{ x: 1500,y:500}"
         rowKey="id"
         class="table_style"
         :columns="columns"
         :dataSource="data"
         :pagination="false"
       >
-        <template slot="stockUnit" slot-scope="text,record">
+        <template slot="code" slot-scope="text, record">
+          <div class="codeMsg">{{text}}</div>
+        </template>
+        <template slot="warehouseUnit" slot-scope="text,record">
           <a-select
             style="width: 100%"
+            @mouseenter = "getWarehouseUnit(record.id)"
             @change="(value,option) => {
                   let value1 = value;
-                  handleChangeTable(value1, record.id, 'stockUnit')
+                  handleChange(value1, record.id, 'warehouseUnit')
                   }"
           >
             <a-select-option
-              v-for="item in unitArr"
-              :value="item.name"
-              :key="item.id"
-            >{{ item.name }}</a-select-option>
+              v-for="(item,index) in unitArr"
+              :value="item"
+              :key="index"
+            >{{ item }}</a-select-option>
           </a-select>
         </template>
         <template slot="stockNumber" slot-scope="text,record">
@@ -62,22 +70,32 @@
           </div>
         </template>
         <template slot="category" slot-scope="text,record">
-          <a-select
+          <a-tree-select
+            allowClear
             style="width: 100%"
+            :dropdownStyle="{ maxHeight: '400px', overflow: 'auto' }"
+            :treeData="treeData"
+            placeholder="请选择"
+            treeDefaultExpandAll
             @change="(value,option) => {
                   let value1 = value;
-                  handleChangeTable(value1, record.id, 'category')
+                  handleChange(value1, record.id, 'category')
                   }"
           >
-            <a-select-option
-              v-for="item in categoryArr"
-              :value="item.name"
-              :key="item.id"
-            >{{ item.name }}</a-select-option>
-          </a-select>
+          ></a-tree-select>
+        </template>
+        <template slot="note" slot-scope="text,record">
+          <div key="note">
+            <a-input
+              maxlength="20"
+              style="margin: -5px 0"
+              :value="text"
+              @change="e => handleChange(e.target.value, record.id, 'note')"
+            />
+          </div>
         </template>
         <template slot="ruku" slot-scope="text,record">
-           <a href="javascript:" @click="showDetails(record.id)">入库</a>
+           <a href="javascript:" @click="addStock(record.id)">入库</a>
         </template>
       </a-table>
     </a-row>
@@ -87,64 +105,46 @@
 const columns = [
   {
     title: "物料编码",
-    key: "workOrderNo",
-    dataIndex: "workOrderNo",
-    width: 100
+    key: "code",
+    dataIndex: "code",
+    scopedSlots: { customRender: "code" },
+    width: 200
   },
   {
-    title: "图号",
-    key: "drawingNo",
-    dataIndex: "drawingNo",
-    width: 150
-  },
-  {
-    title: "需求名称",
+    title: "名称",
     key: "name",
     dataIndex: "name",
     width: 150
   },
   {
-    title: "采购名称",
-    key: "number",
-    dataIndex: "number",
+    title: "型号/规格",
+    key: "specification",
+    dataIndex: "specification",
     width: 150
   },
   {
-    title: "供应商",
-    key: "brand",
-    dataIndex: "brand",
+    title: "单位",
+    key: "unit",
+    dataIndex: "unit",
     width: 150
   },
   {
-    title: "订单数量",
-    key: "planner",
-    dataIndex: "planner",
-    width: 80
+    title: "总数量",
+    key: "orderAmount",
+    dataIndex: "orderAmount",
+    width: 150
   },
   {
     title: "已入",
-    key: "shopName",
-    dataIndex: "shopName",
+    key: "inStorage",
+    dataIndex: "inStorage",
     width: 80
   },
   {
     title: "待入",
-    key: "orderNumber",
-    dataIndex: "orderNumber",
+    key: "outStorage",
+    dataIndex: "outStorage",
     width: 80
-  },
-  {
-    title: "单位",
-    key: "unitId",
-    dataIndex: "unitId",
-    width: 80
-  },
-  {
-    title: "库存单位",
-    key: "stockUnit",
-    dataIndex: "stockUnit",
-    width: 80,
-    scopedSlots: { customRender: "stockUnit" }
   },
   {
     title: "入库数量",
@@ -154,6 +154,20 @@ const columns = [
     scopedSlots: { customRender: "stockNumber" }
   },
   {
+    title: "库存单位",
+    key: "warehouseUnit",
+    dataIndex: "warehouseUnit",
+    width: 80,
+    scopedSlots: { customRender: "warehouseUnit" }
+  },
+  {
+    title: "分类",
+    key: "category",
+    dataIndex: "category",
+    width: 220,
+    scopedSlots: { customRender: "category" }
+  },
+  {
     title: "批次",
     key: "batch",
     dataIndex: "batch",
@@ -161,43 +175,43 @@ const columns = [
     scopedSlots: { customRender: "batch" }
   },
   {
-    title: "分类",
-    key: "category",
-    dataIndex: "category",
-    width: 100,
-    scopedSlots: { customRender: "category" }
-  },
-  {
     title: "备注",
-    key: "remark",
-    dataIndex: "remark",
+    key: "note",
+    dataIndex: "note",
     width: 140,
-    scopedSlots: { customRender: "remark" }
+    scopedSlots: { customRender: "note" }
   },
   {
     title: "入库",
     key: "ruku",
     dataIndex: "ruku",
     fixed: 'right',
-    width: 50,
     scopedSlots: { customRender: "ruku" }
   }
 ];
 export default {
+  props: {
+    sendId: {
+      default: ''
+    }
+  },
   data() {
     return {
       columns,
       data: [],
       unitArr: [],
       placeArr: [],
-      categoryArr: []
+      categoryArr: [],
+      detailsMsg: [],
+      treeData: [],
+      warehouseName: ''
     };
   },
   methods: {
     handleChange(value, key, column) {
-      // console.log(value);
-      // console.log(key);
-      // console.log(column);
+      console.log(value);
+      console.log(key);
+      console.log(column);
 
       const newData = [...this.data];
       const target = newData.filter(item => key === item.id)[0];
@@ -205,12 +219,152 @@ export default {
         target[column] = value;
         this.data = newData;
       }
-    }
+      console.log(this.data);
+    },
+    findOne(id) {
+			this.Axios(
+				{
+					url: '/api-warehouse/order/findOne',
+					params: {
+            orderId: id
+          },
+					type: "get",
+					option: { enableMsg: false }
+				},
+				this
+			).then(
+				result => {
+					if (result.data.code === 200) {
+            console.log(result);
+            this.detailsMsg = result.data.data;
+            this.data = result.data.data.orderItems;
+            this.warehouseName = result.data.data.warehouse.name;
+					}
+				},
+				({ type, info }) => {}
+			);
+    },
+    getClassifyList() {
+      this.Axios(
+        {
+          url: "/api-warehouse/classification/list",
+          type: "get",
+          params: {},
+          option: { enableMsg: false }
+        },
+        this
+      ).then(
+        result => {
+          if (result.data.code === 200) {
+            console.log(result);
+            this.treeData = result.data.data.map(item => {
+              return {
+                title: item.name,
+                key: item.id,
+                value: item.id,
+                organizeCode: parseInt(item.code),
+                organizeParentCode: parseInt(item.parentCode),
+                disabled: item.parentCode == 0
+              };
+            });
+            let code = Math.min.apply(
+              null,
+              this.treeData.map(item => {
+                return item.organizeParentCode;
+              })
+            );
+            this.treeData = this.filterArray(this.treeData, code);
+          }
+        },
+        ({ type, info }) => {}
+      );
+    },
+    filterArray(data, parent) {
+      let vm = this;
+      var tree = [];
+      var temp;
+      for (var i = 0; i < data.length; i++) {
+        if (data[i].organizeParentCode == parent) {
+          var obj = data[i];
+          temp = this.filterArray(data, data[i].organizeCode);
+          if (temp.length > 0) {
+            obj.children = temp;
+          }
+          tree.push(obj);
+        }
+      }
+      return tree;
+    },
+    getWarehouseUnit(id) {
+      this.Axios(
+        {
+          url: "/api-warehouse/order/warehouseUnit",
+          type: "get",
+          params: {
+            entryOrderItemId: id
+          },
+          option: { enableMsg: false }
+        },
+        this
+      ).then(
+        result => {
+          if (result.data.code === 200) {
+            console.log(result);
+            this.unitArr = result.data.data;
+          }
+        },
+        ({ type, info }) => {}
+      );
+    },
+    addStock(id) {
+          console.log(id);
+          let data = this.data.filter(item => {
+            return item.id === id;
+          })
+					data = data.map(item => {
+            return {
+              amount: item.stockNumber,
+              batch: item.batch,
+              classificationId: item.category,
+              note: item.note,
+              orderItemId: item.id,
+              warehouseUnit: item.warehouseUnit,
+            }
+          });
+          console.log(data);
+
+					this.Axios(
+						{
+							url: "/api-warehouse/orderEntry/entry",
+							params: data,
+							type: "post",
+							option: { successMsg: "添加成功！" },
+							config: {
+								headers: { "Content-Type": "application/json" }
+							}
+						},
+						this
+					).then(
+						result => {
+							if (result.data.code === 200) {
+                console.log(result);
+							}
+						},
+						({ type, info }) => {}
+					);
+    },
+  },
+  created() {
+    this.findOne(this.sendId);
+    this.getClassifyList();
   }
 };
 </script>
 <style lang="less">
 .stock {
+  .detailsMsg {
+    margin-bottom: 10px;
+  }
   .label_right {
     display: inline-block;
     width: 80px;
@@ -221,6 +375,13 @@ export default {
       min-height: 500px;
       max-height: 500px;
     }
+  }
+  .codeMsg {
+    width: 200px;
+    overflow: hidden;
+    text-overflow:ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
   }
 }
 </style>
