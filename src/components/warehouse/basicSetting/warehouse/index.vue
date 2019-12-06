@@ -45,7 +45,7 @@
               />
             </template>
             <template slot="warehouseNmae" slot-scope="text, record, index">
-              <a href="javascript:">{{text}}</a>
+              <a href="javascript:" @click="detailseShow(record)">{{text}}</a>
             </template>
           </a-table>
           <a-pagination
@@ -83,6 +83,32 @@
       :destroyOnClose="true"
     >
       <edit v-on:editModal="editModal" :msg="selectedRowKeys[0]" ref="editref"></edit>
+    </a-modal>
+    <a-modal
+      title="详情"
+      :footer="null"
+      width="300px"
+      :visible="detailsVisible"
+      @cancel="handleCancel(3)"
+      :maskClosable="false"
+      :destroyOnClose="true"
+    >
+      <div style="padding:0 0;">
+        <span style="display:inline-block;width:80px;text-align:right;">仓库编号：</span>
+        <span>{{detailsValue.warehouseCode}}</span>
+        <br />
+        <span style="display:inline-block;width:80px;text-align:right;">仓库名称：</span>
+        <span>{{detailsValue.name}}</span>
+        <br />
+        <span style="display:inline-block;width:80px;text-align:right;">库管员：</span>
+        <span>{{detailsValue.warehouseAdmins}}</span>
+        <br />
+        <span style="display:inline-block;width:80px;text-align:right;">联系方式：</span>
+        <span>{{detailsValue.phone}}</span>
+        <br />
+        <span style="display:inline-block;width:80px;text-align:right;">状态：</span>
+        <span>{{detailsValue.isAvailable==true?"启用":"禁用"}}</span>
+      </div>
     </a-modal>
   </div>
 </template>
@@ -133,6 +159,7 @@ const columns = [
 export default {
   data() {
     return {
+      detailsVisible: false,
       addVisible: false,
       editVisible: false,
       columns,
@@ -140,10 +167,16 @@ export default {
       total: 0,
       data: [],
       selectedRowKeys: [],
-      selectedRows: []
+      selectedRows: [],
+      detailsValue: {}
     };
   },
   methods: {
+    detailseShow(row) {
+      this.detailsValue = row;
+      this.detailsVisible = true;
+      console.log(row);
+    },
     addModal() {
       this.addVisible = false;
       this.getList();
@@ -158,6 +191,9 @@ export default {
       }
       if (a == 2) {
         this.$refs.editref.quxiao();
+      }
+      if (a == 3) {
+        this.detailsVisible = false;
       }
     },
     switchChange(c, a, b) {
@@ -259,7 +295,7 @@ export default {
           url: "/api-warehouse/warehouse/disable/" + id,
           params: {},
           type: "put",
-          option: { enableMsg: false }
+          option: { successMsg: "禁用成功！" }
         },
         this
       ).then(
@@ -278,7 +314,7 @@ export default {
           url: "/api-warehouse/warehouse/enable/" + id,
           params: {},
           type: "put",
-          option: { enableMsg: false }
+          option: { successMsg: "启用成功！" }
         },
         this
       ).then(

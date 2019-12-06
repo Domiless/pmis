@@ -38,7 +38,7 @@
                 permCode="organize_lookup.organize_update"
                 banType="hide"
                 class="button_text"
-                v-if="item.organizeParentCode!=0"
+                v-if="item.organizeParentCode!=1"
                 @click="modalEditShow(item)"
               >
                 <a-icon class="icon_style" type="edit" />
@@ -53,7 +53,7 @@
                   permCode="organize_lookup.organize_delete"
                   banType="hide"
                   class="button_text"
-                  v-if="item.organizeParentCode!=0"
+                  v-if="item.organizeParentCode!=1"
                 >
                   <a-icon class="icon_style" type="delete" />
                 </permission-button>
@@ -72,10 +72,11 @@
       @cancel="form.resetFields()"
     >
       <a-form :form="form">
-        <a-form-item :label-col=" { span: 4 }" :wrapper-col="{ span: 20 }" label="分类名称">
+        <a-form-item :label-col=" { span: 4 }" :wrapper-col="{ span: 20 }" label="库位名称">
           <a-input
             maxlength="20"
-            v-decorator="['processName',{rules: [{ required: true, message: '请填写分类名称' }]}]"
+            autocomplete="off"
+            v-decorator="['processName',{rules: [{ required: true, message: '请填写库位名称' }]}]"
           ></a-input>
         </a-form-item>
       </a-form>
@@ -89,10 +90,11 @@
       @cancel="form.resetFields()"
     >
       <a-form :form="form" @keyup.enter.native="handleSubmit(1)">
-        <a-form-item :label-col=" { span: 4 }" :wrapper-col="{ span: 20 }" label="分类名称">
+        <a-form-item :label-col=" { span: 4 }" :wrapper-col="{ span: 20 }" label="库位名称">
           <a-input
+            autocomplete="off"
             maxlength="20"
-            v-decorator="['processName',{rules: [{ required: true, message: '请填写分类名称' }]}]"
+            v-decorator="['processName',{rules: [{ required: true, message: '请填写库位名称' }]}]"
           ></a-input>
         </a-form-item>
       </a-form>
@@ -106,10 +108,11 @@
       @cancel="form.resetFields()"
     >
       <a-form :form="form" @keyup.enter.native="handleSubmit(2)">
-        <a-form-item :label-col=" { span: 4 }" :wrapper-col="{ span: 20 }" label="分类名称">
+        <a-form-item :label-col=" { span: 4 }" :wrapper-col="{ span: 20 }" label="库位名称">
           <a-input
             maxlength="20"
-            v-decorator="['processName',{rules: [{ required: true, message: '请填写分类名称' }]}]"
+            autocomplete="off"
+            v-decorator="['processName',{rules: [{ required: true, message: '请填写库位名称' }]}]"
           ></a-input>
         </a-form-item>
       </a-form>
@@ -186,17 +189,19 @@ export default {
     },
     addOrganization(row) {
       let qs = require("qs");
-      let data = qs.stringify({
+      let data = {
         parentId: this.rowData.key,
-        organizeInfo: row.processName,
-        organizeName: row.processName
-      });
+        info: row.processName
+      };
       this.Axios(
         {
-          url: "/api-platform/organize/addOrganize",
+          url: "/api-warehouse/position/add",
           params: data,
           type: "post",
-          option: { successMsg: "添加成功！" }
+          option: { successMsg: "添加成功！" },
+          config: {
+            headers: { "Content-Type": "application/json" }
+          }
         },
         this
       ).then(
@@ -217,9 +222,9 @@ export default {
       });
       this.Axios(
         {
-          url: "/api-platform/organize/del",
-          params: data,
-          type: "post",
+          url: "/api-warehouse/position/del/" + this.rowData.key,
+          params: {},
+          type: "delete",
           option: { successMsg: "删除成功！" }
         },
         this
@@ -235,15 +240,14 @@ export default {
     updeteOrganization(row) {
       let qs = require("qs");
       let data = qs.stringify({
-        organizeId: this.rowData.key,
-        organizeInfo: row.processName,
-        organizeName: row.processName
+        positionId: this.rowData.key,
+        info: row.processName
       });
       this.Axios(
         {
-          url: "/api-platform/organize/update",
+          url: "/api-warehouse/position/update",
           params: data,
-          type: "post",
+          type: "put",
           option: { successMsg: "修改成功！" }
         },
         this
@@ -261,7 +265,7 @@ export default {
     getList() {
       this.Axios(
         {
-          url: "/api-platform/organize/list",
+          url: "/api-warehouse/position/list",
           params: {},
           type: "get",
           option: { enableMsg: false }
@@ -273,10 +277,10 @@ export default {
             console.log(result);
             this.treeData = result.data.data.map(item => {
               return {
-                title: item.organizeName,
+                title: item.info,
                 key: item.id,
-                organizeCode: parseInt(item.organizeCode),
-                organizeParentCode: parseInt(item.organizeParentCode),
+                organizeCode: parseInt(item.code),
+                organizeParentCode: parseInt(item.parentCode),
                 scopedSlots: { title: "title" }
               };
             });
