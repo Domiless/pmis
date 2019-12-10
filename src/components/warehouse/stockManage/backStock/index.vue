@@ -6,7 +6,7 @@
         <permission-button permCode banType="hide" @click="$router.push({path:'/backStock/addBackStock'})">
           <a-icon style="color:#1890ff;" type="plus" />新增
         </permission-button>
-        <permission-button permCode banType="hide" @click="edit">
+        <permission-button permCode banType="hide" @click="edit" :disabled="selectedRowKeys.length !== 1">
           <a-icon style="color:#1890ff;" type="edit" />修改
         </permission-button>
         <permission-button permCode banType="hide">
@@ -23,7 +23,9 @@
         <a-col :span="24">
           <a-input-group class="changeDis">
             <span>仓库 : </span>
-            <a-select style="width: 300px" optionFilterProp="children">
+            <a-select defaultValue="" style="width: 300px" optionFilterProp="children" @change="getWarehouseValue">
+              <a-select-option value="">全部</a-select-option>
+              <a-select-option v-for="item in warehouseList" :key="item.id" :value="item.id">{{ item.name }}</a-select-option>
             </a-select>
           </a-input-group>
           <span>日期 :</span>
@@ -46,9 +48,18 @@
           :pagination="false"
           :rowSelection="{selectedRowKeys:selectedRowKeys,onChange: onSelectChange}"
         >
-          <template slot="back_department" slot-scope="text, record">
+          <template slot="fromName" slot-scope="text, record">
             <a href="javascript:" @click="showDetails(record.id)">{{text}}</a>
           </template>
+          <template slot="dataSource">
+            <span>退料入库</span>
+          </template>
+          <template slot="state" slot-scope="text">
+						<div>
+							<span v-if="text==0" style="font-size:14px;color:#f6003c;">未审</span>
+							<span v-if="text==-1" style="font-size:14px;">已审</span>
+						</div>
+					</template>
         </a-table>
         <a-pagination
               style="padding-top:12px;text-align: right;"
@@ -70,7 +81,7 @@
         :footer="null"
         :maskClosable="false"
         @cancel="handleCancel(1)">
-        <Details></Details>
+        <Details :sendId="stockDetailsId"></Details>
     </a-modal>
   </div>
 </template>
@@ -78,46 +89,48 @@
 import Details from "./details"
 const columns = [
   {
-    dataIndex: "invoicesNo",
+    dataIndex: "orderCode",
     title: "单据编号",
-    key: "invoicesNo",
+    key: "orderCode",
     width: "15%"
   },
   {
-    dataIndex: "invoicesType",
+    dataIndex: "dataSource",
     title: "单据类型",
-    key: "invoicesType",
+    key: "dataSource",
+    scopedSlots: { customRender: "dataSource" },
     width: "10%"
   },
   {
-    dataIndex: "back_department",
+    dataIndex: "fromName",
     title: "退料部门",
-    key: "back_department",
-    scopedSlots: { customRender: "back_department" },
+    key: "fromName",
+    scopedSlots: { customRender: "fromName" },
     width: "20%"
   },
   {
-    dataIndex: "warehouse",
+    dataIndex: "warehouse.name",
     title: "退回仓库",
-    key: "warehouse",
+    key: "warehouse.name",
     width: "15%"
   },
   {
-    dataIndex: "status",
+    dataIndex: "state",
     title: "状态",
-    key: "status",
+    key: "state",
+     scopedSlots: { customRender: "state" },
     width: "10%"
   },
   {
-    dataIndex: "createDate",
+    dataIndex: "gmtCreated",
     title: "开单日期",
-    key: "createDate",
+    key: "gmtCreated",
     width: "10%"
   },
   {
-    dataIndex: "remark",
+    dataIndex: "note",
     title: "备注",
-    key: "remark",
+    key: "note",
     width: "15%"
   },
 ];
@@ -130,21 +143,30 @@ export default {
       detailsVisible: false,
       selectedRowKeys: [],
       selectedRows: [],
+      warehouseList: [],
+      warehouseId: "",
       dateValue: "",
       keyWords: "",
       current: 1,
       pageSize: 10,
       total: 0,
+      stockDetailsId: ''
     };
   },
   methods: {
+    getWarehouseValue(value) {
+      this.warehouseId = value;
+      console.log(value);
+    },
     edit() {
 			this.$router.push({
 				path: "/backStock/editBackStock/" + this.selectedRowKeys[0]
 			});
 		},
-    showStock() {
-        this.detailsVisible = true;
+    showDetails(id) {
+      this.stockDetailsId = id;
+      this.detailsVisible = true;
+      console.log(this.stockDetailsId);
     },
     onChangeRange(date, datestring) {
       this.dateValue = datestring;
@@ -172,18 +194,40 @@ export default {
         this.detailsVisible = false;
       }
     },
+    getWareHouseList() {
+      this.Axios(
+        {
+          url: "/api-warehouse/warehouse/list",
+          type: "get",
+          params: {
+            page: -1
+          },
+          option: { enableMsg: false }
+        },
+        this
+      ).then(
+        result => {
+          if (result.data.code === 200) {
+            console.log(result);
+            this.warehouseList = result.data.data;
+          }
+        },
+        ({ type, info }) => {}
+      );
+    },
     getList() {
       this.Axios(
         {
-          url: "",
+          url: "/api-warehouse/order/list",
           type: "get",
           params: {
+            dataSource: "RETRUE",
+            warehouseId: this.warehouseId,
             page: this.current,
             size: this.pageSize,
-            auditState: this.reviewSchedule != -1 ? this.reviewSchedule : null,
             keyword: this.keyWords,
-            start: this.dateValue[0] != "" ? this.dateValue[0] : null,
-            end: this.dateValue[1] != "" ? this.dateValue[1] : null
+            startTime: this.dateValue[0] != "" ? this.dateValue[0] : null,
+            endTime: this.dateValue[1] != "" ? this.dateValue[1] : null
           },
           option: { enableMsg: false }
         },
@@ -208,10 +252,13 @@ export default {
 			? true
 			: false;
 		let b = this.$route.params.id !== undefined ? true : false;
-		this.isHideList = a || b ? true : false;
+    this.isHideList = a || b ? true : false;
+    this.getWareHouseList();
+    this.getList();
   },
   watch: {
 		$route() {
+      this.getList();
 			let a = this.$route.matched.find(item => item.name === "addBackStock")
 				? true
 				: false;

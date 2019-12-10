@@ -1,15 +1,17 @@
 <template>
   <div class="production_Stock">
-    <a-row style="line-height:50px;" >
+    <!-- <a-row style="line-height:50px;" >
       <permission-button permCode banType="hide" @click="showStock">
         <a-icon style="color:#1890ff;" type="plus" />生产入库
       </permission-button>
-    </a-row>
+    </a-row> -->
     <a-row>
       <a-col :span="24">
         <a-input-group class="changeDis">
           <span>仓库 : </span>
-          <a-select style="width: 300px" optionFilterProp="children">
+          <a-select defaultValue="" style="width: 300px" optionFilterProp="children" @change="getWarehouseValue">
+            <a-select-option value="">全部</a-select-option>
+            <a-select-option v-for="item in warehouseList" :key="item.id" :value="item.id">{{ item.name }}</a-select-option>
           </a-select>
         </a-input-group>
         <span>日期 :</span>
@@ -32,8 +34,14 @@
         :pagination="false"
         :rowSelection="{selectedRowKeys:selectedRowKeys,onChange: onSelectChange}"
       >
-        <template slot="production_department" slot-scope="text, record">
+        <template slot="fromName" slot-scope="text, record">
           <a href="javascript:" @click="showDetails(record.id)">{{text}}</a>
+        </template>
+        <template slot="caozuo" slot-scope="text, record">
+          <a href="javascript:" @click="showStock(record.id)">立即处理</a>
+        </template>
+        <template slot="dataSource">
+          <span>生产入库</span>
         </template>
       </a-table>
       <a-pagination
@@ -55,63 +63,101 @@
         :footer="null"
         :maskClosable="false"
         @cancel="handleCancel(1)">
-      <stock></stock>
+      <stock :sendId="itemId"></stock>
+    </a-modal>
+    <a-modal
+        title="详情"
+        v-model="detailsVisible" 
+        style="top:20px" width="1200px" 
+        :footer="null"
+        :maskClosable="false"
+        @cancel="handleCancel(2)">
+      <stockDetails :sendId="stockDetailsId"></stockDetails>
     </a-modal>
   </div>
 </template>
 <script>
 import stock from "./stock"
+import stockDetails from  "./details"
 const columns = [
   {
-    dataIndex: "invoicesNo",
+    dataIndex: "orderCode",
     title: "单据编号",
-    key: "invoicesNo",
+    key: "orderCode",
     width: "25%"
   },
   {
-    dataIndex: "invoicesType",
+    dataIndex: "dataSource",
     title: "单据类型",
-    key: "invoicesType",
+    key: "dataSource",
+    scopedSlots: { customRender: "dataSource" },
     width: "10%"
   },
   {
-    dataIndex: "production_department",
+    dataIndex: "fromName",
     title: "生产部门",
-    key: "production_department",
-    scopedSlots: { customRender: "production_department" },
-    width: "30%"
+    key: "fromName",
+    scopedSlots: { customRender: "fromName" },
+    width: "20%"
   },
   {
-    dataIndex: "warehouse",
+    dataIndex: "warehouse.name",
     title: "收货仓库",
-    key: "warehouse",
+    key: "warehouse.name",
     width: "15%"
   },
   {
-    dataIndex: "createDate",
+    dataIndex: "gmtCreated",
     title: "开单日期",
-    key: "createDate",
+    key: "gmtCreated",
     width: "15%"
+  },
+  {
+    dataIndex: "caozuo",
+    title: "操作",
+    key: "caozuo",
+    scopedSlots: { customRender: "caozuo" },
+    width: "10%"
   }
 ];
 export default {
   data() {
     return {
       columns,
-      data: [],
+      data: [
+        {
+          createDate: "2019/12/4"
+        }
+      ],
       stockVisible: false,
+      detailsVisible: false,
       selectedRowKeys: [],
       selectedRows: [],
+      warehouseList: [],
+      warehouseId: "",
       dateValue: "",
       keyWords: "",
       current: 1,
       pageSize: 10,
       total: 0,
+      itemId: '',
+      stockDetailsId: ''
     };
   },
   methods: {
-    showStock() {
-        this.stockVisible = true;
+    getWarehouseValue(value) {
+      this.warehouseId = value;
+      console.log(value);
+    },
+    showStock(id) {
+      this.itemId = id;
+      this.stockVisible = true;
+      console.log(id);
+    },
+    showDetails(id) {
+      this.stockDetailsId = id;
+      this.detailsVisible = true;
+      console.log(this.stockDetailsId);
     },
     onChangeRange(date, datestring) {
       this.dateValue = datestring;
@@ -138,19 +184,44 @@ export default {
       if( num == 1 ) {
         this.stockVisible = false;
       }
+       if( num === 2 ) {
+        this.detailsVisible = false;
+      }
+    },
+    getWareHouseList() {
+      this.Axios(
+        {
+          url: "/api-warehouse/warehouse/list",
+          type: "get",
+          params: {
+            page: -1
+          },
+          option: { enableMsg: false }
+        },
+        this
+      ).then(
+        result => {
+          if (result.data.code === 200) {
+            console.log(result);
+            this.warehouseList = result.data.data;
+          }
+        },
+        ({ type, info }) => {}
+      );
     },
     getList() {
       this.Axios(
         {
-          url: "",
+          url: "/api-warehouse/order/list",
           type: "get",
           params: {
+            dataSource: "PRODUCE",
+            warehouseId: this.warehouseId,
             page: this.current,
             size: this.pageSize,
-            auditState: this.reviewSchedule != -1 ? this.reviewSchedule : null,
             keyword: this.keyWords,
-            start: this.dateValue[0] != "" ? this.dateValue[0] : null,
-            end: this.dateValue[1] != "" ? this.dateValue[1] : null
+            startTime: this.dateValue[0] != "" ? this.dateValue[0] : null,
+            endTime: this.dateValue[1] != "" ? this.dateValue[1] : null
           },
           option: { enableMsg: false }
         },
@@ -168,7 +239,12 @@ export default {
     }
   },
   components: {
-      stock
+      stock,
+      stockDetails
+  },
+  created() {
+    this.getWareHouseList();
+    this.getList();
   }
 };
 </script>
@@ -180,7 +256,8 @@ export default {
     margin: 0px 10px 0px 0px;
   }
   .ant-row:nth-child(1) {
-    margin-bottom: 10px;
+    margin-top: 20px;
+    margin-bottom: 20px;
   }
   .ant-row:nth-child(2) {
     margin-bottom: 10px;
