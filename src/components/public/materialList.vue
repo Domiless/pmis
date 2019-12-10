@@ -42,12 +42,18 @@ const columns = [
     dataIndex: "drawingCode",
     key: "drawingCode",
     title: "图号",
-    width: 140
+    width: 180
   },
   {
     dataIndex: "name",
     key: "name",
     title: "名称",
+    width: 180
+  },
+  {
+    dataIndex: "xinghaoguige",
+    key: "xinghaoguige",
+    title: "型号/规格",
     width: 140
   },
   {

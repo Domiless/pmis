@@ -669,5 +669,32 @@ export default new Router({
     },
     children: []
   },
+  {
+    path: '/putInSummaryStatement',
+    name: 'putInSummaryStatement',
+    components: require('@/components/warehouse/statistics/putInSummaryStatement/index'),
+    meta: {
+      requireAuth: true,
+    },
+    children: []
+  },
+  {
+    path: '/putInDetails',
+    name: 'putInDetails',
+    components: require('@/components/warehouse/statistics/putInDetails/index'),
+    meta: {
+      requireAuth: true,
+    },
+    children: []
+  },
+  {
+    path: '/outboundDetails',
+    name: 'outboundDetails',
+    components: require('@/components/warehouse/statistics/outboundDetails/index'),
+    meta: {
+      requireAuth: true,
+    },
+    children: []
+  },
   ]
 })

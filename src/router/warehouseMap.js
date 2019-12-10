@@ -2,7 +2,7 @@
 //permissionCode为权限映射码，若permissionCode未对应到用户权限则不显示也无跳转访问权限
 //route和routeReg为匹配路由，二者必须有一个，若都有则为“或”逻辑
 export default [{
-    menu: '仓库管理',
+    menu: '基础设置',
     permissionCode: 'warehouse',
     icon: '&#xe60a;',
     defaultDock: false,
@@ -208,4 +208,30 @@ export default [{
         permissionCode: 'order_lookup',
     },
     ]
-},]
+},
+{
+    menu: '统计报表',
+    permissionCode: 'statistics',
+    icon: '&#xe60a;',
+    defaultDock: false,
+    subMenu: [{
+        menu: '入库单总表',
+        route: '/putInSummaryStatement',
+        key: 'putInSummaryStatement',
+        permissionCode: 'order_lookup',
+    },
+    {
+        menu: '入库明细表',
+        route: '/putInDetails',
+        key: 'putInDetails',
+        permissionCode: 'order_lookup',
+    },
+    {
+        menu: '出库明细表',
+        route: '/outboundDetails',
+        key: 'OutboundDetails',
+        permissionCode: 'order_lookup',
+    },
+    ]
+},
+]
