@@ -9,7 +9,9 @@
             <a-col :span="24">
             <a-input-group class="changeDis">
                 <span>仓库 : </span>
-                <a-select style="width: 300px" optionFilterProp="children">
+                <a-select defaultValue="" style="width: 300px" optionFilterProp="children" @change="getWarehouseValue">
+                  <a-select-option value="">全部</a-select-option>
+                  <a-select-option v-for="item in warehouseList" :key="item.id" :value="item.id">{{ item.name }}</a-select-option>
                 </a-select>
             </a-input-group>
             <span>关键词 :</span>
@@ -24,8 +26,9 @@
       </a-row>
       <a-row>
           <a-col :span="3">
-              <div class="treeArea">
-
+              <div class="left_case">
+                  <a-tree :treeData="treeData" @select="getSelectList" :defaultExpandAll="true" :autoExpandParent="true">
+                  </a-tree>
               </div>
           </a-col>
           <a-col :span="21">
@@ -35,11 +38,19 @@
                 :dataSource="data"
                 :pagination="false"
                 >
-                    <template slot="mingcheng" slot-scope="text, record">
-                        <a href="javascript:" @click="showDetails(record)">{{text}}</a>
+                    <template slot="code" slot-scope="text, record">
+                         <a-tooltip>
+                            <template slot="title">
+                              {{text}}
+                            </template>
+                            <div class="codeMsg">{{text}}</div>
+                        </a-tooltip>
                     </template>
-                    <template slot="caozuo" >
-                        <span>修改</span>
+                    <template slot="caozuo" slot-scope="text, record">
+                        <a href="javascript:" @click="showEdit(record.id)">修改</a>
+                    </template>
+                    <template slot="name" slot-scope="text, record">
+                        <a href="javascript:" @click="showDetails(record)">{{text}}</a>
                     </template>
               </a-table>
               <a-pagination
@@ -58,56 +69,70 @@
       <a-modal
         title="预警设置"
         v-model="settingVisible" 
-        style="top:20px" width="1200px" 
+        style="top:20px;height=600px" width="1200px" 
         :footer="null"
         :maskClosable="false"
         @cancel="handleCancel(1)">
         <warnSetting></warnSetting>
     </a-modal>
     <a-modal
-      title="合同详情"
+      title="修改"
       :footer="null"
       width="1000px"
+      :visible="editVisible"
+      @cancel="handleCancel(2)"
+      :maskClosable="false"
+      :destroyOnClose="true"
+    >
+      <Edit @cancelEdit="closeEdit" :sendId="sendEditId"></Edit>
+    </a-modal>
+    <a-modal
+      title="详情"
+      :footer="null"
+      width="800px"
       :visible="detailsVisible"
       @cancel="handleCancel(3)"
       :maskClosable="false"
       :destroyOnClose="true"
     >
-      <Details></Details>
+      <Details :detailsMsg="detailsMsg"></Details>
     </a-modal>
     </div>
 </template>
 <script>
 import WarnSetting  from "./warnSetting"
+import Edit from "./edit"
 import Details from "./details"
 const columns = [
   {
-    dataIndex: "wuliaobianma",
-    key: "wuliaobianma",
+    dataIndex: "code",
+    key: "code",
     title: "物料编码",
-    width: 120
+    scopedSlots: { customRender: "code" },
+    width: 200
   },
   {
-    dataIndex: "tuhao",
-    key: "tuhao",
+    dataIndex: "drawingCode",
+    key: "drawingCode",
     title: "图号",
     width: 140
   },
   {
-    dataIndex: "mingcheng",
-    key: "mingcheng",
+    dataIndex: "name",
+    key: "name",
     title: "名称",
+    scopedSlots: { customRender: "name" },
     width: 140
   },
   {
-    dataIndex: "danwei",
-    key: "danwei",
+    dataIndex: "unit",
+    key: "unit",
     title: "单位",
     width: 80
   },
   {
-    dataIndex: "wuliaofenlei",
-    key: "wuliaofenlei",
+    dataIndex: "classification.name",
+    key: "classification.name",
     title: "物料分类",
     width: 100
   },
@@ -118,20 +143,20 @@ const columns = [
     width: 100
   },
   {
-    dataIndex: "kucunshuliang",
-    key: "kucunshuliang",
+    dataIndex: "amount",
+    key: "amount",
     title: "库存数量",
     width: 100
   },
   {
-    dataIndex: "shuliang",
-    key: "shuliang",
+    dataIndex: "warningAmount",
+    key: "warningAmount",
     title: "物料下限",
     width: 120,
   },
   {
-    dataIndex: "beizhu",
-    key: "beizhu",
+    dataIndex: "note",
+    key: "note",
     title: "备注",
     width: 160,
   },
@@ -148,22 +173,50 @@ export default {
         return {
             columns,
             data: [],
+            treeData: [],
             settingVisible: false,
             detailsVisible: false,
+            editVisible: false,
             keyWords: "",
             current: 1,
             pageSize: 10,
             total: 0,
+            sendEditId: '',
+            detailsMsg: [],
+            warehouseList: [],
         }
     },
     methods: {
+        getWarehouseValue(value) {
+          this.warehouseId = value;
+          console.log(value);
+        },
         showSetting() {
             this.settingVisible = true;
         },
+        showEdit(id) {
+          this.sendEditId = id;
+          this.editVisible = true;
+          console.log(id);
+        },
+        showDetails(value) {
+          this.detailsMsg = value;
+          this.detailsVisible = true;
+          console.log(this.detailsMsg);
+        },
         handleCancel(num) {
-            if( num == 1 ) {
+            if( num === 1 ) {
                 this.settingVisible = false;
             }
+            if( num === 2 ) {
+                this.editVisible = false;
+            }
+            if( num === 3 ) {
+                this.detailsVisible = false;
+            }
+        },
+        closeEdit(params){
+          this.editVisible = params;
         },
         onShowSizeChange(current, pageSize) {
             this.pageSize = pageSize;
@@ -175,6 +228,27 @@ export default {
             console.log("第几页: ", current);
             this.current = current;
             this.getList();
+        },
+        getWareHouseList() {
+          this.Axios(
+            {
+              url: "/api-warehouse/warehouse/list",
+              type: "get",
+              params: {
+                page: -1
+              },
+              option: { enableMsg: false }
+            },
+            this
+          ).then(
+            result => {
+              if (result.data.code === 200) {
+                console.log(result);
+                this.warehouseList = result.data.data;
+              }
+            },
+            ({ type, info }) => {}
+          );
         },
         getList() {
             this.Axios(
@@ -199,11 +273,92 @@ export default {
                 },
                 ({ type, info }) => {}
             );
+        },
+        getClassify() {
+          this.Axios(
+            {
+              url: "/api-warehouse/classification/list",
+              type: "get",
+              params: {},
+              option: { enableMsg: false }
+            },
+            this
+          ).then(
+            result => {
+              if (result.data.code === 200) {
+                console.log(result);
+                this.treeData = result.data.data.map(item => {
+                  return {
+                    title: item.name,
+                    key: item.id,
+                    value: item.id,
+                    organizeCode: parseInt(item.code),
+                    organizeParentCode: parseInt(item.parentCode),
+                    
+                    
+                  };
+                });
+                let code = Math.min.apply(
+                  null,
+                  this.treeData.map(item => {
+                    return item.organizeParentCode;
+                  })
+                );
+                this.treeData = this.filterArray(this.treeData, code);
+              }
+            },
+            ({ type, info }) => {}
+          );
+        },
+        filterArray(data, parent) {
+          let vm = this;
+          var tree = [];
+          var temp;
+          for (var i = 0; i < data.length; i++) {
+            if (data[i].organizeParentCode == parent) {
+              var obj = data[i];
+              temp = this.filterArray(data, data[i].organizeCode);
+              if (temp.length > 0) {
+                obj.children = temp;
+              }
+              tree.push(obj);
+            }
+          }
+          return tree;
+        },
+        getSelectList(selectKey) {
+          console.log(selectKey);
+          this.Axios(
+            {
+              url: "/api-warehouse/warehouseItem/selectList",
+              type: "get",
+              params: {
+                classifyId: selectKey[0],
+                keyword: this.keyWords
+              },
+              option: { enableMsg: false }
+            },
+            this
+          ).then(
+            result => {
+              if (result.data.code === 200) {
+                console.log(result);
+                this.data = result.data.data;
+                this.total = result.data.data.length;
+              }
+            },
+            ({ type, info }) => {}
+          );
         }
     },
     components: {
         WarnSetting,
+        Edit,
         Details
+    },
+    created() {
+      this.getClassify();
+      this.getWareHouseList();
     }
 }
 </script>
@@ -218,6 +373,21 @@ export default {
       margin-right: 10px;
       height: 400px;
       border: 1px solid #999999;
+  }
+  .left_case {
+    margin-right: 10px;
+    height: 100%;
+    // border: 1px solid #e8e8e8;
+    // border-radius: 4px;
+    overflow: auto;
+    padding: 4px 8px;
+  }
+  .codeMsg {
+    width: 200px;
+    overflow: hidden;
+    text-overflow:ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
   }
 }
 </style>

@@ -69,8 +69,8 @@ const columns = [
     width: 120
   },
   {
-    dataIndex: "drawingCode",
-    key: "drawingCode",
+    dataIndex: "drawingNo",
+    key: "drawingNo",
     title: "图号",
     width: 140
   },
@@ -121,11 +121,11 @@ const columns = [
   }
 ];
 export default {
-  props: {
-    sendId: {
-      default: ""
-    }
-  },
+    props: {
+      sendId: {
+        default: ""
+      }
+    },
     data() {
         return {
             columns,

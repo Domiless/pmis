@@ -23,7 +23,9 @@
         <a-col :span="24">
           <a-input-group class="changeDis">
             <span>仓库 : </span>
-            <a-select style="width: 300px" optionFilterProp="children">
+            <a-select defaultValue="" style="width: 300px" optionFilterProp="children" @change="getWarehouseValue">
+              <a-select-option value="">全部</a-select-option>
+              <a-select-option v-for="item in warehouseList" :key="item.id" :value="item.id">{{ item.name }}</a-select-option>
             </a-select>
           </a-input-group>
           <span>日期 :</span>
@@ -70,7 +72,7 @@
         :footer="null"
         :maskClosable="false"
         @cancel="handleCancel(1)">
-        <Details></Details>
+        <Details :sendId="allotDetailsId"></Details>
     </a-modal>
   </div>
 </template>
@@ -135,9 +137,16 @@ export default {
       current: 1,
       pageSize: 10,
       total: 0,
+      warehouseId: '',
+      warehouseList: [],
+      allotDetailsId: ''
     };
   },
   methods: {
+    getWarehouseValue(value) {
+      this.warehouseId = value;
+      console.log(value);
+    },
     edit() {
         this.$router.push({
             path: "/storageAllot/editStorageAllot/" + this.selectedRowKeys[0]
@@ -145,6 +154,11 @@ export default {
     },
     showStock() {
         this.detailsVisible = true;
+    },
+    showDetails(id) {
+      this.allotDetailsId = id;
+      this.detailsVisible = true;
+      console.log(this.allotDetailsId);
     },
     onChangeRange(date, datestring) {
       this.dateValue = datestring;
@@ -172,18 +186,44 @@ export default {
         this.detailsVisible = false;
       }
     },
+    handleCancel(num) {
+      if( num == 1 ) {
+        this.detailsVisible = false;
+      }
+    },
+    getWareHouseList() {
+      this.Axios(
+        {
+          url: "/api-warehouse/warehouse/list",
+          type: "get",
+          params: {
+            page: -1
+          },
+          option: { enableMsg: false }
+        },
+        this
+      ).then(
+        result => {
+          if (result.data.code === 200) {
+            console.log(result);
+            this.warehouseList = result.data.data;
+          }
+        },
+        ({ type, info }) => {}
+      );
+    },
     getList() {
       this.Axios(
         {
-          url: "",
+          url: "/api-warehouse/transfer/list",
           type: "get",
           params: {
+            warehouse: this.warehouseId,
             page: this.current,
             size: this.pageSize,
-            auditState: this.reviewSchedule != -1 ? this.reviewSchedule : null,
             keyword: this.keyWords,
-            start: this.dateValue[0] != "" ? this.dateValue[0] : null,
-            end: this.dateValue[1] != "" ? this.dateValue[1] : null
+            startTime: this.dateValue[0] != "" ? this.dateValue[0] : null,
+            endTime: this.dateValue[1] != "" ? this.dateValue[1] : null
           },
           option: { enableMsg: false }
         },
@@ -204,6 +244,8 @@ export default {
     Details
   },
   created() {
+    this.getWareHouseList();
+    this.getList();
     let a = this.$route.matched.find(item => item.name === "addStorageAllot")
 			? true
 			: false;
@@ -212,6 +254,7 @@ export default {
   },
   watch: {
 		$route() {
+      this.getList();
 			let a = this.$route.matched.find(item => item.name === "addStorageAllot")
 				? true
 				: false;

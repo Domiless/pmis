@@ -1,120 +1,114 @@
 <template>
-    <div class="edit_storageCheck">
-        <a-row style="line-height:50px;">
-			<a-button @click="$router.back(-1)" icon="left">返回</a-button>
-		</a-row>
-        <a-row>
-            <a-form :form="form">
-                <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 12 }" label="单据类型">
-					<a-input
-                        v-decorator="[
+  <div class="edit_storageCheck">
+    <a-row style="line-height:50px;">
+      <a-button @click="$router.back(-1)" icon="left">返回</a-button>
+    </a-row>
+    <a-row>
+      <a-form :form="form">
+        <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 12 }" label="单据类型">
+          <a-input
+            v-decorator="[
                         'invoicesType',
                         {rules: [{ required: true, message: '请填写单据类型' }]}
                         ]"
-                        maxlength="10"
-                    ></a-input>
-				</a-form-item>
-                <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 12 }" label="单据编号">
-					<a-input
-                        v-decorator="[
+            maxlength="10"
+          ></a-input>
+        </a-form-item>
+        <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 12 }" label="单据编号">
+          <a-input
+            v-decorator="[
                         'invoicesNo',
                         {rules: [{ required: true, message: '请填写单据编号' }]}
                         ]"
-                        maxlength="20"
-                    ></a-input>
-				</a-form-item>
-                <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 12 }" label="盘点仓库">
-					<a-input
-                        v-decorator="[
+            maxlength="20"
+          ></a-input>
+        </a-form-item>
+        <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 12 }" label="盘点仓库">
+          <a-input
+            v-decorator="[
                         'backWarehouse',
                         {rules: [{ required: true, message: '请填写盘点仓库' }]}
                         ]"
-                        maxlength="10"
-                    ></a-input>
-				</a-form-item>
-                <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 12 }" label="盘点日期">
-                    <a-date-picker 
-                        style="width:100%;"
-                        @change="onChangeSign" 
-                        v-decorator="['stockDate']" 
-                        format="YYYY/MM/DD"/>
-				</a-form-item>
-                <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 12 }" label="经办人">
-					<a-input
-                        v-decorator="[
+            maxlength="10"
+          ></a-input>
+        </a-form-item>
+        <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 12 }" label="盘点日期">
+          <a-date-picker
+            style="width:100%;"
+            @change="onChangeSign"
+            v-decorator="['stockDate']"
+            format="YYYY/MM/DD"
+          />
+        </a-form-item>
+        <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 12 }" label="经办人">
+          <a-input
+            v-decorator="[
                         'transactor',
                         {rules: [{ required: true, message: '请填写经办人' }]}
                         ]"
-                    ></a-input>
-				</a-form-item>
-                <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 12 }" label="制单人">
-					<a-input
-                        v-decorator="['preparedBy']"
-                        maxlength="10"
-                    ></a-input>
-				</a-form-item>
-                <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 12 }" label="备注">
-					<a-textarea 
-                        v-decorator="['remark']" 
-                        :rows="4" 
-                        :autosize="{ minRows: 4, maxRows: 4}"
-                    ></a-textarea>
-				</a-form-item>
-                <a-table :columns="columns" :pagination="false" :dataSource="data" rowKey="id">
-                <span slot="shuliangTitle">
-                <span style="color: #f5222d">*</span>盘点数量
-                </span>
-                <template slot="xuanzewuliao" slot-scope="text, record, index">
-                <div class="choice">
-                    <span style="color:#1890FF;cursor: pointer;" @click="choiceModalShow(index)">
-                    <i class="iconfont" style="margin-right:8px;">&#xe647;</i>选择
-                    </span>
-                </div>
-                </template>
-                <template slot="xuhao" slot-scope="text, record, index">
-                <span>{{index+1}}</span>
-                </template>
-                <template slot="shuliang" slot-scope="text, record, index">
-                <a-input
-                    type="number"
-                    oninput="if(value.length>10)value=value.slice(0,10)"
-                    :value="text"
-                    @change="(e)=>handleInputChange(e.target.value, record.id, 'shuliang')"
-                ></a-input>
-                </template>
-                <template slot="beizhu" slot-scope="text, record, index">
-                <a-input
-                    maxlength="50"
-                    :value="text"
-                    @change="(e)=>handleInputChange(e.target.value, record.id, 'beizhu')"
-                ></a-input>
-                </template>
-            </a-table>
-                <div style="padding:12px 0;">
-                    <a style="color:#1890FF;cursor: pointer;" href="javascript:">
-                    <a-icon type="plus" style="font-size:18px;margin-right:8px;" />添加
-                    </a>
-                </div>
-                <a-form-item style="display:block;text-align:right;margin-bottom:0;">
-                    <a-button style="margin-right:12px;">取消</a-button>
-                    <a-button type="primary">保存</a-button>
-                </a-form-item>
-            </a-form>
-        </a-row>
-        <a-row>
-            <a-modal
-                v-model="choiceShow"
-                :footer="null"
-                :destroyOnClose="true"
-                :mask="false"
-                :closable="false"
-                width="800px"
-                centered
-                >
-                <materialList v-on:choisceMsg="choisceMsg"></materialList>
-            </a-modal>
-        </a-row>
-    </div>
+          ></a-input>
+        </a-form-item>
+        <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 12 }" label="制单人">
+          <a-input v-decorator="['preparedBy']" maxlength="10"></a-input>
+        </a-form-item>
+        <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 12 }" label="备注">
+          <a-textarea v-decorator="['remark']" :rows="4" :autosize="{ minRows: 4, maxRows: 4}"></a-textarea>
+        </a-form-item>
+        <a-table :columns="columns" :pagination="false" :dataSource="data" rowKey="id">
+          <span slot="shuliangTitle">
+            <span style="color: #f5222d">*</span>盘点数量
+          </span>
+          <template slot="xuanzewuliao" slot-scope="text, record, index">
+            <div class="choice">
+              <span style="color:#1890FF;cursor: pointer;" @click="choiceModalShow(index)">
+                <i class="iconfont" style="margin-right:8px;">&#xe647;</i>选择
+              </span>
+            </div>
+          </template>
+          <template slot="xuhao" slot-scope="text, record, index">
+            <span>{{index+1}}</span>
+          </template>
+          <template slot="shuliang" slot-scope="text, record, index">
+            <a-input
+              type="number"
+              oninput="if(value.length>10)value=value.slice(0,10)"
+              :value="text"
+              @change="(e)=>handleInputChange(e.target.value, record.id, 'shuliang')"
+            ></a-input>
+          </template>
+          <template slot="beizhu" slot-scope="text, record, index">
+            <a-input
+              maxlength="50"
+              :value="text"
+              @change="(e)=>handleInputChange(e.target.value, record.id, 'beizhu')"
+            ></a-input>
+          </template>
+        </a-table>
+        <div style="padding:12px 0;">
+          <a style="color:#1890FF;cursor: pointer;" href="javascript:">
+            <a-icon type="plus" style="font-size:18px;margin-right:8px;" />添加
+          </a>
+        </div>
+        <a-form-item style="display:block;text-align:right;margin-bottom:0;">
+          <a-button style="margin-right:12px;">取消</a-button>
+          <a-button type="primary">保存</a-button>
+        </a-form-item>
+      </a-form>
+    </a-row>
+    <a-row>
+      <a-modal
+        v-model="choiceShow"
+        :footer="null"
+        :destroyOnClose="true"
+        :mask="false"
+        :closable="false"
+        width="800px"
+        centered
+      >
+        <materialList v-on:choisceMsg="choisceMsg"></materialList>
+      </a-modal>
+    </a-row>
+  </div>
 </template>
 <script>
 import materialList from "../../../public/materialList";
@@ -187,45 +181,67 @@ const columns = [
   }
 ];
 export default {
-    data() {
-        return {
-            form: this.$form.createForm(this),
-            signDate: '',
-            choiceShow: false,
-            columns,
-            data: [{ wuliaobianma: 11, shuliang: 111, id: 23 }]
-        }
+  data() {
+    return {
+      form: this.$form.createForm(this),
+      signDate: "",
+      choiceShow: false,
+      columns,
+      data: [{ wuliaobianma: 11, shuliang: 111, id: 23 }]
+    };
+  },
+  methods: {
+    choisceMsg(a) {
+      console.log(a);
+      this.choiceShow = false;
     },
-    methods: {
-        choisceMsg(a) {
-            console.log(a);
-            this.choiceShow = false;
-        },
-        onChangeSign(data,dateString) {
-            this.signDate = dateString;
-        },
-        choiceModalShow(index) {
-            console.log(index);
-            this.choiceShow = true;
-        },
-        handleInputChange(value, key, column) {
-            const newData = [...this.data];
-            const target = newData.filter(item => key === item.id)[0];
-            if (target) {
-                target[column] = value;
-                this.data = newData;
-            }
-        },
+    onChangeSign(data, dateString) {
+      this.signDate = dateString;
     },
-    created() {},
-    components: {
-        materialList
+    choiceModalShow(index) {
+      console.log(index);
+      this.choiceShow = true;
+    },
+    handleInputChange(value, key, column) {
+      const newData = [...this.data];
+      const target = newData.filter(item => key === item.id)[0];
+      if (target) {
+        target[column] = value;
+        this.data = newData;
+      }
+    },
+    findOne(id) {
+      this.Axios(
+        {
+          url: "/api-warehouse/checkItem/getOne",
+          params: {
+            checkItemId: id
+          },
+          type: "get",
+          option: { enableMsg: false }
+        },
+        this
+      ).then(
+        result => {
+          if (result.data.code === 200) {
+            console.log(result);
+          }
+        },
+        ({ type, info }) => {}
+      );
     }
-}
+  },
+  components: {
+    materialList
+  },
+  created() {
+      this.findOne(this.$route.params.id);
+  }
+};
 </script>
 <style lang="less">
 .edit_storageCheck {
-   overflow: hidden;
+  overflow: hidden;
   .ant-table-thead > tr > th,
   .ant-table-tbody > tr > td {
     padding: 4px 4px;

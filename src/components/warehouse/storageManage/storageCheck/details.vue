@@ -104,11 +104,51 @@ const columns = [
   }
 ];
 export default {
+    props: {
+      sendId: {
+        default: ""
+      }
+    },
     data() {
         return {
             columns,
-            data: []
+            data: [],
+            detailsMsg: [],
+            warehouseName: ''
         }
+    },
+    methods: {
+      findOne(id) {
+        this.Axios(
+          {
+            url: "/api-warehouse/checkItem/getOne",
+            params: {
+              checkItemId: id
+            },
+            type: "get",
+            option: { enableMsg: false }
+          },
+          this
+        ).then(
+          result => {
+            if (result.data.code === 200) {
+              console.log(result);
+              this.detailsMsg = result.data.data;
+              this.data = result.data.data.orderItems;
+              this.warehouseName = result.data.data.warehouse.name;
+            }
+          },
+          ({ type, info }) => {}
+        );
+      }
+    },
+    created() {
+      this.findOne(this.sendId);
+    },
+    watch: {
+      sendId() {
+        this.findOne(this.sendId)
+      }
     }
 }
 </script>

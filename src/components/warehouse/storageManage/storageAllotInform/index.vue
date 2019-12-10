@@ -140,22 +140,19 @@ export default {
         getList() {
             this.Axios(
                 {
-                url: "",
-                type: "get",
-                params: {
-                    page: this.current,
-                    size: this.pageSize,
-                },
-                option: { enableMsg: false }
+                    url: "/api-warehouse/transfer/notice",
+                    type: "get",
+                    params: {},
+                    option: { enableMsg: false }
                 },
                 this
             ).then(
                 result => {
-                if (result.data.code === 200) {
-                    console.log(result);
-                    this.data = result.data.data.content;
-                    this.total = result.data.data.totalElement;
-                }
+                    if (result.data.code === 200) {
+                            console.log(result);
+                            this.data = result.data.data.content;
+                            this.total = result.data.data.totalElement;
+                        }
                 },
                 ({ type, info }) => {}
             );
@@ -164,6 +161,9 @@ export default {
     components: {
         Dispose,
         Details
+    },
+    created() {
+        this.getList();
     }
 }
 </script>

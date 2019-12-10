@@ -23,7 +23,9 @@
         <a-col :span="24">
           <a-input-group class="changeDis">
             <span>仓库 : </span>
-            <a-select style="width: 300px" optionFilterProp="children">
+            <a-select defaultValue="" style="width: 300px" optionFilterProp="children" @change="getWarehouseValue">
+              <a-select-option value="">全部</a-select-option>
+              <a-select-option v-for="item in warehouseList" :key="item.id" :value="item.id">{{ item.name }}</a-select-option>
             </a-select>
           </a-input-group>
           <span>日期 :</span>
@@ -46,7 +48,7 @@
           :pagination="false"
           :rowSelection="{selectedRowKeys:selectedRowKeys,onChange: onSelectChange}"
         >
-          <template slot="back_department" slot-scope="text, record">
+          <template slot="warehouse.name" slot-scope="text, record">
             <a href="javascript:" @click="showDetails(record.id)">{{text}}</a>
           </template>
         </a-table>
@@ -70,7 +72,7 @@
         :footer="null"
         :maskClosable="false"
         @cancel="handleCancel(1)">
-        <Details></Details>
+        <Details :sendId="checkDetailsId"></Details>
     </a-modal>
   </div>
 </template>
@@ -78,34 +80,34 @@
 import Details from "./details"
 const columns = [
   {
-    dataIndex: "invoicesNo",
+    dataIndex: "checkNo",
     title: "单据编号",
-    key: "invoicesNo",
+    key: "checkNo",
     width: "15%"
   },
   {
-    dataIndex: "invoicesType",
+    dataIndex: "type",
     title: "单据类型",
-    key: "invoicesType",
+    key: "type",
     width: "10%"
   },
   {
-    dataIndex: "back_department",
+    dataIndex: "warehouse.name",
     title: "盘点仓库",
-    key: "back_department",
-    scopedSlots: { customRender: "back_department" },
+    key: "warehouse.name",
+    scopedSlots: { customRender: "warehouse.name" },
     width: "20%"
   },
   {
-    dataIndex: "status",
+    dataIndex: "manager",
     title: "经办人",
-    key: "status",
+    key: "manager",
     width: "10%"
   },
   {
-    dataIndex: "createDate",
+    dataIndex: "checkDate",
     title: "盘点日期",
-    key: "createDate",
+    key: "checkDate",
     width: "10%"
   },
   {
@@ -129,9 +131,16 @@ export default {
       current: 1,
       pageSize: 10,
       total: 0,
+      warehouseId: '',
+      warehouseList: [],
+      checkDetailsId: ''
     };
   },
   methods: {
+    getWarehouseValue(value) {
+      this.warehouseId = value;
+      console.log(value);
+    },
     edit() {
         this.$router.push({
             path: "/storageCheck/editStorageCheck/" + this.selectedRowKeys[0]
@@ -139,6 +148,11 @@ export default {
     },
     showStock() {
         this.detailsVisible = true;
+    },
+    showDetails(id) {
+      this.checkDetailsId = id;
+      this.detailsVisible = true;
+      console.log(this.checkDetailsId);
     },
     onChangeRange(date, datestring) {
       this.dateValue = datestring;
@@ -166,18 +180,39 @@ export default {
         this.detailsVisible = false;
       }
     },
+    getWareHouseList() {
+      this.Axios(
+        {
+          url: "/api-warehouse/warehouse/list",
+          type: "get",
+          params: {
+            page: -1
+          },
+          option: { enableMsg: false }
+        },
+        this
+      ).then(
+        result => {
+          if (result.data.code === 200) {
+            console.log(result);
+            this.warehouseList = result.data.data;
+          }
+        },
+        ({ type, info }) => {}
+      );
+    },
     getList() {
       this.Axios(
         {
-          url: "",
+          url: "/api-warehouse/check/list",
           type: "get",
           params: {
+            warehouse: this.warehouseId,
             page: this.current,
             size: this.pageSize,
-            auditState: this.reviewSchedule != -1 ? this.reviewSchedule : null,
             keyword: this.keyWords,
-            start: this.dateValue[0] != "" ? this.dateValue[0] : null,
-            end: this.dateValue[1] != "" ? this.dateValue[1] : null
+            startTime: this.dateValue[0] != "" ? this.dateValue[0] : null,
+            endTime: this.dateValue[1] != "" ? this.dateValue[1] : null
           },
           option: { enableMsg: false }
         },
@@ -198,6 +233,8 @@ export default {
     Details
   },
   created() {
+    this.getWareHouseList();
+    this.getList();
     let a = this.$route.matched.find(item => item.name === "addStorageCheck")
 			? true
 			: false;
@@ -206,6 +243,7 @@ export default {
   },
   watch: {
 		$route() {
+      this.getList();
 			let a = this.$route.matched.find(item => item.name === "addStorageCheck")
 				? true
 				: false;
