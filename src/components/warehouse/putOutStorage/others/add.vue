@@ -172,13 +172,19 @@ const columns = [
     dataIndex: "tuhao",
     key: "tuhao",
     title: "图号",
-    width: 200
+    width: 180
   },
   {
     dataIndex: "mingcheng",
     key: "mingcheng",
     title: "名称",
-    width: 200
+    width: 180
+  },
+  {
+    dataIndex: "xinghaoguige",
+    key: "xinghaoguige",
+    title: "型号/规格",
+    width: 140
   },
   {
     dataIndex: "danwei",
