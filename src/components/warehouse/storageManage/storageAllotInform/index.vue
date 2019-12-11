@@ -1,7 +1,7 @@
 <template>
     <div class="storageAllotInform">
         <a-row style="line-height:50px;margin-bottom: 20px;" >
-            <permission-button permCode banType="hide" @click="showDispose">
+            <permission-button permCode banType="hide" @click="showDispose" :disabled="selectedRowKeys.length !== 1">
                 <i style="color:#1890ff;margin-right:4px;" class="iconfont">&#xe8ad;</i>立即处理
             </permission-button>
         </a-row>
@@ -13,7 +13,7 @@
                 :pagination="false"
                 :rowSelection="{selectedRowKeys:selectedRowKeys,onChange: onSelectChange}"
                 >
-                <template slot="invoicesNo" slot-scope="text, record">
+                <template slot="transferNo" slot-scope="text, record">
                     <a href="javascript:" @click="showDetails(record.id)">{{text}}</a>
                 </template>
             </a-table>
@@ -36,7 +36,7 @@
         :footer="null"
         :maskClosable="false"
         @cancel="handleCancel(1)">
-        <Dispose></Dispose>
+        <Dispose :sendId="allotDetailsId"></Dispose>
       </a-modal>
       <a-modal
         title="调拨单详情"
@@ -45,7 +45,7 @@
         :footer="null"
         :maskClosable="false"
         @cancel="handleCancel(1)">
-        
+        <Details :sendId="showDetailsId"></Details>
       </a-modal>
     </div>
 </template>
@@ -54,40 +54,40 @@ import Dispose from "./dispose"
 import Details from "./details"
 const columns = [
   {
-    dataIndex: "invoicesNo",
+    dataIndex: "transferNo",
     title: "单据编号",
-    key: "invoicesNo",
-        scopedSlots: { customRender: "invoicesNo" },
+    key: "transferNo",
+    scopedSlots: { customRender: "transferNo" },
     width: "15%"
   },
   {
-    dataIndex: "invoicesType",
+    dataIndex: "type",
     title: "单据类型",
-    key: "invoicesType",
+    key: "type",
     width: "10%"
   },
   {
-    dataIndex: "back_department",
+    dataIndex: "fromWarehouse.name",
     title: "调出仓库",
-    key: "back_department",
+    key: "fromWarehouse.name",
     width: "20%"
   },
   {
-    dataIndex: "warehouse",
+    dataIndex: "toWareHouse.name",
     title: "调入仓库",
-    key: "warehouse",
+    key: "toWareHouse.name",
     width: "15%"
   },
   {
-    dataIndex: "status",
+    dataIndex: "manager",
     title: "经办人",
-    key: "status",
+    key: "manager",
     width: "10%"
   },
   {
-    dataIndex: "createDate",
+    dataIndex: "transferDate",
     title: "开单日期",
-    key: "createDate",
+    key: "transferDate",
     width: "10%"
   },
   {
@@ -109,6 +109,8 @@ export default {
             current: 1,
             pageSize: 10,
             total: 0,
+            allotDetailsId: '',
+            showDetailsId: ''
         }
     },
     methods: {
@@ -117,8 +119,15 @@ export default {
                 this.disposeVisible = false;
             }
         },
+        showDetails(id) {
+            this.showDetailsId = id;
+            this.detailsVisible = true;
+            console.log(this.showDetailsId);
+        },
         showDispose() {
             this.disposeVisible = true;
+            this.allotDetailsId = this.selectedRowKeys[0];
+            console.log(this.allotDetailsId);
         },
         onChange(current, pageNumber) {
             console.log("Page: ", pageNumber);
@@ -150,8 +159,8 @@ export default {
                 result => {
                     if (result.data.code === 200) {
                             console.log(result);
-                            this.data = result.data.data.content;
-                            this.total = result.data.data.totalElement;
+                            this.data = result.data.data;
+                            this.total = result.data.data.length;
                         }
                 },
                 ({ type, info }) => {}

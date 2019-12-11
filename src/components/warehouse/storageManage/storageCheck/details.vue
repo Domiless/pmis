@@ -3,34 +3,37 @@
         <a-row>
             <a-col :span="12" style="margin-bottom:12px;">
                 <span class="label_right">单据类型：</span>
-                <span></span>
+                <span>{{ detailsMsg.type }}</span>
             </a-col>
             <a-col :span="12" style="margin-bottom:12px;">
                 <span class="label_right">单据编号：</span>
-                <span></span>
+                <span>{{ detailsMsg.checkNo }}</span>
             </a-col>
              <a-col :span="12" style="margin-bottom:12px;">
                 <span class="label_right">盘点仓库：</span>
-                <span></span>
+                <span>{{ warehouseName }}</span>
             </a-col>
             <a-col :span="12" style="margin-bottom:12px;">
                 <span class="label_right">盘点日期：</span>
-                <span></span>
+                <span>{{ detailsMsg.checkDate }}</span>
             </a-col>
             <a-col :span="12" style="margin-bottom:12px;">
                 <span class="label_right">经办人：</span>
-                <span></span>
+                <span>{{ detailsMsg.manager }}</span>
             </a-col>
             <a-col :span="12" style="margin-bottom:12px;">
                 <span class="label_right">制单人：</span>
-                <span></span>
+                <span>{{ detailsMsg.createdBy }}</span>
             </a-col>
             <a-col :span="24" style="margin-bottom:12px;">
                 <span class="label_right">备注：</span>
-                <span></span>
+                <span>{{ detailsMsg.remark }}</span>
             </a-col>
         </a-row>
         <a-table :columns="columns" :pagination="false" :dataSource="data" rowKey="id">
+          <template slot="index" slot-scope="text, record, index">
+                <span>{{index+1}}</span>
+          </template>
         </a-table>
     </div>
 </template>
@@ -41,66 +44,63 @@ const columns = [
     key: "index",
     title: "",
     width: 40,
-    scopedSlots: { customRender: "xuhao" },
+    scopedSlots: { customRender: "index" },
     align: "center"
   },
+  // {
+  //   dataIndex: "xuanzewuliao",
+  //   key: "xuanzewuliao",
+  //   title: "选择物料",
+  //   width: 80,
+  //   scopedSlots: { customRender: "xuanzewuliao" }
+  // },
   {
-    dataIndex: "xuanzewuliao",
-    key: "xuanzewuliao",
-    title: "选择物料",
-    width: 80,
-    scopedSlots: { customRender: "xuanzewuliao" }
-  },
-  {
-    dataIndex: "wuliaobianma",
-    key: "wuliaobianma",
+    dataIndex: "code",
+    key: "code",
     title: "物料编码",
     width: 120
   },
   {
-    dataIndex: "tuhao",
-    key: "tuhao",
+    dataIndex: "drawingNo",
+    key: "drawingNo",
     title: "图号",
     width: 140
   },
   {
-    dataIndex: "mingcheng",
-    key: "mingcheng",
+    dataIndex: "name",
+    key: "name",
     title: "名称",
     width: 140
   },
   {
-    dataIndex: "danwei",
-    key: "danwei",
+    dataIndex: "unitEntry",
+    key: "unitEntry",
     title: "单位",
     width: 80
   },
   {
-    dataIndex: "kucunshuliang",
-    key: "kucunshuliang",
+    dataIndex: "inventoryAmount",
+    key: "inventoryAmount",
     title: "库存数量",
     width: 100
   },
   {
-    dataIndex: "shuliang",
-    key: "shuliang",
-    // title: "数量",
+    dataIndex: "checkAmount",
+    key: "checkAmount",
+    title: "盘点数量",
     width: 120,
-    scopedSlots: { customRender: "shuliang" },
-    slots: { title: "shuliangTitle" }
   },
   {
-    dataIndex: "wuliaofenlei",
-    key: "wuliaofenlei",
+    dataIndex: "classify",
+    key: "classify",
     title: "物料分类",
     width: 100
   },
   {
-    dataIndex: "beizhu",
-    key: "beizhu",
+    dataIndex: "remark",
+    key: "remark",
     title: "备注",
-    width: 160,
-    scopedSlots: { customRender: "beizhu" }
+    width: 160
   }
 ];
 export default {
@@ -121,9 +121,9 @@ export default {
       findOne(id) {
         this.Axios(
           {
-            url: "/api-warehouse/checkItem/getOne",
+            url: "/api-warehouse/check/details",
             params: {
-              checkItemId: id
+              id: id
             },
             type: "get",
             option: { enableMsg: false }
@@ -133,9 +133,9 @@ export default {
           result => {
             if (result.data.code === 200) {
               console.log(result);
-              this.detailsMsg = result.data.data;
-              this.data = result.data.data.orderItems;
-              this.warehouseName = result.data.data.warehouse.name;
+              this.detailsMsg = result.data.data.checkDO;
+              this.data = result.data.data.checkItemDOS;
+              this.warehouseName = result.data.data.checkDO.warehouse.name;
             }
           },
           ({ type, info }) => {}

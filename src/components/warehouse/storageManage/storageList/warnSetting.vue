@@ -14,18 +14,22 @@
         </a-row>
         <a-row>
           <a-col :span="3">
-
+            <div class="left_case">
+                <a-tree :treeData="treeData" @select="getList" :defaultExpandAll="true" :autoExpandParent="true">
+                </a-tree>
+            </div>
           </a-col>
           <a-col :span="21">
               <a-table
                 rowKey="id"
                 size="small"
+                class="table_style"
                 :scroll="{y:500}"
                 :columns="columns"
                 :dataSource="data"
                 :pagination="false"
                 >
-                    <template slot="mingcheng" slot-scope="text, record">
+                    <template slot="name" slot-scope="text, record">
                         <a href="javascript:" @click="showDetails(record.id)">{{text}}</a>
                     </template>
                     <template slot="caozuo" >
@@ -56,39 +60,45 @@
 <script>
 const columns = [
   {
-    dataIndex: "wuliaobianma",
-    key: "wuliaobianma",
+    dataIndex: "code",
+    key: "code",
     title: "物料编码",
-    width: 120
+    width: 200
   },
   {
-    dataIndex: "tuhao",
-    key: "tuhao",
+    dataIndex: "drawingCode",
+    key: "drawingCode",
     title: "图号",
     width: 140
   },
   {
-    dataIndex: "mingcheng",
-    key: "mingcheng",
+    dataIndex: "name",
+    key: "name",
     title: "名称",
+    scopedSlots: { customRender: "name" },
     width: 140
   },
   {
-    dataIndex: "danwei",
-    key: "danwei",
+    dataIndex: "specification",
+    key: "specification",
+    title: "型号/规格",
+    width: 100
+  },
+  {
+    dataIndex: "unit",
+    key: "unit",
     title: "单位",
     width: 80
   },
   {
-    dataIndex: "kucunshuliang",
-    key: "kucunshuliang",
+    dataIndex: "amount",
+    key: "amount",
     title: "库存数量",
-    width: 100,
-    scopedSlots: { customRender: "kucunshuliang" }
+    width: 100
   },
   {
-    dataIndex: "shuliang",
-    key: "shuliang",
+    dataIndex: "warningAmount",
+    key: "warningAmount",
     title: "物料下限",
     width: 120,
   },
@@ -105,6 +115,7 @@ export default {
         return {
             columns,
             data: [],
+            treeData: [],
             keyWords: "",
             current: 1,
             pageSize: 10,
@@ -123,35 +134,111 @@ export default {
             this.current = current;
             this.getList();
         },
-        getList() {
-            this.Axios(
-                {
-                url: "",
-                type: "get",
-                params: {
-                    page: this.current,
-                    size: this.pageSize,
-                    keyword: this.keyWords,
-                },
-                option: { enableMsg: false }
-                },
-                this
-            ).then(
-                result => {
-                if (result.data.code === 200) {
-                    console.log(result);
-                    this.data = result.data.data.content;
-                    this.total = result.data.data.totalElement;
-                }
-                },
-                ({ type, info }) => {}
-            );
+        getClassify() {
+          this.Axios(
+            {
+              url: "/api-warehouse/classification/list",
+              type: "get",
+              params: {},
+              option: { enableMsg: false }
+            },
+            this
+          ).then(
+            result => {
+              if (result.data.code === 200) {
+                console.log(result);
+                this.treeData = result.data.data.map(item => {
+                  return {
+                    title: item.name,
+                    key: item.id,
+                    value: item.id,
+                    organizeCode: parseInt(item.code),
+                    organizeParentCode: parseInt(item.parentCode),
+                    
+                    
+                  };
+                });
+                let code = Math.min.apply(
+                  null,
+                  this.treeData.map(item => {
+                    return item.organizeParentCode;
+                  })
+                );
+                this.treeData = this.filterArray(this.treeData, code);
+              }
+            },
+            ({ type, info }) => {}
+          );
+        },
+        filterArray(data, parent) {
+          let vm = this;
+          var tree = [];
+          var temp;
+          for (var i = 0; i < data.length; i++) {
+            if (data[i].organizeParentCode == parent) {
+              var obj = data[i];
+              temp = this.filterArray(data, data[i].organizeCode);
+              if (temp.length > 0) {
+                obj.children = temp;
+              }
+              tree.push(obj);
+            }
+          }
+          return tree;
+        },
+        getList(selectKey) {
+          console.log(selectKey);
+          if(selectKey.length === 0) {
+            return false
+          }
+          this.Axios(
+            {
+              url: "/api-warehouse/warehouseItem/selectList",
+              type: "get",
+              params: {
+                classifyId: selectKey[0],
+                keyword: this.keyWords
+              },
+              option: { enableMsg: false }
+            },
+            this
+          ).then(
+            result => {
+              if (result.data.code === 200) {
+                console.log(result);
+                this.data = result.data.data;
+                this.total = result.data.data.length;
+              }
+            },
+            ({ type, info }) => {}
+          );
         }
+    },
+    created() {
+      this.getClassify();
     }
 }
 </script>
-<style>
+<style lang="less">
 .warnSetting {
-
+  .label_right {
+        display: inline-block;
+        width: 80px;
+        text-align: right;
+    }
+    .table_style {
+        position: relative;
+        .ant-table-body {
+          min-height: 500px;
+          max-height: 500px;
+        }
+        .ant-table-placeholder {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin-left: -44px;
+        margin-top: -27px;
+      }
+    }
 }
 </style>

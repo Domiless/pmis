@@ -313,8 +313,12 @@ export default {
 					// 	return false;
 					// }
 					let data = {
-                        warehouseItemIds: this.data.map(item => {
-                                                return item.id
+                       checkItemDTOS: this.data.map(item => {
+                                                return {
+                                                   warehouseItemID: item.id,
+                                                   checkAmount: parseInt(item.number),
+                                                   remark: item.note
+                                                }
                         }),
                         checkNo: values.invoicesNo,
                         remark: values.remark,

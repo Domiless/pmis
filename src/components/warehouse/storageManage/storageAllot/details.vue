@@ -3,38 +3,41 @@
         <a-row>
             <a-col :span="12" style="margin-bottom:12px;">
                 <span class="label_right">单据类型：</span>
-                <span></span>
+                <span>{{ detailsMsg.type }}</span>
             </a-col>
             <a-col :span="12" style="margin-bottom:12px;">
                 <span class="label_right">单据编号：</span>
-                <span></span>
+                <span>{{ detailsMsg.transferNo }}</span>
             </a-col>
              <a-col :span="12" style="margin-bottom:12px;">
                 <span class="label_right">调出仓库：</span>
-                <span></span>
+                <span>{{ outputWarehouse }}</span>
             </a-col>
             <a-col :span="12" style="margin-bottom:12px;">
                 <span class="label_right">调入仓库：</span>
-                <span></span>
+                <span>{{ inputWarehouse }}</span>
             </a-col>
             <a-col :span="12" style="margin-bottom:12px;">
                 <span class="label_right">调拨日期：</span>
-                <span></span>
+                <span>{{ detailsMsg.transferDate }}</span>
             </a-col>
             <a-col :span="12" style="margin-bottom:12px;">
                 <span class="label_right">经办人：</span>
-                <span></span>
+                <span>{{ detailsMsg.manager }}</span>
             </a-col>
             <a-col :span="12" style="margin-bottom:12px;">
                 <span class="label_right">制单人：</span>
-                <span></span>
+                <span>{{ detailsMsg.createdBy }}</span>
             </a-col>
             <a-col :span="24" style="margin-bottom:12px;">
                 <span class="label_right">备注：</span>
-                <span></span>
+                <span>{{ detailsMsg.remark }}</span>
             </a-col>
         </a-row>
         <a-table :columns="columns" :pagination="false" :dataSource="data" rowKey="id">
+          <template slot="index" slot-scope="text, record, index">
+                <span>{{index+1}}</span>
+          </template>
         </a-table>
     </div>
 </template>
@@ -45,66 +48,69 @@ const columns = [
     key: "index",
     title: "",
     width: 40,
-    scopedSlots: { customRender: "xuhao" },
+    scopedSlots: { customRender: "index" },
     align: "center"
   },
+//   {
+//     dataIndex: "xuanzewuliao",
+//     key: "xuanzewuliao",
+//     title: "选择物料",
+//     width: 80,
+//     scopedSlots: { customRender: "xuanzewuliao" }
+//   },
   {
-    dataIndex: "xuanzewuliao",
-    key: "xuanzewuliao",
-    title: "选择物料",
-    width: 80,
-    scopedSlots: { customRender: "xuanzewuliao" }
-  },
-  {
-    dataIndex: "wuliaobianma",
-    key: "wuliaobianma",
+    dataIndex: "code",
+    key: "code",
     title: "物料编码",
     width: 120
   },
   {
-    dataIndex: "tuhao",
-    key: "tuhao",
+    dataIndex: "drawingCode",
+    key: "drawingCode",
     title: "图号",
     width: 140
   },
   {
-    dataIndex: "mingcheng",
-    key: "mingcheng",
+    dataIndex: "name",
+    key: "name",
     title: "名称",
     width: 140
   },
   {
-    dataIndex: "danwei",
-    key: "danwei",
+    dataIndex: "specification",
+    key: "specification",
+    title: "型号/规格",
+    width: 140
+  },
+  {
+    dataIndex: "unitEntry",
+    key: "unitEntry",
     title: "单位",
     width: 80
   },
   {
-    dataIndex: "kucunshuliang",
-    key: "kucunshuliang",
-    title: "库存数量",
-    width: 100
-  },
-  {
-    dataIndex: "shuliang",
-    key: "shuliang",
-    // title: "数量",
-    width: 120,
-    scopedSlots: { customRender: "shuliang" },
-    slots: { title: "shuliangTitle" }
-  },
-  {
-    dataIndex: "wuliaofenlei",
-    key: "wuliaofenlei",
+    dataIndex: "classify",
+    key: "classify",
     title: "物料分类",
     width: 100
   },
   {
-    dataIndex: "beizhu",
-    key: "beizhu",
+    dataIndex: "inventoryAmount",
+    key: "inventoryAmount",
+    title: "库存数量",
+    width: 100
+  },
+  {
+    dataIndex: "transferAmount",
+    key: "transferAmount",
+    title: "调拨数量",
+    width: 120
+  },
+  {
+    dataIndex: "remark",
+    key: "remark",
     title: "备注",
-    width: 160,
-    scopedSlots: { customRender: "beizhu" }
+    width: 160
   }
 ];
 export default {
@@ -118,16 +124,17 @@ export default {
             columns,
             data: [],
             detailsMsg: [],
-            warehouseName: ''
+            outputWarehouse: '',
+            inputWarehouse: ''
         }
     },
     methods: {
       findOne(id) {
         this.Axios(
           {
-            url: "/api-warehouse/transferItem/details",
+            url: "/api-warehouse/transfer/details",
             params: {
-              transferItemId: id
+              id: id
             },
             type: "get",
             option: { enableMsg: false }
@@ -137,9 +144,10 @@ export default {
           result => {
             if (result.data.code === 200) {
               console.log(result);
-              this.detailsMsg = result.data.data;
-              this.data = result.data.data.orderItems;
-              this.warehouseName = result.data.data.warehouse.name;
+              this.detailsMsg = result.data.data.transferDO;
+              this.data = result.data.data.transferItemDO;
+              this.outputWarehouse = this.detailsMsg.fromWarehouse.name;
+              this.inputWarehouse = this.detailsMsg.toWareHouse.name;
             }
           },
           ({ type, info }) => {}

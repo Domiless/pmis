@@ -53,7 +53,7 @@
                         style="width:100%;"
                         @change="onChangeSign" 
                         v-decorator="['stockDate']" 
-                        format="YYYY/MM/DD HH:MM:SS"/>
+                        format="YYYY/MM/DD"/>
 				</a-form-item>
                 <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 12 }" label="经办人">
 					<a-input
@@ -321,6 +321,16 @@ export default {
             );
         },
         save() {
+            if (
+                this.data
+                    .map(item => {
+                        return item.number != null && item.number != "";
+                    })
+                    .find(item => item == false) != undefined
+            ) {
+                    this.$message.error(`数量不能为空`);
+                    return false;
+            }
             this.form.validateFieldsAndScroll((err, values) => {
 				if (!err) {
 					console.log("Received values of form: ", values);
