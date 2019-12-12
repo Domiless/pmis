@@ -9,7 +9,7 @@
         <permission-button permCode banType="hide" @click="edit" :disabled="selectedRowKeys.length !== 1">
           <a-icon style="color:#1890ff;" type="edit" />修改
         </permission-button>
-        <permission-button permCode banType="hide">
+        <permission-button permCode banType="hide" @click="check" :disabled="selectedRowKeys.length !== 1">
           <i style="color:#1890ff;margin-right:4px;" class="iconfont">&#xe8ad;</i>审核
         </permission-button>
         <permission-button permCode banType="hide">
@@ -158,6 +158,29 @@ export default {
       this.warehouseId = value;
       console.log(value);
     },
+    check() {
+      this.Axios(
+						{
+							url: "/api-warehouse/orderEntry/otherEntry",
+							params: {
+                orderId: this.selectedRowKeys[0]
+              },
+							type: "post",
+							option: { successMsg: "审核成功！" },
+							config: {
+								headers: { "Content-Type": "application/json" }
+							}
+						},
+						this
+					).then(
+						result => {
+							if (result.data.code === 200) {
+                  console.log(result);
+							}
+						},
+						({ type, info }) => {}
+					);
+    },
     edit() {
 			this.$router.push({
 				path: "/backStock/editBackStock/" + this.selectedRowKeys[0]
@@ -221,7 +244,7 @@ export default {
           url: "/api-warehouse/order/list",
           type: "get",
           params: {
-            dataSource: "RETRUE",
+            dataSource: "RETURN",
             warehouseId: this.warehouseId,
             page: this.current,
             size: this.pageSize,

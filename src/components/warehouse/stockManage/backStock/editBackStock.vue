@@ -22,6 +22,7 @@
                         {rules: [{ required: true, message: '请填写单据编号' }]}
                         ]"
                         maxlength="20"
+                        disabled
                     ></a-input>
 				</a-form-item>
                 <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 12 }" label="原始单据号">
@@ -40,13 +41,13 @@
                     ></a-input>
 				</a-form-item>
                 <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 12 }" label="返回仓库">
-					<a-input
+					<a-select placeholder="请选择" 
                         v-decorator="[
                         'backWarehouse',
-                        {rules: [{ required: true, message: '请填写返回仓库' }]}
-                        ]"
-                        maxlength="10"
-                    ></a-input>
+                        {rules: [{ required: true, message: '请选择返回仓库' }]}
+                        ]">
+                        <a-select-option v-for="item in warehouseList" :key="item.id" :value="item.id">{{ item.name }}</a-select-option>
+                    </a-select>
 				</a-form-item>
                 <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 12 }" label="入库日期">
                     <a-date-picker 
@@ -78,7 +79,7 @@
                     ></a-textarea>
 				</a-form-item>
                 <a-table :columns="columns" :pagination="false" :dataSource="data" rowKey="id">
-                <span slot="outStorageTitle">
+                <span slot="numberTitle">
                 <span style="color: #f5222d">*</span>数量
                 </span>
                 <template slot="xuanzewuliao" slot-scope="text, record, index">
@@ -91,12 +92,12 @@
                 <template slot="index" slot-scope="text, record, index">
                 <span>{{index+1}}</span>
                 </template>
-                <template slot="outStorage" slot-scope="text, record, index">
+                <template slot="number" slot-scope="text, record, index">
                 <a-input
-                    type="outStorage"
+                    type="number"
                     oninput="if(value.length>10)value=value.slice(0,10)"
                     :value="text"
-                    @change="(e)=>handleInputChange(e.target.value, record.id, 'outStorage')"
+                    @change="(e)=>handleInputChange(e.target.value, record.id, 'number')"
                 ></a-input>
                 </template>
                 <template slot="note" slot-scope="text, record, index">
@@ -132,15 +133,15 @@
                     <a-button type="primary" @click="save">保存</a-button>
                 </a-form-item>
             </a-form>
-            </a-form>
         </a-row>
         <a-row>
             <a-modal
+                title="选择物料"
                 v-model="choiceShow"
                 :footer="null"
                 :destroyOnClose="true"
                 :mask="false"
-                :closable="false"
+                :closable="true"
                 width="800px"
                 centered
                 >
@@ -151,6 +152,7 @@
 </template>
 <script>
 import materialList from "../../../public/materialList";
+import moment from "moment";
 const columns = [
   {
     dataIndex: "index",
@@ -174,8 +176,8 @@ const columns = [
     width: 120
   },
   {
-    dataIndex: "drawingNo",
-    key: "drawingNo",
+    dataIndex: "drawingCode",
+    key: "drawingCode",
     title: "图号",
     width: 140
   },
@@ -198,18 +200,18 @@ const columns = [
     width: 80
   },
   {
-    dataIndex: "orderAmount",
-    key: "orderAmount",
+    dataIndex: "amount",
+    key: "amount",
     title: "库存数量",
     width: 100
   },
   {
-    dataIndex: "outStorage",
-    key: "outStorage",
+    dataIndex: "number",
+    key: "number",
     // title: "数量",
     width: 120,
-    scopedSlots: { customRender: "outStorage" },
-    slots: { title: "outStorageTitle" }
+    scopedSlots: { customRender: "number" },
+    slots: { title: "numberTitle" }
   },
   {
     dataIndex: "classification.name",
@@ -240,7 +242,9 @@ export default {
             signDate: '',
             choiceShow: false,
             columns,
-            data: []
+            data: [],
+            detailsMsg: [],
+            warehouseList: []
         }
     },
     methods: {
@@ -276,10 +280,31 @@ export default {
                 this.data = newData;
             }
         },
+        getWareHouseList() {
+            this.Axios(
+                {
+                url: "/api-warehouse/warehouse/list",
+                type: "get",
+                params: {
+                    page: -1
+                },
+                option: { enableMsg: false }
+                },
+                this
+            ).then(
+                result => {
+                if (result.data.code === 200) {
+                    console.log(result);
+                    this.warehouseList = result.data.data;
+                }
+                },
+                ({ type, info }) => {}
+            );
+        },
         findOne(id) {
             this.Axios(
                 {
-                url: "/api-warehouse/order/findOne",
+                url: "/api-warehouse/returnEntry/findOne",
                 params: {
                     orderId: id
                 },
@@ -291,13 +316,38 @@ export default {
                 result => {
                 if (result.data.code === 200) {
                         console.log(result);
-                        // this.detailsMsg = result.data.data.checkDO;
-                        this.data = result.data.data.orderItems;
+                        this.detailsMsg = result.data.data;
+                        this.signDate = this.detailsMsg.date;
+                        this.data = result.data.data
+                                    .returnEntryOrderItems.map(item => {
+                                        return {
+                                            id: item.warehouseItem.id,
+                                            code: item.warehouseItem.code,
+                                            drawingCode: item.warehouseItem.drawingCode,
+                                            name: item.warehouseItem.name,
+                                            specification: item.warehouseItem.specification,
+                                            unit: item.warehouseItem.unit,
+                                            amount: item.warehouseItem.amount,
+                                            number: item.amount,
+                                            classification: item.warehouseItem.classification,
+                                            note: item.note
+
+                                        }
+                                    });
                         // this.warehouseName = result.data.data.checkDO.warehouse.name;
-                        // this.form.setFieldsValue({
-                        //     invoicesType: "库存盘点",
-                        //     preparedBy: JSON.parse(sessionStorage.getItem("user")).userName
-                        // });
+                        this.form.setFieldsValue({
+                            invoicesType: "退料入库",
+                            invoicesNo: this.detailsMsg.orderCode,
+                            originalInvoicesNo: this.detailsMsg.oldOrderCode,
+                            backDepartment: this.detailsMsg.fromName,
+                            backWarehouse: this.detailsMsg.warehouse.id,
+                            stockDate:  this.detailsMsg.date == null
+                                        ? undefined
+                                        : moment(this.detailsMsg.date, "YYYY/MM/DD"),
+                            transactor: this.detailsMsg.handlerName,
+                            preparedBy: this.detailsMsg.createdBy,
+                            remark: this.detailsMsg.note
+                        });
                 }
                 },
                 ({ type, info }) => {}
@@ -322,33 +372,27 @@ export default {
 					// 	return false;
 					// }
 					let data = {
-                        code: values.invoicesNo,
-                        dataSource: "RETRUE",
-                        fromName: values.backDepartment,
                         date: this.signDate,
+                        fromName: values.backDepartment,
                         handlerName: values.transactor,
-                        warehouseId: values.backWarehouse,
-                        oldOrderCode: values.originalInvoicesNo,
                         note: values.remark,
+                        oldOrderCode: values.originalInvoicesNo,
+                        orderId: this.$route.params.id,
+                        warehouseId: values.backWarehouse,
                         orderItemList: this.data.map(item => {
                                     return {
-                                        code: item.code,
-                                        drawingNo: item.drawingCode,
-                                        name: item.name,
-                                        note: item.note,
-                                        orderAmount: item.number,
-                                        specification: item.specification,
-                                        unit: item.unit,
-                                        warehouseUnit: item.unit
+                                        warehouseItemId: item.id,
+                                        amount: parseFloat(item.number),
+                                        note: item.note
                                     }
                         })
-                        };
+                    };
 					console.log(data);
 					this.Axios(
 						{
-							url: "/api-warehouse/order/add",
+							url: "/api-warehouse/returnEntry/update",
 							params: data,
-							type: "post",
+							type: "put",
 							option: { successMsg: "添加成功！" },
 							config: {
 								headers: { "Content-Type": "application/json" }
@@ -374,6 +418,7 @@ export default {
     },
     created() {
         this.findOne(this.$route.params.id);
+        this.getWareHouseList();
     }
 }
 </script>
