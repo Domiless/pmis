@@ -1,5 +1,5 @@
 <template>
-  <div class="others_add">
+  <div class="picking_edit">
     <a-col :span="24" style="padding:0 20px;">
       <a-row>
         <div style="line-height:50px;">
@@ -11,7 +11,7 @@
       <a-form style="padding-top:10px;" :form="form">
         <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 21 }" label="单据类型">
           <a-select
-            v-decorator="['outType',{rules: [{ required: true, message: '请选择单据类型' }],initialValue:'OTHER'}]"
+            v-decorator="['outType',{rules: [{ required: true, message: '请选择单据类型' }]}]"
             style="width: 100%"
             disabled
           >
@@ -23,18 +23,22 @@
         </a-form-item>
         <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 21 }" label="单据编号">
           <a-input
+            disabled
             v-decorator="['code',{rules: [{ required: true, message: '请填写单据编号' }]}]"
             autocomplete="off"
             maxlength="20"
           ></a-input>
         </a-form-item>
-        <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 21 }" label="原单据编号">
-          <a-input v-decorator="['goCode']" autocomplete="off" maxlength="20"></a-input>
-        </a-form-item>
-        <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 21 }" label="单位">
+        <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 21 }" label="领料部门">
           <a-input
-            placeholder="填写单位或部门"
-            v-decorator="['goName',{rules: [{ required: true, message: '请填写单位' }]}]"
+            v-decorator="['goName',{rules: [{ required: true, message: '请填写领料部门' }]}]"
+            autocomplete="off"
+            maxlength="20"
+          ></a-input>
+        </a-form-item>
+        <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 21 }" label="领用原因">
+          <a-input
+            v-decorator="['reason',{rules: [{ required: true, message: '请填写领用原因' }]}]"
             autocomplete="off"
             maxlength="20"
           ></a-input>
@@ -68,7 +72,7 @@
           ></a-input>
         </a-form-item>
         <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 21 }" label="制单人">
-          <a-input v-decorator="['zhidanren',{initialValue:zhidanren}]" autocomplete="off" disabled></a-input>
+          <a-input v-decorator="['preparedName']" autocomplete="off" disabled></a-input>
         </a-form-item>
         <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 21 }" label="备注">
           <a-textarea
@@ -149,6 +153,7 @@
   </div>
 </template>
 <script>
+import moment from "moment";
 import materialList from "../../../public/materialList";
 const columns = [
   {
@@ -241,11 +246,11 @@ export default {
       form: this.$form.createForm(this),
       columns,
       data: [],
-      zhidanren: JSON.parse(sessionStorage.getItem("user")).userName,
       outDate: ""
     };
   },
   methods: {
+    moment,
     add() {
       this.form.validateFieldsAndScroll((err, values) => {
         if (!err) {
@@ -265,10 +270,11 @@ export default {
             this.$message.error(`数量不能大于库存数量`);
           } else {
             let data = {
+              outOrderId: this.$route.params.id,
               code: values.code,
               outType: values.outType,
-              goCode: values.goCode,
               goName: values.goName,
+              reason: values.reason,
               warehouseId: values.warehouseId,
               handlerName: values.handlerName,
               note: values.note,
@@ -284,10 +290,10 @@ export default {
             console.log(data);
             this.Axios(
               {
-                url: "/api-warehouse/outOrder/add",
+                url: "/api-warehouse/outOrder/update",
                 params: data,
                 type: "post",
-                option: { successMsg: "添加成功！" },
+                option: { successMsg: "修改成功！" },
                 config: {
                   headers: { "Content-Type": "application/json" }
                 }
@@ -342,8 +348,7 @@ export default {
       console.log(a, b);
       this.outDate = b;
     },
-    choiceModalShow(index) {
-      console.log(index);
+    choiceModalShow() {
       this.choiceShow = true;
     },
     getWearhouse() {
@@ -366,13 +371,11 @@ export default {
         ({ type, info }) => {}
       );
     },
-    getCode() {
+    findOne() {
       this.Axios(
         {
-          url: "/api-warehouse/outOrder/code",
-          params: {
-            outType: "OTHER"
-          },
+          url: "/api-warehouse/outOrder/findOne/" + this.$route.params.id,
+          params: {},
           type: "get",
           option: { enableMsg: false }
         },
@@ -380,9 +383,39 @@ export default {
       ).then(
         result => {
           if (result.data.code === 200) {
-            this.form.setFieldsValue({
-              code: result.data.data
+            let OneMsg = { ...result.data.data };
+            console.log(OneMsg);
+            this.data = OneMsg.orderItems.map(item => {
+              return {
+                number: item.amount,
+                remark: item.note,
+                drawingCode: item.warehouseItem.drawingCode,
+                code: item.warehouseItem.code,
+                name: item.warehouseItem.name,
+                id: item.warehouseItem.id,
+                specification: item.warehouseItem.specification,
+                unit: item.warehouseItem.unit,
+                amount: item.warehouseItem.amount,
+                classifiName: item.warehouseItem.classification.name
+              };
             });
+            this.outDate = OneMsg.outDate;
+            setTimeout(() => {
+              this.form.setFieldsValue({
+                outType: OneMsg.outType,
+                code: OneMsg.code,
+                goName: OneMsg.goName,
+                reason: OneMsg.reason,
+                warehouseId: OneMsg.warehouse.id,
+                outDate:
+                  OneMsg.outDate == null
+                    ? undefined
+                    : moment(OneMsg.outDate, "YYYY/MM/DD"),
+                preparedName: OneMsg.preparedName,
+                note: OneMsg.note,
+                handlerName: OneMsg.handlerName
+              });
+            }, 100);
           }
         },
         ({ type, info }) => {}
@@ -390,18 +423,17 @@ export default {
     }
   },
   created() {
+    this.findOne();
     this.getWearhouse();
   },
-  mounted() {
-    this.getCode();
-  },
+  mounted() {},
   components: {
     materialList
   }
 };
 </script>
 <style lang="less">
-.others_add {
+.picking_edit {
   overflow: hidden;
   .ant-table-thead > tr > th,
   .ant-table-tbody > tr > td {

@@ -11,60 +11,68 @@
       <a-form style="padding-top:10px;" :form="form">
         <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 21 }" label="单据类型">
           <a-select
-            v-decorator="['type',{rules: [{ required: true, message: '请选择单据类型' }]}]"
+            v-decorator="['outType',{rules: [{ required: true, message: '请选择单据类型' }],initialValue:'RETURN'}]"
             style="width: 100%"
-            placeholder="请选择"
+            disabled
           >
-            <a-select-option value="jack">Jack</a-select-option>
-            <a-select-option value="lucy">Lucy</a-select-option>
-            <a-select-option value="Yiminghe">yiminghe</a-select-option>
+            <a-select-option value="RECEIVE">领料出库</a-select-option>
+            <a-select-option value="SALES">销售出库</a-select-option>
+            <a-select-option value="RETURN">退货出库</a-select-option>
+            <a-select-option value="OTHER">其他出库</a-select-option>
           </a-select>
         </a-form-item>
         <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 21 }" label="单据编号">
           <a-input
-            v-decorator="['type',{rules: [{ required: true, message: '请填写单据编号' }]}]"
+            v-decorator="['code',{rules: [{ required: true, message: '请填写单据编号' }]}]"
             autocomplete="off"
             maxlength="20"
           ></a-input>
         </a-form-item>
-        <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 21 }" label="原采购单号">
-          <a-input v-decorator="['bumen']" autocomplete="off" maxlength="20"></a-input>
+        <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 21 }" label="原始单据号">
+          <a-input v-decorator="['goCode']" autocomplete="off" maxlength="20"></a-input>
         </a-form-item>
         <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 21 }" label="供应商">
           <a-input
-            v-decorator="['yuanyin',{rules: [{ required: true, message: '请填写供应商' }]}]"
+            v-decorator="['goName',{rules: [{ required: true, message: '请填写供应商' }]}]"
             autocomplete="off"
             maxlength="20"
           ></a-input>
         </a-form-item>
         <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 21 }" label="出货仓库">
           <a-select
-            v-decorator="['cangku',{rules: [{ required: true, message: '请选择出货仓库' }]}]"
+            v-decorator="['warehouseId',{rules: [{ required: true, message: '请选择出货仓库' }]}]"
             style="width: 100%"
             placeholder="请选择"
           >
-            <a-select-option value="jack">Jack</a-select-option>
-            <a-select-option value="lucy">Lucy</a-select-option>
-            <a-select-option value="Yiminghe">yiminghe</a-select-option>
+            <a-select-option
+              :value="item.id"
+              v-for="(item, index) in allWarehouse"
+              :key="index"
+            >{{item.name}}</a-select-option>
           </a-select>
         </a-form-item>
         <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 21 }" label="出库日期">
-          <a-date-picker v-decorator="['riqi']" @change="onDateChange" style="width:100%;" />
+          <a-date-picker
+            format="YYYY/MM/DD"
+            v-decorator="['outDate']"
+            @change="onDateChange"
+            style="width:100%;"
+          />
         </a-form-item>
         <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 21 }" label="经办人">
           <a-input
-            v-decorator="['jingbanren',{rules: [{ required: true, message: '请填写经办人' }]}]"
+            v-decorator="['handlerName',{rules: [{ required: true, message: '请填写经办人' }]}]"
             autocomplete="off"
             maxlength="20"
           ></a-input>
         </a-form-item>
         <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 21 }" label="制单人">
-          <a-input v-decorator="['zhidanren']" autocomplete="off" disabled></a-input>
+          <a-input v-decorator="['zhidanren',{initialValue:zhidanren}]" autocomplete="off" disabled></a-input>
         </a-form-item>
         <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 21 }" label="备注">
           <a-textarea
             maxlength="50"
-            v-decorator="['remark']"
+            v-decorator="['note']"
             style="width:100%;"
             :autosize="{ minRows: 4, maxRows: 4 }"
           ></a-textarea>
@@ -87,14 +95,14 @@
             <a-input
               type="number"
               oninput="if(value.length>10)value=value.slice(0,10)"
-              :value="text"
+              v-model="record.number"
               @change="(e)=>handleInputChange(e.target.value, record.id, 'shuliang')"
             ></a-input>
           </template>
           <template slot="beizhu" slot-scope="text, record, index">
             <a-input
               maxlength="50"
-              :value="text"
+              v-model="record.remark"
               @change="(e)=>handleInputChange(e.target.value, record.id, 'beizhu')"
             ></a-input>
           </template>
@@ -121,7 +129,7 @@
         </div>
         <a-form-item style="display:block;margin-bottom:0;">
           <!-- <a-button style="margin-right:12px;">取消</a-button> -->
-          <a-button type="primary">保存</a-button>
+          <a-button type="primary" @click="add">保存</a-button>
         </a-form-item>
       </a-form>
     </a-col>
@@ -158,38 +166,38 @@ const columns = [
   //   scopedSlots: { customRender: "xuanzewuliao" }
   // },
   {
-    dataIndex: "wuliaobianma",
-    key: "wuliaobianma",
+    dataIndex: "code",
+    key: "code",
     title: "物料编码",
     width: 120
   },
   {
-    dataIndex: "tuhao",
-    key: "tuhao",
+    dataIndex: "drawingCode",
+    key: "drawingCode",
     title: "图号",
     width: 180
   },
   {
-    dataIndex: "mingcheng",
-    key: "mingcheng",
+    dataIndex: "name",
+    key: "name",
     title: "名称",
     width: 180
   },
   {
-    dataIndex: "xinghaoguige",
-    key: "xinghaoguige",
+    dataIndex: "specification",
+    key: "specification",
     title: "型号/规格",
     width: 140
   },
   {
-    dataIndex: "danwei",
-    key: "danwei",
+    dataIndex: "unit",
+    key: "unit",
     title: "单位",
     width: 80
   },
   {
-    dataIndex: "kucunshuliang",
-    key: "kucunshuliang",
+    dataIndex: "amount",
+    key: "amount",
     title: "库存数量",
     width: 100
   },
@@ -202,14 +210,14 @@ const columns = [
     slots: { title: "shuliangTitle" }
   },
   {
-    dataIndex: "wuliaofenlei",
-    key: "wuliaofenlei",
+    dataIndex: "classifiName",
+    key: "classifiName",
     title: "物料分类",
     width: 100
   },
   {
-    dataIndex: "beizhu",
-    key: "beizhu",
+    dataIndex: "remark",
+    key: "remark",
     title: "备注",
     width: 200,
     scopedSlots: { customRender: "beizhu" }
@@ -230,10 +238,73 @@ export default {
       choiceShow: false,
       form: this.$form.createForm(this),
       columns,
-      data: [{ wuliaobianma: 11, shuliang: 111, id: 23 }]
+      data: [],
+      outDate: "",
+      zhidanren: JSON.parse(sessionStorage.getItem("user")).userName,
+      allWarehouse: []
     };
   },
   methods: {
+    add() {
+      this.form.validateFieldsAndScroll((err, values) => {
+        if (!err) {
+          if (this.data.length < 1) {
+            this.$message.error(`请添加物料`);
+          } else if (
+            this.data
+              .map(item => item.number == null || item.number == "")
+              .find(item => item == true) != undefined
+          ) {
+            this.$message.error(`请填写物料数量`);
+          } else if (
+            this.data
+              .map(item => item.number > item.amount)
+              .find(item => item == true) != undefined
+          ) {
+            this.$message.error(`数量不能大于库存数量`);
+          } else {
+            let data = {
+              code: values.code,
+              outType: values.outType,
+              goCode: values.goCode,
+              goName: values.goName,
+              warehouseId: values.warehouseId,
+              handlerName: values.handlerName,
+              note: values.note,
+              outDate: this.outDate,
+              outOrderItemDTOS: this.data.map(item => {
+                return {
+                  amount: item.number,
+                  note: item.remark,
+                  warehouseItemId: item.id
+                };
+              })
+            };
+            console.log(data);
+            this.Axios(
+              {
+                url: "/api-warehouse/outOrder/add",
+                params: data,
+                type: "post",
+                option: { successMsg: "添加成功！" },
+                config: {
+                  headers: { "Content-Type": "application/json" }
+                }
+              },
+              this
+            ).then(
+              result => {
+                if (result.data.code === 200) {
+                  console.log(result);
+                  this.$router.back(-1);
+                }
+              },
+              ({ type, info }) => {}
+            );
+          }
+        }
+      });
+    },
     delRow(row, index) {
       console.log(index);
       this.data.splice(index, 1);
@@ -248,8 +319,15 @@ export default {
       ) {
         this.$message.error(`该条数据已被选择`);
         return false;
+      } else {
+        let b = {
+          ...a,
+          classifiName: a.classification.name,
+          number: "",
+          remark: ""
+        };
+        this.data.push(b);
       }
-      this.data.push(a);
     },
     handleInputChange(value, key, column) {
       const newData = [...this.data];
@@ -261,13 +339,61 @@ export default {
     },
     onDateChange(a, b) {
       console.log(a, b);
+      this.outDate = b;
     },
     choiceModalShow(index) {
       console.log(index);
       this.choiceShow = true;
+    },
+    getWearhouse() {
+      this.Axios(
+        {
+          url: "/api-warehouse/warehouse/list",
+          params: {
+            page: -1
+          },
+          type: "get",
+          option: { enableMsg: false }
+        },
+        this
+      ).then(
+        result => {
+          if (result.data.code === 200) {
+            this.allWarehouse = [...result.data.data];
+          }
+        },
+        ({ type, info }) => {}
+      );
+    },
+    getCode() {
+      this.Axios(
+        {
+          url: "/api-warehouse/outOrder/code",
+          params: {
+            outType: "RETURN"
+          },
+          type: "get",
+          option: { enableMsg: false }
+        },
+        this
+      ).then(
+        result => {
+          if (result.data.code === 200) {
+            this.form.setFieldsValue({
+              code: result.data.data
+            });
+          }
+        },
+        ({ type, info }) => {}
+      );
     }
   },
-  created() {},
+  mounted() {
+    this.getCode();
+  },
+  created() {
+    this.getWearhouse();
+  },
   components: {
     materialList
   }

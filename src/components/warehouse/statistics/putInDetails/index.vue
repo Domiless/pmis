@@ -21,34 +21,43 @@
             style="width:130px;"
           />
           <span class="span_lable">单据类型：</span>
-          <a-select defaultValue="lucy" style="width: 140px">
-            <a-select-option value="jack">Jack</a-select-option>
-            <a-select-option value="lucy">Lucy</a-select-option>
-            <a-select-option value="Yiminghe">yiminghe</a-select-option>
+          <a-select v-model="dataSource" style="width: 140px">
+            <a-select-option :value="-1">全部</a-select-option>
+            <a-select-option value="PURCHASING">采购入库</a-select-option>
+            <a-select-option value="PRODUCE">生产入库</a-select-option>
+            <a-select-option value="RETURN">退料入库</a-select-option>
+            <a-select-option value="OTHER">其他入库</a-select-option>
           </a-select>
           <span class="span_lable">物料分类：</span>
-          <a-select defaultValue="lucy" style="width: 140px">
-            <a-select-option value="jack">Jack</a-select-option>
-            <a-select-option value="lucy">Lucy</a-select-option>
-            <a-select-option value="Yiminghe">yiminghe</a-select-option>
-          </a-select>
+          <a-tree-select
+            allowClear
+            v-model="classifyId"
+            style="width: 140px"
+            :dropdownStyle="{ maxHeight: '400px', overflow: 'auto' }"
+            :treeData="treeData"
+            placeholder="请选择"
+            treeDefaultExpandAll
+          ></a-tree-select>
           <span class="span_lable">仓库：</span>
-          <a-select defaultValue="lucy" style="width: 140px">
-            <a-select-option value="jack">Jack</a-select-option>
-            <a-select-option value="lucy">Lucy</a-select-option>
-            <a-select-option value="Yiminghe">yiminghe</a-select-option>
+          <a-select v-model="warehouseId" style="width: 140px">
+            <a-select-option :value="-1">全部</a-select-option>
+            <a-select-option
+              :value="item.id"
+              v-for="(item, index) in allWarehouse"
+              :key="index"
+            >{{item.name}}</a-select-option>
           </a-select>
         </a-col>
         <a-col :span="24" style="padding-top:12px;">
           <span class="span_lable">单据编号：</span>
-          <a-input placeholder style="width: 264px"></a-input>
+          <a-input placeholder v-model="orderCode" style="width: 264px"></a-input>
           <span class="span_lable">物料编码：</span>
-          <a-input placeholder style="width: 140px"></a-input>
-          <span class="span_lable">名称/图号：</span>
-          <a-input placeholder style="width: 140px"></a-input>
-          <span class="span_lable">供应商：</span>
-          <a-input placeholder style="width: 140px"></a-input>
-          <a-button type="primary">查询</a-button>
+          <a-input placeholder v-model="code" style="width: 140px"></a-input>
+          <span class="span_lable">图号/名称：</span>
+          <a-input placeholder v-model="drawingCode" style="width: 140px"></a-input>
+          <span class="span_lable">型号/规格：</span>
+          <a-input placeholder v-model="specification" style="width: 140px"></a-input>
+          <a-button type="primary" @click="getList">查询</a-button>
         </a-col>
       </a-row>
       <a-row style="padding-top:10px;">
@@ -71,73 +80,88 @@
 <script>
 const columns = [
   {
-    dataIndex: "warehouseCode",
-    key: "warehouseCode",
+    dataIndex: "gmtCreated",
+    key: "gmtCreated",
     title: "业务日期",
-    width: 100
+    width: 140
   },
   {
-    dataIndex: "name",
+    dataIndex: "warehouseName",
     title: "仓库",
     width: 100,
-    key: "name",
+    key: "warehouseName",
     scopedSlots: { customRender: "warehouseNmae" }
   },
   {
-    dataIndex: "warehouseAdmins",
+    dataIndex: "orderCode",
     title: "单据编号",
     width: 160,
-    key: "warehouseAdmins"
+    key: "orderCode"
   },
 
   {
-    dataIndex: "phone",
-    key: "phone",
+    dataIndex: "dataSource",
+    key: "dataSource",
     title: "单据类型",
-    width: 100
+    width: 100,
+    customRender: function(text, record, index) {
+      return text == "PURCHASING"
+        ? "采购入库"
+        : text == "PRODUCE"
+        ? "生产入库"
+        : text == "RETURN"
+        ? "退料入库"
+        : "其他入库";
+    }
   },
   {
-    dataIndex: "operation",
-    key: "operation",
+    dataIndex: "code",
+    key: "code",
     title: "物料编码",
     width: 100,
     scopedSlots: { customRender: "operation" }
   },
   {
-    dataIndex: "schedule",
-    key: "schedule",
+    dataIndex: "drawingCode",
+    key: "drawingCode",
     title: "图号",
     width: 120
   },
   {
-    dataIndex: "schedule",
-    key: "schedule2",
+    dataIndex: "name",
+    key: "name",
     title: "名称",
     width: 180
   },
   {
-    dataIndex: "schedule",
-    key: "schedule3",
+    dataIndex: "specification",
+    key: "specification",
+    title: "型号/规格",
+    width: 140
+  },
+  {
+    dataIndex: "classify",
+    key: "classify",
     title: "物料分类",
     width: 80
   },
   {
-    dataIndex: "schedule",
-    key: "schedul4e",
+    dataIndex: "amount",
+    key: "amount",
     title: "入库",
     width: 80
   },
   {
-    dataIndex: "schedule",
-    key: "schedul5e",
+    dataIndex: "unit",
+    key: "unit",
     title: "单位",
     width: 60
   },
   {
-    dataIndex: "schedule",
-    key: "schedule6",
+    dataIndex: "note",
+    key: "note",
     title: "备注",
-    width: 200
+    width: 120
   }
 ];
 export default {
@@ -146,11 +170,20 @@ export default {
       current: 1,
       total: 0,
       columns,
-      data: [{ phone: 111, id: 1 }],
+      data: [],
       startValue: null,
       endValue: null,
       startDate: "",
-      endDate: ""
+      endDate: "",
+      orderCode: "",
+      code: "",
+      drawingCode: "",
+      specification: "",
+      classifyId: null,
+      treeData: [],
+      allWarehouse: [],
+      warehouseId: -1,
+      dataSource: -1
     };
   },
   methods: {
@@ -168,12 +201,22 @@ export default {
     getList() {
       this.Axios(
         {
-          url: "/api-warehouse/warehouse/list",
+          url: "/api-warehouse/report/entryOrder",
           params: {
             page: this.current,
-            size: this.pageSize
-            // state: this.state,
-            // keyword: this.keyword
+            size: this.pageSize,
+            dataSource: this.dataSource != -1 ? this.dataSource : null,
+            classifyId: this.classifyId != -1 ? this.classifyId : null,
+            warehouseId: this.warehouseId != -1 ? this.warehouseId : null,
+            startTime: this.startDate != "" ? this.startDate : null,
+            endTime: this.endDate != "" ? this.endDate : null,
+            //单据编号
+            orderCode: this.orderCode != "" ? this.orderCode : null,
+            //物料编码
+            code: this.code != "" ? this.code : null,
+            drawingCode: this.drawingCode != "" ? this.drawingCode : null,
+            //型号/规格
+            specification: this.specification != "" ? this.specification : null
           },
           type: "get",
           option: { enableMsg: false }
@@ -187,9 +230,8 @@ export default {
             this.data = this.data.map(item => {
               return {
                 ...item,
-                warehouseAdmins: item.warehouseAdmins
-                  .map(item => item.employeeName)
-                  .join("、")
+                classify: item.classification.name,
+                warehouseName: item.warehouse.name
               };
             });
             this.total = result.data.data.totalElement;
@@ -221,9 +263,86 @@ export default {
         return false;
       }
       return startValue.valueOf() >= endValue.valueOf();
+    },
+    getWearhouse() {
+      this.Axios(
+        {
+          url: "/api-warehouse/warehouse/list",
+          params: {
+            page: -1
+          },
+          type: "get",
+          option: { enableMsg: false }
+        },
+        this
+      ).then(
+        result => {
+          if (result.data.code === 200) {
+            this.allWarehouse = [...result.data.data];
+          }
+        },
+        ({ type, info }) => {}
+      );
+    },
+    getTreeDataList() {
+      this.Axios(
+        {
+          url: "/api-warehouse/classification/list",
+          params: {},
+          type: "get",
+          option: { enableMsg: false }
+        },
+        this
+      ).then(
+        result => {
+          if (result.data.code === 200) {
+            console.log(result);
+            this.treeData = result.data.data.map(item => {
+              return {
+                title: item.name,
+                key: item.id,
+                value: item.id,
+                code: parseInt(item.code),
+                parentCode: parseInt(item.parentCode)
+              };
+            });
+            console.log(this.treeData);
+            let code = Math.min.apply(
+              null,
+              this.treeData.map(item => {
+                return item.parentCode;
+              })
+            );
+            this.treeData = this.filterArray(this.treeData, code);
+            console.log(this.treeData);
+          }
+        },
+        ({ type, info }) => {}
+      );
+    },
+
+    filterArray(data, parent) {
+      let vm = this;
+      var tree = [];
+      var temp;
+      for (var i = 0; i < data.length; i++) {
+        if (data[i].parentCode == parent) {
+          var obj = data[i];
+          temp = this.filterArray(data, data[i].code);
+          if (temp.length > 0) {
+            obj.children = temp;
+          }
+          tree.push(obj);
+        }
+      }
+      return tree;
     }
   },
-  created() {},
+  created() {
+    this.getWearhouse();
+    this.getTreeDataList();
+    this.getList();
+  },
   watch: {}
 };
 </script>

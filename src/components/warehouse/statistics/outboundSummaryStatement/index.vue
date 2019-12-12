@@ -1,9 +1,9 @@
 <template>
-  <div class="putInDetails_list">
+  <div class="outboundSummaryStatement_list">
     <a-row style="padding:0 20px;">
       <a-row>
         <a-col :span="24">
-          <span class="span_lable">业务日期：</span>
+          <span class="span_lable">业务日期 :</span>
           <a-date-picker
             :disabledDate="disabledStartDate"
             format="YYYY/MM/DD"
@@ -21,23 +21,13 @@
             style="width:130px;"
           />
           <span class="span_lable">单据类型：</span>
-          <a-select v-model="outType" style="width: 140px">
+          <a-select v-model="dataSource" style="width: 140px">
             <a-select-option :value="-1">全部</a-select-option>
             <a-select-option value="RECEIVE">领料出库</a-select-option>
             <a-select-option value="SALES">销售出库</a-select-option>
             <a-select-option value="RETURN">退货出库</a-select-option>
             <a-select-option value="OTHER">其他出库</a-select-option>
           </a-select>
-          <span class="span_lable">物料分类：</span>
-          <a-tree-select
-            allowClear
-            v-model="classifyId"
-            style="width: 140px"
-            :dropdownStyle="{ maxHeight: '400px', overflow: 'auto' }"
-            :treeData="treeData"
-            placeholder="请选择"
-            treeDefaultExpandAll
-          ></a-tree-select>
           <span class="span_lable">仓库：</span>
           <a-select v-model="warehouseId" style="width: 140px">
             <a-select-option :value="-1">全部</a-select-option>
@@ -47,21 +37,17 @@
               :key="index"
             >{{item.name}}</a-select-option>
           </a-select>
-        </a-col>
-        <a-col :span="24" style="padding-top:12px;">
           <span class="span_lable">单据编号：</span>
-          <a-input placeholder v-model="orderCode" style="width: 264px"></a-input>
-          <span class="span_lable">物料编码：</span>
-          <a-input placeholder v-model="code" style="width: 140px"></a-input>
-          <span class="span_lable">图号/名称：</span>
-          <a-input placeholder v-model="drawingCode" style="width: 140px"></a-input>
-          <span class="span_lable">型号/规格：</span>
-          <a-input placeholder v-model="specification" style="width: 140px"></a-input>
+          <a-input placeholder style="width: 140px" v-model="keyword"></a-input>
           <a-button type="primary" @click="getList">查询</a-button>
         </a-col>
       </a-row>
       <a-row style="padding-top:10px;">
-        <a-table :columns="columns" :pagination="false" :dataSource="data" rowKey="id"></a-table>
+        <a-table :columns="columns" :pagination="false" :dataSource="data" rowKey="id">
+          <template slot="danjubianhao" slot-scope="text, record, index">
+            <a href="javascript:" @click="showDetails(record.id)">{{text}}</a>
+          </template>
+        </a-table>
         <a-pagination
           style="padding-top:12px;text-align: right;"
           showQuickJumper
@@ -75,35 +61,41 @@
         />
       </a-row>
     </a-row>
+    <a-modal
+      title="详情"
+      :footer="null"
+      width="1200px"
+      :visible="detalisVisible"
+      @cancel="handleCancel()"
+      :maskClosable="false"
+      :destroyOnClose="true"
+      class="details_modal"
+    >
+      <detail :id="rowId"></detail>
+    </a-modal>
   </div>
 </template>
 <script>
+import detail from "./details";
 const columns = [
   {
     dataIndex: "gmtCreated",
     key: "gmtCreated",
     title: "业务日期",
-    width: 130
+    width: "20%"
   },
   {
-    dataIndex: "warehouseName",
-    title: "仓库",
-    width: 100,
-    key: "warehouseName",
-    scopedSlots: { customRender: "warehouseNmae" }
-  },
-  {
-    dataIndex: "orderCode",
+    dataIndex: "code",
     title: "单据编号",
-    width: 160,
-    key: "orderCode"
+    width: "30%",
+    key: "code",
+    scopedSlots: { customRender: "danjubianhao" }
   },
-
   {
     dataIndex: "outType",
-    key: "outType",
     title: "单据类型",
-    width: 100,
+    width: "20%",
+    key: "outType",
     customRender: function(text, record, index) {
       return text == "RECEIVE"
         ? "领料出库"
@@ -114,80 +106,52 @@ const columns = [
         : "其他出库";
     }
   },
+
   {
-    dataIndex: "code",
-    key: "code",
-    title: "物料编码",
-    width: 100,
-    scopedSlots: { customRender: "operation" }
-  },
-  {
-    dataIndex: "drawingCode",
-    key: "drawingCode",
-    title: "图号",
-    width: 120
-  },
-  {
-    dataIndex: "name",
-    key: "name",
-    title: "名称",
-    width: 180
-  },
-  {
-    dataIndex: "specification",
-    key: "specification",
-    title: "型号/规格",
-    width: 140
-  },
-  {
-    dataIndex: "classify",
-    key: "classify",
-    title: "物料分类",
-    width: 80
-  },
-  {
-    dataIndex: "amount",
-    key: "amount",
-    title: "出库",
-    width: 80
-  },
-  {
-    dataIndex: "unitEntry",
-    key: "unitEntry",
-    title: "单位",
-    width: 60
-  },
-  {
-    dataIndex: "note",
-    key: "note",
-    title: "备注",
-    width: 120
+    dataIndex: "warehouse",
+    key: "warehouse",
+    title: "收货仓库",
+    width: "15%"
   }
+
+  // {
+  //   dataIndex: "schedule",
+  //   key: "schedule",
+  //   title: "备注",
+  //   width: "20%"
+  // }
 ];
 export default {
   data() {
     return {
-      outType: -1,
+      rowId: "",
+      detalisVisible: false,
       current: 1,
       pageSize: 10,
       total: 0,
       columns,
-      data: [{ phone: 111, id: 1 }],
+      data: [],
       startValue: null,
       endValue: null,
       startDate: "",
       endDate: "",
-      orderCode: "",
-      code: "",
-      drawingCode: "",
-      specification: "",
-      classifyId: null,
-      treeData: [],
+      warehouseId: -1,
       allWarehouse: [],
-      warehouseId: -1
+      dataSource: -1,
+      keyword: null
     };
   },
+  components: {
+    detail
+  },
   methods: {
+    handleCancel() {
+      this.detalisVisible = false;
+    },
+    showDetails(id) {
+      this.rowId = id;
+      this.detalisVisible = true;
+    },
     onShowSizeChange(current, pageSize) {
       this.pageSize = pageSize;
       this.current = 1;
@@ -202,24 +166,15 @@ export default {
     getList() {
       this.Axios(
         {
-          url: "/api-warehouse/report/outOrder",
+          url: "/api-warehouse/outOrder/list",
           params: {
             page: this.current,
             size: this.pageSize,
-            outType: this.outType != -1 ? this.outType : null,
-            classifyId: this.classifyId != -1 ? this.classifyId : null,
-            warehouseId: this.warehouseId != -1 ? this.warehouseId : null,
+            outType: this.dataSource == -1 ? null : this.dataSource,
+            warehouseId: this.warehouseId == -1 ? null : this.warehouseId,
             startTime: this.startDate != "" ? this.startDate : null,
             endTime: this.endDate != "" ? this.endDate : null,
-            //单据编号
-            orderCode: this.orderCode != "" ? this.orderCode : null,
-            //物料编码
-            code: this.code != "" ? this.code : null,
-            drawingCode: this.drawingCode != "" ? this.drawingCode : null,
-            //型号/规格
-            specification: this.specification != "" ? this.specification : null
-            // state: this.state,
-            // keyword: this.keyword
+            keyword: this.keyword == "" ? null : this.keyword
           },
           type: "get",
           option: { enableMsg: false }
@@ -233,8 +188,7 @@ export default {
             this.data = this.data.map(item => {
               return {
                 ...item,
-                classify: item.classification.name,
-                warehouseName: item.warehouse.name
+                warehouse: item.warehouse.name
               };
             });
             this.total = result.data.data.totalElement;
@@ -286,76 +240,26 @@ export default {
         },
         ({ type, info }) => {}
       );
-    },
-    getTreeDataList() {
-      this.Axios(
-        {
-          url: "/api-warehouse/classification/list",
-          params: {},
-          type: "get",
-          option: { enableMsg: false }
-        },
-        this
-      ).then(
-        result => {
-          if (result.data.code === 200) {
-            console.log(result);
-            this.treeData = result.data.data.map(item => {
-              return {
-                title: item.name,
-                key: item.id,
-                value: item.id,
-                code: parseInt(item.code),
-                parentCode: parseInt(item.parentCode)
-              };
-            });
-            console.log(this.treeData);
-            let code = Math.min.apply(
-              null,
-              this.treeData.map(item => {
-                return item.parentCode;
-              })
-            );
-            this.treeData = this.filterArray(this.treeData, code);
-            console.log(this.treeData);
-          }
-        },
-        ({ type, info }) => {}
-      );
-    },
-
-    filterArray(data, parent) {
-      let vm = this;
-      var tree = [];
-      var temp;
-      for (var i = 0; i < data.length; i++) {
-        if (data[i].parentCode == parent) {
-          var obj = data[i];
-          temp = this.filterArray(data, data[i].code);
-          if (temp.length > 0) {
-            obj.children = temp;
-          }
-          tree.push(obj);
-        }
-      }
-      return tree;
     }
   },
   created() {
     this.getWearhouse();
-    this.getTreeDataList();
-    this.getList();
   },
   watch: {}
 };
 </script>
 <style lang="less">
-.putInDetails_list {
+.outboundSummaryStatement_list {
   overflow: hidden;
   .span_lable {
     display: inline-block;
     width: 77px;
     text-align: right;
+  }
+}
+.details_modal {
+  .ant-modal-body {
+    padding-top: 0px;
   }
 }
 </style>

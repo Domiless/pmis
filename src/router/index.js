@@ -551,7 +551,16 @@ export default new Router({
       meta: {
         requireAuth: true,
       },
-    },]
+    },
+    {
+      path: 'edit/:id',
+      name: 'edit',
+      component: require('../components/warehouse/putOutStorage/picking/edit.vue').default,
+      meta: {
+        requireAuth: true,
+      },
+    },
+    ]
   },
   {
     path: '/market',
@@ -567,7 +576,16 @@ export default new Router({
       meta: {
         requireAuth: true,
       },
-    },]
+    },
+    {
+      path: 'edit/:id',
+      name: 'edit',
+      component: require('../components/warehouse/putOutStorage/market/edit.vue').default,
+      meta: {
+        requireAuth: true,
+      },
+    },
+    ]
   },
   {
     path: '/others',
@@ -583,7 +601,16 @@ export default new Router({
       meta: {
         requireAuth: true,
       },
-    },]
+    },
+    {
+      path: 'edit/:id',
+      name: 'edit',
+      component: require('../components/warehouse/putOutStorage/others/edit.vue').default,
+      meta: {
+        requireAuth: true,
+      },
+    },
+    ]
   },
   {
     path: '/purchaseReturn',
@@ -599,7 +626,16 @@ export default new Router({
       meta: {
         requireAuth: true,
       },
-    },]
+    },
+    {
+      path: 'edit/:id',
+      name: 'edit',
+      component: require('../components/warehouse/putOutStorage/purchaseReturn/edit.vue').default,
+      meta: {
+        requireAuth: true,
+      },
+    },
+    ]
   },
   {
     path: '/storageList',
@@ -679,6 +715,15 @@ export default new Router({
     children: []
   },
   {
+    path: '/outboundSummaryStatement',
+    name: 'outboundSummaryStatement',
+    components: require('@/components/warehouse/statistics/outboundSummaryStatement/index'),
+    meta: {
+      requireAuth: true,
+    },
+    children: []
+  },
+  {
     path: '/putInDetails',
     name: 'putInDetails',
     components: require('@/components/warehouse/statistics/putInDetails/index'),
@@ -691,6 +736,24 @@ export default new Router({
     path: '/outboundDetails',
     name: 'outboundDetails',
     components: require('@/components/warehouse/statistics/outboundDetails/index'),
+    meta: {
+      requireAuth: true,
+    },
+    children: []
+  },
+  {
+    path: '/InventoryDetails',
+    name: 'InventoryDetails',
+    components: require('@/components/warehouse/statistics/InventoryDetails/index'),
+    meta: {
+      requireAuth: true,
+    },
+    children: []
+  },
+  {
+    path: '/requisitionDetails',
+    name: 'requisitionDetails',
+    components: require('@/components/warehouse/statistics/requisitionDetails/index'),
     meta: {
       requireAuth: true,
     },

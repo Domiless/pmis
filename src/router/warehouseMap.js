@@ -97,7 +97,7 @@ export default [{
     icon: '&#xe60a;',
     defaultDock: false,
     subMenu: [{
-        menu: '领料出库',
+        menu: '领料出库单',
         route: '/picking',
         key: 'picking',
         permissionCode: 'order_lookup',
@@ -106,6 +106,13 @@ export default [{
         menu: '领料新增',
         route: '/picking/add',
         key: 'pickingAdd',
+        visible: true,
+        permissionCode: 'order_lookup'
+    },
+    {
+        menu: '领料修改',
+        routeReg: /^\/picking\/edit\/\w{1,}$/i,
+        key: 'pickingEdit',
         visible: true,
         permissionCode: 'order_lookup'
     },
@@ -123,6 +130,13 @@ export default [{
         permissionCode: 'order_lookup'
     },
     {
+        menu: '销售修改',
+        routeReg: /^\/market\/edit\/\w{1,}$/i,
+        key: 'pickingEdit',
+        visible: true,
+        permissionCode: 'order_lookup'
+    },
+    {
         menu: '采购退货单',
         route: '/purchaseReturn',
         key: 'purchaseReturn',
@@ -136,6 +150,13 @@ export default [{
         permissionCode: 'order_lookup'
     },
     {
+        menu: '采购退货修改',
+        routeReg: /^\/purchaseReturn\/edit\/\w{1,}$/i,
+        key: 'pickingEdit',
+        visible: true,
+        permissionCode: 'order_lookup'
+    },
+    {
         menu: '其它出库单',
         route: '/others',
         key: 'others',
@@ -145,6 +166,13 @@ export default [{
         menu: '其它新增',
         route: '/others/add',
         key: 'othersAdd',
+        visible: true,
+        permissionCode: 'order_lookup'
+    },
+    {
+        menu: '其它修改',
+        routeReg: /^\/others\/edit\/\w{1,}$/i,
+        key: 'pickingEdit',
         visible: true,
         permissionCode: 'order_lookup'
     },
@@ -215,7 +243,7 @@ export default [{
     icon: '&#xe60a;',
     defaultDock: false,
     subMenu: [{
-        menu: '入库单总表',
+        menu: '入库单汇总表',
         route: '/putInSummaryStatement',
         key: 'putInSummaryStatement',
         permissionCode: 'order_lookup',
@@ -227,9 +255,27 @@ export default [{
         permissionCode: 'order_lookup',
     },
     {
+        menu: '出库单汇总表',
+        route: '/outboundSummaryStatement',
+        key: 'outboundSummaryStatement',
+        permissionCode: 'order_lookup',
+    },
+    {
         menu: '出库明细表',
         route: '/outboundDetails',
         key: 'OutboundDetails',
+        permissionCode: 'order_lookup',
+    },
+    {
+        menu: '盘点明细表',
+        route: '/InventoryDetails',
+        key: 'InventoryDetails',
+        permissionCode: 'order_lookup',
+    },
+    {
+        menu: '调拨明细表',
+        route: '/requisitionDetails',
+        key: 'requisitionDetails',
         permissionCode: 'order_lookup',
     },
     ]

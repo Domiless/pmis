@@ -1,9 +1,9 @@
 <template>
-  <div class="putInSummaryStatement_list">
+  <div class="InventoryDetails_list">
     <a-row style="padding:0 20px;">
       <a-row>
         <a-col :span="24">
-          <span class="span_lable">业务日期 :</span>
+          <span class="span_lable">盘点日期：</span>
           <a-date-picker
             :disabledDate="disabledStartDate"
             format="YYYY/MM/DD"
@@ -20,16 +20,10 @@
             @change="(a,b)=>changeDate(a,b,2)"
             style="width:130px;"
           />
-          <span class="span_lable">单据类型：</span>
-          <a-select v-model="dataSource" style="width: 140px">
-            <a-select-option :value="-1">全部</a-select-option>
-            <a-select-option value="PURCHASING">采购入库</a-select-option>
-            <a-select-option value="PRODUCE">生产入库</a-select-option>
-            <a-select-option value="RETURN">退料入库</a-select-option>
-            <a-select-option value="OTHER">其他入库</a-select-option>
-          </a-select>
-          <span class="span_lable">仓库：</span>
-          <a-select v-model="warehouseId" style="width: 140px">
+          <span class="span_lable">单据编号：</span>
+          <a-input placeholder v-model="checkNo" style="width: 140px"></a-input>
+          <span class="span_lable">盘点仓库：</span>
+          <a-select v-model="warehouseId" style="width: 200px">
             <a-select-option :value="-1">全部</a-select-option>
             <a-select-option
               :value="item.id"
@@ -37,15 +31,21 @@
               :key="index"
             >{{item.name}}</a-select-option>
           </a-select>
-          <span class="span_lable">单据编号：</span>
-          <a-input placeholder style="width: 140px" v-model="keyword"></a-input>
-          <a-button type="primary" @click="getList">查询</a-button>
+          <span class="span_lable">经办人：</span>
+          <a-input placeholder v-model="manager" style="width: 140px"></a-input>
+          <a-button type="primary">查询</a-button>
         </a-col>
       </a-row>
       <a-row style="padding-top:10px;">
-        <a-table :columns="columns" :pagination="false" :dataSource="data" rowKey="id">
-          <template slot="danjubianhao" slot-scope="text, record, index">
-            <a href="javascript:" @click="showDetails(record.id)">{{text}}</a>
+        <a-table
+          :columns="columns"
+          :scroll="{ x: 1500}"
+          :pagination="false"
+          :dataSource="data"
+          rowKey="id"
+        >
+          <template slot="operation" slot-scope="text, record, index">
+            <a-button class="button_text btn_disabled">查看明细</a-button>
           </template>
         </a-table>
         <a-pagination
@@ -61,97 +61,110 @@
         />
       </a-row>
     </a-row>
-    <a-modal
-      title="详情"
-      :footer="null"
-      width="1200px"
-      :visible="detalisVisible"
-      @cancel="handleCancel()"
-      :maskClosable="false"
-      :destroyOnClose="true"
-      class="details_modal"
-    >
-      <detail :id="rowId"></detail>
-    </a-modal>
   </div>
 </template>
 <script>
-import detail from "./details";
 const columns = [
   {
-    dataIndex: "gmtCreated",
-    key: "gmtCreated",
-    title: "业务日期",
-    width: "20%"
+    dataIndex: "checkDate",
+    key: "checkDate",
+    title: "盘点日期",
+    width: 120
   },
   {
-    dataIndex: "orderCode",
+    dataIndex: "checkNo",
     title: "单据编号",
-    width: "30%",
-    key: "orderCode",
-    scopedSlots: { customRender: "danjubianhao" }
+    width: 140,
+    key: "checkNo",
+    scopedSlots: { customRender: "warehouseNmae" }
   },
   {
-    dataIndex: "dataSource",
-    title: "单据类型",
-    width: "20%",
-    key: "dataSource",
-    customRender: function(text, record, index) {
-      return text == "PURCHASING"
-        ? "采购入库"
-        : text == "PRODUCE"
-        ? "生产入库"
-        : text == "RETURN"
-        ? "退料入库"
-        : "其他入库";
-    }
+    dataIndex: "warehouseName",
+    title: "盘点仓库",
+    width: 100,
+    key: "warehouseName"
   },
 
   {
-    dataIndex: "warehouse",
-    key: "warehouse",
-    title: "收货仓库",
-    width: "15%"
+    dataIndex: "code",
+    key: "code",
+    title: "物料编码",
+    width: 120
+  },
+  {
+    dataIndex: "drawingNo",
+    key: "drawingNo",
+    title: "图号",
+    width: 120
+  },
+  {
+    dataIndex: "name",
+    key: "name",
+    title: "名称",
+    width: 140
+  },
+  {
+    dataIndex: "specification",
+    key: "specification",
+    title: "型号/规格",
+    width: 100
+  },
+  {
+    dataIndex: "classify",
+    key: "classify",
+    title: "物料分类",
+    width: 100
+  },
+  {
+    dataIndex: "unitEntry",
+    key: "unitEntry",
+    title: "单位",
+    width: 80
+  },
+  {
+    dataIndex: "inventoryAmount",
+    key: "inventoryAmount",
+    title: "库存数量",
+    width: 100
+  },
+  {
+    dataIndex: "checkAmount",
+    key: "checkAmount",
+    title: "盘点数量",
+    width: 100
+  },
+  {
+    dataIndex: "profitAndLoss",
+    key: "profitAndLoss",
+    title: "盈亏数量",
+    width: 100
+  },
+  {
+    dataIndex: "remark",
+    key: "remark",
+    title: "备注",
+    width: 120
   }
-
-  // {
-  //   dataIndex: "schedule",
-  //   key: "schedule",
-  //   title: "备注",
-  //   width: "20%"
-  // }
 ];
 export default {
   data() {
     return {
-      rowId: "",
-      detalisVisible: false,
       current: 1,
       pageSize: 10,
       total: 0,
       columns,
-      data: [],
+      data: [{ phone: 111, id: 1 }],
       startValue: null,
       endValue: null,
       startDate: "",
       endDate: "",
       warehouseId: -1,
       allWarehouse: [],
-      dataSource: -1,
-      keyword: null
+      checkNo: "",
+      manager: ""
     };
   },
-  components: {
-    detail
-  },
   methods: {
-    handleCancel() {
-      this.detalisVisible = false;
-    },
-    showDetails(id) {
-      this.rowId = id;
-      this.detalisVisible = true;
-    },
     onShowSizeChange(current, pageSize) {
       this.pageSize = pageSize;
       this.current = 1;
@@ -166,15 +179,15 @@ export default {
     getList() {
       this.Axios(
         {
-          url: "/api-warehouse/order/list",
+          url: "/api-warehouse/checkItem/reportList",
           params: {
             page: this.current,
             size: this.pageSize,
-            dataSource: this.dataSource == -1 ? null : this.dataSource,
-            warehouseId: this.warehouseId == -1 ? null : this.warehouseId,
-            startTime: this.startDate != "" ? this.startDate : null,
-            endTime: this.endDate != "" ? this.endDate : null,
-            keyword: this.keyword == "" ? null : this.keyword
+            startDate: this.startDate != "" ? this.startDate : null,
+            endDate: this.endDate != "" ? this.endDate : null,
+            checkNo: this.checkNo != "" ? this.checkNo : null,
+            warehouseId: this.warehouseId != -1 ? this.warehouseId : null,
+            manager: this.manager != "" ? this.manager : null
           },
           type: "get",
           option: { enableMsg: false }
@@ -185,12 +198,6 @@ export default {
           if (result.data.code === 200) {
             console.log(result);
             this.data = result.data.data.content;
-            this.data = this.data.map(item => {
-              return {
-                ...item,
-                warehouse: item.warehouse.name
-              };
-            });
             this.total = result.data.data.totalElement;
           }
         },
@@ -244,12 +251,13 @@ export default {
   },
   created() {
     this.getWearhouse();
+    this.getList();
   },
   watch: {}
 };
 </script>
 <style lang="less">
-.putInSummaryStatement_list {
+.InventoryDetails_list {
   overflow: hidden;
   .span_lable {
     display: inline-block;
