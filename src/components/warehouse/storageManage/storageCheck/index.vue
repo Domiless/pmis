@@ -6,7 +6,7 @@
         <permission-button permCode banType="hide" @click="$router.push({path:'/storageCheck/addStorageCheck'})">
           <a-icon style="color:#1890ff;" type="plus" />新增
         </permission-button>
-        <permission-button permCode banType="hide" @click="edit">
+        <permission-button permCode banType="hide" @click="edit" :disabled="selectedRowKeys.length !== 1">
           <a-icon style="color:#1890ff;" type="edit" />修改
         </permission-button>
         <permission-button permCode banType="hide">
@@ -48,7 +48,7 @@
           :pagination="false"
           :rowSelection="{selectedRowKeys:selectedRowKeys,onChange: onSelectChange}"
         >
-          <template slot="warehouse.name" slot-scope="text, record">
+          <template slot="checkNo" slot-scope="text, record">
             <a href="javascript:" @click="showDetails(record.id)">{{text}}</a>
           </template>
         </a-table>
@@ -83,6 +83,7 @@ const columns = [
     dataIndex: "checkNo",
     title: "单据编号",
     key: "checkNo",
+    scopedSlots: { customRender: "checkNo" },
     width: "15%"
   },
   {
@@ -95,7 +96,6 @@ const columns = [
     dataIndex: "warehouse.name",
     title: "盘点仓库",
     key: "warehouse.name",
-    scopedSlots: { customRender: "warehouse.name" },
     width: "20%"
   },
   {

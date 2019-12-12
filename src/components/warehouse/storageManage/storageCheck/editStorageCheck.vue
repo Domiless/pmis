@@ -12,6 +12,7 @@
                         {rules: [{ required: true, message: '请填写单据类型' }]}
                         ]"
             maxlength="10"
+            disabled
           ></a-input>
         </a-form-item>
         <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 12 }" label="单据编号">
@@ -24,13 +25,19 @@
           ></a-input>
         </a-form-item>
         <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 12 }" label="盘点仓库">
-          <a-input
+          <a-select
+            placeholder="请选择"
             v-decorator="[
-                        'backWarehouse',
-                        {rules: [{ required: true, message: '请填写盘点仓库' }]}
-                        ]"
-            maxlength="10"
-          ></a-input>
+              'storageWarehouse',
+              {rules: [{ required: true, message: '请选择盘点仓库' }]}
+              ]"
+          >
+            <a-select-option
+              v-for="item in warehouseList"
+              :key="item.id"
+              :value="item.id"
+            >{{ item.name }}</a-select-option>
+          </a-select>
         </a-form-item>
         <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 12 }" label="盘点日期">
           <a-date-picker
@@ -49,13 +56,13 @@
           ></a-input>
         </a-form-item>
         <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 12 }" label="制单人">
-          <a-input v-decorator="['preparedBy']" maxlength="10"></a-input>
+          <a-input v-decorator="['preparedBy']" maxlength="10" disabled></a-input>
         </a-form-item>
         <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 12 }" label="备注">
           <a-textarea v-decorator="['remark']" :rows="4" :autosize="{ minRows: 4, maxRows: 4}"></a-textarea>
         </a-form-item>
         <a-table :columns="columns" :pagination="false" :dataSource="data" rowKey="id">
-          <span slot="shuliangTitle">
+          <span slot="checkAmountTitle">
             <span style="color: #f5222d">*</span>盘点数量
           </span>
           <template slot="xuanzewuliao" slot-scope="text, record, index">
@@ -65,33 +72,50 @@
               </span>
             </div>
           </template>
-          <template slot="xuhao" slot-scope="text, record, index">
+          <template slot="index" slot-scope="text, record, index">
             <span>{{index+1}}</span>
           </template>
-          <template slot="shuliang" slot-scope="text, record, index">
+          <template slot="checkAmount" slot-scope="text, record, index">
             <a-input
               type="number"
               oninput="if(value.length>10)value=value.slice(0,10)"
               :value="text"
-              @change="(e)=>handleInputChange(e.target.value, record.id, 'shuliang')"
+              @change="(e)=>handleInputChange(e.target.value, record.id, 'checkAmount')"
+              @blur="(e)=>editDetails(e.target.value, record.id)"
             ></a-input>
           </template>
-          <template slot="beizhu" slot-scope="text, record, index">
+          <template slot="remark" slot-scope="text, record, index">
             <a-input
               maxlength="50"
               :value="text"
-              @change="(e)=>handleInputChange(e.target.value, record.id, 'beizhu')"
+              @change="(e)=>handleInputChange(e.target.value, record.id, 'remark')"
+              @blur="(e)=>editDetails(e.target.value, record.id)"
             ></a-input>
+          </template>
+          <template slot="caozuo" slot-scope="text, record, index">
+            <a-popover placement="top">
+              <template slot="content">
+                <span>删除</span>
+              </template>
+              <permission-button
+                permCode
+                banType="disabled"
+                class="button_text btn_disabled"
+                @click="delRow(record,index)"
+              >
+                <a-icon type="delete" style="color:red;" />
+              </permission-button>
+            </a-popover>
           </template>
         </a-table>
         <div style="padding:12px 0;">
-          <a style="color:#1890FF;cursor: pointer;" href="javascript:">
+          <a style="color:#1890FF;cursor: pointer;" href="javascript:" @click="choiceModalShow()">
             <a-icon type="plus" style="font-size:18px;margin-right:8px;" />添加
           </a>
         </div>
-        <a-form-item style="display:block;text-align:right;margin-bottom:0;">
-          <a-button style="margin-right:12px;">取消</a-button>
-          <a-button type="primary">保存</a-button>
+        <a-form-item style="display:block;margin-bottom:0;">
+          <!-- <a-button style="margin-right:12px;">取消</a-button> -->
+          <a-button type="primary" @click="save">保存</a-button>
         </a-form-item>
       </a-form>
     </a-row>
@@ -112,72 +136,87 @@
 </template>
 <script>
 import materialList from "../../../public/materialList";
+import moment from "moment";
 const columns = [
   {
     dataIndex: "index",
     key: "index",
     title: "",
     width: 40,
-    scopedSlots: { customRender: "xuhao" },
+    scopedSlots: { customRender: "index" },
     align: "center"
   },
+//   {
+//     dataIndex: "xuanzewuliao",
+//     key: "xuanzewuliao",
+//     title: "选择物料",
+//     width: 80,
+//     scopedSlots: { customRender: "xuanzewuliao" }
+//   },
   {
-    dataIndex: "xuanzewuliao",
-    key: "xuanzewuliao",
-    title: "选择物料",
-    width: 80,
-    scopedSlots: { customRender: "xuanzewuliao" }
-  },
-  {
-    dataIndex: "wuliaobianma",
-    key: "wuliaobianma",
+    dataIndex: "code",
+    key: "code",
     title: "物料编码",
     width: 120
   },
   {
-    dataIndex: "tuhao",
-    key: "tuhao",
+    dataIndex: "drawingNo",
+    key: "drawingNo",
     title: "图号",
     width: 140
   },
   {
-    dataIndex: "mingcheng",
-    key: "mingcheng",
+    dataIndex: "name",
+    key: "name",
     title: "名称",
     width: 140
   },
   {
-    dataIndex: "danwei",
-    key: "danwei",
+    dataIndex: "specification",
+    key: "specification",
+    title: "型号/规格",
+    width: 140
+  },
+  {
+    dataIndex: "unitEntry",
+    key: "unitEntry",
     title: "单位",
     width: 80
   },
   {
-    dataIndex: "wuliaofenlei",
-    key: "wuliaofenlei",
+    dataIndex: "classify",
+    key: "classify",
     title: "物料分类",
     width: 100
   },
   {
-    dataIndex: "kucunshuliang",
-    key: "kucunshuliang",
+    dataIndex: "inventoryAmount",
+    key: "inventoryAmount",
     title: "库存数量",
     width: 100
   },
   {
-    dataIndex: "shuliang",
-    key: "shuliang",
+    dataIndex: "checkAmount",
+    key: "checkAmount",
     // title: "数量",
     width: 120,
-    scopedSlots: { customRender: "shuliang" },
-    slots: { title: "shuliangTitle" }
+    scopedSlots: { customRender: "checkAmount" },
+    slots: { title: "checkAmountTitle" }
   },
   {
-    dataIndex: "beizhu",
-    key: "beizhu",
+    dataIndex: "remark",
+    key: "remark",
     title: "备注",
     width: 160,
-    scopedSlots: { customRender: "beizhu" }
+    scopedSlots: { customRender: "remark" }
+  },
+  {
+    dataIndex: "caozuo",
+    key: "caozuo",
+    title: "操作",
+    width: 60,
+    scopedSlots: { customRender: "caozuo" },
+    align: "center"
   }
 ];
 export default {
@@ -187,13 +226,29 @@ export default {
       signDate: "",
       choiceShow: false,
       columns,
-      data: [{ wuliaobianma: 11, shuliang: 111, id: 23 }]
+      data: [],
+      detailsMsg: [],
+      warehouseList: [],
+      warehouseName: ""
     };
   },
   methods: {
+    delRow(row, index) {
+        console.log(index);
+        this.data.splice(index, 1);
+    },
     choisceMsg(a) {
-      console.log(a);
-      this.choiceShow = false;
+        console.log(a);
+        // this.choiceShow = false;
+        if (
+            this.data.find(item => {
+            return item.id == a.id;
+            })
+        ) {
+            this.$message.error(`该条数据已被选择`);
+            return false;
+        }
+        this.data.push(a);
     },
     onChangeSign(data, dateString) {
       this.signDate = dateString;
@@ -201,6 +256,37 @@ export default {
     choiceModalShow(index) {
       console.log(index);
       this.choiceShow = true;
+    },
+    editDetails(value, key) {
+      const newData = [...this.data];
+      const target = newData.filter(item => key === item.id)[0];
+      console.log(target);
+      let qs = require("qs");
+      let detailsData = qs.stringify({
+        checkItemId: target.id,
+        checkAmount: target.checkAmount,
+        remark: target.remark
+      });
+      this.Axios(
+            {
+              url: "/api-warehouse/checkItem/update?" + detailsData,
+              params: {},
+              type: "put",
+              enableMsg: false,
+              // option: { successMsg: "修改成功！" },
+              config: {
+                headers: { "Content-Type": "application/json" }
+              }
+            },
+            this
+          ).then(
+            result => {
+              if (result.data.code === 200) {
+                console.log(result);
+              }
+            },
+            ({ type, info }) => {}
+          );
     },
     handleInputChange(value, key, column) {
       const newData = [...this.data];
@@ -210,12 +296,33 @@ export default {
         this.data = newData;
       }
     },
+    getWareHouseList() {
+      this.Axios(
+        {
+          url: "/api-warehouse/warehouse/list",
+          type: "get",
+          params: {
+            page: -1
+          },
+          option: { enableMsg: false }
+        },
+        this
+      ).then(
+        result => {
+          if (result.data.code === 200) {
+            console.log(result);
+            this.warehouseList = result.data.data;
+          }
+        },
+        ({ type, info }) => {}
+      );
+    },
     findOne(id) {
       this.Axios(
         {
-          url: "/api-warehouse/checkItem/getOne",
+          url: "/api-warehouse/check/details",
           params: {
-            checkItemId: id
+            id: id
           },
           type: "get",
           option: { enableMsg: false }
@@ -225,17 +332,76 @@ export default {
         result => {
           if (result.data.code === 200) {
             console.log(result);
+            this.detailsMsg = result.data.data.checkDO;
+            this.data = result.data.data.checkItemDOS;
+            this.warehouseName = result.data.data.checkDO.warehouse.name;
+            this.signDate = this.detailsMsg.checkDate;
+            this.form.setFieldsValue({
+              invoicesType: this.detailsMsg.type,
+              invoicesNo: this.detailsMsg.checkNo,
+              storageWarehouse: this.detailsMsg.warehouse.id,
+              stockDate:
+                this.detailsMsg.checkDate == null
+                  ? undefined
+                  : moment(this.detailsMsg.checkDate, "YYYY/MM/DD"),
+              transactor: this.detailsMsg.manager,
+              preparedBy: this.detailsMsg.createdBy,
+              remark: this.detailsMsg.remark
+            });
           }
         },
         ({ type, info }) => {}
       );
+    },
+    save() {
+      this.form.validateFieldsAndScroll((err, values) => {
+        if (!err) {
+          console.log("Received values of form: ", values);
+          // if (!this.checkedKeys.length) {
+          // 	this.$message.error("请分配角色权限");
+          // 	return false;
+          // }
+          let qs = require("qs");
+          let data = {
+            checkId: this.$route.params.id,
+            checkNo: values.invoicesNo,
+            checkDate: this.signDate,
+            manager: values.transactor,
+            remark: values.remark,
+            warehouseId: values.storageWarehouse
+          };
+          console.log(data);
+          this.Axios(
+            {
+              url: "/api-warehouse/check/update",
+              params: data,
+              type: "put",
+              option: { successMsg: "修改成功！" },
+              config: {
+                headers: { "Content-Type": "application/json" }
+              }
+            },
+            this
+          ).then(
+            result => {
+              if (result.data.code === 200) {
+                console.log(result);
+                this.form.resetFields();
+                this.$router.back(-1);
+              }
+            },
+            ({ type, info }) => {}
+          );
+        }
+      });
     }
   },
   components: {
     materialList
   },
   created() {
-      this.findOne(this.$route.params.id);
+    this.getWareHouseList();
+    this.findOne(this.$route.params.id);
   }
 };
 </script>

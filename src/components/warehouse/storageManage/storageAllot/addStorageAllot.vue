@@ -317,6 +317,16 @@ export default {
             );
         },
         save() {
+            if (
+                this.data
+                    .map(item => {
+                        return item.number != null && item.number != "";
+                    })
+                    .find(item => item == false) != undefined
+            ) {
+                    this.$message.error(`调拨数量不能为空`);
+                    return false;
+            }
             this.form.validateFieldsAndScroll((err, values) => {
 				if (!err) {
 					console.log("Received values of form: ", values);
@@ -334,11 +344,13 @@ export default {
                         type: values.invoicesType,
                         transferItemDTOS: this.data.map(item => {
                                             return {
+                                                classify: item.classification.name,
                                                 code: item.code,
                                                 drawingCode: item.drawingCode,
                                                 inventoryAmount: item.amount,
                                                 name: item.name,
                                                 remark: item.note,
+                                                specification: item.specification,
                                                 transferAmount: parseInt(item.number),
                                                 unitEntry: item.unit,
                                             }

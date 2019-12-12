@@ -53,7 +53,7 @@
                         style="width:100%;"
                         @change="onChangeSign" 
                         v-decorator="['stockDate']" 
-                        format="YYYY/MM/DD HH:MM:SS"/>
+                        format="YYYY/MM/DD"/>
 				</a-form-item>
                 <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 12 }" label="经办人">
 					<a-input

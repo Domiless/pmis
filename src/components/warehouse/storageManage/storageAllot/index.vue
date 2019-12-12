@@ -6,7 +6,7 @@
         <permission-button permCode banType="hide" @click="$router.push({path:'/storageAllot/addStorageAllot'})">
           <a-icon style="color:#1890ff;" type="plus" />新增
         </permission-button>
-        <permission-button permCode banType="hide" @click="edit">
+        <permission-button permCode banType="hide" @click="edit" :disabled="selectedRowKeys.length !== 1">
           <a-icon style="color:#1890ff;" type="edit" />修改
         </permission-button>
         <permission-button permCode banType="hide">
@@ -48,7 +48,7 @@
           :pagination="false"
           :rowSelection="{selectedRowKeys:selectedRowKeys,onChange: onSelectChange}"
         >
-          <template slot="invoicesNo" slot-scope="text, record">
+          <template slot="transferNo" slot-scope="text, record">
             <a href="javascript:" @click="showDetails(record.id)">{{text}}</a>
           </template>
         </a-table>
@@ -80,40 +80,40 @@
 import Details from "./details"
 const columns = [
   {
-    dataIndex: "invoicesNo",
+    dataIndex: "transferNo",
     title: "单据编号",
-    key: "invoicesNo",
-        scopedSlots: { customRender: "invoicesNo" },
+    key: "transferNo",
+    scopedSlots: { customRender: "transferNo" },
     width: "15%"
   },
   {
-    dataIndex: "invoicesType",
+    dataIndex: "type",
     title: "单据类型",
-    key: "invoicesType",
+    key: "type",
     width: "10%"
   },
   {
-    dataIndex: "back_department",
+    dataIndex: "fromWarehouse.name",
     title: "调出仓库",
-    key: "back_department",
+    key: "fromWarehouse.name",
     width: "20%"
   },
   {
-    dataIndex: "warehouse",
+    dataIndex: "toWareHouse.name",
     title: "调入仓库",
-    key: "warehouse",
+    key: "toWareHouse.name",
     width: "15%"
   },
   {
-    dataIndex: "status",
+    dataIndex: "manager",
     title: "经办人",
-    key: "status",
+    key: "manager",
     width: "10%"
   },
   {
-    dataIndex: "createDate",
+    dataIndex: "transferDate",
     title: "调拨日期",
-    key: "createDate",
+    key: "transferDate",
     width: "10%"
   },
   {

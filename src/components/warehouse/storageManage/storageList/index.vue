@@ -27,7 +27,7 @@
       <a-row>
           <a-col :span="3">
               <div class="left_case">
-                  <a-tree :treeData="treeData" @select="getSelectList" :defaultExpandAll="true" :autoExpandParent="true">
+                  <a-tree :treeData="treeData" @select="getList" :defaultExpandAll="true" :autoExpandParent="true">
                   </a-tree>
               </div>
           </a-col>
@@ -137,8 +137,8 @@ const columns = [
     width: 100
   },
   {
-    dataIndex: "cangku",
-    key: "cangku",
+    dataIndex: "warehouse.name",
+    key: "warehouse.name",
     title: "仓库",
     width: 100
   },
@@ -250,30 +250,30 @@ export default {
             ({ type, info }) => {}
           );
         },
-        getList() {
-            this.Axios(
-                {
-                url: "",
-                type: "get",
-                params: {
-                    page: this.current,
-                    size: this.pageSize,
-                    keyword: this.keyWords,
-                },
-                option: { enableMsg: false }
-                },
-                this
-            ).then(
-                result => {
-                if (result.data.code === 200) {
-                    console.log(result);
-                    this.data = result.data.data.content;
-                    this.total = result.data.data.totalElement;
-                }
-                },
-                ({ type, info }) => {}
-            );
-        },
+        // getList() {
+        //     this.Axios(
+        //         {
+        //         url: "",
+        //         type: "get",
+        //         params: {
+        //             page: this.current,
+        //             size: this.pageSize,
+        //             keyword: this.keyWords,
+        //         },
+        //         option: { enableMsg: false }
+        //         },
+        //         this
+        //     ).then(
+        //         result => {
+        //         if (result.data.code === 200) {
+        //             console.log(result);
+        //             this.data = result.data.data.content;
+        //             this.total = result.data.data.totalElement;
+        //         }
+        //         },
+        //         ({ type, info }) => {}
+        //     );
+        // },
         getClassify() {
           this.Axios(
             {
@@ -326,8 +326,11 @@ export default {
           }
           return tree;
         },
-        getSelectList(selectKey) {
+        getList(selectKey) {
           console.log(selectKey);
+          if(selectKey.length === 0) {
+            return false
+          }
           this.Axios(
             {
               url: "/api-warehouse/warehouseItem/selectList",
