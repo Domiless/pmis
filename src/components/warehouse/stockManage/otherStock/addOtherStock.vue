@@ -339,21 +339,16 @@ export default {
                         note: values.remark,
                         orderItemList: this.data.map(item => {
                                     return {
-                                        code: item.code,
-                                        drawingNo: item.drawingCode,
-                                        name: item.name,
-                                        note: item.note,
-                                        orderAmount: item.number,
-                                        specification: item.specification,
-                                        unit: item.unit,
-                                        warehouseUnit: item.unit
+                                        warehouseItemId: item.id,
+                                        amount: parseFloat(item.number),
+                                        note: item.note
                                     }
                         })
                         };
 					console.log(data);
 					this.Axios(
 						{
-							url: "/api-warehouse/order/add",
+							url: "/api-warehouse/returnEntry/add",
 							params: data,
 							type: "post",
 							option: { successMsg: "添加成功！" },

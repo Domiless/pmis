@@ -63,52 +63,50 @@ const columns = [
 //     scopedSlots: { customRender: "xuanzewuliao" }
 //   },
   {
-    dataIndex: "code",
-    key: "code",
+    dataIndex: "warehouseItem.code",
+    key: "warehouseItem.code",
     title: "物料编码",
     width: 120
   },
   {
-    dataIndex: "drawingNo",
-    key: "drawingNo",
+    dataIndex: "warehouseItem.drawingCode",
+    key: "warehouseItem.drawingCode",
     title: "图号",
     width: 140
   },
   {
-    dataIndex: "name",
-    key: "name",
+    dataIndex: "warehouseItem.name",
+    key: "warehouseItem.name",
     title: "名称",
     width: 140
   },
   {
-    dataIndex: "specification",
-    key: "specification",
+    dataIndex: "warehouseItem.specification",
+    key: "warehouseItem.specification",
     title: "型号/规格",
     width: 140
   },
   {
-    dataIndex: "unit",
-    key: "unit",
+    dataIndex: "warehouseItem.unit",
+    key: "warehouseItem.unit",
     title: "单位",
     width: 80
   },
   {
-    dataIndex: "amount",
-    key: "amount",
+    dataIndex: "warehouseItem.amount",
+    key: "warehouseItem.amount",
     title: "库存数量",
     width: 100
   },
   {
-    dataIndex: "number",
-    key: "number",
-    // title: "数量",
+    dataIndex: "amount",
+    key: "amount",
+    title: "数量",
     width: 120,
-    scopedSlots: { customRender: "number" },
-    slots: { title: "numberTitle" }
   },
   {
-    dataIndex: "classification.name",
-    key: "classification.name",
+    dataIndex: "warehouseItem.classification.name",
+    key: "warehouseItem.classification.name",
     title: "物料分类",
     width: 100
   },
@@ -138,7 +136,7 @@ export default {
     findOne(id) {
       this.Axios(
         {
-          url: "/api-warehouse/order/findOne",
+          url: "/api-warehouse/returnEntry/findOne",
           params: {
             orderId: id
           },
@@ -151,7 +149,7 @@ export default {
           if (result.data.code === 200) {
             console.log(result);
             this.detailsMsg = result.data.data;
-            this.data = result.data.data.orderItems;
+            this.data = result.data.data.returnEntryOrderItems;
             this.warehouseName = result.data.data.warehouse.name;
           }
         },
@@ -161,6 +159,11 @@ export default {
   },
   created() {
     this.findOne(this.sendId);
+  },
+  watch: {
+    sendId(){
+      this.findOne(this.sendId);
+    }
   }
 }
 </script>

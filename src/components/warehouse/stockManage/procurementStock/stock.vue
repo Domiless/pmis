@@ -23,7 +23,7 @@
     </a-row> -->
     <a-row>
       <a-table
-        :scroll="{ x: 1500,y:500}"
+        :scroll="{ x: 1510,y:500}"
         rowKey="id"
         class="table_style"
         :columns="columns"
@@ -377,11 +377,14 @@ export default {
     }
   }
   .codeMsg {
-    width: 200px;
+    width: 150px;
     overflow: hidden;
     text-overflow:ellipsis;
     white-space: nowrap;
     cursor: pointer;
+  }
+  .ant-table-thead > tr > th, .ant-table-tbody > tr > td {
+    padding: 8px 3px;
   }
 }
 </style>

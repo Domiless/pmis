@@ -33,12 +33,23 @@
       <template slot="code" slot-scope="text, record">
           <div class="codeMsg">{{text}}</div>
       </template>
+      <template slot="index" slot-scope="text, record, index">
+          <span>{{index+1}}</span>
+      </template>
       </a-table>
     </a-row>
   </div>
 </template>
 <script>
 const columns = [
+  {
+    dataIndex: "index",
+    key: "index",
+    title: "",
+    width: 40,
+    scopedSlots: { customRender: "index" },
+    align: "center"
+  },
   {
     title: "物料编码",
     key: "code",
@@ -89,32 +100,11 @@ const columns = [
     width: 80
   },
   {
-    title: "入库数量",
-    key: "stockNumber",
-    dataIndex: "stockNumber",
-    width: 80,
-    scopedSlots: { customRender: "stockNumber" }
-  },
-  {
     title: "库存单位",
     key: "warehouseUnit",
     dataIndex: "warehouseUnit",
     width: 80,
     scopedSlots: { customRender: "warehouseUnit" }
-  },
-  {
-    title: "分类",
-    key: "category",
-    dataIndex: "category",
-    width: 100,
-    scopedSlots: { customRender: "category" }
-  },
-  {
-    title: "批次",
-    key: "batch",
-    dataIndex: "batch",
-    width: 80,
-    scopedSlots: { customRender: "batch" }
   },
   {
     title: "备注",
@@ -193,6 +183,11 @@ export default {
     text-overflow:ellipsis;
     white-space: nowrap;
     cursor: pointer;
+  }
+  .ant-table-thead > tr > th,
+  .ant-table-tbody > tr > td
+  {
+    padding: 8px 2px;
   }
 }
 </style>

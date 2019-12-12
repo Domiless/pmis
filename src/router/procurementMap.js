@@ -8,9 +8,15 @@ export default [{
   defaultDock: false,
   subMenu: [
     {
-      menu: '采购计划',
+      menu: '采购申请',
       route: '/procurementPlan',
       key: 'procurementPlan',
+      permissionCode: 'unit_lookup',
+    },
+    {
+      menu: '采购计划',
+      route: '/procurementApply',
+      key: 'procurementApply',
       permissionCode: 'unit_lookup',
     },
     {

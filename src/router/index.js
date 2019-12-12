@@ -380,6 +380,15 @@ export default new Router({
     children: []
   },
   {
+    path: '/procurementApply',
+    name: 'procurementApply',
+    components: require('@/components/xty/procurementApply/index'),
+    meta: {
+      requireAuth: true,
+    },
+    children: []
+  },
+  {
     path: '/Message',
     name: 'Message',
     components: require('@/components/system/message'),
