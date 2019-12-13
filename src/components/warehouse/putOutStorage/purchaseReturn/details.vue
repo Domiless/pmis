@@ -18,12 +18,12 @@
         <span>{{oneMsg.code}}</span>
       </a-col>
       <a-col :span="12">
-        <span class="label_case">领料部门：</span>
-        <span>{{oneMsg.goName}}</span>
+        <span class="label_case">原始单据号：</span>
+        <span>{{oneMsg.goCode}}</span>
       </a-col>
       <a-col :span="12">
-        <span class="label_case">领用原因：</span>
-        <span>{{oneMsg.reason}}</span>
+        <span class="label_case">供应商：</span>
+        <span>{{oneMsg.goName}}</span>
       </a-col>
       <a-col :span="12">
         <span class="label_case">出货仓库：</span>
@@ -136,7 +136,9 @@ export default {
   },
   data() {
     return {
-      oneMsg: {},
+      oneMsg: {
+        warehouse: {}
+      },
       columns,
       data: []
     };

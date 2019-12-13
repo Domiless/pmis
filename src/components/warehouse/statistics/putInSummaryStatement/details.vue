@@ -73,8 +73,20 @@
       </a-col>
     </a-col>
     <a-col :span="24">
-      <a-table :columns="columns" :pagination="false" :dataSource="data" rowKey="id"></a-table>
-      <a-table :columns="columns1" :pagination="false" :dataSource="data" rowKey="id"></a-table>
+      <a-table
+        v-if="detalisMsg.dataSource=='PURCHASING'||detalisMsg.dataSource=='PRODUCE'"
+        :columns="columns"
+        :pagination="false"
+        :dataSource="data"
+        rowKey="id"
+      ></a-table>
+      <a-table
+        v-if="detalisMsg.dataSource=='RETURN'||detalisMsg.dataSource=='OTHER'"
+        :columns="columns1"
+        :pagination="false"
+        :dataSource="data"
+        rowKey="id"
+      ></a-table>
     </a-col>
   </div>
 </template>
@@ -160,13 +172,13 @@ const columns1 = [
     title: "单位",
     key: "unit",
     dataIndex: "unit",
-    width: 150
+    width: 80
   },
   {
     title: "总数量",
     key: "orderAmount",
     dataIndex: "orderAmount",
-    width: 150
+    width: 100
   },
   {
     title: "已入",
@@ -184,21 +196,21 @@ const columns1 = [
     title: "入库数量",
     key: "stockNumber",
     dataIndex: "stockNumber",
-    width: 80,
+    width: 100,
     scopedSlots: { customRender: "stockNumber" }
   },
   {
     title: "库存单位",
     key: "warehouseUnit",
     dataIndex: "warehouseUnit",
-    width: 80,
+    width: 100,
     scopedSlots: { customRender: "warehouseUnit" }
   },
   {
     title: "分类",
     key: "category",
     dataIndex: "category",
-    width: 100,
+    width: 80,
     scopedSlots: { customRender: "category" }
   },
   {
