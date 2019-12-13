@@ -88,7 +88,7 @@
               rowKey="id"
             >
               <template slot="lingyongbumen" slot-scope="text, record, index">
-                <a href="javascript:">{{text}}</a>
+                <a href="javascript:" @click="showDetails(record.id)">{{text}}</a>
               </template>
               <template slot="remark" slot-scope="text, record, index">
                 <div class="content_style" style="max-width:200px;">{{record.note}}</div>
@@ -106,18 +106,18 @@
               :showTotal="total => `共 ${total} 条`"
             />
           </a-row>
-          <!-- <a-modal
-            title="新增"
+          <a-modal
+            title="详情"
             :footer="null"
             width="1400px"
             :visible="addVisible"
-            @cancel="handleCancel(1)"
+            @cancel="handleCancel()"
             :maskClosable="false"
             :destroyOnClose="true"
           >
-            <add v-on:addModal="addModal" ref="addref"></add>
+            <detail :id="rowId"></detail>
           </a-modal>
-          <a-modal
+          <!-- <a-modal
             title="修改"
             :footer="null"
             width="800px"
@@ -132,7 +132,7 @@
   </div>
 </template>
 <script>
-import add from "./add";
+import detail from "./details";
 const columns = [
   {
     dataIndex: "code",
@@ -201,8 +201,9 @@ const columns = [
 export default {
   data() {
     return {
+      rowId: "",
       isHideList: this.$route.params.id !== undefined ? true : false,
-      // addVisible: false,
+      addVisible: false,
       // editVisible: false,
       columns,
       data: [],
@@ -222,6 +223,10 @@ export default {
     };
   },
   methods: {
+    showDetails(id) {
+      this.rowId = id;
+      this.addVisible = true;
+    },
     audit() {
       if (this.selectedRows[0].state == 0) {
         this.Axios(
@@ -263,12 +268,9 @@ export default {
         this.endDate = datestring;
       }
     },
-    // handleCancel(a) {
-    //   if (a == 1) {
-    //     this.addVisible = false;
-    //     // this.$refs.addref.quxiao();
-    //   }
-    // },
+    handleCancel() {
+      this.addVisible = false;
+    },
     disabledStartDate(startValue) {
       const endValue = this.endValue;
       if (!startValue || !endValue) {
@@ -365,7 +367,7 @@ export default {
     this.isHideList = a || b ? true : false;
   },
   components: {
-    add
+    detail
   },
   watch: {
     $route() {

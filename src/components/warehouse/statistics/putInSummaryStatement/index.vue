@@ -244,6 +244,7 @@ export default {
   },
   created() {
     this.getWearhouse();
+    this.getList();
   },
   watch: {}
 };
