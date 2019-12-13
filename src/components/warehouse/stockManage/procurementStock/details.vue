@@ -153,6 +153,11 @@ export default {
   },
   created() {
     this.findOne(this.sendId);
+  },
+  watch: {
+    sendId() {
+      this.findOne(this.sendId);
+    }
   }
 };
 </script>

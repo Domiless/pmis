@@ -181,6 +181,9 @@ export default {
     },
     getList(selectKey) {
       console.log(selectKey);
+      if(selectKey.length === 0) {
+          return false
+      }
       this.Axios(
         {
           url: "/api-warehouse/warehouseItem/selectList",
