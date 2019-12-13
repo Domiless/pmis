@@ -74,14 +74,14 @@
     </a-col>
     <a-col :span="24">
       <a-table
-        v-if="detalisMsg.dataSource=='PURCHASING'||detalisMsg.dataSource=='PRODUCE'"
+        v-if="detalisMsg.dataSource=='RETURN'||detalisMsg.dataSource=='OTHER'"
         :columns="columns"
         :pagination="false"
         :dataSource="data"
         rowKey="id"
       ></a-table>
       <a-table
-        v-if="detalisMsg.dataSource=='RETURN'||detalisMsg.dataSource=='OTHER'"
+        v-if="detalisMsg.dataSource=='PURCHASING'||detalisMsg.dataSource=='PRODUCE'"
         :columns="columns1"
         :pagination="false"
         :dataSource="data"
@@ -258,7 +258,19 @@ export default {
             console.log(result.data.data);
 
             let OneMsg = { ...result.data.data };
-            this.data = OneMsg.orderItems;
+            if (OneMsg.dataSource == "OTHER" || OneMsg.dataSource == "RETURN") {
+              this.data = OneMsg.returnEntryOrderItems.map(item => {
+                return {
+                  ...item.warehouseItem,
+                  number: item.warehouseItem.amount,
+                  remark: item.warehouseItem.note,
+                  classifiName: item.warehouseItem.classification.name
+                };
+              });
+            } else {
+              this.data = OneMsg.orderItems;
+            }
+
             this.detalisMsg = OneMsg;
           }
         },
