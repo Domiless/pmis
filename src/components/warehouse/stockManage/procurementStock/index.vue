@@ -59,7 +59,7 @@
     <a-modal
         title="采购入库单"
         v-model="stockVisible" 
-        style="top:20px" width="1200px" 
+        style="top:20px" width="1300px" 
         :footer="null"
         :maskClosable="false"
         @cancel="handleCancel(1)">
@@ -68,7 +68,7 @@
     <a-modal
         title="详情"
         v-model="detailsVisible" 
-        style="top:20px" width="1200px" 
+        style="top:20px" width="1300px" 
         :footer="null"
         :maskClosable="false"
         @cancel="handleCancel(2)">

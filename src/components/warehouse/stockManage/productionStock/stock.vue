@@ -170,7 +170,7 @@ const columns = [
     title: "分类",
     key: "category",
     dataIndex: "category",
-    width: 220,
+    width: 200,
     scopedSlots: { customRender: "category" }
   },
   {
@@ -191,7 +191,7 @@ const columns = [
     title: "入库",
     key: "ruku",
     dataIndex: "ruku",
-    fixed: 'right',
+    // fixed: 'right',
     scopedSlots: { customRender: "ruku" }
   }
 ];
@@ -388,6 +388,10 @@ export default {
     text-overflow:ellipsis;
     white-space: nowrap;
     cursor: pointer;
+  }
+  .ant-table-thead > tr > th,
+  .ant-table-tbody > tr > td {
+    padding: 4px 4px;
   }
 }
 </style>

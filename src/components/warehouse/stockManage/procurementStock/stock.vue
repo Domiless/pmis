@@ -23,7 +23,7 @@
     </a-row> -->
     <a-row>
       <a-table
-        :scroll="{ x: 1510,y:500}"
+        :scroll="{ x: 1600,y:500}"
         rowKey="id"
         class="table_style"
         :columns="columns"
@@ -164,7 +164,7 @@ const columns = [
     title: "分类",
     key: "category",
     dataIndex: "category",
-    width: 220,
+    width: 200,
     scopedSlots: { customRender: "category" }
   },
   {
@@ -185,7 +185,7 @@ const columns = [
     title: "入库",
     key: "ruku",
     dataIndex: "ruku",
-    fixed: 'right',
+    // fixed: 'right',
     scopedSlots: { customRender: "ruku" }
   }
 ];
@@ -383,8 +383,9 @@ export default {
     white-space: nowrap;
     cursor: pointer;
   }
-  .ant-table-thead > tr > th, .ant-table-tbody > tr > td {
-    padding: 8px 3px;
+  .ant-table-thead > tr > th,
+  .ant-table-tbody > tr > td {
+    padding: 4px 4px;
   }
 }
 </style>

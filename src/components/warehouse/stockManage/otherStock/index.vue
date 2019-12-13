@@ -9,7 +9,7 @@
         <permission-button permCode banType="hide" @click="edit" :disabled="selectedRowKeys.length !== 1">
           <a-icon style="color:#1890ff;" type="edit"/>修改
         </permission-button>
-        <permission-button permCode banType="hide">
+        <permission-button permCode banType="hide" @click="check" :disabled="selectedRowKeys.length !== 1">
           <i style="color:#1890ff;margin-right:4px;" class="iconfont">&#xe8ad;</i>审核
         </permission-button>
         <permission-button permCode banType="hide">
@@ -162,7 +162,26 @@ export default {
 			this.$router.push({
 				path: "/otherStock/editOtherStock/" + this.selectedRowKeys[0]
 			});
-		},
+    },
+    check() {
+      this.Axios(
+        {
+          url: "/api-warehouse/orderEntry/otherEntry?orderId=" + this.selectedRowKeys[0],
+          params: {},
+          type: "post",
+          option: { successMsg: "审核成功！" }
+        },
+        this
+      ).then(
+        result => {
+          if (result.data.code === 200) {
+              console.log(result);
+              this.getList();
+          }
+        },
+        ({ type, info }) => {}
+      );
+    },
     showDetails(id) {
       this.stockDetailsId = id;
       this.detailsVisible = true;

@@ -161,13 +161,11 @@ export default {
     check() {
       this.Axios(
 						{
-							url: "/api-warehouse/orderEntry/otherEntry",
-							params: {
-                orderId: this.selectedRowKeys[0]
-              },
+							url: "/api-warehouse/orderEntry/otherEntry?orderId=" + this.selectedRowKeys[0],
+							params: {},
 							type: "post",
-							option: { successMsg: "审核成功！" },
-							config: {
+              option: { successMsg: "审核成功！" },
+              config: {
 								headers: { "Content-Type": "application/json" }
 							}
 						},
@@ -176,6 +174,7 @@ export default {
 						result => {
 							if (result.data.code === 200) {
                   console.log(result);
+                  this.getList();
 							}
 						},
 						({ type, info }) => {}
