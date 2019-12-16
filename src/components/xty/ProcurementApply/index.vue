@@ -4,19 +4,19 @@
       <permission-button permCode banType="hide" @click="addVisible=true">
         <a-icon style="color:#1890ff;" type="plus" />新增
       </permission-button>
-      <permission-button permCode banType="hide" @click="edit">
+      <permission-button permCode banType="hide" @click="edit" :disabled="selectedRowKeys.length !== 1">
         <a-icon style="color:#1890ff;" type="edit" />修改
       </permission-button>
-      <permission-button permCode banType="hide" @click="showAssign">
+      <permission-button permCode banType="hide" @click="showAssign" :disabled="selectedRowKeys.length !== 1">
         <a-icon style="color:#1890ff;" type="submit" />指派采购员
       </permission-button>
-      <permission-button permCode banType="hide">
+      <permission-button permCode banType="hide" @click="audit" :disabled="selectedRowKeys.length !== 1">
         <i style="color:#1890ff;margin-right:4px;" class="iconfont">&#xe8ad;</i>审批
       </permission-button>
-      <permission-button permCode banType="hide">
+      <permission-button permCode banType="hide" :disabled="selectedRowKeys.length !== 1">
         <i class="iconfont" style="color:#1890ff;margin-right:8px;">&#xe60c;</i>打印预览
       </permission-button>
-      <permission-button permCode banType="hide">
+      <permission-button permCode banType="hide" :disabled="selectedRowKeys.length !== 1">
         <a-icon style="color:#1890ff;" type="delete" />删除
       </permission-button>
     </a-row>
@@ -42,9 +42,15 @@
         :pagination="false"
         :rowSelection="{selectedRowKeys:selectedRowKeys,onChange: onSelectChange}"
       >
-        <template slot="partName" slot-scope="text, record">
+        <template slot="projectName" slot-scope="text, record">
           <a href="javascript:" @click="showDetails(record.id)">{{text}}</a>
         </template>
+        <template slot="bomReviewSchedule" slot-scope="text">
+						<div>
+							<span v-if="text==2" style="font-size:14px;color:#f6003c;">未审</span>
+							<span v-if="text==3" style="font-size:14px;color:#10CF0C;">已审</span>
+						</div>
+				</template>
       </a-table>
       <a-pagination
         style="padding-top:12px;text-align: right;"
@@ -76,7 +82,7 @@
         width="1200px"
         :footer="null"
       >
-        <editApply ref="editApply"></editApply>
+        <editApply :procurementId="procurementId" ref="editApply"></editApply>
       </a-modal>
     <a-modal
         title="指派采购员"
@@ -95,44 +101,69 @@
         :visible="detailsVisible"
         @cancel="handleCancel(4)"
         :maskClosable="false"
-    >
-        <a-row style="margin-bottom: 10px">
-            <a-col :span="12">
-                <span class="label_right">项目订单编号: </span>
-                <span>{{details.workOrderNo}}</span>
-            </a-col>
-            <a-col :span="12">
-                <span class="label_right">设计单号: </span>
+      >
+        <a-tabs defaultActiveKey="1">
+          <a-tab-pane tab="基础信息" key="1">
+            <a-row>
+              <a-col :span="24" style="margin-bottom:12px;">
+                <span class="label_right">采购单号：</span>
                 <span>{{details.bomNo}}</span>
-            </a-col>
-            <a-col :span="12">
-                <span class="label_right">部件名称: </span>
-                <span>{{details.partName}}</span>
-            </a-col>
-            <a-col :span="12">
-                <span class="label_right">图号: </span>
-                <span>{{details.bomDrawingNo}}</span>
-            </a-col>
-            <a-col :span="12">
-                <span class="label_right">设计负责人: </span>
+              </a-col>
+              <a-col :span="24" style="margin-bottom:12px;">
+                <span class="label_right">项目订单编号：</span>
+                <span>{{details.workOrderNo}}</span>
+              </a-col>
+              <a-col :span="24" style="margin-bottom:12px;">
+                <span class="label_right">标题：</span>
+                <span>{{details.title}}</span>
+              </a-col>
+              <a-col :span="24" style="margin-bottom:12px;">
+                <span class="label_right">项目名称：</span>
+                <span>{{details.projectName}}</span>
+              </a-col>
+              <a-col :span="24" style="margin-bottom:12px;">
+                <span class="label_right">业务归口部门：</span>
+                <span>{{details.relevant}}</span>
+              </a-col>
+              <a-col :span="24" style="margin-bottom:12px;">
+                <span class="label_right">提采日期：</span>
+                <span>{{details.raisedate}}</span>
+              </a-col>
+              <a-col :span="24" style="margin-bottom:12px;">
+                <span class="label_right">编号：</span>
+                <span>{{details.no}}</span>
+              </a-col>
+              <a-col :span="24" style="margin-bottom:12px;">
+                <span class="label_right">申请人：</span>
                 <span>{{details.production}}</span>
-            </a-col>
-            <a-col :span="12">
-                <span class="label_right">创建时间: </span>
-                <span>{{details.gmtCreated}}</span>
-            </a-col>
-        </a-row>
-        <a-row>
-            <a-table
+              </a-col>
+              <a-col :span="24" style="margin-bottom:12px;">
+                <span class="label_right">制单人：</span>
+                <span>{{details.maker}}</span>
+              </a-col>
+              <a-col :span="24" style="margin-bottom:12px;">
+                <span class="label_right">备注：</span>
+                <span>{{details.remake}}</span>
+              </a-col>
+            </a-row>
+          </a-tab-pane>
+          <a-tab-pane tab="BOM" key="2" style="margin-bottom: 20px">
+            <a-row>
+              <a-table
+                :scroll="{ x: 1900, y: 400 }"
+                :pagination="false"
                 rowKey="id"
                 :columns="detailsColumns"
-                :dataSource="detailsData"
-                :pagination="false"
-                :scroll="{y: 400}"
-            >
-            </a-table>
-        </a-row>
-    </a-modal>
+                :dataSource="details.bomDes"
+              >
+                <template slot="index" slot-scope="text, record, index">
+                  <span>{{index+1}}</span>
+                </template>
+              </a-table>
+            </a-row>
+          </a-tab-pane>
+        </a-tabs>
+      </a-modal>
   </div>
 </template>
 <script>
@@ -153,28 +184,29 @@ const columns = [
     width: "15%"
   },
   {
-    dataIndex: "partName",
+    dataIndex: "projectName",
     title: "项目名称",
-    key: "partName",
-    scopedSlots: { customRender: "partName" },
+    key: "projectName",
+    scopedSlots: { customRender: "projectName" },
     width: "10%"
   },
   {
-    dataIndex: "bomDrawingNo",
+    dataIndex: "relevant",
     title: "业务归口部门",
-    key: "bomDrawingNo",
+    key: "relevant",
     width: "10%"
   },
   {
-    dataIndex: "number",
+    dataIndex: "raisedate",
     title: "提采日期",
-    key: "number",
+    key: "raisedate",
     width: "8%"
   },
   {
-    dataIndex: "production",
+    dataIndex: "bomReviewSchedule",
     title: "审核",
-    key: "production",
+    key: "bomReviewSchedule",
+    scopedSlots: { customRender: "bomReviewSchedule" },
     width: "8%"
   },
   {
@@ -190,43 +222,64 @@ const columns = [
   }
 ];
 const detailsColumns = [
-    {
-		dataIndex: "drawingNo",
-		title: "图号",
-		key: "drawingNo",
-		width: "20%"
-	},
-	{
-		dataIndex: "name",
-		title: "名称",
-		key: "name",
-		width: "20%"
-	},
-	{
-		dataIndex: "brand",
-		title: "指定品牌",
-		key: "brand",
-		width: "10%"
-	},
-	{
-		dataIndex: "addNum",
-		title: "需求数量",
-		key: "addNum",
-		width: "10%"
-	},
-	{
-		dataIndex: "appointName",
-		title: "指派采购员",
-		key: "appointName",
-		width: "20%"
-    },
-    {
-		dataIndex: "assignerTime",
-		title: "指派时间",
-		key: "assignerTime",
-		width: "20%"
-	},
-]
+  {
+    title: "序号",
+    dataIndex: "index",
+    key: "index",
+    scopedSlots: { customRender: "index" },
+    align: "center",
+    // fixed: "left",
+    width: 50
+  },
+  {
+    title: "名称",
+    dataIndex: "name",
+    key: "name",
+    width: 150
+  },
+  {
+    title: "型号/规格",
+    dataIndex: "partCat",
+    key: "partCat",
+    width: 150
+  },
+  {
+    title: "计量单位",
+    dataIndex: "unit",
+    key: "unit",
+    width: 150
+  },
+  {
+    title: "需求数量",
+    dataIndex: "addNum",
+    key: "addNum",
+    width: 150
+  },
+  {
+    title: "推荐厂家",
+    dataIndex: "adviseBrand",
+    key: "adviseBrand",
+    width: 150
+  },
+  {
+    title: "指定厂家",
+    dataIndex: "brand",
+    key: "brand",
+    width: 150
+  },
+  {
+    title: "要求到货时间",
+    dataIndex: "arrivalTime",
+    key: "arrivalTime",
+    width: 150
+  },
+  {
+    title: "备注",
+    dataIndex: "remake",
+    key: "remake",
+    width: 150
+  }
+];
 export default {
   data() {
     return {
@@ -245,7 +298,8 @@ export default {
       addVisible: false,
       editVisible: false,
       detailsVisible: false,
-      assignVisible: false
+      assignVisible: false,
+      procurementId: ''
     };
   },
   methods: {
@@ -265,6 +319,7 @@ export default {
     },
     edit() {
         this.editVisible = true;
+        this.procurementId = this.selectedRowKeys[0];
     },
     onChange(current, pageNumber) {
       console.log("Page: ", pageNumber);
@@ -290,61 +345,85 @@ export default {
     showAssign() {
         this.assignVisible = true;
     },
-    showDetails(row) {
-        this.details = row;
+    showDetails(id) {
         this.detailsVisible = true;
-        console.log(this.details);
-        // this.Axios(
-        //     {
-        //         url: "/api-order/bom/getBomdes",
-        //         type: "get",
-        //         params: {
-        //             bomIdS: this.details.id
-        //         },
-        //         option: { enableMsg: false }
-        //     },
-        //     this
-        // ).then(
-        //     result => {
-        //         if (result.data.code === 200) {
-        //             console.log(result);
-        //             this.detailsData = result.data.data;
-        //         }
-        //     },
-        //     ({ type, info }) => {}
-        // );
+        this.Axios(
+				{
+					url: '/api-order/bom/findone',
+					params: {
+            id: id
+          },
+					type: "get",
+					option: { enableMsg: false }
+				},
+				this
+			).then(
+				result => {
+					if (result.data.code === 200) {
+            console.log(result.data.data);
+            this.details = result.data.data;
+					}
+				},
+				({ type, info }) => {}
+			);
+    },
+    audit() {
+      this.Axios(
+				{
+					url: '/api-order/bom/audit?id=' + this.selectedRowKeys[0],
+					params: {},
+					type: "post",
+          option: { successMsg: " 审核成功！" },
+          config: {
+              headers: { "Content-Type": "application/json" }
+          }
+				},
+				this
+			).then(
+				result => {
+					if (result.data.code === 200) {
+            console.log(result.data.data);
+            this.getList();
+					}
+				},
+				({ type, info }) => {}
+			);
     },
     getList() {
-        this.Axios(
-        {
-            url: "/api-order/bom/list",
-            type: "get",
-            params: {
-            page: this.current,
-            size: this.pageSize,
-            keyword: this.keyWords,
-            start: this.dateValue[0] != "" ? this.dateValue[0] : null,
-            end: this.dateValue[1] != "" ? this.dateValue[1] : null
-            },
-            option: { enableMsg: false }
-        },
-        this
-        ).then(
-        result => {
-            if (result.data.code === 200) {
-            console.log(result);
-            this.data = result.data.data.content;
-            this.total = result.data.data.totalElement;
-            }
-        },
-        ({ type, info }) => {}
-        );
-    }
+			this.Axios(
+				{
+					url: "/api-order/bom/list",
+					type: "get",
+					params: {
+						page: this.current,
+						size: this.pageSize,
+						keyword: this.keyWords,
+						type: 1,
+						start: this.dateValue[0] != "" ? this.dateValue[0] : null,
+						end: this.dateValue[1] != "" ? this.dateValue[1] : null
+					},
+					option: { enableMsg: false }
+				},
+				this
+			).then(
+				result => {
+					if (result.data.code === 200) {
+						console.log(result);
+						this.data = result.data.data.content;
+						this.total = result.data.data.totalElement;
+					}
+				},
+				({ type, info }) => {}
+			);
+		},
   },
   components: {
       addApply,
       editApply,
       assignBuyer
+  },
+  created() {
+    this.getList();
   }
 };
 </script>
@@ -357,5 +436,11 @@ export default {
   .ant-row:nth-child(2) {
     margin-bottom: 10px;
   }
+  
 }
+.label_right {
+    display: inline-block;
+    width: 120px;
+    text-align: right;
+  }
 </style>

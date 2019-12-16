@@ -284,7 +284,9 @@ export default {
                 {
                 url: "/api-warehouse/order/code",
                 type: "get",
-                params: {},
+                params: {
+                    dataSource: "RETURN"
+                },
                 option: { enableMsg: false }
                 },
                 this

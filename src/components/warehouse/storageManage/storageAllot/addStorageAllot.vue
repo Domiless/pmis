@@ -277,9 +277,11 @@ export default {
         getCode() {
             this.Axios(
                 {
-                url: "/api-warehouse/order/code",
+                url: "/api-warehouse/getCode",
                 type: "get",
-                params: {},
+                params: {
+                    documentTypeEnum: "TRANSFER"
+                },
                 option: { enableMsg: false }
                 },
                 this

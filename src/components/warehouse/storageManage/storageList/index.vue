@@ -16,7 +16,7 @@
             </a-input-group>
             <span>关键词 :</span>
             <a-input
-                placeholder="单据编号"
+                placeholder="物料编码/图号/名称"
                 style="width: 250px"
                 v-model="keyWords"
                 @keyup.enter.native="getList"
@@ -305,6 +305,7 @@ export default {
                   })
                 );
                 this.treeData = this.filterArray(this.treeData, code);
+                console.log(this.treeData);
               }
             },
             ({ type, info }) => {}

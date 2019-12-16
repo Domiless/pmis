@@ -265,9 +265,11 @@ export default {
         getCode() {
             this.Axios(
                 {
-                url: "/api-warehouse/order/code",
+                url: "/api-warehouse/getCode",
                 type: "get",
-                params: {},
+                params: {
+                    documentTypeEnum: "CHECK"
+                },
                 option: { enableMsg: false }
                 },
                 this

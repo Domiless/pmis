@@ -283,7 +283,9 @@ export default {
                 {
                 url: "/api-warehouse/order/code",
                 type: "get",
-                params: {},
+                params: {
+                    dataSource: "OTHER"
+                },
                 option: { enableMsg: false }
                 },
                 this
