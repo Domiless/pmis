@@ -107,6 +107,12 @@ export default {
             console.log(result);
             this.defaultMsg = result.data.data;
             this.warehouseName = result.data.data.warehouse.name;
+            this.form.setFieldsValue({
+              unit: this.defaultMsg.unit,
+              category: this.defaultMsg.classification.id,
+              floor: this.defaultMsg.warningAmount,
+              remark: this.defaultMsg.note
+            });
           }
         },
         ({ type, info }) => {}

@@ -12,10 +12,10 @@
         <permission-button permCode banType="hide" @click="check" :disabled="selectedRowKeys.length !== 1">
           <i style="color:#1890ff;margin-right:4px;" class="iconfont">&#xe8ad;</i>审核
         </permission-button>
-        <permission-button permCode banType="hide">
+        <permission-button permCode banType="hide" :disabled="selectedRowKeys.length !== 1">
           <i class="iconfont" style="color:#1890ff;margin-right:8px;">&#xe60c;</i>打印预览
         </permission-button>
-        <permission-button permCode banType="hide">
+        <permission-button permCode banType="hide" :disabled="selectedRowKeys.length !== 1">
           <i style="color:#1890ff;margin-right:4px;" class="iconfont">&#xe611;</i>导出Excel
         </permission-button>
       </a-row>
@@ -159,11 +159,19 @@ export default {
       console.log(value);
     },
     edit() {
+      if (this.selectedRows[0].state != 0) {
+        this.$message.error(`不能修改该状态下的出库单`);
+        return false;
+      }
 			this.$router.push({
 				path: "/otherStock/editOtherStock/" + this.selectedRowKeys[0]
 			});
     },
     check() {
+      if ( this.selectedRows[0].state === -1 ) {
+        this.$message.error(`只能对待审核状态下的单子进行审核`);
+        return false
+      }
       this.Axios(
         {
           url: "/api-warehouse/orderEntry/otherEntry?orderId=" + this.selectedRowKeys[0],
@@ -176,6 +184,7 @@ export default {
         result => {
           if (result.data.code === 200) {
               console.log(result);
+              this.selectedRowKeys == [];
               this.getList();
           }
         },

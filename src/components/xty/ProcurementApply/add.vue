@@ -38,9 +38,11 @@
           </a-row>
           <a-row>
             <a-form-item label="提采日期" :labelCol="{span:3}" :wrapperCol="{span:18}">
-              <a-input
-                v-decorator="['procurementDate',{rules: [{ required: true, message: '请选择提采日期' }]}]"
-              ></a-input>
+              <a-date-picker 
+                  style="width:100%;"
+                  @change="onChangeSign" 
+                  v-decorator="['stockDate',{rules: [{ required: true, message: '请选择提采日期' }]}]" 
+                  format="YYYY/MM/DD"/>
             </a-form-item>
           </a-row>
           <a-row>
@@ -82,7 +84,11 @@
             :scroll="{ x: 1900, y: 400 }"
             :pagination="false"
             row-key="drawingNo"
-          ></a-table>
+          >
+            <template slot="index" slot-scope="text, record, index">
+              <span>{{index+1}}</span>
+            </template>
+          </a-table>
         </a-row>
       </a-tab-pane>
     </a-tabs>
@@ -103,9 +109,9 @@
     >
       <div>
         导入步骤：
-        <br />1、下载模板
-        <a href="http://114.116.238.150/model/BOM.xlsx">《BOM模板.xlsx》</a>；
-        <br />2、按格式要求填写，请勿模板修改结构；
+        <br />1、下载excel模板
+        <a href="http://114.116.238.150/model/BOM.xlsx">《外购物资需求表.xls》</a>；
+        <br />2、按格式要求填写excel，请勿模板修改结构；
         <br />3、点击下方“选择文件”按钮导入数据；
         <br />4、校对并保存数据。
         <br />
@@ -132,10 +138,12 @@
 const columns = [
   {
     title: "序号",
-    dataIndex: "drawingNo",
-    key: "drawingNo",
+    dataIndex: "index",
+    key: "index",
+    scopedSlots: { customRender: "index" },
+    align: "center",
     // fixed: "left",
-    width: 150
+    width: 50
   },
   {
     title: "名称",
@@ -145,38 +153,38 @@ const columns = [
   },
   {
     title: "型号/规格",
-    dataIndex: "partsNo",
-    key: "partsNo",
+    dataIndex: "partCat",
+    key: "partCat",
     width: 150
   },
   {
     title: "计量单位",
-    dataIndex: "groupNum",
-    key: "groupNum",
+    dataIndex: "unit",
+    key: "unit",
     width: 150
   },
   {
     title: "需求数量",
-    dataIndex: "singleNum",
-    key: "singleNum",
-    width: 150
-  },
-  {
-    title: "推荐厂家",
     dataIndex: "addNum",
     key: "addNum",
     width: 150
   },
   {
+    title: "推荐厂家",
+    dataIndex: "adviseBrand",
+    key: "adviseBrand",
+    width: 150
+  },
+  {
     title: "指定厂家",
-    dataIndex: "entiretyNo",
-    key: "entiretyNo",
+    dataIndex: "brand",
+    key: "brand",
     width: 150
   },
   {
     title: "要求到货时间",
-    dataIndex: "picking",
-    key: "picking",
+    dataIndex: "arrivalTime",
+    key: "arrivalTime",
     width: 150
   },
   {
@@ -200,10 +208,15 @@ export default {
       headers: {
         Authorization: "bearer " + sessionStorage.getItem("token")
         // encType: "multipart/form-data"
-      }
+      },
+      signDate: ''
     };
   },
   methods: {
+    onChangeSign(data,dateString) {
+        this.signDate = dateString;
+        console.log(this.signDate);
+    },
     chickNumber(rule, value, callback) {
       if (
         /^\+?[1-9]\d*$/.test(value) == false &&
@@ -254,7 +267,7 @@ export default {
       }
     },
     ApiSrc() {
-      return this.global.apiSrc + "/api-order/bom/resolve";
+      return this.global.apiSrc + "/api-order/bom/resolvezc";
     },
     filterOption(input, option) {
       return (
@@ -282,23 +295,23 @@ export default {
             // }
             let qs = require("qs");
             let data = {
-              bomNo: values.designNo,
-              workOrderId: values.workOrderId,
-              workOrderNo: this.orderListValue.find(item => {
-                return item.id == values.workOrderId;
-              }).no,
-              projectName: values.projectName,
-              bomDrawingNo: values.bomDrawingNo,
-              partName: values.partName,
-              number: values.number,
+              bomNo: values.procurementNo,
+              maker: values.processer,
+              no: values.number,
+              production: values.applicant,
+              projectName: values.name,
+              raisedate: this.signDate,
+              relevant: values.department,
               remake: values.remake,
-              bomDesExcelDTOList: this.data
+              title: values.title,
+              workOrderNo: values.orderNo,
+              bomZhiExcelDTOS: this.data
             };
             console.log(data);
 
             this.Axios(
               {
-                url: "/api-order/bom/add",
+                url: "/api-order/bom/zcadd",
                 params: data,
                 type: "post",
                 option: { successMsg: "添加成功！" },
@@ -346,10 +359,36 @@ export default {
         },
         ({ type, info }) => {}
       );
-    }
+    },
+    getNo() {
+			this.Axios(
+				{
+					url: "/api-order/supplier/getNo",
+					type: "get",
+					params: {
+						num: "CG"
+					},
+					option: { enableMsg: false }
+				},
+				this
+			).then(
+				result => {
+					if (result.data.code === 200) {
+						console.log(result);
+						setTimeout(() => {
+							this.form.setFieldsValue({
+								procurementNo: result.data.data
+							});
+						}, 100);
+					}
+				},
+				({ type, info }) => {}
+			);
+		},
   },
   created() {
     // this.getList();
+    this.getNo();
   }
 };
 </script>

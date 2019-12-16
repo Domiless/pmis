@@ -4,7 +4,7 @@
             <a-col :span="24">
                 <span>关键词 :</span>
                 <a-input
-                    placeholder="单据编号"
+                    placeholder="物料编码/图号/名称"
                     style="width: 250px"
                     v-model="keyWords"
                     @keyup.enter.native="getList"
