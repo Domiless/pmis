@@ -1,5 +1,15 @@
 <template>
   <div class="work_order_hours">
+    <a-row>
+      时间：
+      <a-range-picker @change="getTime" format="YYYY/MM/DD" />
+      <a-button @click="getList">查询</a-button>
+      <permission-button
+        permCode="workhouradd_lookup.workhouradd_explore"
+        banType="hide"
+        @click="download"
+      >导出</permission-button>
+    </a-row>
     <a-row style="padding-top:10px;">
       <a-table :columns="columns" :pagination="false" :dataSource="data" rowKey="workOrderId">
         <template slot="operation" slot-scope="text, record, index">
@@ -91,10 +101,82 @@ export default {
       current: 1,
       pageSize: 10,
       total: 0,
-      oneWorkOrderHours: []
+      oneWorkOrderHours: [],
+      startTime: null,
+      endTime: null
     };
   },
   methods: {
+    download() {
+      let qs = require("qs");
+      let value = qs.stringify({
+        startTime: this.startTime != "" ? this.startTime : null,
+        endTime: this.endTime != "" ? this.endTime : null
+      });
+      this.$axios
+        .post(
+          this.global.apiSrc + "/api-workorder/workLoadCounting/exportExcel",
+          {
+            startTime: this.startTime != "" ? this.startTime : null,
+            endTime: this.endTime != "" ? this.endTime : null
+          },
+          {
+            responseType: "blob", // 设置响应数据类型
+            headers: { "Content-Type": "application/json" }
+          }
+        )
+        .then(res => {
+          if (res.status == 200) {
+            console.log(res);
+            var blob = new Blob([res.data], {
+              type:
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
+            });
+            var downloadElement = document.createElement("a");
+            var href = window.URL.createObjectURL(blob); //创建下载的链接
+            downloadElement.href = href;
+            let fileName;
+            console.log(this.startTime, this.endTime);
+            if (
+              this.startTime != "" &&
+              this.startTime != null &&
+              this.endTime != "" &&
+              this.endTime != null
+            ) {
+              fileName =
+                this.startTime.replace(/\//g, "") +
+                "~" +
+                this.endTime.replace(/\//g, "");
+            } else if (
+              (this.startTime == "" || this.startTime == null) &&
+              (this.endTime != "" && this.endTime != null)
+            ) {
+              fileName = this.endTime.replace(/\//g, "") + "之前所有";
+            } else if (
+              this.startTime != "" &&
+              this.startTime != null &&
+              (this.endTime == "" || this.endTime == null)
+            ) {
+              fileName = this.startTime.replace(/\//g, "") + "至今所有";
+            } else if (
+              (this.startTime == "" || this.startTime == null) &&
+              (this.endTime == "" || this.endTime == null)
+            ) {
+              fileName = "所有";
+            }
+            downloadElement.download = fileName + "工单工时统计.xlsx"; //下载后文件名
+            document.body.appendChild(downloadElement);
+            downloadElement.click(); //点击下载
+            document.body.removeChild(downloadElement); //下载完成移除元素
+            window.URL.revokeObjectURL(href); //释放掉blob对象
+          }
+        });
+    },
+    getTime(a, b) {
+      console.log(b);
+      this.startTime = b[0];
+      this.endTime = b[1];
+    },
     showDetails(row) {
       console.log(row);
       this.Axios(
@@ -139,7 +221,9 @@ export default {
           url: "/api-workorder/workLoadCounting/workOrder",
           params: {
             page: this.current,
-            size: this.pageSize
+            size: this.pageSize,
+            startTime: this.startTime != "" ? this.startTime : null,
+            endTime: this.endTime != "" ? this.endTime : null
           },
           type: "get",
           option: { enableMsg: false }

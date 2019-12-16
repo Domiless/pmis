@@ -107,7 +107,7 @@
         >
           <a-menu
             mode="inline"
-            :defaultOpenKeys="['putInStorage','putOutStorage','workdesk','system','enterprise','workOrder','process','materialManagement','dataAnalysis','project','procurement','design','warehouse']"
+            :defaultOpenKeys="['workdesk','system','enterprise','workOrder','process','materialManagement','dataAnalysis','project','procurement','design']"
             :selectable="false"
             :style="{ height: '100%', borderRight: 0 }"
           >
@@ -510,7 +510,7 @@ export default {
     $route() {},
     tabsList() {
       this.cachedViews = this.tabsList.map(item => item.key);
-      if (this.tabsList.length > 13) {
+      if (this.tabsList.length > 12) {
         this.tabsList.shift();
       }
     }
