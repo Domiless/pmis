@@ -22,7 +22,7 @@
         <a-range-picker style="width:240px" @change="onChangeRange" format="YYYY/MM/DD"></a-range-picker>
         <span>关键词 :</span>
         <a-input
-          :placeholder="activeKey==1?'项目订单编号/图号/需求名称/设计师/任务指派人':'项目订单编号/图号/需求名称/供应商名称'"
+          :placeholder="activeKey==1?'项目订单编号/图号/名称/型号规格':'项目订单编号/图号/需求名称/供应商名称'"
           style="width: 350px"
           v-model="keyWords"
           @keyup.enter.native="search"
@@ -129,14 +129,21 @@ const columns = [
     title: "图号",
     key: "drawingNo",
     dataIndex: "drawingNo",
-    width: "15%",
+    width: "10%",
     sorter: true
   },
   {
-    title: "需求名称",
+    title: "名称",
     key: "name",
     dataIndex: "name",
-    width: "15%",
+    width: "10%",
+    sorter: true
+  },
+  {
+    title: "型号规格",
+    key: "partCat",
+    dataIndex: "partCat",
+    width: "10%",
     sorter: true
   },
   {
@@ -147,30 +154,22 @@ const columns = [
     sorter: true
   },
   {
-    title: "指定品牌",
+    title: "推荐厂家",
+    key: "adviseBrand",
+    dataIndex: "adviseBrand",
+    width: "8%",
+  },
+    {
+    title: "指定厂家",
     key: "brand",
     dataIndex: "brand",
-    width: "10%"
-  },
-  {
-    title: "设计师",
-    key: "planner",
-    dataIndex: "planner",
     width: "8%",
-    sorter: true
   },
   {
-    title: "任务指派人",
+    title: "指派人",
     key: "assigner",
     dataIndex: "assigner",
     width: "8%",
-    sorter: true
-  },
-  {
-    title: "任务指派时间",
-    key: "assignerTime",
-    dataIndex: "assignerTime",
-    width: "11%",
     sorter: true
   },
   {
@@ -178,6 +177,13 @@ const columns = [
     key: "appointName",
     dataIndex: "appointName",
     width: "8%"
+  },
+  {
+    title: "指派时间",
+    key: "assignerTime",
+    dataIndex: "assignerTime",
+    width: "11%",
+    sorter: true
   },
   {
     title: "操作",
@@ -189,7 +195,7 @@ const columns = [
 ];
 const columns1 = [
   {
-    title: "项目订单编号",
+    title: "项目订单号",
     key: "workOrderNo",
     dataIndex: "workOrderNo",
     width: 150,
@@ -204,7 +210,7 @@ const columns1 = [
     sorter: true
   },
   {
-    title: "需求名称",
+    title: "名称",
     key: "name",
     dataIndex: "name",
     width: 150,
@@ -212,24 +218,30 @@ const columns1 = [
     sorter: true
   },
   {
+    title: "型号/规格",
+    key: "partCat",
+    dataIndex: "partCat",
+    width: 200,
+    sorter: true
+  },
+  {
     title: "需求数量",
     key: "number",
     dataIndex: "number",
-    width: 100,
+    width: 150,
     sorter: true
   },
   {
-    title: "指定品牌",
+    title: "推荐厂家",
+    key: "adviseBrand",
+    dataIndex: "adviseBrand",
+    width: 120,
+  },
+  {
+    title: "指定厂家",
     key: "brand",
     dataIndex: "brand",
-    width: 110
-  },
-  {
-    title: "设计师",
-    key: "planner",
-    dataIndex: "planner",
-    width: 80,
-    sorter: true
+    width: 120,
   },
   {
     title: "采购名称",

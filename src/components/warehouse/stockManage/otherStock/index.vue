@@ -2,34 +2,71 @@
   <div class="other_Stock">
     <router-view></router-view>
     <div :class="[{hide:isHideList}]">
-      <a-row style="line-height:50px;" >
-        <permission-button permCode banType="hide" @click="$router.push({path:'/otherStock/addOtherStock'})">
-          <a-icon style="color:#1890ff;" type="plus"/>新增
+      <a-row style="line-height:50px;">
+        <permission-button
+          permCode
+          banType="hide"
+          @click="$router.push({path:'/otherStock/addOtherStock'})"
+        >
+          <a-icon style="color:#1890ff;" type="plus" />新增
         </permission-button>
-        <permission-button permCode banType="hide" @click="edit" :disabled="selectedRowKeys.length !== 1">
-          <a-icon style="color:#1890ff;" type="edit"/>修改
+        <permission-button
+          permCode
+          banType="hide"
+          @click="edit"
+          :disabled="selectedRowKeys.length !== 1"
+        >
+          <a-icon style="color:#1890ff;" type="edit" />修改
         </permission-button>
-        <permission-button permCode banType="hide" @click="check" :disabled="selectedRowKeys.length !== 1">
+        <permission-button
+          permCode
+          banType="hide"
+          @click="check"
+          :disabled="selectedRowKeys.length !== 1"
+        >
           <i style="color:#1890ff;margin-right:4px;" class="iconfont">&#xe8ad;</i>审核
         </permission-button>
-        <permission-button permCode banType="hide" :disabled="selectedRowKeys.length !== 1">
-          <i class="iconfont" style="color:#1890ff;margin-right:8px;">&#xe60c;</i>打印预览
-        </permission-button>
-        <permission-button permCode banType="hide" :disabled="selectedRowKeys.length !== 1">
-          <i style="color:#1890ff;margin-right:4px;" class="iconfont">&#xe611;</i>导出Excel
-        </permission-button>
+        <a-tooltip placement="top">
+          <template slot="title">
+            <span>即将上线...</span>
+          </template>
+          <permission-button permCode banType="hide" :disabled="selectedRowKeys.length !== 1">
+            <i class="iconfont" style="color:#1890ff;margin-right:8px;">&#xe60c;</i>打印预览
+          </permission-button>
+        </a-tooltip>
+        <a-tooltip placement="top">
+          <template slot="title">
+            <span>即将上线...</span>
+          </template>
+          <permission-button permCode banType="hide" :disabled="selectedRowKeys.length !== 1">
+            <i style="color:#1890ff;margin-right:4px;" class="iconfont">&#xe611;</i>导出Excel
+          </permission-button>
+        </a-tooltip>
       </a-row>
       <a-row>
         <a-col :span="24">
           <a-input-group class="changeDis">
-            <span>仓库 : </span>
-            <a-select defaultValue=""  style="width: 300px" optionFilterProp="children" @change="getWarehouseValue">
-              <a-select-option value="">全部</a-select-option>
-              <a-select-option v-for="item in warehouseList" :key="item.id" :value="item.id">{{ item.name }}</a-select-option>
+            <span>仓库 :</span>
+            <a-select
+              defaultValue
+              style="width: 300px"
+              optionFilterProp="children"
+              @change="getWarehouseValue"
+            >
+              <a-select-option value>全部</a-select-option>
+              <a-select-option
+                v-for="item in warehouseList"
+                :key="item.id"
+                :value="item.id"
+              >{{ item.name }}</a-select-option>
             </a-select>
           </a-input-group>
           <span>日期 :</span>
-          <a-range-picker style="width:240px;margin-right: 10px" @change="onChangeRange" format="YYYY/MM/DD"></a-range-picker>
+          <a-range-picker
+            style="width:240px;margin-right: 10px"
+            @change="onChangeRange"
+            format="YYYY/MM/DD"
+          ></a-range-picker>
           <span>关键词 :</span>
           <a-input
             placeholder="单据编号/物料来源"
@@ -55,38 +92,40 @@
             <span>其他入库</span>
           </template>
           <template slot="state" slot-scope="text">
-						<div>
-							<span v-if="text==0" style="font-size:14px;color:#f6003c;">未审</span>
-							<span v-if="text==-1" style="font-size:14px;">已审</span>
-						</div>
-					</template>
+            <div>
+              <span v-if="text==0" style="font-size:14px;color:#f6003c;">未审</span>
+              <span v-if="text==-1" style="font-size:14px;color:#10CF0C;">已审</span>
+            </div>
+          </template>
         </a-table>
         <a-pagination
-              style="padding-top:12px;text-align: right;"
-              showQuickJumper
-              :defaultCurrent="current"
-              :total="total"
-              @change="onChange"
-              showSizeChanger
-              :pageSizeOptions="['10','20','30']"
-              @showSizeChange="onShowSizeChange"
-              :showTotal="total => `共 ${total} 条`"
-            />
+          style="padding-top:12px;text-align: right;"
+          showQuickJumper
+          :defaultCurrent="current"
+          :total="total"
+          @change="onChange"
+          showSizeChanger
+          :pageSizeOptions="['10','20','30']"
+          @showSizeChange="onShowSizeChange"
+          :showTotal="total => `共 ${total} 条`"
+        />
       </a-row>
     </div>
     <a-modal
-        title="详情"
-        v-model="detailsVisible" 
-        style="top:20px" width="1200px" 
-        :footer="null"
-        :maskClosable="false"
-        @cancel="handleCancel(1)">
-        <Details :sendId="stockDetailsId"></Details>
+      title="详情"
+      v-model="detailsVisible"
+      style="top:20px"
+      width="1200px"
+      :footer="null"
+      :maskClosable="false"
+      @cancel="handleCancel(1)"
+    >
+      <Details :sendId="stockDetailsId"></Details>
     </a-modal>
   </div>
 </template>
 <script>
-import Details from "./details"
+import Details from "./details";
 const columns = [
   {
     dataIndex: "orderCode",
@@ -118,7 +157,7 @@ const columns = [
     dataIndex: "state",
     title: "状态",
     key: "state",
-     scopedSlots: { customRender: "state" },
+    scopedSlots: { customRender: "state" },
     width: "10%"
   },
   {
@@ -132,7 +171,7 @@ const columns = [
     title: "备注",
     key: "note",
     width: "15%"
-  },
+  }
 ];
 export default {
   data() {
@@ -150,7 +189,7 @@ export default {
       current: 1,
       pageSize: 10,
       total: 0,
-      stockDetailsId: ''
+      stockDetailsId: ""
     };
   },
   methods: {
@@ -163,18 +202,20 @@ export default {
         this.$message.error(`不能修改该状态下的出库单`);
         return false;
       }
-			this.$router.push({
-				path: "/otherStock/editOtherStock/" + this.selectedRowKeys[0]
-			});
+      this.$router.push({
+        path: "/otherStock/editOtherStock/" + this.selectedRowKeys[0]
+      });
     },
     check() {
-      if ( this.selectedRows[0].state === -1 ) {
+      if (this.selectedRows[0].state === -1) {
         this.$message.error(`只能对待审核状态下的单子进行审核`);
-        return false
+        return false;
       }
       this.Axios(
         {
-          url: "/api-warehouse/orderEntry/otherEntry?orderId=" + this.selectedRowKeys[0],
+          url:
+            "/api-warehouse/orderEntry/otherEntry?orderId=" +
+            this.selectedRowKeys[0],
           params: {},
           type: "post",
           option: { successMsg: "审核成功！" }
@@ -183,9 +224,9 @@ export default {
       ).then(
         result => {
           if (result.data.code === 200) {
-              console.log(result);
-              this.selectedRowKeys == [];
-              this.getList();
+            console.log(result);
+            this.selectedRowKeys == [];
+            this.getList();
           }
         },
         ({ type, info }) => {}
@@ -211,15 +252,16 @@ export default {
       this.current = 1;
       this.getList();
     },
-    onSelectChange(selectedRowKeys,selectedRows) {
-       this.selectedRowKeys = selectedRowKeys;
-       this.selectedRows = selectedRows;
-       console.log(this.selectedRowKeys);
-       console.log(this.selectedRows);
+    onSelectChange(selectedRowKeys, selectedRows) {
+      this.selectedRowKeys = selectedRowKeys;
+      this.selectedRows = selectedRows;
+      console.log(this.selectedRowKeys);
+      console.log(this.selectedRows);
     },
     handleCancel(num) {
-      if( num == 1 ) {
+      if (num == 1) {
         this.detailsVisible = false;
+        this.stockDetailsId = "";
       }
     },
     getWareHouseList() {
@@ -275,25 +317,26 @@ export default {
   components: {
     Details
   },
-   created() {
+  created() {
     let a = this.$route.matched.find(item => item.name === "addOtherStock")
-			? true
-			: false;
-		let b = this.$route.params.id !== undefined ? true : false;
+      ? true
+      : false;
+    let b = this.$route.params.id !== undefined ? true : false;
     this.isHideList = a || b ? true : false;
     this.getWareHouseList();
     this.getList();
   },
-   watch: {
-		$route() {
+  watch: {
+    $route() {
       this.getList();
-			let a = this.$route.matched.find(item => item.name === "addOtherStock")
-				? true
-				: false;
-			let b = this.$route.params.id !== undefined ? true : false;
-			this.isHideList = a || b ? true : false;
-		}
-	}
+      this.selectedRowKeys = [];
+      let a = this.$route.matched.find(item => item.name === "addOtherStock")
+        ? true
+        : false;
+      let b = this.$route.params.id !== undefined ? true : false;
+      this.isHideList = a || b ? true : false;
+    }
+  }
 };
 </script>
 <style lang="less">

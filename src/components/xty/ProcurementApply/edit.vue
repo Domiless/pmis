@@ -7,6 +7,7 @@
             <a-form-item label="采购单号" :labelCol="{span:3}" :wrapperCol="{span:18}" required>
               <a-input
                 v-decorator="['procurementNo',{rules: [{ required: true, message: '请填写采购单号' }]}]"
+                disabled
               ></a-input>
             </a-form-item>
           </a-row>
@@ -63,6 +64,7 @@
             <a-form-item label="制单人" :labelCol="{span:3}" :wrapperCol="{span:18}">
               <a-input
                 v-decorator="['processer',{rules: [{ required: true, message: '请填写制单人' }]}]"
+                disabled
               ></a-input>
             </a-form-item>
           </a-row>
@@ -93,7 +95,7 @@
     </a-tabs>
     <a-row>
       <a-form-item :wrapper-col="{ span: 22,offset: 2 }" style="text-align:right">
-        <a-button @click="closeAdd" style="margin-right:12px;">关闭</a-button>
+        <a-button @click="closeEdit" style="margin-right:12px;">关闭</a-button>
         <a-button type="primary" @click="addDesign()">提交</a-button>
       </a-form-item>
     </a-row>
@@ -197,7 +199,7 @@ const columns = [
 export default {
   props: {
     procurementId: {
-      default: {}
+      default: ''
     }
   },
   data() {
@@ -282,11 +284,10 @@ export default {
           .indexOf(input.toLowerCase()) >= 0
       );
     },
-    closeAdd() {
-      this.getList();
+    closeEdit() {
       this.form.resetFields();
       this.data = [];
-      this.$emit("changeAddOrder", false);
+      this.$emit("changeEditOrder", false);
     },
     addDesign() {
       if (Object.keys(this.data).length == 0) {
@@ -331,8 +332,7 @@ export default {
               result => {
                 if (result.data.code === 200) {
                   console.log(result);
-                  this.getList();
-                  this.closeAdd();
+                  this.closeEdit();
                   this.form.resetFields();
                   this.data = [];
                   this.activeKey = "1";
@@ -343,29 +343,6 @@ export default {
           }
         });
       }
-    },
-    getList() {
-      this.Axios(
-        {
-          url: "/api-order/order/getOrderList",
-          type: "get",
-          params: {
-            page: 1,
-            size: -1,
-            reviewState: 3
-          },
-          option: { enableMsg: false }
-        },
-        this
-      ).then(
-        result => {
-          if (result.data.code === 200) {
-            console.log(result);
-            this.orderListValue = result.data.data;
-          }
-        },
-        ({ type, info }) => {}
-      );
     },
     findOne(id) {
 			this.Axios(
@@ -409,8 +386,14 @@ export default {
     }
   },
   created() {
-    // this.getList();
     this.findOne(this.procurementId);
+  },
+  watch: {
+    procurementId() {
+      if (this.procurementId != '') {
+        this.findOne(this.procurementId);
+      }
+    }
   }
 };
 </script>

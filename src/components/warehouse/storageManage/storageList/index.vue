@@ -19,15 +19,18 @@
                 placeholder="物料编码/图号/名称"
                 style="width: 250px"
                 v-model="keyWords"
-                @keyup.enter.native="getList"
+                @keyup.enter.native="search"
             ></a-input>
-            <a-button @click="getList">搜索</a-button>
+            <a-button @click="search" @keyup.enter.native="search">搜索</a-button>
             </a-col>
       </a-row>
       <a-row>
           <a-col :span="3">
               <div class="left_case">
-                  <a-tree :treeData="treeData" @select="getList" :defaultExpandAll="true" :autoExpandParent="true">
+                  <a-tree v-if="treeData.length" :treeData="treeData" @select="getList"
+                   :defaultSelectedKeys="defaultChecked"
+                   :defaultExpandedKeys="defaultChecked"
+                   >
                   </a-tree>
               </div>
           </a-col>
@@ -184,6 +187,8 @@ export default {
             sendEditId: '',
             detailsMsg: [],
             warehouseList: [],
+            treeId: '',
+            defaultChecked: []
         }
     },
     methods: {
@@ -221,13 +226,13 @@ export default {
         onShowSizeChange(current, pageSize) {
             this.pageSize = pageSize;
             this.current = 1;
-            this.getList();
+            this.search();
         },
         onChange(current, pageNumber) {
             console.log("Page: ", pageNumber);
             console.log("第几页: ", current);
             this.current = current;
-            this.getList();
+            this.search();
         },
         getWareHouseList() {
           this.Axios(
@@ -306,6 +311,8 @@ export default {
                 );
                 this.treeData = this.filterArray(this.treeData, code);
                 console.log(this.treeData);
+                this.defaultChecked.push(this.treeData[0].key);
+                this.getList(this.defaultChecked);
               }
             },
             ({ type, info }) => {}
@@ -329,6 +336,7 @@ export default {
         },
         getList(selectKey) {
           console.log(selectKey);
+          this.treeId = selectKey[0];
           if(selectKey.length === 0) {
             return false
           }
@@ -348,6 +356,36 @@ export default {
               if (result.data.code === 200) {
                 console.log(result);
                 this.data = result.data.data;
+                this.total = result.data.data.length;
+              }
+            },
+            ({ type, info }) => {}
+          );
+        },
+        search() {
+          if( this.treeId === '' ) {
+            this.$message.error("请选择分类");
+            return false;
+          }
+          this.Axios(
+            {
+              url: "/api-warehouse/warehouseItem/list",
+              type: "get",
+              params: {
+                page: this.current,
+                size: this.pageSize,
+                warehouseId: this.warehouseId,
+                classifyId: this.treeId,
+                keyword: this.keyWords
+              },
+              option: { enableMsg: false }
+            },
+            this
+          ).then(
+            result => {
+              if (result.data.code === 200) {
+                console.log(result);
+                this.data = result.data.data.content;
                 this.total = result.data.data.length;
               }
             },

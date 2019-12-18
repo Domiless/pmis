@@ -121,15 +121,16 @@
     </a-row>
     <a-row>
       <a-modal
-        v-model="choiceShow"
-        :footer="null"
-        :destroyOnClose="true"
-        :mask="false"
-        :closable="false"
-        width="800px"
-        centered
-      >
-        <materialList v-on:choisceMsg="choisceMsg"></materialList>
+          title="选择物料"
+          v-model="choiceShow"
+          :footer="null"
+          :destroyOnClose="true"
+          :mask="false"
+          :closable="true"
+          width="800px"
+          centered
+          >
+          <materialList v-on:choisceMsg="choisceMsg"></materialList>
       </a-modal>
     </a-row>
   </div>

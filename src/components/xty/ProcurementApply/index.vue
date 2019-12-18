@@ -13,10 +13,10 @@
       <permission-button permCode banType="hide" @click="audit" :disabled="selectedRowKeys.length !== 1">
         <i style="color:#1890ff;margin-right:4px;" class="iconfont">&#xe8ad;</i>审批
       </permission-button>
-      <permission-button permCode banType="hide" :disabled="selectedRowKeys.length !== 1">
+      <permission-button permCode banType="hide" @click="toPreview" :disabled="selectedRowKeys.length !== 1">
         <i class="iconfont" style="color:#1890ff;margin-right:8px;">&#xe60c;</i>打印预览
       </permission-button>
-      <permission-button permCode banType="hide" :disabled="selectedRowKeys.length !== 1">
+      <permission-button permCode banType="hide" @click="handleDel" :disabled="selectedRowKeys.length !== 1">
         <a-icon style="color:#1890ff;" type="delete" />删除
       </permission-button>
     </a-row>
@@ -72,7 +72,7 @@
         :maskClosable="false"
         :footer="null"
       >
-        <addApply ref="addApply"></addApply>
+        <addApply @changeAddOrder="cancelAddOrder" ref="addApply"></addApply>
     </a-modal>
     <a-modal
         title="修改"
@@ -82,7 +82,7 @@
         width="1200px"
         :footer="null"
       >
-        <editApply :procurementId="procurementId" ref="editApply"></editApply>
+        <editApply :procurementId="selectedRowKeys[0]" @changeEditOrder="cancelEditOrder" ref="editApply"></editApply>
       </a-modal>
     <a-modal
         title="指派采购员"
@@ -92,7 +92,7 @@
         :maskClosable="false"
         @cancel="handleCancel(3)"
     >
-        <assign-buyer ref="assignBuyer"></assign-buyer>
+        <assign-buyer @changeAssignOrder="cancelAssignOrder" :orderId="selectedRowKeys[0]" ref="assignBuyer"></assign-buyer>
     </a-modal>
     <a-modal
         title="详情"
@@ -299,10 +299,33 @@ export default {
       editVisible: false,
       detailsVisible: false,
       assignVisible: false,
-      procurementId: ''
     };
   },
   methods: {
+    toPreview() {
+      this.Axios(
+				{
+					url: '/api-order/bom/findone',
+					params: {
+            id: this.selectedRowKeys[0]
+          },
+					type: "get",
+					option: { enableMsg: false }
+				},
+				this
+			).then(
+				result => {
+					if (result.data.code === 200) {
+            console.log(result);
+            let sendMsg = result.data.data;
+            sessionStorage.priview = JSON.stringify(sendMsg);
+						sessionStorage.priviewType = 5;
+						window.open("/priview.html", "_blank");
+					}
+				},
+				({ type, info }) => {}
+      );
+    },
       handleCancel(a) {
       if (a == 1) {
         this.$refs.addApply.closeAdd();
@@ -317,9 +340,26 @@ export default {
         this.detailsVisible = false;
       }
     },
+    cancelAddOrder(params) {
+      this.addVisible = params;
+      this.getList();
+    },
+    cancelEditOrder(params) {
+      this.editVisible = params;
+      this.getList();
+      this.selectedRowKeys = [];
+    },
+    cancelAssignOrder(params) {
+      this.assignVisible = params;
+      this.getList();
+      this.selectedRowKeys = [];
+    },
     edit() {
-        this.editVisible = true;
-        this.procurementId = this.selectedRowKeys[0];
+      if ( this.selectedRows[0].bomReviewSchedule !== 2 ) {
+        this.$message.error("只能修改未审批采购单");
+        return false
+      } 
+      this.editVisible = true;
     },
     onChange(current, pageNumber) {
       console.log("Page: ", pageNumber);
@@ -343,7 +383,11 @@ export default {
       console.log(this.selectedRows);
     },
     showAssign() {
-        this.assignVisible = true;
+      if ( this.selectedRows[0].bomReviewSchedule !== 3 ) {
+        this.$message.error("不可指派未审核采购单");
+        return false
+      } 
+      this.assignVisible = true;
     },
     showDetails(id) {
         this.detailsVisible = true;
@@ -367,7 +411,51 @@ export default {
 				({ type, info }) => {}
 			);
     },
+    handleDel() {
+      let that = this;
+			this.$confirm({
+				title: "确定删除吗？",
+				content: "",
+				okText: "确定",
+				okType: "danger",
+				cancelText: "取消",
+				onOk: function() {
+					that.onDelete();
+				},
+				onCancel() {}
+			});
+    },
+    onDelete(e) {
+			console.log("delete" + this.selectedRowKeys);
+			let qs = require("qs");
+			let data = qs.stringify({
+				bomId: this.selectedRowKeys[0]
+			});
+			this.Axios(
+				{
+					url: "/api-order/bom/deleteBom",
+					params: data,
+					type: "post",
+					option: { successMsg: "删除成功！" }
+				},
+				this
+			).then(
+				result => {
+					if (result.data.code === 200) {
+						console.log(result);
+						this.getList();
+            this.selectedRowKeys = [];
+            this.selectedRows = [];            
+					}
+				},
+				({ type, info }) => {}
+			);
+		},
     audit() {
+      if ( this.selectedRows[0].bomReviewSchedule !== 2 ) {
+        this.$message.error("不可重复审批");
+        return false
+      } 
       this.Axios(
 				{
 					url: '/api-order/bom/audit?id=' + this.selectedRowKeys[0],
@@ -383,6 +471,7 @@ export default {
 				result => {
 					if (result.data.code === 200) {
             console.log(result.data.data);
+            this.selectedRowKeys = [];
             this.getList();
 					}
 				},

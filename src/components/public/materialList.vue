@@ -2,18 +2,17 @@
   <div class="materia_list">
     <a-row style="padding-bottom:12px;">
       <span>关键字：</span>
-      <a-input :value="keyWords" placeholder maxlength="50" style="width:300px;"></a-input>
-      <a-button type="primary">查询</a-button>
+      <a-input v-model="keyWords" placeholder="请输入关键词" maxlength="50" style="width:300px;"></a-input>
+      <a-button type="primary" @click="search" @keyup.enter.native="search">查询</a-button>
     </a-row>
     <a-row>
       <a-col :span="5">
         <div class="left_case">
-          <a-tree
-            :treeData="treeData"
-            @select="getList"
-            :defaultExpandAll="true"
-            :autoExpandParent="true"
-          ></a-tree>
+          <a-tree v-if="treeData.length" :treeData="treeData" @select="getList"
+          :defaultSelectedKeys="defaultChecked"
+          :defaultExpandedKeys="defaultChecked"
+          >
+          </a-tree>
         </div>
       </a-col>
       <a-col :span="19" style="padding-left:4px;">
@@ -90,7 +89,9 @@ export default {
       ],
       total: 0,
       treeData: [],
-      keyWords: ""
+      keyWords: '',
+      treeId: '',
+      defaultChecked: []
     };
   },
   methods: {
@@ -153,6 +154,8 @@ export default {
               })
             );
             this.treeData = this.filterArray(this.treeData, code);
+            this.defaultChecked.push(this.treeData[0].key);
+            this.getList(this.defaultChecked);
           }
         },
         ({ type, info }) => {}
@@ -176,8 +179,9 @@ export default {
     },
     getList(selectKey) {
       console.log(selectKey);
-      if (selectKey.length === 0) {
-        return false;
+      this.treeId = selectKey[0];
+      if(selectKey.length === 0) {
+          return false
       }
       this.Axios(
         {
@@ -185,6 +189,33 @@ export default {
           type: "get",
           params: {
             classifyId: selectKey[0],
+            keyword: this.keyWords
+          },
+          option: { enableMsg: false }
+        },
+        this
+      ).then(
+        result => {
+          if (result.data.code === 200) {
+            console.log(result);
+            this.data = result.data.data;
+            this.total = result.data.data.length;
+          }
+        },
+        ({ type, info }) => {}
+      );
+    },
+    search() {
+      if( this.treeId === '' ) {
+        this.$message.error("请选择分类");
+        return false;
+      }
+      this.Axios(
+        {
+          url: "/api-warehouse/warehouseItem/selectList",
+          type: "get",
+          params: {
+            classifyId: this.treeId,
             keyword: this.keyWords
           },
           option: { enableMsg: false }

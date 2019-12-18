@@ -162,7 +162,9 @@ export default {
   },
   watch: {
     sendId(){
-      this.findOne(this.sendId);
+      if( this.sendId !== '' ) {
+        this.findOne(this.sendId);
+      }
     }
   }
 }
