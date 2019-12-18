@@ -344,7 +344,7 @@ export default {
   created() {
     this.getWearhouse();
     this.getTreeDataList();
-    this.getList();
+    // this.getList();
   },
   watch: {}
 };

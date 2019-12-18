@@ -33,7 +33,7 @@
           </a-select>
           <span class="span_lable">经办人：</span>
           <a-input placeholder v-model="manager" style="width: 140px"></a-input>
-          <a-button type="primary">查询</a-button>
+          <a-button type="primary" @click="getList">查询</a-button>
         </a-col>
       </a-row>
       <a-row style="padding-top:10px;">
@@ -251,7 +251,7 @@ export default {
   },
   created() {
     this.getWearhouse();
-    this.getList();
+    // this.getList();
   },
   watch: {}
 };
