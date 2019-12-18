@@ -129,11 +129,12 @@
         </a-row>
         <a-row>
             <a-modal
+                title="选择物料"
                 v-model="choiceShow"
                 :footer="null"
                 :destroyOnClose="true"
                 :mask="false"
-                :closable="false"
+                :closable="true"
                 width="800px"
                 centered
                 >

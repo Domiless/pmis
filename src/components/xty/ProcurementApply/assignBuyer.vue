@@ -4,19 +4,19 @@
         <a-row style="margin-bottom: 10px">
             <a-col :span="12">
                 <span class="label_right">采购单号: </span>
-				<span>{{orderMsg.workOrderNo}}</span>
-            </a-col>
-            <a-col :span="12">
-                <span class="label_right">项目名称: </span>
 				<span>{{orderMsg.bomNo}}</span>
             </a-col>
             <a-col :span="12">
+                <span class="label_right">项目名称: </span>
+				<span>{{orderMsg.projectName}}</span>
+            </a-col>
+            <a-col :span="12">
                 <span class="label_right">项目订单编号: </span>
-				<span>{{orderMsg.partName}}</span>
+				<span>{{orderMsg.workOrderNo}}</span>
             </a-col>
             <a-col :span="12">
                 <span class="label_right">业务归口部门: </span>
-				<span>{{orderMsg.bomDrawingNo}}</span>
+				<span>{{orderMsg.relevant}}</span>
             </a-col>
         </a-row>
         <a-row class="second_row">
@@ -29,9 +29,7 @@
                  :labelInValue="true"
                  v-model="defaultValue"
                 >
-                    <a-select-option v-for="i in buyerArr" :key="i.id" :value="i.id"
-                    >{{ i.name }}</a-select-option
-                    >
+                    <a-select-option v-for="i in buyerArr" :key="i.id" :value="i.id">{{ i.name }}</a-select-option>
                 </a-select>
                 <permission-button
                     permCode
@@ -92,17 +90,17 @@
 <script>
 import { log } from 'util';
 const columns = [
-    {
-		dataIndex: "drawingNo",
-		title: "图号",
-		key: "drawingNo",
-		width: "20%"
-	},
+    // {
+	// 	dataIndex: "drawingNo",
+	// 	title: "图号",
+	// 	key: "drawingNo",
+	// 	width: "20%"
+	// },
 	{
 		dataIndex: "name",
 		title: "名称",
 		key: "name",
-		width: "20%"
+		width: "30%"
 	},
 	{
 		dataIndex: "brand",
@@ -114,7 +112,7 @@ const columns = [
 		dataIndex: "addNum",
 		title: "需求数量",
 		key: "addNum",
-		width: "10%"
+		width: "20%"
 	},
 	{
 		dataIndex: "appointName",
@@ -127,9 +125,6 @@ const columns = [
 ]
 export default {
     props: {
-        orderMsg: {
-            default: ''
-        },
         orderId: {
             default: ''
         },
@@ -145,12 +140,13 @@ export default {
             selectedRows: [],
             selectedRowKeys: [],
             defaultValue: '',
-            copyData: []
+            copyData: [],
+            orderMsg: []
         }
     },
     methods: {
          close() {
-            this.$emit("cancelAssign", false);
+            this.$emit("changeAssignOrder", false);
             this.selectedRowKeys = [];
             this.defaultValue = ''
         },
@@ -275,10 +271,10 @@ export default {
         getList(id) {
             this.Axios(
 				{
-					url: "/api-order/bom/getBomdes",
+					url: "/api-order/bom/findone",
 					type: "get",
 					params: {
-						bomIdS: id
+						id: id
 					},
 					option: { enableMsg: false }
 				},
@@ -286,8 +282,9 @@ export default {
 			).then(
 				result => {
 					if (result.data.code === 200) {
-						console.log(result);
-                        this.data = result.data.data;
+                        console.log(result);
+                        this.orderMsg = result.data.data;
+                        this.data = result.data.data.bomDes;
                         this.copyData = JSON.parse(JSON.stringify(this.data));
                         console.log(this.copyData);
 					}
@@ -297,8 +294,8 @@ export default {
         }
     },
     created() {
-        // this.getList(this.orderId);
-        // this.getBuyer();
+        this.getList(this.orderId);
+        this.getBuyer();
     },
     watch: {
         orderId() {

@@ -57,7 +57,7 @@
           <template slot="state" slot-scope="text">
 						<div>
 							<span v-if="text==0" style="font-size:14px;color:#f6003c;">未审</span>
-							<span v-if="text==-1" style="font-size:14px;">已审</span>
+							<span v-if="text==-1" style="font-size:14px;color:#10CF0C;">已审</span>
 						</div>
 					</template>
         </a-table>
@@ -220,6 +220,7 @@ export default {
     handleCancel(num) {
       if( num == 1 ) {
         this.detailsVisible = false;
+        this.stockDetailsId = '';
       }
     },
     getWareHouseList() {
@@ -287,6 +288,7 @@ export default {
    watch: {
 		$route() {
       this.getList();
+      this.selectedRowKeys = [];
 			let a = this.$route.matched.find(item => item.name === "addOtherStock")
 				? true
 				: false;

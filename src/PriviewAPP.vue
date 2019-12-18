@@ -354,11 +354,15 @@
 		<div v-if="priviewType==4">
 			<Contract-Preview></Contract-Preview>
 		</div>
+    <div v-if="priviewType==5">
+			<Procurement-preview></Procurement-preview>
+		</div>
 	</div>
 </template>
 <script>
 import Vue from "vue";
 import ContractPreview from "./components/xty/procurementContractManage/preview"
+import ProcurementPreview from "./components/xty/ProcurementApply/preview"
 import { Table, Col, Row, Form, Input, Icon } from "ant-design-vue";
 Vue.use(Table);
 Vue.use(Col);
@@ -411,7 +415,8 @@ export default {
 		}
 	},
 	components: {
-		ContractPreview
+    ContractPreview,
+    ProcurementPreview
 	},
 	created() {
 		console.log(JSON.parse(sessionStorage.getItem("user")).userName);

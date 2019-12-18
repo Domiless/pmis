@@ -63,6 +63,7 @@
             <a-form-item label="制单人" :labelCol="{span:3}" :wrapperCol="{span:18}">
               <a-input
                 v-decorator="['processer',{rules: [{ required: true, message: '请填写制单人' }]}]"
+                disabled
               ></a-input>
             </a-form-item>
           </a-row>
@@ -277,7 +278,6 @@ export default {
       );
     },
     closeAdd() {
-      this.getList();
       this.form.resetFields();
       this.data = [];
       this.$emit("changeAddOrder", false);
@@ -324,7 +324,6 @@ export default {
               result => {
                 if (result.data.code === 200) {
                   console.log(result);
-                  this.getList();
                   this.closeAdd();
                   this.form.resetFields();
                   this.data = [];
@@ -336,29 +335,6 @@ export default {
           }
         });
       }
-    },
-    getList() {
-      this.Axios(
-        {
-          url: "/api-order/order/getOrderList",
-          type: "get",
-          params: {
-            page: 1,
-            size: -1,
-            reviewState: 3
-          },
-          option: { enableMsg: false }
-        },
-        this
-      ).then(
-        result => {
-          if (result.data.code === 200) {
-            console.log(result);
-            this.orderListValue = result.data.data;
-          }
-        },
-        ({ type, info }) => {}
-      );
     },
     getNo() {
 			this.Axios(
@@ -377,7 +353,8 @@ export default {
 						console.log(result);
 						setTimeout(() => {
 							this.form.setFieldsValue({
-								procurementNo: result.data.data
+                procurementNo: result.data.data,
+                processer: JSON.parse(sessionStorage.getItem('user')).userName
 							});
 						}, 100);
 					}
@@ -387,9 +364,8 @@ export default {
 		},
   },
   created() {
-    // this.getList();
     this.getNo();
-  }
+  },
 };
 </script>
 <style lang="less" scoped>

@@ -153,13 +153,13 @@
 <script>
 import moment from "moment";
 const columns = [
-  // {
-  //   title: "项目订单编号",
-  //   key: "workOrderNo",
-  //   dataIndex: "workOrderNo",
-  //   width: 150,
-  //   fixed: "left"
-  // },
+  {
+    title: "项目订单号",
+    key: "workOrderNo",
+    dataIndex: "workOrderNo",
+    width: 150,
+    fixed: "left"
+  },
   {
     title: "图号",
     key: "drawingNo",
@@ -175,22 +175,28 @@ const columns = [
     fixed: "left"
   },
   {
+    title: "型号/规格",
+    key: "partCat",
+    dataIndex: "partCat",
+    width: 150,
+  },
+  {
     title: "需求数量",
     key: "addNum",
     dataIndex: "addNum",
     width: 80
   },
   {
-    title: "指定品牌",
-    key: "brand",
-    dataIndex: "brand",
-    width: 110
+    title: "推荐厂家",
+    key: "adviseBrand",
+    dataIndex: "adviseBrand",
+    width: 120,
   },
   {
-    title: "设计师",
-    key: "planner",
-    dataIndex: "planner",
-    width: 80
+    title: "指定厂家",
+    key: "brand",
+    dataIndex: "brand",
+    width: 120,
   },
   {
     title: "采购名称",
@@ -414,6 +420,7 @@ export default {
           appointId: item.appointId,
           appointName: item.appointName,
           bomDesId: item.id,
+          adviseBrand: item.adviseBrand,
           brand: item.brand,
           delivery: item.delivery,
           planner: item.planner,
