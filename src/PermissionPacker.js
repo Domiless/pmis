@@ -5,7 +5,7 @@ import {
   Button,
   Switch
 }
-from 'ant-design-vue';
+  from 'ant-design-vue';
 
 let permissionUrl = "";
 const validate = (permCode) => {
@@ -76,12 +76,10 @@ function hoc(component) {
     props: {
       permCode: {
         type: String,
-
         default: null
       },
       banType: {
         type: String,
-
         default: null
       },
       // resetBack:{
@@ -110,14 +108,14 @@ function hoc(component) {
             break;
           case "alert":
             const noPerHandler = (newState) => {
-                message.error({
-                  message: `抱歉，您所在的权限组不能进行此操作`
-                });
-                this.$listeners.resetBack && this.$listeners.resetBack(newState);
-              }
-              ['click', 'change'].forEach(handler => {
-                if (this.$listeners[handler]) this.$listeners[handler] = noPerHandler;
-              })
+              message.error({
+                message: `抱歉，您所在的权限组不能进行此操作`
+              });
+              this.$listeners.resetBack && this.$listeners.resetBack(newState);
+            }
+            ['click', 'change'].forEach(handler => {
+              if (this.$listeners[handler]) this.$listeners[handler] = noPerHandler;
+            })
             break;
         }
       }

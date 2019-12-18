@@ -8,8 +8,12 @@
     <a-row>
       <a-col :span="5">
         <div class="left_case">
-          <a-tree :treeData="treeData" @select="getList" :defaultExpandAll="true" :autoExpandParent="true">
-          </a-tree>
+          <a-tree
+            :treeData="treeData"
+            @select="getList"
+            :defaultExpandAll="true"
+            :autoExpandParent="true"
+          ></a-tree>
         </div>
       </a-col>
       <a-col :span="19" style="padding-left:4px;">
@@ -20,9 +24,9 @@
           rowKey="id"
           :customRow="(a,b)=>customRow(a,b)"
         >
-        <template slot="code" slot-scope="text, record">
-          <div class="codeMsg">{{text}}</div>
-        </template>
+          <template slot="code" slot-scope="text, record">
+            <div class="codeMsg">{{text}}</div>
+          </template>
         </a-table>
         <span class="msg">提示：双击可选择物料信息。</span>
       </a-col>
@@ -49,12 +53,6 @@ const columns = [
     key: "name",
     title: "名称",
     width: 180
-  },
-  {
-    dataIndex: "xinghaoguige",
-    key: "xinghaoguige",
-    title: "型号/规格",
-    width: 140
   },
   {
     dataIndex: "specification",
@@ -92,7 +90,7 @@ export default {
       ],
       total: 0,
       treeData: [],
-      keyWords: ''
+      keyWords: ""
     };
   },
   methods: {
@@ -121,7 +119,6 @@ export default {
         result => {
           if (result.data.code === 200) {
             console.log(result);
-
           }
         },
         ({ type, info }) => {}
@@ -146,9 +143,7 @@ export default {
                 key: item.id,
                 value: item.id,
                 organizeCode: parseInt(item.code),
-                organizeParentCode: parseInt(item.parentCode),
-                
-                
+                organizeParentCode: parseInt(item.parentCode)
               };
             });
             let code = Math.min.apply(
@@ -181,8 +176,8 @@ export default {
     },
     getList(selectKey) {
       console.log(selectKey);
-      if(selectKey.length === 0) {
-          return false
+      if (selectKey.length === 0) {
+        return false;
       }
       this.Axios(
         {
@@ -241,7 +236,7 @@ export default {
   .codeMsg {
     width: 100px;
     overflow: hidden;
-    text-overflow:ellipsis;
+    text-overflow: ellipsis;
     white-space: nowrap;
     cursor: pointer;
   }

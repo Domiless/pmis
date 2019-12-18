@@ -308,7 +308,7 @@ export default {
             warehouseId: this.warehouseId != -1 ? this.warehouseId : null,
             startTime: this.startDate != "" ? this.startDate : null,
             endTime: this.endDate != "" ? this.endDate : null,
-            keyword: this.keyword
+            keyword: this.keyWords
           },
           type: "get",
           option: { enableMsg: false }
