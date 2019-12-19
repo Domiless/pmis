@@ -9,15 +9,25 @@
         <permission-button permCode banType="hide" @click="edit" :disabled="selectedRowKeys.length !== 1">
           <a-icon style="color:#1890ff;" type="edit" />修改
         </permission-button>
-        <permission-button permCode banType="hide"  :disabled="selectedRowKeys.length !== 1">
+        <!-- <permission-button permCode banType="hide"  :disabled="selectedRowKeys.length !== 1">
           <i style="color:#1890ff;margin-right:4px;" class="iconfont">&#xe8ad;</i>审核
-        </permission-button>
-        <permission-button permCode banType="hide"  :disabled="selectedRowKeys.length !== 1">
-          <i class="iconfont" style="color:#1890ff;margin-right:8px;">&#xe60c;</i>打印预览
-        </permission-button>
-        <permission-button permCode banType="hide"  :disabled="selectedRowKeys.length !== 1">
-          <i style="color:#1890ff;margin-right:4px;" class="iconfont">&#xe611;</i>导出Excel
-        </permission-button>
+        </permission-button> -->
+        <a-tooltip placement="top">
+          <template slot="title">
+            <span>即将上线...</span>
+          </template>
+          <permission-button permCode banType="hide"  :disabled="selectedRowKeys.length !== 1">
+            <i class="iconfont" style="color:#1890ff;margin-right:8px;">&#xe60c;</i>打印预览
+          </permission-button>
+        </a-tooltip>
+        <a-tooltip placement="top">
+          <template slot="title">
+            <span>即将上线...</span>
+          </template>
+          <permission-button permCode banType="hide"  :disabled="selectedRowKeys.length !== 1">
+            <i style="color:#1890ff;margin-right:4px;" class="iconfont">&#xe611;</i>导出Excel
+          </permission-button>
+        </a-tooltip>
       </a-row>
       <a-row>
         <a-col :span="24">

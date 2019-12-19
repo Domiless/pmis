@@ -22,6 +22,7 @@
                         {rules: [{ required: true, message: '请填写单据编号' }]}
                         ]"
             maxlength="20"
+            disabled
           ></a-input>
         </a-form-item>
         <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 12 }" label="盘点仓库">
@@ -235,8 +236,35 @@ export default {
   },
   methods: {
     delRow(row, index) {
-        console.log(index);
+        console.log(row);
         this.data.splice(index, 1);
+        let qs = require("qs");
+        let detailsData = qs.stringify({
+          checkItemId: row.id,
+          checkAmount: row.checkAmount,
+          remark: row.remark
+        });
+        console.log(detailsData);
+        this.Axios(
+              {
+                url: "/api-warehouse/checkItem/update?" + detailsData,
+                params: {},
+                type: "put",
+                enableMsg: false,
+                option: { successMsg: "删除成功！" },
+                config: {
+                  headers: { "Content-Type": "application/json" }
+                }
+              },
+              this
+            ).then(
+              result => {
+                if (result.data.code === 200) {
+                  console.log(result);
+                }
+              },
+              ({ type, info }) => {}
+            );
     },
     choisceMsg(a) {
         console.log(a);
@@ -249,7 +277,58 @@ export default {
             this.$message.error(`该条数据已被选择`);
             return false;
         }
-        this.data.push(a);
+        var addArr = [];
+        addArr.push(a);
+        addArr = addArr.map(item => {
+                          return {
+                            id: item.id,
+                            code: item.code,
+                            drawingNo: item.drawingCode,
+                            name: item.name,
+                            specification: item.specification,
+                            unitEntry: item.unit,
+                            classify: item.classification.name,
+                            inventoryAmount: item.amount,
+                            checkAmount: '',
+                            remark: item.note,
+                            warehouseId: item.warehouse.id
+                          }
+                        })
+        console.log(addArr);
+        this.data = this.data.concat(addArr);
+        // this.data.push(a);
+        console.log(this.data);
+        let qs = require("qs");
+        let data = qs.stringify({
+          checkId: addArr[0].id,
+          checkItemDTOS: addArr.map(item => {
+            return {
+              checkAmount: item.checkAmount,
+              remark: item.remark,
+              warehouseItemID: item.warehouseId
+            }
+          })
+        })
+        this.Axios(
+            {
+              url: "/api-warehouse/checkItem/add",
+              params: data,
+              type: "post",
+              enableMsg: false,
+              option: { successMsg: "修改成功！" },
+              config: {
+                headers: { "Content-Type": "application/json" }
+              }
+            },
+            this
+          ).then(
+            result => {
+              if (result.data.code === 200) {
+                console.log(result);
+              }
+            },
+            ({ type, info }) => {}
+          );
     },
     onChangeSign(data, dateString) {
       this.signDate = dateString;
@@ -268,13 +347,14 @@ export default {
         checkAmount: target.checkAmount,
         remark: target.remark
       });
+      console.log(detailsData);
       this.Axios(
             {
               url: "/api-warehouse/checkItem/update?" + detailsData,
               params: {},
               type: "put",
               enableMsg: false,
-              // option: { successMsg: "修改成功！" },
+              option: { successMsg: "修改成功！" },
               config: {
                 headers: { "Content-Type": "application/json" }
               }

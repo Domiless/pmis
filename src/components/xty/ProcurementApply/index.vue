@@ -71,6 +71,7 @@
         width="1200px"
         :maskClosable="false"
         :footer="null"
+        destroyOnClose
       >
         <addApply @changeAddOrder="cancelAddOrder" ref="addApply"></addApply>
     </a-modal>
@@ -81,6 +82,7 @@
         :maskClosable="false"
         width="1200px"
         :footer="null"
+        destroyOnClose
       >
         <editApply :procurementId="selectedRowKeys[0]" @changeEditOrder="cancelEditOrder" ref="editApply"></editApply>
       </a-modal>
@@ -91,6 +93,7 @@
         :footer="null"
         :maskClosable="false"
         @cancel="handleCancel(3)"
+        destroyOnClose
     >
         <assign-buyer @changeAssignOrder="cancelAssignOrder" :orderId="selectedRowKeys[0]" ref="assignBuyer"></assign-buyer>
     </a-modal>
@@ -101,6 +104,7 @@
         :visible="detailsVisible"
         @cancel="handleCancel(4)"
         :maskClosable="false"
+        destroyOnClose
       >
         <a-tabs defaultActiveKey="1">
           <a-tab-pane tab="基础信息" key="1">
@@ -426,6 +430,11 @@ export default {
 			});
     },
     onDelete(e) {
+      if(this.selectedRows[0].bomReviewSchedule == 3){
+        this.$message.error("不可删除已审批采购单");
+        this.selectedRowKeys = [];
+        return false
+      }
 			console.log("delete" + this.selectedRowKeys);
 			let qs = require("qs");
 			let data = qs.stringify({

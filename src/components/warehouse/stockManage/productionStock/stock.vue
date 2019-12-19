@@ -30,9 +30,9 @@
         :dataSource="data"
         :pagination="false"
       >
-        <template slot="code" slot-scope="text, record">
+        <!-- <template slot="code" slot-scope="text, record">
           <div class="codeMsg">{{text}}</div>
-        </template>
+        </template> -->
         <template slot="warehouseUnit" slot-scope="text,record">
           <a-select
             style="width: 100%"
@@ -120,25 +120,25 @@ const columns = [
     title: "名称",
     key: "name",
     dataIndex: "name",
-    width: 150
+    width: 200
   },
   {
     title: "型号/规格",
     key: "specification",
     dataIndex: "specification",
-    width: 150
+    width: 200
   },
   {
     title: "单位",
     key: "unit",
     dataIndex: "unit",
-    width: 150
+    width: 100
   },
   {
     title: "总数量",
     key: "orderAmount",
     dataIndex: "orderAmount",
-    width: 150
+    width: 100
   },
   {
     title: "已入",

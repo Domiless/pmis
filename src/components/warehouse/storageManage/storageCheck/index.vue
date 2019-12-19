@@ -9,15 +9,25 @@
         <permission-button permCode banType="hide" @click="edit" :disabled="selectedRowKeys.length !== 1">
           <a-icon style="color:#1890ff;" type="edit" />修改
         </permission-button>
-        <permission-button permCode banType="hide"  :disabled="selectedRowKeys.length !== 1">
+        <permission-button permCode banType="hide" @click="handleCheck" :disabled="selectedRowKeys.length !== 1">
           <i style="color:#1890ff;margin-right:4px;" class="iconfont">&#xe8ad;</i>审核
         </permission-button>
-        <permission-button permCode banType="hide"  :disabled="selectedRowKeys.length !== 1">
-          <i class="iconfont" style="color:#1890ff;margin-right:8px;">&#xe60c;</i>打印预览
-        </permission-button>
-        <permission-button permCode banType="hide"  :disabled="selectedRowKeys.length !== 1">
-          <i style="color:#1890ff;margin-right:4px;" class="iconfont">&#xe611;</i>导出Excel
-        </permission-button>
+        <a-tooltip placement="top">
+          <template slot="title">
+            <span>即将上线...</span>
+          </template>
+          <permission-button permCode banType="hide"  :disabled="selectedRowKeys.length !== 1">
+            <i class="iconfont" style="color:#1890ff;margin-right:8px;">&#xe60c;</i>打印预览
+          </permission-button>
+        </a-tooltip>
+        <a-tooltip placement="top">
+          <template slot="title">
+            <span>即将上线...</span>
+          </template>
+          <permission-button permCode banType="hide"  :disabled="selectedRowKeys.length !== 1">
+            <i style="color:#1890ff;margin-right:4px;" class="iconfont">&#xe611;</i>导出Excel
+          </permission-button>
+        </a-tooltip>
       </a-row>
       <a-row>
         <a-col :span="24">
@@ -51,6 +61,12 @@
           <template slot="checkNo" slot-scope="text, record">
             <a href="javascript:" @click="showDetails(record.id)">{{text}}</a>
           </template>
+          <template slot="state" slot-scope="text">
+						<div>
+							<span v-if="text==0" style="font-size:14px;color:#f6003c;">未审</span>
+							<span v-if="text==1" style="font-size:14px;color:#10CF0C;">已审</span>
+						</div>
+					</template>
         </a-table>
         <a-pagination
               style="padding-top:12px;text-align: right;"
@@ -105,6 +121,13 @@ const columns = [
     width: "10%"
   },
   {
+    dataIndex: "state",
+    title: "状态",
+    key: "state",
+    scopedSlots: { customRender: "state" },
+    width: "10%"
+  },
+  {
     dataIndex: "checkDate",
     title: "盘点日期",
     key: "checkDate",
@@ -114,7 +137,7 @@ const columns = [
     dataIndex: "remark",
     title: "备注",
     key: "remark",
-    width: "30%"
+    width: "20%"
   },
 ];
 export default {
@@ -179,6 +202,45 @@ export default {
       if( num == 1 ) {
         this.detailsVisible = false;
       }
+    },
+    handleCheck() {
+      let that = this;
+			this.$confirm({
+				title: "确定要审核该单据吗？",
+				content: "",
+				okText: "确定",
+				okType: "primary",
+				cancelText: "取消",
+				onOk: function() {
+					that.check();
+				},
+				onCancel() {}
+			});
+    },
+    check() {
+      if ( this.selectedRows[0].state === 1 ) {
+        this.$message.error(`只能对待审核状态下的单子进行审核`);
+        this.selectedRowKeys = [];
+        return false
+      }
+      this.Axios(
+        {
+          url: "/api-warehouse/check/audit?checkId=" + this.selectedRowKeys[0],
+          params: {},
+          type: "put",
+          option: { successMsg: "审核成功！" }
+        },
+        this
+      ).then(
+        result => {
+          if (result.data.code === 200) {
+              console.log(result);
+              this.selectedRowKeys = [];
+              this.getList();
+          }
+        },
+        ({ type, info }) => {}
+      );
     },
     getWareHouseList() {
       this.Axios(
