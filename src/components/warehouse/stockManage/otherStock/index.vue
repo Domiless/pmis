@@ -9,7 +9,7 @@
         <permission-button permCode banType="hide" @click="edit" :disabled="selectedRowKeys.length !== 1">
           <a-icon style="color:#1890ff;" type="edit"/>修改
         </permission-button>
-        <permission-button permCode banType="hide" @click="check" :disabled="selectedRowKeys.length !== 1">
+        <permission-button permCode banType="hide" @click="handleCheck" :disabled="selectedRowKeys.length !== 1">
           <i style="color:#1890ff;margin-right:4px;" class="iconfont">&#xe8ad;</i>审核
         </permission-button>
         <permission-button permCode banType="hide" :disabled="selectedRowKeys.length !== 1">
@@ -118,7 +118,7 @@ const columns = [
     dataIndex: "state",
     title: "状态",
     key: "state",
-     scopedSlots: { customRender: "state" },
+    scopedSlots: { customRender: "state" },
     width: "10%"
   },
   {
@@ -167,6 +167,20 @@ export default {
 				path: "/otherStock/editOtherStock/" + this.selectedRowKeys[0]
 			});
     },
+    handleCheck() {
+      let that = this;
+			this.$confirm({
+				title: "确定要审核该单据吗？",
+				content: "",
+				okText: "确定",
+				okType: "primary",
+				cancelText: "取消",
+				onOk: function() {
+					that.check();
+				},
+				onCancel() {}
+			});
+    },
     check() {
       if ( this.selectedRows[0].state === -1 ) {
         this.$message.error(`只能对待审核状态下的单子进行审核`);
@@ -184,7 +198,7 @@ export default {
         result => {
           if (result.data.code === 200) {
               console.log(result);
-              this.selectedRowKeys == [];
+              this.selectedRowKeys = [];
               this.getList();
           }
         },

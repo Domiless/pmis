@@ -120,7 +120,7 @@ export default {
             url: "/api-warehouse/transferItem/confirmStorage?transferItemId=" + id,
             params: {},
             type: "put",
-            option: { enableMsg: false }
+            option: { successMsg: "入库成功！" },
           },
           this
         ).then(

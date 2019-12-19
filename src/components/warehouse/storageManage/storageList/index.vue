@@ -222,6 +222,7 @@ export default {
         },
         closeEdit(params){
           this.editVisible = params;
+          this.getList(this.defaultChecked);
         },
         onShowSizeChange(current, pageSize) {
             this.pageSize = pageSize;

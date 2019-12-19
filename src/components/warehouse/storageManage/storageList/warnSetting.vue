@@ -32,11 +32,35 @@
                 :dataSource="data"
                 :pagination="false"
                 >
-                    <!-- <template slot="name" slot-scope="text, record">
-                        <a href="javascript:" @click="showDetails(record.id)">{{text}}</a>
-                    </template> -->
-                    <template slot="caozuo" >
-                        <span>编辑</span>
+                    <template slot="name" slot-scope="text, record">
+                        <a href="javascript:" @click="showDetails(record)">{{text}}</a>
+                    </template>
+                    <template
+                      slot="warningAmount"
+                      slot-scope="text, record, index"
+                    >
+                      <div key="warningAmount">
+                        <a-input
+                          v-if="record.editable"
+                          style="margin: -5px 0"
+                          :value="text"
+                          @change="e => handleChange(e.target.value, record.id, 'warningAmount')"
+                        />
+                        <template v-else>{{text}}</template>
+                      </div>
+                    </template>
+                    <template slot="caozuo" slot-scope="text, record, index">
+                         <div class="editable-row-operations">
+                          <span v-if="record.editable">
+                            <a @click="() => save(record.id)">保存</a>
+                            <a-popconfirm title="Sure to cancel?" @confirm="() => cancel(record.id)">
+                              <a>取消</a>
+                            </a-popconfirm>
+                          </span>
+                          <span v-else>
+                            <a @click="() => edit(record.id)">编辑</a>
+                          </span>
+                        </div>
                     </template>
               </a-table>
           </a-col>
@@ -58,9 +82,21 @@
                 />
           </a-col>
       </a-row>
+      <a-modal
+        title="详情"
+        :footer="null"
+        width="800px"
+        :visible="detailsVisible"
+        @cancel="handleCancel"
+        :maskClosable="false"
+        :destroyOnClose="true"
+      >
+        <Details :detailsMsg="detailsMsg"></Details>
+      </a-modal>
     </div>
 </template>
 <script>
+import Details from "./details"
 const columns = [
   {
     dataIndex: "code",
@@ -124,10 +160,15 @@ export default {
             pageSize: 10,
             total: 0,
             treeId: '',
-            defaultChecked: []
+            defaultChecked: [],
+            detailsVisible: false,
+            detailsMsg: [],
         }
     },
     methods: {
+        handleCancel() {
+          this.detailsVisible = false;
+        },
         onShowSizeChange(current, pageSize) {
             this.pageSize = pageSize;
             this.current = 1;
@@ -138,6 +179,11 @@ export default {
             console.log("第几页: ", current);
             this.current = current;
             this.search();
+        },
+        showDetails(value) {
+          this.detailsMsg = value;
+          this.detailsVisible = true;
+          console.log(this.detailsMsg);
         },
         getClassify() {
           this.Axios(
@@ -250,7 +296,45 @@ export default {
             },
             ({ type, info }) => {}
           );
+        },
+      handleChange(value, key, column) {
+        const newData = [...this.data];
+        const target = newData.filter(item => key === item.key)[0];
+        if (target) {
+          target[column] = value;
+          this.data = newData;
         }
+      },
+      edit(key) {
+        const newData = [...this.data];
+        const target = newData.filter(item => key === item.key)[0];
+        if (target) {
+          target.editable = true;
+          this.data = newData;
+        }
+        console.log(this.data);
+      },
+      save(key) {
+        const newData = [...this.data];
+        const target = newData.filter(item => key === item.key)[0];
+        if (target) {
+          delete target.editable;
+          this.data = newData;
+          this.cacheData = newData.map(item => ({ ...item }));
+        }
+      },
+      cancel(key) {
+        const newData = [...this.data];
+        const target = newData.filter(item => key === item.key)[0];
+        if (target) {
+          Object.assign(target, this.cacheData.filter(item => key === item.key)[0]);
+          delete target.editable;
+          this.data = newData;
+        }
+      },
+    },
+    components: {
+        Details
     },
     created() {
       this.getClassify();
@@ -278,5 +362,8 @@ export default {
         margin-top: -27px;
       }
     }
+  .editable-row-operations a {
+    margin-right: 8px;
+  }
 }
 </style>

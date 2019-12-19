@@ -54,12 +54,6 @@ const columns = [
     width: 180
   },
   {
-    dataIndex: "xinghaoguige",
-    key: "xinghaoguige",
-    title: "型号/规格",
-    width: 140
-  },
-  {
     dataIndex: "specification",
     key: "specification",
     title: "型号/规格",

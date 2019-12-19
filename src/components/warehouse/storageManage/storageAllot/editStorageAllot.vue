@@ -22,6 +22,7 @@
                         {rules: [{ required: true, message: '请填写单据编号' }]}
                         ]"
             maxlength="20"
+            disabled
           ></a-input>
         </a-form-item>
         <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 12 }" label="调出仓库">
