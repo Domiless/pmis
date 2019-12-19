@@ -115,7 +115,8 @@ export default {
       });
       this.$axios
         .post(
-          this.global.apiSrc + "/api-workorder/workLoadCounting/exportExcel",
+          this.global.apiSrc +
+            "/api-workorder/workLoadCounting/orderExportExcel",
           {
             startTime: this.startTime != "" ? this.startTime : null,
             endTime: this.endTime != "" ? this.endTime : null

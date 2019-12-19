@@ -178,7 +178,7 @@ const columns = [
     title: "型号/规格",
     key: "partCat",
     dataIndex: "partCat",
-    width: 150,
+    width: 150
   },
   {
     title: "需求数量",
@@ -190,13 +190,13 @@ const columns = [
     title: "推荐厂家",
     key: "adviseBrand",
     dataIndex: "adviseBrand",
-    width: 120,
+    width: 120
   },
   {
     title: "指定厂家",
     key: "brand",
     dataIndex: "brand",
-    width: 120,
+    width: 120
   },
   {
     title: "采购名称",
@@ -409,6 +409,16 @@ export default {
           .find(item => item == false) != undefined
       ) {
         this.$message.error(`价格单位不能为空`);
+        return false;
+      }
+      if (
+        this.data
+          .map(item => {
+            return item.price != null && item.price != "";
+          })
+          .find(item => item == false) != undefined
+      ) {
+        this.$message.error(`供应商或报价错误，请检查后再提交`);
         return false;
       }
       this.saveEnquiry();

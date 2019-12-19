@@ -23,9 +23,9 @@
           rowKey="id"
           :customRow="(a,b)=>customRow(a,b)"
         >
-        <template slot="code" slot-scope="text, record">
-          <div class="codeMsg">{{text}}</div>
-        </template>
+          <template slot="code" slot-scope="text, record">
+            <div class="codeMsg">{{text}}</div>
+          </template>
         </a-table>
         <span class="msg">提示：双击可选择物料信息。</span>
       </a-col>
@@ -120,7 +120,6 @@ export default {
         result => {
           if (result.data.code === 200) {
             console.log(result);
-
           }
         },
         ({ type, info }) => {}
@@ -145,9 +144,7 @@ export default {
                 key: item.id,
                 value: item.id,
                 organizeCode: parseInt(item.code),
-                organizeParentCode: parseInt(item.parentCode),
-                
-                
+                organizeParentCode: parseInt(item.parentCode)
               };
             });
             let code = Math.min.apply(
@@ -270,7 +267,7 @@ export default {
   .codeMsg {
     width: 100px;
     overflow: hidden;
-    text-overflow:ellipsis;
+    text-overflow: ellipsis;
     white-space: nowrap;
     cursor: pointer;
   }

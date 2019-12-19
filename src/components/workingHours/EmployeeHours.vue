@@ -66,16 +66,16 @@ Vue.use(DatePicker);
 import EmployeeHoursDetails from "./EmployeeHoursDetails";
 const columns = [
   {
-    dataIndex: "empNo1",
+    dataIndex: "gongZuoLingNo",
     title: "工作令号",
     width: "15%",
-    // key: "empNo"
+    key: "gongZuoLingNo"
   },
   {
-    dataIndex: "empName1",
+    dataIndex: "planCode",
     title: "计划编号",
     width: "15%",
-    // key: "empName"
+    key: "planCode"
   },
   {
     dataIndex: "empNo",
