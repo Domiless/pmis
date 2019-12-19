@@ -45,12 +45,12 @@
           <a-input
             type="number"
             oninput="if(value.length>11)value=value.slice(0,11)"
-            v-decorator="['goPhone']"
+            v-decorator="['goPhone',{rules: [{validator: chickPhone}]}]"
             autocomplete="off"
             maxlength="11"
           ></a-input>
         </a-form-item>
-        <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 21 }" label="出货仓库">
+        <!-- <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 21 }" label="出货仓库">
           <a-select
             v-decorator="['warehouseId',{rules: [{ required: true, message: '请选择出货仓库' }]}]"
             style="width: 100%"
@@ -62,7 +62,7 @@
               :key="index"
             >{{item.name}}</a-select-option>
           </a-select>
-        </a-form-item>
+        </a-form-item>-->
         <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 21 }" label="出库日期">
           <a-date-picker
             format="YYYY/MM/DD"
@@ -257,6 +257,17 @@ export default {
     };
   },
   methods: {
+    chickPhone(rule, value, callback) {
+      if (
+        /^1[23456789]\d{9}$/.test(value) == false &&
+        value != "" &&
+        value != null
+      ) {
+        callback(new Error("请输入正确的电话号码"));
+      } else {
+        callback();
+      }
+    },
     add() {
       this.form.validateFieldsAndScroll((err, values) => {
         if (!err) {
@@ -268,6 +279,16 @@ export default {
               .find(item => item == true) != undefined
           ) {
             this.$message.error(`请填写物料数量`);
+          } else if (
+            this.data
+              .map(item =>
+                /^(([1-9][0-9]*)|(([0]\.\d{1,3}|[1-9][0-9]*\.\d{1,3})))$/.test(
+                  item.number
+                )
+              )
+              .find(item => item == false) != undefined
+          ) {
+            this.$message.error(`物料数量必须大于0,且只能保留3位小数`);
           } else if (
             this.data
               .map(item => item.number > item.amount)
@@ -282,7 +303,7 @@ export default {
               goCode: values.goCode,
               goPerson: values.goPerson,
               goPhone: values.goPhone,
-              warehouseId: values.warehouseId,
+              // warehouseId: values.warehouseId,
               handlerName: values.handlerName,
               note: values.note,
               outDate: this.outDate,

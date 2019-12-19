@@ -38,7 +38,7 @@
             maxlength="20"
           ></a-input>
         </a-form-item>
-        <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 21 }" label="出货仓库">
+        <!-- <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 21 }" label="出货仓库">
           <a-select
             v-decorator="['warehouseId',{rules: [{ required: true, message: '请选择出货仓库' }]}]"
             style="width: 100%"
@@ -50,7 +50,7 @@
               :key="index"
             >{{item.name}}</a-select-option>
           </a-select>
-        </a-form-item>
+        </a-form-item>-->
         <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 21 }" label="出库日期">
           <a-date-picker
             format="YYYY/MM/DD"
@@ -260,6 +260,16 @@ export default {
             this.$message.error(`请填写物料数量`);
           } else if (
             this.data
+              .map(item =>
+                /^(([1-9][0-9]*)|(([0]\.\d{1,3}|[1-9][0-9]*\.\d{1,3})))$/.test(
+                  item.number
+                )
+              )
+              .find(item => item == false) != undefined
+          ) {
+            this.$message.error(`物料数量必须大于0,且只能保留3位小数`);
+          } else if (
+            this.data
               .map(item => item.number > item.amount)
               .find(item => item == true) != undefined
           ) {
@@ -271,7 +281,7 @@ export default {
               outType: values.outType,
               goCode: values.goCode,
               goName: values.goName,
-              warehouseId: values.warehouseId,
+              // warehouseId: values.warehouseId,
               handlerName: values.handlerName,
               note: values.note,
               outDate: this.outDate,
