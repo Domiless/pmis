@@ -108,7 +108,7 @@
                 <span>{{item.workOrderDesDO.workOrder.no}}</span>
               </p>
               <p>
-                <span class="label_style">单位名称：</span>
+                <span class="label_style">需方订单号：</span>
                 <span>{{enterpriseName}}</span>
               </p>
             </a-col>

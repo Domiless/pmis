@@ -379,12 +379,12 @@ const columns = [
     width: 100,
     scopedSlots: { customRender: "hasWorkLoad" }
   },
-  // {
-  // 	dataIndex: "createTime",
-  // 	key: "createTime",
-  // 	title: "创建时间",
-  // 	width: 100
-  // },
+  {
+    dataIndex: "intoProductionDate",
+    key: "intoProductionDate",
+    title: "投产日期",
+    width: 100
+  },
   {
     dataIndex: "gmtPlanCompleted",
     key: "gmtPlanCompleted",
