@@ -290,13 +290,45 @@ export default {
                             classify: item.classification.name,
                             inventoryAmount: item.amount,
                             checkAmount: '',
-                            remark: ''
+                            remark: item.note,
+                            warehouseId: item.warehouse.id
                           }
                         })
         console.log(addArr);
         this.data = this.data.concat(addArr);
         // this.data.push(a);
         console.log(this.data);
+        let qs = require("qs");
+        let data = qs.stringify({
+          checkId: addArr[0].id,
+          checkItemDTOS: addArr.map(item => {
+            return {
+              checkAmount: item.checkAmount,
+              remark: item.remark,
+              warehouseItemID: item.warehouseId
+            }
+          })
+        })
+        this.Axios(
+            {
+              url: "/api-warehouse/checkItem/add",
+              params: data,
+              type: "post",
+              enableMsg: false,
+              option: { successMsg: "修改成功！" },
+              config: {
+                headers: { "Content-Type": "application/json" }
+              }
+            },
+            this
+          ).then(
+            result => {
+              if (result.data.code === 200) {
+                console.log(result);
+              }
+            },
+            ({ type, info }) => {}
+          );
     },
     onChangeSign(data, dateString) {
       this.signDate = dateString;
@@ -322,7 +354,7 @@ export default {
               params: {},
               type: "put",
               enableMsg: false,
-              // option: { successMsg: "修改成功！" },
+              option: { successMsg: "修改成功！" },
               config: {
                 headers: { "Content-Type": "application/json" }
               }
