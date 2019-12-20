@@ -8,11 +8,13 @@
     <a-row>
       <a-col :span="5">
         <div class="left_case">
-          <a-tree v-if="treeData.length" :treeData="treeData" @select="getList"
-          :defaultSelectedKeys="defaultChecked"
-          :defaultExpandedKeys="defaultChecked"
-          >
-          </a-tree>
+          <a-tree
+            v-if="treeData.length"
+            :treeData="treeData"
+            @select="getList"
+            :defaultSelectedKeys="defaultChecked"
+            :defaultExpandedKeys="defaultChecked"
+          ></a-tree>
         </div>
       </a-col>
       <a-col :span="19" style="padding-left:4px;">
@@ -64,6 +66,12 @@ const columns = [
     key: "unit",
     title: "单位",
     width: 80
+  },
+  {
+    dataIndex: "warehouseName",
+    key: "warehouseName",
+    title: "仓库",
+    width: 80
   }
 ];
 export default {
@@ -89,8 +97,8 @@ export default {
       ],
       total: 0,
       treeData: [],
-      keyWords: '',
-      treeId: '',
+      keyWords: "",
+      treeId: "",
       defaultChecked: []
     };
   },
@@ -180,8 +188,8 @@ export default {
     getList(selectKey) {
       console.log(selectKey);
       this.treeId = selectKey[0];
-      if(selectKey.length === 0) {
-          return false
+      if (selectKey.length === 0) {
+        return false;
       }
       this.Axios(
         {
@@ -198,7 +206,12 @@ export default {
         result => {
           if (result.data.code === 200) {
             console.log(result);
-            this.data = result.data.data;
+            this.data = result.data.data.map(item => {
+              return {
+                ...item,
+                warehouseName: item.warehouse.name
+              };
+            });
             this.total = result.data.data.length;
           }
         },
@@ -206,7 +219,7 @@ export default {
       );
     },
     search() {
-      if( this.treeId === '' ) {
+      if (this.treeId === "") {
         this.$message.error("请选择分类");
         return false;
       }

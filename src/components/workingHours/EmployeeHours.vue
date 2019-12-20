@@ -38,7 +38,7 @@
     <a-modal
       title="员工工时明细"
       :footer="null"
-      width="1000px"
+      width="1200px"
       :visible="detailsVisible"
       @cancel="handleCancel()"
       :maskClosable="false"
@@ -65,18 +65,6 @@ Vue.use(Input);
 Vue.use(DatePicker);
 import EmployeeHoursDetails from "./EmployeeHoursDetails";
 const columns = [
-  {
-    dataIndex: "gongZuoLingNo",
-    title: "工作令号",
-    width: "15%",
-    key: "gongZuoLingNo"
-  },
-  {
-    dataIndex: "planCode",
-    title: "计划编号",
-    width: "15%",
-    key: "planCode"
-  },
   {
     dataIndex: "empNo",
     title: "员工编号",

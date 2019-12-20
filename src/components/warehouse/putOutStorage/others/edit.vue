@@ -199,6 +199,12 @@ const columns = [
     width: 80
   },
   {
+    dataIndex: "warehouseName",
+    key: "warehouseName",
+    title: "仓库",
+    width: 100
+  },
+  {
     dataIndex: "amount",
     key: "amount",
     title: "库存数量",
@@ -404,7 +410,8 @@ export default {
                 specification: item.warehouseItem.specification,
                 unit: item.warehouseItem.unit,
                 amount: item.warehouseItem.amount,
-                classifiName: item.warehouseItem.classification.name
+                classifiName: item.warehouseItem.classification.name,
+                warehouseName: item.warehouseItem.warehouse.name
               };
             });
             this.outDate = OneMsg.outDate;

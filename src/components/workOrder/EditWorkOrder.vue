@@ -43,7 +43,7 @@
             </a-select>
           </a-form-item>
           <a-form-item label="需方订单号">
-            <a-input v-decorator="['buyOrder']" style="width:335px;"></a-input>
+            <a-input v-decorator="['demandOrderNo']" style="width:335px;"></a-input>
           </a-form-item>
 
           <a-form-item label="承制单位">
@@ -86,14 +86,14 @@
           <a-form-item label="实际完工时间">
             <a-input style="width:335px;" disabled></a-input>
           </a-form-item>
-          <a-form-item label="总数量">
+          <!-- <a-form-item label="总数量">
             <a-input
               v-decorator="['planAmount',{rules: [{validator: chickNumber}]}]"
               type="number"
               oninput="if(value.length>20)value=value.slice(0,20)"
               style="width:335px;"
             ></a-input>
-          </a-form-item>
+          </a-form-item> -->
           <a-form-item label="优先级">
             <a-radio-group v-model="isPriority">
               <a-radio :value="false">正常</a-radio>
@@ -216,6 +216,7 @@ export default {
             this.gmtPlanCompleted = result.data.data.workOrder.gmtPlanCompleted;
             setTimeout(() => {
               this.form.setFieldsValue({
+                demandOrderNo: result.data.data.workOrder.demandOrderNo,
                 no: result.data.data.workOrder.no,
                 gongzuolingNo: result.data.data.workOrder.gongzuolingNo,
                 title: result.data.data.workOrder.title,
@@ -306,6 +307,7 @@ export default {
           let qs = require("qs");
           let data = qs.stringify({
             workOrderId: this.woekOrderId,
+            demandOrderNo: values.demandOrderNo,
             no: values.no,
             gongzuolingNo: values.gongzuolingNo,
             title: values.title,

@@ -116,11 +116,12 @@ export default {
       this.$axios
         .post(
           this.global.apiSrc +
-            "/api-workorder/workLoadCounting/orderExportExcel",
-          {
-            startTime: this.startTime != "" ? this.startTime : null,
-            endTime: this.endTime != "" ? this.endTime : null
-          },
+            "/api-workorder/workLoadCounting/orderExportExcel?" +
+            qs.stringify({
+              startTime: this.startTime != "" ? this.startTime : null,
+              endTime: this.endTime != "" ? this.endTime : null
+            }),
+          {},
           {
             responseType: "blob", // 设置响应数据类型
             headers: { "Content-Type": "application/json" }
