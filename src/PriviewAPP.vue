@@ -108,8 +108,8 @@
                 <span>{{item.workOrderDesDO.workOrder.no}}</span>
               </p>
               <p>
-                <span class="label_style">单位名称：</span>
-                <span>{{enterpriseName}}</span>
+                <span class="label_style">需方订单号：</span>
+                <span>{{item.workOrderDesDO.workOrder.demandOrderNo}}</span>
               </p>
             </a-col>
             <a-col :span="7">
@@ -348,21 +348,21 @@
 					<a-col :span="6">库管员：</a-col>
 					<a-col :span="6">项目审核：</a-col>
 					<a-col :span="6">项目经办：</a-col>
-				</div>-->
-			</div>
-		</div>
-		<div v-if="priviewType==4">
-			<Contract-Preview></Contract-Preview>
-		</div>
+        </div>-->
+      </div>
+    </div>
+    <div v-if="priviewType==4">
+      <Contract-Preview></Contract-Preview>
+    </div>
     <div v-if="priviewType==5">
-			<Procurement-preview></Procurement-preview>
-		</div>
-	</div>
+      <Procurement-preview></Procurement-preview>
+    </div>
+  </div>
 </template>
 <script>
 import Vue from "vue";
-import ContractPreview from "./components/xty/procurementContractManage/preview"
-import ProcurementPreview from "./components/xty/ProcurementApply/preview"
+import ContractPreview from "./components/xty/procurementContractManage/preview";
+import ProcurementPreview from "./components/xty/ProcurementApply/preview";
 import { Table, Col, Row, Form, Input, Icon } from "ant-design-vue";
 Vue.use(Table);
 Vue.use(Col);
@@ -371,70 +371,70 @@ Vue.use(Form);
 Vue.use(Input);
 Vue.use(Icon);
 export default {
-	data() {
-		return {
-			Msg: [
-				{
-					drawingDO: {
-						rawMaterialDO: { type: 2 }
-					}
-				}
-			],
-			NowDate: new Date().toLocaleString("chinese", { hour12: false }),
-			priviewType: null,
-			priceMsg: [],
-			demand: [],
-			enterpriseName: JSON.parse(sessionStorage.getItem("user")).enterpriseName,
-			userNmae: JSON.parse(sessionStorage.getItem("user")).userName
-		};
-	},
-	methods: {
-		number_chinese(str) {
-			var num = parseFloat(str);
-			var strOutput = "",
-				strUnit = "仟佰拾亿仟佰拾万仟佰拾元角分";
-			num += "00";
-			var intPos = num.indexOf(".");
-			if (intPos >= 0) {
-				num = num.substring(0, intPos) + num.substr(intPos + 1, 2);
-			}
-			strUnit = strUnit.substr(strUnit.length - num.length);
-			for (var i = 0; i < num.length; i++) {
-				strOutput +=
-					"零壹贰叁肆伍陆柒捌玖".substr(num.substr(i, 1), 1) +
-					strUnit.substr(i, 1);
-			}
-			return strOutput
-				.replace(/零角零分$/, "整")
-				.replace(/零[仟佰拾]/g, "零")
-				.replace(/零{2,}/g, "零")
-				.replace(/零([亿|万])/g, "$1")
-				.replace(/零+元/, "元")
-				.replace(/亿零{0,3}万/, "亿")
-				.replace(/^元/, "零元");
-		}
-	},
-	components: {
+  data() {
+    return {
+      Msg: [
+        {
+          drawingDO: {
+            rawMaterialDO: { type: 2 }
+          }
+        }
+      ],
+      NowDate: new Date().toLocaleString("chinese", { hour12: false }),
+      priviewType: null,
+      priceMsg: [],
+      demand: [],
+      enterpriseName: JSON.parse(sessionStorage.getItem("user")).enterpriseName,
+      userNmae: JSON.parse(sessionStorage.getItem("user")).userName
+    };
+  },
+  methods: {
+    number_chinese(str) {
+      var num = parseFloat(str);
+      var strOutput = "",
+        strUnit = "仟佰拾亿仟佰拾万仟佰拾元角分";
+      num += "00";
+      var intPos = num.indexOf(".");
+      if (intPos >= 0) {
+        num = num.substring(0, intPos) + num.substr(intPos + 1, 2);
+      }
+      strUnit = strUnit.substr(strUnit.length - num.length);
+      for (var i = 0; i < num.length; i++) {
+        strOutput +=
+          "零壹贰叁肆伍陆柒捌玖".substr(num.substr(i, 1), 1) +
+          strUnit.substr(i, 1);
+      }
+      return strOutput
+        .replace(/零角零分$/, "整")
+        .replace(/零[仟佰拾]/g, "零")
+        .replace(/零{2,}/g, "零")
+        .replace(/零([亿|万])/g, "$1")
+        .replace(/零+元/, "元")
+        .replace(/亿零{0,3}万/, "亿")
+        .replace(/^元/, "零元");
+    }
+  },
+  components: {
     ContractPreview,
     ProcurementPreview
-	},
-	created() {
-		console.log(JSON.parse(sessionStorage.getItem("user")).userName);
-		this.priviewType = sessionStorage.getItem("priviewType");
-		// this.priviewType = 3;
-		if (this.priviewType == 1) {
-			this.Msg = JSON.parse(sessionStorage.getItem("priview"));
-			console.log(this.Msg);
-		}
-		if (this.priviewType == 2) {
-			this.priceMsg = JSON.parse(sessionStorage.getItem("priview"));
-			console.log(this.priceMsg);
-		}
-		if (this.priviewType == 3) {
-			this.demand = JSON.parse(sessionStorage.getItem("priview"));
-			console.log(this.demand);
-		}
-	}
+  },
+  created() {
+    console.log(JSON.parse(sessionStorage.getItem("user")).userName);
+    this.priviewType = sessionStorage.getItem("priviewType");
+    // this.priviewType = 3;
+    if (this.priviewType == 1) {
+      this.Msg = JSON.parse(sessionStorage.getItem("priview"));
+      console.log(this.Msg);
+    }
+    if (this.priviewType == 2) {
+      this.priceMsg = JSON.parse(sessionStorage.getItem("priview"));
+      console.log(this.priceMsg);
+    }
+    if (this.priviewType == 3) {
+      this.demand = JSON.parse(sessionStorage.getItem("priview"));
+      console.log(this.demand);
+    }
+  }
 };
 </script>
 <style lang="less">

@@ -222,6 +222,7 @@
       :visible="addVisible"
       @cancel="handleCancel(1)"
       :maskClosable="false"
+      :destroyOnClose="true"
     >
       <add-work-order v-on:changeAddModal="changeAddModal" ref="newWorkOrder"></add-work-order>
     </a-modal>
@@ -232,6 +233,7 @@
       :visible="editVisible"
       @cancel="handleCancel(2)"
       :maskClosable="false"
+      :destroyOnClose="true"
     >
       <edit-work-order
         v-on:changeEditModal="changeEditModal"
@@ -293,6 +295,7 @@
       :visible="detailsVisible"
       @cancel="handleCancel(5)"
       :maskClosable="false"
+      :destroyOnClose="true"
     >
       <WorkOrderListDetails :detailsMsg="detailsMsg"></WorkOrderListDetails>
     </a-modal>
@@ -379,12 +382,12 @@ const columns = [
     width: 100,
     scopedSlots: { customRender: "hasWorkLoad" }
   },
-  // {
-  // 	dataIndex: "createTime",
-  // 	key: "createTime",
-  // 	title: "创建时间",
-  // 	width: 100
-  // },
+  {
+    dataIndex: "intoProductionDate",
+    key: "intoProductionDate",
+    title: "投产日期",
+    width: 100
+  },
   {
     dataIndex: "gmtPlanCompleted",
     key: "gmtPlanCompleted",
