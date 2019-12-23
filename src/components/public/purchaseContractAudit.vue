@@ -172,7 +172,9 @@
       :maskClosable="false"
       :destroyOnClose="true"
     >
-      <div v-html="contractValue" style="overlfow:hidden;"></div>
+      <div style="overflow: hidden;">
+        <div v-html="contractValue"></div>
+      </div>
     </a-modal>
   </div>
 </template>
