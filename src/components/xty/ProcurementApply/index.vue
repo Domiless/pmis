@@ -10,7 +10,7 @@
       <permission-button permCode banType="hide" @click="showAssign" :disabled="selectedRowKeys.length !== 1">
         <a-icon style="color:#1890ff;" type="submit" />指派采购员
       </permission-button>
-      <permission-button permCode banType="hide" @click="audit" :disabled="selectedRowKeys.length !== 1">
+      <permission-button permCode banType="hide" @click="handleCheck" :disabled="selectedRowKeys.length !== 1">
         <i style="color:#1890ff;margin-right:4px;" class="iconfont">&#xe8ad;</i>审批
       </permission-button>
       <permission-button permCode banType="hide" @click="toPreview" :disabled="selectedRowKeys.length !== 1">
@@ -26,7 +26,7 @@
         <a-range-picker style="width:240px" @change="onChangeRange" format="YYYY/MM/DD"></a-range-picker>
         <span style="margin-left: 10px">关键词 :</span>
         <a-input
-          placeholder="项目订单编号/设计单号/部件名称/图号/设计负责人"
+          placeholder="采购单号/项目名称/业务归口部门"
           style="width: 350px"
           v-model="keyWords"
           @keyup.enter.native="getList"
@@ -339,6 +339,7 @@ export default {
       }
       if (a == 3) {
         this.assignVisible = false;
+        this.selectedRowKeys = [];
       }
       if (a == 4) {
         this.detailsVisible = false;
@@ -459,7 +460,21 @@ export default {
 				},
 				({ type, info }) => {}
 			);
-		},
+    },
+    handleCheck() {
+      let that = this;
+			this.$confirm({
+				title: "确定要审核该单据吗？",
+				content: "",
+				okText: "确定",
+				okType: "primary",
+				cancelText: "取消",
+				onOk: function() {
+					that.audit();
+				},
+				onCancel() {}
+			});
+    },
     audit() {
       if ( this.selectedRows[0].bomReviewSchedule !== 2 ) {
         this.$message.error("不可重复审批");

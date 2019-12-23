@@ -113,6 +113,17 @@
               <a-input v-decorator="['supplyMode']"></a-input>
             </a-form-item>
           </a-row>
+					<a-row>
+            <a-form-item label="收货仓库" :labelCol="{ span: 3}" :wrapperCol="{ span: 19 }">
+              <a-select
+                v-decorator="['receiveWarehouse', { rules: [{ required:'true', message: '请选择收货仓库'}]}]"
+                placeholder="请选择"
+                :labelInValue="true"
+              >
+                <a-select-option v-for="item in warehouseArr" :key="item.id" :value="item.id">{{ item.name }}</a-select-option>
+              </a-select>
+            </a-form-item>
+          </a-row>
           <a-row>
             <a-form-item label="备注" :labelCol="{span:3}" :wrapperCol="{span:19}">
               <a-textarea v-decorator="['remark']" :rows="4" :autosize="{ minRows: 4, maxRows: 4}"></a-textarea>
@@ -377,6 +388,7 @@ export default {
 			supplierId: '',
 			modelId: '',
 			taxrateValue: '',
+			warehouseArr: []
 
     };
   },
@@ -629,6 +641,10 @@ export default {
 									key: msg.modelId,
 									label: msg.model
 								},
+								receiveWarehouse: {
+									key: msg.warehouseId,
+									label: msg.warehouse
+								},
 								supplier: msg.supplier,
 								supplier2: msg.supplierName,
                 demand: msg.demand,
@@ -703,7 +719,9 @@ export default {
 						// 														}
 						// }),
 						purchaseDesId: this.selectedRowsRight.map(item => item.id),
-            desCount: this.total,
+						desCount: this.total,
+						warehouse: values.receiveWarehouse.label,
+						warehouseId: values.receiveWarehouse.key
           };
 					console.log(data);
 					console.log(this.selectedRowsRight);
@@ -762,6 +780,25 @@ export default {
 				},
 				({ type, info }) => {}
 			);
+		},
+		getWarehouse(){
+      this.Axios(
+        {
+          url: "/api-warehouse/warehouse/allWarehouse",
+          type: "get",
+          params: {},
+          option: { enableMsg: false }
+        },
+        this
+      ).then(
+        result => {
+          if (result.data.code === 200) {
+						console.log(result);
+						this.warehouseArr = result.data.data;
+          }
+        },
+        ({ type, info }) => {}
+      )
     },
     getSupplierName() {
       this.Axios(
@@ -829,7 +866,8 @@ export default {
     this.setDefalut(this.procurementContractId);
     // this.getProcurementNo();
     // this.getSupplierName();
-    this.getContract();
+		this.getContract();
+		this.getWarehouse();
     // this.getContractId();
   },
   watch: {

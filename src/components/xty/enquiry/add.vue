@@ -125,6 +125,7 @@
             format="YYYY/MM/DD"
             @change="(a,b)=>onChange(a,b,record.id, k)"
             style="width:100%;"
+            :disabledDate="disabledDate"
           />
         </div>
       </template>
@@ -331,6 +332,9 @@ export default {
     };
   },
   methods: {
+    disabledDate(current) {
+       return current && current < moment().startOf('day');
+    },
     checkInput(value) {
       if (
         (/^\d+(\.\d{0,2})?$/.test(value) == false || value <= 0) &&

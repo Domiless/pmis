@@ -116,11 +116,11 @@ export default {
 	methods: {
 		checkName(rule, value, callback) {
 			if (
-				/^[\u4e00-\u9fa5]{0,}$/.test(value) == false &&
+				/^([\u4E00-\uFA29]|[\uE7C7-\uE7F3]|[a-zA-Z]){1,20}$/.test(value) == false &&
 				value != "" &&
 				value != null
 			) {
-				callback(new Error("请输入汉字"));
+				callback(new Error("请输入正确的单位名称"));
 			} else {
 				callback();
 			}

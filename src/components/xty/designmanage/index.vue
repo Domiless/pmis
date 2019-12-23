@@ -541,7 +541,8 @@ export default {
             size: this.pageSize,
             auditState: this.reviewState != -1 ? this.reviewState : null,
             start: this.beginDate != "" ? this.beginDate : null,
-            end: this.endDate != "" ? this.endDate : null
+            end: this.endDate != "" ? this.endDate : null,
+            type: 0
           },
           option: { enableMsg: false }
         },

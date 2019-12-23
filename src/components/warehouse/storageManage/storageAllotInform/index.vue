@@ -35,7 +35,9 @@
         style="top:20px" width="1200px" 
         :footer="null"
         :maskClosable="false"
-        @cancel="handleCancel(1)">
+        @cancel="handleCancel(1)"
+        destroyOnClose
+        >
         <Dispose :sendId="allotDetailsId"></Dispose>
       </a-modal>
       <a-modal
@@ -44,7 +46,9 @@
         style="top:20px" width="1200px" 
         :footer="null"
         :maskClosable="false"
-        @cancel="handleCancel(1)">
+        @cancel="handleCancel(1)"
+        destroyOnClose
+        >
         <Details :sendId="showDetailsId"></Details>
       </a-modal>
     </div>
@@ -117,6 +121,7 @@ export default {
         handleCancel(num) {
             if( num == 1 ) {
                 this.disposeVisible = false;
+                this.selectedRowKeys = [];
             }
         },
         showDetails(id) {

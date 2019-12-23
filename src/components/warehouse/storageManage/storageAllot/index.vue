@@ -81,7 +81,9 @@
         style="top:20px" width="1200px" 
         :footer="null"
         :maskClosable="false"
-        @cancel="handleCancel(1)">
+        @cancel="handleCancel(1)"
+        destroyOnClose
+        >
         <Details :sendId="allotDetailsId"></Details>
     </a-modal>
   </div>

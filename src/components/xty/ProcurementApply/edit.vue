@@ -15,11 +15,13 @@
             <a-form-item label="项目订单编号" :labelCol="{span:3}" :wrapperCol="{span:18}" required>
               <a-input
                 v-decorator="['orderNo',{rules: [{ required: true, message: '请填写项目订单编号' }]}]"
+                maxlength="50"
               ></a-input>
             </a-form-item>
             <a-form-item label="标题" :labelCol="{span:3}" :wrapperCol="{span:18}" required>
               <a-input
                 v-decorator="['title',{rules: [{ required: true, message: '请填写标题' }]}]"
+                maxlength="50"
               ></a-input>
             </a-form-item>
           </a-row>
@@ -27,6 +29,7 @@
             <a-form-item label="项目名称" :labelCol="{span:3}" :wrapperCol="{span:18}" required>
               <a-input
                 v-decorator="['name',{rules: [{ required: true, message: '请填写项目名称' }]}]"
+                maxlength="50"
               ></a-input>
             </a-form-item>
           </a-row>
@@ -34,6 +37,7 @@
             <a-form-item label="业务归口部门" :labelCol="{span:3}" :wrapperCol="{span:18}">
               <a-input
                 v-decorator="['department',{rules: [{ required: true, message: '请填写业务归口部门' }]}]"
+                maxlength="50"
               ></a-input>
             </a-form-item>
           </a-row>
@@ -50,6 +54,7 @@
             <a-form-item label="编号" :labelCol="{span:3}" :wrapperCol="{span:18}">
               <a-input
                 v-decorator="['number',{rules: [{ required: true, message: '请填写编号' }]}]"
+                maxlength="50"
               ></a-input>
             </a-form-item>
           </a-row>
@@ -57,6 +62,7 @@
             <a-form-item label="申请人" :labelCol="{span:3}" :wrapperCol="{span:18}">
               <a-input
                 v-decorator="['applicant',{rules: [{ required: true, message: '请填写申请人' }]}]"
+                maxlength="20"
               ></a-input>
             </a-form-item>
           </a-row>
@@ -83,7 +89,7 @@
           <a-table
             :columns="columns"
             :dataSource="data"
-            :scroll="{ x: 1900, y: 400 }"
+            :scroll="{ x: 1200, y: 400 }"
             :pagination="false"
           >
             <template slot="index" slot-scope="text, record, index">
@@ -163,37 +169,37 @@ const columns = [
     title: "计量单位",
     dataIndex: "unit",
     key: "unit",
-    width: 150
+    width: 50
   },
   {
     title: "需求数量",
     dataIndex: "addNum",
     key: "addNum",
-    width: 150
+    width: 50
   },
   {
     title: "推荐厂家",
     dataIndex: "adviseBrand",
     key: "adviseBrand",
-    width: 150
+    width: 100
   },
   {
     title: "指定厂家",
     dataIndex: "brand",
     key: "brand",
-    width: 150
+    width: 100
   },
   {
     title: "要求到货时间",
     dataIndex: "arrivalTime",
     key: "arrivalTime",
-    width: 150
+    width: 100
   },
   {
     title: "备注",
     dataIndex: "remake",
     key: "remake",
-    width: 150
+    width: 100
   }
 ];
 export default {

@@ -29,6 +29,7 @@
         :columns="columns"
         :dataSource="data"
         :pagination="false"
+        :rowClassName="bgcolor"
       >
         <!-- <template slot="code" slot-scope="text, record">
           <div class="codeMsg">{{text}}</div>
@@ -41,6 +42,7 @@
                   let value1 = value;
                   handleChange(value1, record.id, 'warehouseUnit')
                   }"
+            :disabled="isBan"
           >
             <a-select-option
               v-for="(item,index) in unitArr"
@@ -56,6 +58,7 @@
               style="margin: -5px 0"
               :value="text"
               @change="e => handleChange(e.target.value, record.id, 'stockNumber')"
+              :disabled="isBan"
             />
           </div>
         </template>
@@ -66,6 +69,7 @@
               style="margin: -5px 0"
               :value="text"
               @change="e => handleChange(e.target.value, record.id, 'batch')"
+              :disabled="isBan"
             />
           </div>
         </template>
@@ -81,6 +85,7 @@
                   let value1 = value;
                   handleChange(value1, record.id, 'category')
                   }"
+            :disabled="isBan"
           >
           ></a-tree-select>
         </template>
@@ -91,6 +96,7 @@
               style="margin: -5px 0"
               :value="text"
               @change="e => handleChange(e.target.value, record.id, 'note')"
+              :disabled="isBan"
             />
           </div>
         </template>
@@ -204,10 +210,18 @@ export default {
       categoryArr: [],
       detailsMsg: [],
       treeData: [],
-      warehouseName: ''
+      warehouseName: '',
+      isBan: false
     };
   },
   methods: {
+    bgcolor(row, index) {
+      // console.log(row);
+      if (row.outStorage == 0) {
+        this.isBan = true;
+        return "bgcolor";
+      }
+    },
     handleChange(value, key, column) {
       console.log(value);
       console.log(key);
@@ -318,21 +332,22 @@ export default {
     },
     addStock(id) {
           console.log(id);
-          let data = this.data.filter(item => {
+          let list = this.data.filter(item => {
             return item.id === id;
           })
-					data = data.map(item => {
-            return {
-              amount: item.stockNumber,
-              batch: item.batch,
-              classificationId: item.category,
-              note: item.note,
-              orderItemId: item.id,
-              warehouseUnit: item.warehouseUnit,
-            }
-          });
+          let data = {
+              list: list.map(item => {
+                        return {
+                          amount: item.stockNumber,
+                          batch: item.batch,
+                          classificationId: item.category,
+                          note: item.note,
+                          orderItemId: item.id,
+                          warehouseUnit: item.warehouseUnit,
+                        }
+            })
+          }
           console.log(data);
-
 					this.Axios(
 						{
 							url: "/api-warehouse/orderEntry/entry",
@@ -348,6 +363,7 @@ export default {
 						result => {
 							if (result.data.code === 200) {
                 console.log(result);
+                this.findOne(this.sendId);
 							}
 						},
 						({ type, info }) => {}
@@ -386,6 +402,12 @@ export default {
   .ant-table-thead > tr > th,
   .ant-table-tbody > tr > td {
     padding: 4px 4px;
+  }
+  .bgcolor {
+    background-color: #f3f3f3;
+    &:hover {
+      background-color: #f3f3f3;
+    }
   }
 }
 </style>

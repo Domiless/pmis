@@ -153,7 +153,7 @@
             <td></td>
           </tr>
           <tr style="text-align: center">
-            <td colspan="8">合计（不含13%增值税，含运费、贵司物流或快递至我司指定地点）：{{ totalMoney }}元</td>
+            <td colspan="8">合计（不含{{ contractMsg.taxrate }}增值税，含运费、贵司物流或快递至我司指定地点）：{{ totalMoney }}元</td>
           </tr>
         </table>
       </a-col>

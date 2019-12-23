@@ -75,7 +75,9 @@
         style="top:20px;height=600px" width="1200px" 
         :footer="null"
         :maskClosable="false"
-        @cancel="handleCancel(1)">
+        @cancel="handleCancel(1)"
+        destroyOnClose
+        >
         <warnSetting></warnSetting>
     </a-modal>
     <a-modal

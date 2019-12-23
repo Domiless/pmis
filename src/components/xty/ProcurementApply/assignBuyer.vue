@@ -168,7 +168,7 @@ export default {
         },
         submit() {
             const that = this;
-                this.form.validateFieldsAndScroll((err, values) => {
+            this.form.validateFieldsAndScroll((err, values) => {
                 if (!err) {
                 console.log("Received values of form: ", values);
                 // if (!this.checkedKeys.length) {
@@ -198,7 +198,7 @@ export default {
                 console.log(data);
                 console.log(data2);
                 console.log(this.copyData);
-                if( data.length == 0 ) {
+                if( data.length == 0 || data2.length == 0 ) {
                     return this.$message.error(`请指派采购员`);
                 }
                 this.Axios(

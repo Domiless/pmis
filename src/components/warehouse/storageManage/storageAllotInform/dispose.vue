@@ -26,9 +26,16 @@
                 :columns="columns"
                 :dataSource="data"
                 :pagination="false"
+                :rowClassName="bgcolor"
             >
                 <template slot="caozuo" slot-scope="text, record">
-                    <a href="javascript:" @click="comfirm(record.id)">确认入库</a>
+                    <a href="javascript:" @click="comfirm(record)">确认入库</a>
+                </template>
+                <template slot="state" slot-scope="text">
+                  <div>
+                    <span v-if="text==0" style="font-size:14px;color:#f6003c;">未入</span>
+                    <span v-if="text==1" style="font-size:14px;color:#10CF0C;">已入</span>
+                  </div>
                 </template>
                 <template slot="index" slot-scope="text, record, index">
                   <span>{{index+1}}</span>
@@ -69,7 +76,7 @@ const columns = [
     dataIndex: "specification",
     key: "specification",
     title: "型号/规格",
-    width: 140
+    width: 100
   },
   {
     dataIndex: "transferAmount",
@@ -87,7 +94,14 @@ const columns = [
     dataIndex: "remark",
     key: "remark",
     title: "备注",
-    width: 160,
+    width: 100,
+  },
+  {
+    dataIndex: "state",
+    key: "state",
+    title: "状态",
+    width: 100,
+    scopedSlots: { customRender: "state" }
   },
   {
     dataIndex: "caozuo",
@@ -113,11 +127,20 @@ export default {
         }
     },
     methods: {
-      comfirm(id) {
-        console.log(id);
+      bgcolor(row, index) {
+        console.log(row);
+        if (row.state == 1) {
+          return "bgcolor";
+        }
+      },
+      comfirm(row) {
+        // console.log(row);
+        if (row.state === 1) {
+          return false
+        }
         this.Axios(
           {
-            url: "/api-warehouse/transferItem/confirmStorage?transferItemId=" + id,
+            url: "/api-warehouse/transferItem/confirmStorage?transferItemId=" + row.id,
             params: {},
             type: "put",
             option: { successMsg: "入库成功！" },
@@ -181,6 +204,15 @@ export default {
         left: 50%;
         margin-left: -44px;
         margin-top: -27px;
+      }
+    }
+    .bgcolor {
+      background-color: #f3f3f3;
+      &:hover {
+        background-color: #f3f3f3;
+      }
+      td a {
+        color:#999999;
       }
     }
 }

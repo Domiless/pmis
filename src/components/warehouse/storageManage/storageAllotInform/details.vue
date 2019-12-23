@@ -30,6 +30,12 @@
               <template slot="index" slot-scope="text, record, index">
                   <span>{{index+1}}</span>
               </template>
+              <template slot="state" slot-scope="text">
+                  <div>
+                    <span v-if="text==0" style="font-size:14px;color:#f6003c;">未入</span>
+                    <span v-if="text==1" style="font-size:14px;color:#10CF0C;">已入</span>
+                  </div>
+                </template>
             </a-table>
         </a-row>
     </div>
@@ -81,11 +87,19 @@ const columns = [
     width: 80
   },
   {
+    dataIndex: "state",
+    key: "state",
+    title: "状态",
+    width: 100,
+    scopedSlots: { customRender: "state" }
+  },
+  {
     dataIndex: "remark",
     key: "remark",
     title: "备注",
     width: 160,
   }
+
 ];
 export default {
     props: {

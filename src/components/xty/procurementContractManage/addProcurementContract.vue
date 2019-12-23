@@ -120,6 +120,7 @@
                 v-decorator="['receiveWarehouse', { rules: [{ required:'true', message: '请选择收货仓库'}]}]"
                 placeholder="请选择"
                 :labelInValue="true"
+								@change="getWarehouseTotal"
               >
                 <a-select-option v-for="item in warehouseArr" :key="item.id" :value="item.id">{{ item.name }}</a-select-option>
               </a-select>
@@ -545,7 +546,10 @@ export default {
 			this.chineseMoney = '零元';
 			this.chineseTaxMoney = '零元';
 			this.chineseSumtaxMoney = '零元';
-    },
+		},
+		getWarehouseTotal(value) {
+			console.log(value);
+		},
     close() {
       this.form.resetFields();
       this.contractNoWatch = '';
@@ -658,7 +662,9 @@ export default {
 						// 														}
 						// }),
 						purchaseDesId: this.selectedRowsRight.map(item => item.id),
-            desCount: this.selectedRowsRight.length,
+						desCount: this.selectedRowsRight.length,
+						warehouse: values.receiveWarehouse.label,
+						warehouseId: values.receiveWarehouse.key
           };
 					console.log(data);
 					console.log(this.selectedRowsRight);
@@ -789,11 +795,9 @@ export default {
 		getWarehouse(){
       this.Axios(
         {
-          url: "/api-warehouse/warehouse/list",
+          url: "/api-warehouse/warehouse/allWarehouse",
           type: "get",
-          params: {
-            page: -1
-          },
+          params: {},
           option: { enableMsg: false }
         },
         this

@@ -137,6 +137,9 @@ export default {
   }
   .mce-edit-area.mce-container.mce-panel.mce-stack-layout-item {
     height: 580px;
+    iframe {
+      height: 100% !important
+    }
   }
 }
 

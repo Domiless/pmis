@@ -119,6 +119,7 @@
       :footer="null"
       :maskClosable="false"
       @cancel="handleCancel(1)"
+      destroyOnClose
     >
       <Details :sendId="stockDetailsId"></Details>
     </a-modal>
@@ -147,12 +148,12 @@ const columns = [
     scopedSlots: { customRender: "fromName" },
     width: "20%"
   },
-  {
-    dataIndex: "warehouse.name",
-    title: "退回仓库",
-    key: "warehouse.name",
-    width: "15%"
-  },
+  // {
+  //   dataIndex: "warehouse.name",
+  //   title: "退回仓库",
+  //   key: "warehouse.name",
+  //   width: "15%"
+  // },
   {
     dataIndex: "state",
     title: "状态",
@@ -170,7 +171,7 @@ const columns = [
     dataIndex: "note",
     title: "备注",
     key: "note",
-    width: "15%"
+    width: "30%"
   }
 ];
 export default {
@@ -302,7 +303,7 @@ export default {
     getList() {
       this.Axios(
         {
-          url: "/api-warehouse/order/list",
+          url: "/api-warehouse/returnEntry/list",
           type: "get",
           params: {
             dataSource: "OTHER",

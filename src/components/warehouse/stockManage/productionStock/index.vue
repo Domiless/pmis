@@ -62,7 +62,9 @@
         style="top:20px" width="1300px" 
         :footer="null"
         :maskClosable="false"
-        @cancel="handleCancel(1)">
+        @cancel="handleCancel(1)"
+        destroyOnClose
+        >
       <stock :sendId="itemId"></stock>
     </a-modal>
     <a-modal
@@ -71,7 +73,9 @@
         style="top:20px" width="1300px" 
         :footer="null"
         :maskClosable="false"
-        @cancel="handleCancel(2)">
+        @cancel="handleCancel(2)"
+        destroyOnClose
+        >
       <stockDetails :sendId="stockDetailsId"></stockDetails>
     </a-modal>
   </div>

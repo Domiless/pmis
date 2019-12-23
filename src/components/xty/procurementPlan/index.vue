@@ -1,14 +1,14 @@
 <template>
     <div class="procurementPlan">
         <a-row style="line-height:50px;">
-            <a-tooltip placement="top">
+            <!-- <a-tooltip placement="top">
                 <template slot="title">
                     <span>正在开发中...</span>
                 </template>
                 <permission-button permCode banType="hide">
                     <a-icon style="color:#1890ff;" type="plus" />新增
                 </permission-button>
-            </a-tooltip>
+            </a-tooltip> -->
             <permission-button
 				permCode
 				banType="hide"

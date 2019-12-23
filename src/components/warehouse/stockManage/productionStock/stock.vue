@@ -94,14 +94,15 @@
             />
           </div>
         </template>
-        <template slot="ruku" slot-scope="text,record">
-           <a href="javascript:" @click="addStock(record.id)">入库</a>
+        <template slot="ruku" slot-scope="text,record,index">
+           <a href="javascript:" @click="addStock(record.id,record,index)">入库</a>
         </template>
       </a-table>
     </a-row>
   </div>
 </template>
 <script>
+import { log } from 'util';
 const columns = [
   {
     title: "物料编码",
@@ -210,15 +211,16 @@ export default {
       categoryArr: [],
       detailsMsg: [],
       treeData: [],
-      warehouseName: ''
+      warehouseName: '',
+      arrIndex: 0
 
     };
   },
   methods: {
     handleChange(value, key, column) {
-      console.log(value);
-      console.log(key);
-      console.log(column);
+      // console.log(value);
+      // console.log(key);
+      // console.log(column);
 
       const newData = [...this.data];
       const target = newData.filter(item => key === item.id)[0];
@@ -271,23 +273,26 @@ export default {
         ({ type, info }) => {}
       );
     },
-    addStock(id) {
+    addStock(id,row,index) {
           console.log(id);
-          let data = this.data.filter(item => {
+          console.log(index);
+          this.arrIndex = index;
+          let list = this.data.filter(item => {
             return item.id === id;
           })
-					data = data.map(item => {
-            return {
-              amount: item.stockNumber,
-              batch: item.batch,
-              classificationId: item.category,
-              note: item.note,
-              orderItemId: item.id,
-              warehouseUnit: item.warehouseUnit,
-            }
-          });
+          let data = {
+              list: list.map(item => {
+                      return {
+                        amount: item.stockNumber,
+                        batch: item.batch,
+                        classificationId: item.category,
+                        note: item.note,
+                        orderItemId: item.id,
+                        warehouseUnit: item.warehouseUnit,
+                      }
+                    })
+          }
           console.log(data);
-
 					this.Axios(
 						{
 							url: "/api-warehouse/orderEntry/entry",
@@ -303,6 +308,7 @@ export default {
 						result => {
 							if (result.data.code === 200) {
                 console.log(result);
+                this.findOne(this.sendId);
 							}
 						},
 						({ type, info }) => {}

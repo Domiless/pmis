@@ -105,8 +105,9 @@
 						<a-input
 							v-decorator="[
 							'linkPhone',
-							{rules: [{ required: true, message: '请填写联系电话' }, {validator: checkPhone}]}
+							{rules: [{ required: true, message: '请填写联系电话' }]}
 							]"
+							maxlength="20"
 						></a-input>
 					</a-form-item>
 				</a-row>
@@ -226,8 +227,9 @@
 						<a-input
 							v-decorator="[
 							'linkPhone',
-							{rules: [{ required: true, message: '请填写联系电话' }, {validator: checkPhone}]}
+							{rules: [{ required: true, message: '请填写联系电话' }]}
 							]"
+							maxlength="20"
 						></a-input>
 					</a-form-item>
 				</a-row>
@@ -431,17 +433,17 @@ export default {
 				callback();
 			}
 		},
-		checkPhone(rule, value, callback) {
-			if (
-				/^1[23456789]\d{9}$/.test(value) == false &&
-				value != "" &&
-				value != null
-			) {
-				callback(new Error("请输入正确的电话号码"));
-			} else {
-				callback();
-			}
-		},
+		// checkPhone(rule, value, callback) {
+		// 	if (
+		// 		/^(1[23456789]\d{9}|^(0[1-9]\d{1,2}-)\d{6,7})$/.test(value) == false &&
+		// 		value != "" &&
+		// 		value != null
+		// 	) {
+		// 		callback(new Error("请输入正确的电话号码"));
+		// 	} else {
+		// 		callback();
+		// 	}
+		// },
 		checkbankAccount(rule, value, callback) {
 			if (
 				/^[0-9]*$/.test(value) == false &&

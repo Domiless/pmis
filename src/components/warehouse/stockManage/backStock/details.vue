@@ -23,7 +23,7 @@
             </a-col>
             <a-col :span="12" style="margin-bottom:12px;">
                 <span class="label_right">入库日期：</span>
-                <span>{{detailsMsg.gmtCreated}}</span>
+                <span>{{detailsMsg.date}}</span>
             </a-col>
             <a-col :span="12" style="margin-bottom:12px;">
                 <span class="label_right">经办人：</span>

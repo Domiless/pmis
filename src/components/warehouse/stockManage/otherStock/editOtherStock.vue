@@ -40,7 +40,7 @@
                         maxlength="10"
                     ></a-input>
 				</a-form-item>
-                <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 12 }" label="收货仓库">
+                <!-- <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 12 }" label="收货仓库">
 					<a-select placeholder="请选择" 
                         v-decorator="[
                         'backWarehouse',
@@ -48,7 +48,7 @@
                         ]">
                         <a-select-option v-for="item in warehouseList" :key="item.id" :value="item.id">{{ item.name }}</a-select-option>
                     </a-select>
-				</a-form-item>
+				</a-form-item> -->
                 <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 12 }" label="入库日期">
                     <a-date-picker 
                         style="width:100%;"
@@ -340,7 +340,7 @@ export default {
                             invoicesNo: this.detailsMsg.orderCode,
                             originalInvoicesNo: this.detailsMsg.oldOrderCode,
                             backDepartment: this.detailsMsg.fromName,
-                            backWarehouse: this.detailsMsg.warehouse.id,
+                            // backWarehouse: this.detailsMsg.warehouse.id,
                             stockDate:  this.detailsMsg.date == null
                                         ? undefined
                                         : moment(this.detailsMsg.date, "YYYY/MM/DD"),
@@ -378,7 +378,7 @@ export default {
                         note: values.remark,
                         oldOrderCode: values.originalInvoicesNo,
                         orderId: this.$route.params.id,
-                        warehouseId: values.backWarehouse,
+                        // warehouseId: values.backWarehouse,
                         orderItemList: this.data.map(item => {
                                     return {
                                         warehouseItemId: item.id,

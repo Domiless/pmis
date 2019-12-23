@@ -23,7 +23,7 @@
     </a-row>-->
     <a-row>
       <a-table
-        :scroll="{ x: 1750,y:500}"
+        :scroll="{ x: 1400,y:500}"
         rowKey="id"
         class="table_style"
         :columns="columns"
@@ -46,7 +46,7 @@ const columns = [
     dataIndex: "index",
     key: "index",
     title: "",
-    width: 40,
+    width: 20,
     scopedSlots: { customRender: "index" },
     align: "center"
   },
@@ -55,13 +55,13 @@ const columns = [
     key: "code",
     dataIndex: "code",
     scopedSlots: { customRender: "code" },
-    width: 200
+    width: 250
   },
   {
     title: "图号",
     key: "drawingNo",
     dataIndex: "drawingNo",
-    width: 150
+    width: 200
   },
   {
     title: "名称",
@@ -79,13 +79,13 @@ const columns = [
     title: "单位",
     key: "unit",
     dataIndex: "unit",
-    width: 100
+    width: 50
   },
   {
     title: "总数量",
     key: "orderAmount",
     dataIndex: "orderAmount",
-    width: 100
+    width: 50
   },
   {
     title: "已入",

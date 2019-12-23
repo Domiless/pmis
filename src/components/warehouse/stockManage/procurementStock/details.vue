@@ -23,16 +23,16 @@
     </a-row>-->
     <a-row>
       <a-table
-        :scroll="{ x: 1600,y:500}"
+        :scroll="{ x: 1200,y:500}"
         rowKey="id"
         class="table_style"
         :columns="columns"
         :dataSource="data"
         :pagination="false"
       >
-      <template slot="code" slot-scope="text, record">
+      <!-- <template slot="code" slot-scope="text, record">
           <div class="codeMsg">{{text}}</div>
-      </template>
+      </template> -->
       <template slot="index" slot-scope="text, record, index">
                 <span>{{index+1}}</span>
       </template>
@@ -46,7 +46,7 @@ const columns = [
     dataIndex: "index",
     key: "index",
     title: "",
-    width: 40,
+    width: 20,
     scopedSlots: { customRender: "index" },
     align: "center"
   },
@@ -55,31 +55,31 @@ const columns = [
     key: "code",
     dataIndex: "code",
     scopedSlots: { customRender: "code" },
-    width: 200
+    width: 250
   },
   {
     title: "名称",
     key: "name",
     dataIndex: "name",
-    width: 150
+    width: 200
   },
   {
     title: "型号/规格",
     key: "specification",
     dataIndex: "specification",
-    width: 150
+    width: 200
   },
   {
     title: "单位",
     key: "unit",
     dataIndex: "unit",
-    width: 150
+    width: 50
   },
   {
     title: "总数量",
     key: "orderAmount",
     dataIndex: "orderAmount",
-    width: 150
+    width: 50
   },
   {
     title: "已入",

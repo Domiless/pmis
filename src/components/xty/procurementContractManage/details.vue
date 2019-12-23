@@ -60,6 +60,10 @@
             <span class="label_right">供货方式：</span>
             <span>{{contractDetails.sendway}}</span>
           </a-col>
+					<a-col :span="24" style="margin-bottom:12px;">
+            <span class="label_right">收货仓库：</span>
+            <span>{{contractDetails.warehouse}}</span>
+          </a-col>
           <a-col :span="24" style="margin-bottom:12px;">
             <span class="label_right">备注：</span>
             <span>{{contractDetails.remark}}</span>
@@ -77,6 +81,28 @@
           :pagination="false"
           :dataSource="data2"
         ></a-table>
+				<span>税率：{{ contractDetails.taxrate }}</span>
+				<a-row>
+						<a-col :span="24">
+							<span>合计货款(不含税): </span>
+							<span>{{ contractDetails.summoney }}</span>
+							<span>({{ contractDetails.chineseMoney }})</span>
+						</a-col>
+					</a-row>
+					<a-row>
+						<a-col :span="24">
+							<span>税金合计: </span>
+							<span>{{ contractDetails.taxMoney }}</span>
+							<span>({{ contractDetails.chineseTaxMoney }})</span>
+						</a-col>
+					</a-row>
+					<a-row>
+						<a-col :span="24">
+							<span>合计货款(含税):</span>
+							<span>{{ contractDetails.sumtaxMoney }}</span>
+							<span>({{ contractDetails.chineseSumtaxMoney }})</span>
+						</a-col>
+					</a-row>
       </a-tab-pane>
     </a-tabs>
   </div>

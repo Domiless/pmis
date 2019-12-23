@@ -238,20 +238,17 @@ export default {
     delRow(row, index) {
         console.log(row);
         this.data.splice(index, 1);
-        let qs = require("qs");
-        let detailsData = qs.stringify({
-          checkItemId: row.id,
-          checkAmount: row.checkAmount,
-          remark: row.remark
-        });
+        let detailsData = [];
+        detailsData.push(row.id);
         console.log(detailsData);
         this.Axios(
               {
-                url: "/api-warehouse/checkItem/update?" + detailsData,
-                params: {},
-                type: "put",
-                enableMsg: false,
-                option: { successMsg: "删除成功！" },
+                url: "/api-warehouse/checkItem/del",
+                params: {
+                  ids: detailsData
+                },
+                type: "delete",
+                option: { enableMsg: false },
                 config: {
                   headers: { "Content-Type": "application/json" }
                 }
@@ -298,9 +295,8 @@ export default {
         this.data = this.data.concat(addArr);
         // this.data.push(a);
         console.log(this.data);
-        let qs = require("qs");
-        let data = qs.stringify({
-          checkId: addArr[0].id,
+        let data = {
+          checkId: this.$route.params.id,
           checkItemDTOS: addArr.map(item => {
             return {
               checkAmount: item.checkAmount,
@@ -308,14 +304,14 @@ export default {
               warehouseItemID: item.warehouseId
             }
           })
-        })
+        }
         this.Axios(
             {
               url: "/api-warehouse/checkItem/add",
               params: data,
               type: "post",
               enableMsg: false,
-              option: { successMsg: "修改成功！" },
+              option: { enableMsg: false },
               config: {
                 headers: { "Content-Type": "application/json" }
               }

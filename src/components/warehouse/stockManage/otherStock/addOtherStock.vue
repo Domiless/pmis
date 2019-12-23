@@ -39,7 +39,7 @@
                         maxlength="10"
                     ></a-input>
 				</a-form-item>
-                <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 12 }" label="返回仓库">
+                <!-- <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 12 }" label="返回仓库">
 					<a-select placeholder="请选择" 
                         v-decorator="[
                         'backWarehouse',
@@ -47,7 +47,7 @@
                         ]">
                         <a-select-option v-for="item in warehouseList" :key="item.id" :value="item.id">{{ item.name }}</a-select-option>
                     </a-select>
-				</a-form-item>
+				</a-form-item> -->
                 <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 12 }" label="入库日期">
                     <a-date-picker 
                         style="width:100%;"
@@ -323,6 +323,16 @@ export default {
             );
         },
         save() {
+            if (
+                this.data
+                    .map(item => {
+                        return item.number != null && item.number != "" && item.number != 0;
+                    })
+                    .find(item => item == false) != undefined
+            ) {
+                    this.$message.error(`数量不能为空或0`);
+                    return false;
+            }
             this.form.validateFieldsAndScroll((err, values) => {
 				if (!err) {
 					console.log("Received values of form: ", values);
@@ -336,7 +346,7 @@ export default {
                         fromName: values.backDepartment,
                         date: this.signDate,
                         handlerName: values.transactor,
-                        warehouseId: values.backWarehouse,
+                        // warehouseId: values.backWarehouse,
                         oldOrderCode: values.originalInvoicesNo,
                         note: values.remark,
                         orderItemList: this.data.map(item => {
