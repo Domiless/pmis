@@ -42,7 +42,7 @@
                   let value1 = value;
                   handleChange(value1, record.id, 'warehouseUnit')
                   }"
-            :disabled="isBan"
+          
           >
             <a-select-option
               v-for="(item,index) in unitArr"
@@ -58,7 +58,7 @@
               style="margin: -5px 0"
               :value="text"
               @change="e => handleChange(e.target.value, record.id, 'stockNumber')"
-              :disabled="isBan"
+            
             />
           </div>
         </template>
@@ -69,7 +69,7 @@
               style="margin: -5px 0"
               :value="text"
               @change="e => handleChange(e.target.value, record.id, 'batch')"
-              :disabled="isBan"
+            
             />
           </div>
         </template>
@@ -85,7 +85,6 @@
                   let value1 = value;
                   handleChange(value1, record.id, 'category')
                   }"
-            :disabled="isBan"
           >
           ></a-tree-select>
         </template>
@@ -96,7 +95,6 @@
               style="margin: -5px 0"
               :value="text"
               @change="e => handleChange(e.target.value, record.id, 'note')"
-              :disabled="isBan"
             />
           </div>
         </template>
@@ -210,15 +208,13 @@ export default {
       categoryArr: [],
       detailsMsg: [],
       treeData: [],
-      warehouseName: '',
-      isBan: false
+      warehouseName: ''
     };
   },
   methods: {
     bgcolor(row, index) {
       // console.log(row);
       if (row.outStorage == 0) {
-        this.isBan = true;
         return "bgcolor";
       }
     },
@@ -335,6 +331,9 @@ export default {
           let list = this.data.filter(item => {
             return item.id === id;
           })
+          if ( list[0].outStorage == 0 ) {
+            return false
+          }
           let data = {
               list: list.map(item => {
                         return {
@@ -348,6 +347,10 @@ export default {
             })
           }
           console.log(data);
+          if ( typeof( data.list[0].amount ) == "undefined" || typeof (data.list[0].classificationId) == "undefined" ) {
+            this.$message.error(`请填写数量和分类`);
+            return false
+          }
 					this.Axios(
 						{
 							url: "/api-warehouse/orderEntry/entry",
@@ -408,6 +411,9 @@ export default {
     &:hover {
       background-color: #f3f3f3;
     }
+    td a {
+        color:#999999;
+      }
   }
 }
 </style>

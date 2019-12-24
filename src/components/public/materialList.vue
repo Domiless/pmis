@@ -19,6 +19,7 @@
       </a-col>
       <a-col :span="19" style="padding-left:4px;">
         <a-table
+          class="material_table"
           :columns="columns"
           :pagination="pagination"
           :dataSource="data"
@@ -29,8 +30,10 @@
             <div class="codeMsg">{{text}}</div>
           </template>
         </a-table>
-        <span class="msg">提示：双击可选择物料信息。</span>
       </a-col>
+    </a-row>
+    <a-row>
+        <span class="msg">提示：双击可选择物料信息。</span>
     </a-row>
   </div>
 </template>
@@ -271,7 +274,7 @@ export default {
   .msg {
     position: absolute;
     bottom: 12px;
-    left: -158px;
+    left: 0px;
   }
   .ant-table-pagination.ant-pagination {
     margin: 8px 0;
@@ -283,6 +286,16 @@ export default {
     text-overflow: ellipsis;
     white-space: nowrap;
     cursor: pointer;
+  }
+  .material_table {
+    position: relative;
+    .ant-table-placeholder {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			margin-left: -44px;
+			margin-top: -27px;
+		}
   }
 }
 </style>

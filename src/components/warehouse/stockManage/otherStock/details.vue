@@ -17,10 +17,10 @@
                 <span class="label_right">退料部门：</span>
                 <span>{{detailsMsg.fromName}}</span>
             </a-col>
-            <a-col :span="12" style="margin-bottom:12px;">
+            <!-- <a-col :span="12" style="margin-bottom:12px;">
                 <span class="label_right">退回仓库：</span>
                 <span>{{warehouseName}}</span>
-            </a-col>
+            </a-col> -->
             <a-col :span="12" style="margin-bottom:12px;">
                 <span class="label_right">入库日期：</span>
                 <span>{{detailsMsg.date}}</span>
@@ -150,7 +150,6 @@ export default {
             console.log(result);
             this.detailsMsg = result.data.data;
             this.data = result.data.data.returnEntryOrderItems;
-            this.warehouseName = result.data.data.warehouse.name;
           }
         },
         ({ type, info }) => {}

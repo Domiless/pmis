@@ -139,6 +139,7 @@ const columns = [
     dataIndex: "warningAmount",
     key: "warningAmount",
     title: "物料下限",
+    scopedSlots: { customRender: "warningAmount" },
     width: 120,
   },
   {

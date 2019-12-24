@@ -29,6 +29,7 @@
         :columns="columns"
         :dataSource="data"
         :pagination="false"
+        :rowClassName="bgcolor"
       >
         <!-- <template slot="code" slot-scope="text, record">
           <div class="codeMsg">{{text}}</div>
@@ -217,6 +218,12 @@ export default {
     };
   },
   methods: {
+    bgcolor(row, index) {
+      // console.log(row);
+      if (row.outStorage == 0) {
+        return "bgcolor";
+      }
+    },
     handleChange(value, key, column) {
       // console.log(value);
       // console.log(key);
@@ -280,6 +287,9 @@ export default {
           let list = this.data.filter(item => {
             return item.id === id;
           })
+          if ( list[0].outStorage == 0 ) {
+            return false
+          }
           let data = {
               list: list.map(item => {
                       return {
@@ -293,6 +303,10 @@ export default {
                     })
           }
           console.log(data);
+          if ( typeof( data.list[0].amount ) == "undefined" || typeof (data.list[0].classificationId) == "undefined" ) {
+            this.$message.error(`请填写数量和分类`);
+            return false
+          }
 					this.Axios(
 						{
 							url: "/api-warehouse/orderEntry/entry",
@@ -398,6 +412,15 @@ export default {
   .ant-table-thead > tr > th,
   .ant-table-tbody > tr > td {
     padding: 4px 4px;
+  }
+  .bgcolor {
+    background-color: #f3f3f3;
+    &:hover {
+      background-color: #f3f3f3;
+    }
+    td a {
+        color:#999999;
+      }
   }
 }
 </style>
