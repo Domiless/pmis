@@ -80,7 +80,7 @@
                 />
                 <span>关键词 :</span>
                 <a-input
-                  placeholder="单据编号/领用部门/领用原因"
+                  placeholder="单据编号/单位"
                   style="width: 250px"
                   v-model="keyWords"
                   @keyup.enter.native="getList"
