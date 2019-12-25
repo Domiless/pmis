@@ -108,6 +108,21 @@
               @blur="(e)=>editDetails(e.target.value, record.id)"
             ></a-input>
           </template>
+          <template slot="caozuo" slot-scope="text, record, index">
+            <a-popover placement="top">
+              <template slot="content">
+                <span>删除</span>
+              </template>
+              <permission-button
+                permCode
+                banType="disabled"
+                class="button_text btn_disabled"
+                @click="delRow(record,index)"
+              >
+                <a-icon type="delete" style="color:red;" />
+              </permission-button>
+            </a-popover>
+          </template>
         </a-table>
         <div style="padding:12px 0;">
           <a style="color:#1890FF;cursor: pointer;" href="javascript:" @click="choiceModalShow()">
@@ -242,9 +257,106 @@ export default {
     };
   },
   methods: {
+    delRow(row, index) {
+      console.log(row);
+      this.data.splice(index, 1);
+      let detailsData = [];
+      detailsData.push(row.id);
+      console.log(detailsData);
+      this.Axios(
+            {
+              url: "/api-warehouse/transferItem/del?transferItemId=" + detailsData[0],
+              params: {
+                // ids: detailsData
+              },
+              type: "delete",
+              option: { enableMsg: false },
+              config: {
+                headers: { "Content-Type": "application/json" }
+              }
+            },
+            this
+          ).then(
+            result => {
+              if (result.data.code === 200) {
+                console.log(result);
+              }
+            },
+            ({ type, info }) => {}
+          );
+    },
     choisceMsg(a) {
-      console.log(a);
-      this.choiceShow = false;
+        console.log(a);
+        // this.choiceShow = false;
+        if (
+            this.data.find(item => {
+            return item.id == a.id;
+            })
+        ) {
+            this.$message.error(`该条数据已被选择`);
+            return false;
+        }
+        var addArr = [];
+        addArr.push(a);
+        addArr = addArr.map(item => {
+                          return {
+                            id: item.id,
+                            code: item.code,
+                            drawingCode: item.drawingCode,
+                            name: item.name,
+                            specification: item.specification,
+                            unitEntry: item.unit,
+                            classify: item.classification.name,
+                            inventoryAmount: item.amount,
+                            checkAmount: '',
+                            remark: item.note,
+                            warehouseId: item.warehouse.id
+                          }
+                        })
+        console.log(addArr);
+        this.data = this.data.concat(addArr);
+        // this.data.push(a);
+        console.log(this.data);
+        // let data = {
+        //   transferId: this.$route.params.id,
+        //   transferItemDTO: addArr.map(item => {
+        //               return {
+        //                 classify: item.classify,
+        //                 code: item.code,
+        //                 drawingCode: item.drawingCode,
+        //                 inventoryAmount: item.inventoryAmount,
+        //                 name: item.name,
+        //                 remark: item.remark,
+        //                 specification: item.specification,
+        //                 transferAmount: item.checkAmount,
+        //                 unitEntry: item.unitEntry,
+        //                 warehouseItemId: item.id
+        //               }
+        //          })[0]
+        // }
+        let data = {
+          transferId: this.$route.params.id,
+          warehouseItemId: a.id
+        }
+        this.Axios(
+            {
+              url: "/api-warehouse/transferItem/add",
+              params: data,
+              type: "post",
+              option: { enableMsg: false },
+              config: {
+                headers: { "Content-Type": "application/json" }
+              }
+            },
+            this
+          ).then(
+            result => {
+              if (result.data.code === 200) {
+                console.log(result);
+              }
+            },
+            ({ type, info }) => {}
+          );
     },
     onChangeSign(data, dateString) {
       this.signDate = dateString;
@@ -268,8 +380,7 @@ export default {
           url: "/api-warehouse/transferItem/update?" + detailsData,
           params: {},
           type: "put",
-          enableMsg: false,
-          // option: { successMsg: "修改成功！" },
+          option: {  enableMsg: false },
           config: {
             headers: { "Content-Type": "application/json" }
           }

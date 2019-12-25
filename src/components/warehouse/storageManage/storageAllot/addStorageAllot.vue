@@ -329,11 +329,11 @@ export default {
             if (
                 this.data
                     .map(item => {
-                        return item.number != null && item.number != "";
+                        return item.number != null && item.number != "" && item.number != 0;
                     })
                     .find(item => item == false) != undefined
             ) {
-                    this.$message.error(`调拨数量不能为空`);
+                    this.$message.error(`数量不能为空或0`);
                     return false;
             }
             this.form.validateFieldsAndScroll((err, values) => {

@@ -93,6 +93,12 @@ const columns = [
     width: 80
   },
   {
+    dataIndex: "warehouseItem.warehouse.name",
+    key: "warehouseItem.warehouse.name",
+    title: "仓库",
+    width: 80
+  },
+  {
     dataIndex: "warehouseItem.amount",
     key: "warehouseItem.amount",
     title: "库存数量",
