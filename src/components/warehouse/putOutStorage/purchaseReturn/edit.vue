@@ -420,7 +420,7 @@ export default {
                 code: OneMsg.code,
                 goCode: OneMsg.goCode,
                 goName: OneMsg.goName,
-                warehouseId: OneMsg.warehouse.id,
+                // warehouseId: OneMsg.warehouse.id,
                 outDate:
                   OneMsg.outDate == null
                     ? undefined

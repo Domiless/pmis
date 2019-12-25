@@ -25,7 +25,7 @@
                 <permission-button
                   permCode
                   banType="hide"
-                  @click="audit"
+                  @click="handleCheck"
                   :disabled="selectedRowKeys.length!=1"
                 >审核</permission-button>
                 <a-tooltip placement="top">
@@ -103,6 +103,12 @@
               <template slot="remark" slot-scope="text, record, index">
                 <div class="content_style" style="max-width:200px;">{{record.note}}</div>
               </template>
+              <template slot="state" slot-scope="text">
+                <div>
+                  <span v-if="text==0" style="font-size:14px;color:#f6003c;">未审</span>
+                  <span v-if="text==-1" style="font-size:14px;color:#10CF0C;">已审</span>
+                </div>
+              </template>
             </a-table>
             <a-pagination
               style="padding-top:12px;text-align: right;"
@@ -148,7 +154,7 @@ const columns = [
     dataIndex: "code",
     key: "code",
     title: "单据编号",
-    width: "15%"
+    width: "19%"
   },
   {
     dataIndex: "outType",
@@ -168,7 +174,7 @@ const columns = [
   {
     dataIndex: "goName",
     title: "领用部门",
-    width: "15%",
+    width: "19%",
     key: "goName",
     scopedSlots: { customRender: "lingyongbumen" }
   },
@@ -179,20 +185,18 @@ const columns = [
     title: "领用原因",
     width: "15%"
   },
-  {
-    dataIndex: "warehouse",
-    key: "warehouse",
-    title: "出货仓库",
-    width: "8%"
-  },
+  // {
+  //   dataIndex: "warehouse",
+  //   key: "warehouse",
+  //   title: "出货仓库",
+  //   width: "8%"
+  // },
   {
     dataIndex: "state",
     key: "state",
     title: "状态",
     width: "8%",
-    customRender: function(text, record, index) {
-      return text == 0 ? "待审核" : text == -1 ? "已通过" : "";
-    }
+    scopedSlots: { customRender: "state" }
   },
   {
     dataIndex: "gmtCreated",
@@ -260,6 +264,20 @@ export default {
       } else {
         this.$message.error(`只能对待审核状态下的单子进行审核`);
       }
+    },
+    handleCheck() {
+      let that = this;
+      this.$confirm({
+        title: "确定要审核该单据吗？",
+        content: "",
+        okText: "确定",
+        okType: "primary",
+        cancelText: "取消",
+        onOk: function() {
+          that.audit();
+        },
+        onCancel() {}
+      });
     },
     toEdit() {
       if (this.selectedRows[0].state != 0) {
@@ -335,12 +353,12 @@ export default {
             this.selectedRows = [];
             this.data = result.data.data.content;
             this.total = result.data.data.totalElement;
-            this.data = this.data.map(item => {
-              return {
-                ...item,
-                warehouse: item.warehouse.name
-              };
-            });
+            // this.data = this.data.map(item => {
+            //   return {
+            //     ...item,
+            //     warehouse: item.warehouse.name
+            //   };
+            // });
           }
         },
         ({ type, info }) => {}
