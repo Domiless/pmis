@@ -469,7 +469,7 @@ export default {
                 goPerson: OneMsg.goPerson,
                 goCode: OneMsg.goCode,
                 goPhone: OneMsg.goPhone,
-                warehouseId: OneMsg.warehouse.id,
+                // warehouseId: OneMsg.warehouse.id,
                 outDate:
                   OneMsg.outDate == null
                     ? undefined

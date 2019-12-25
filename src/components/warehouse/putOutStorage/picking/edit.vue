@@ -423,7 +423,7 @@ export default {
                 code: OneMsg.code,
                 goName: OneMsg.goName,
                 reason: OneMsg.reason,
-                warehouseId: OneMsg.warehouse.id,
+                // warehouseId: OneMsg.warehouse.id,
                 outDate:
                   OneMsg.outDate == null
                     ? undefined

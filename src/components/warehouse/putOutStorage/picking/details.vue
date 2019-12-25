@@ -25,10 +25,10 @@
         <span class="label_case">领用原因：</span>
         <span>{{oneMsg.reason}}</span>
       </a-col>
-      <a-col :span="12">
+      <!-- <a-col :span="12">
         <span class="label_case">出货仓库：</span>
         <span>{{oneMsg.warehouse.name}}</span>
-      </a-col>
+      </a-col> -->
       <a-col :span="12">
         <span class="label_case">出货日期：</span>
         <span>{{oneMsg.outDate}}</span>
