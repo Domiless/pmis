@@ -28,6 +28,7 @@
         <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 12 }" label="调出仓库">
           <a-select
             placeholder="请选择"
+            @change="setWarehouseId"
             v-decorator="[
                         'outputWarehouse',
                         {rules: [{ required: true, message: '请选择调出仓库' }]}
@@ -49,7 +50,7 @@
                         ]"
           >
             <a-select-option
-              v-for="item in warehouseList"
+              v-for="item in warehouseArr"
               :key="item.id"
               :value="item.id"
             >{{ item.name }}</a-select-option>
@@ -146,7 +147,7 @@
           width="800px"
           centered
           >
-          <materialList v-on:choisceMsg="choisceMsg"></materialList>
+          <materialList v-on:choisceMsg="choisceMsg" :warehouseId="warehouseId"></materialList>
       </a-modal>
     </a-row>
   </div>
@@ -252,11 +253,18 @@ export default {
       data: [],
       detailsMsg: [],
       warehouseList: [],
+      warehouseArr: [],
       inputwarehouse: "",
-      outputwarehouse: ""
+      outputwarehouse: "",
+      editDetailsId: "",
+      warehouseId: ''
     };
   },
   methods: {
+    setWarehouseId(value) {
+        this.warehouseId = value;
+        console.log(this.warehouseId);
+    },
     delRow(row, index) {
       console.log(row);
       this.data.splice(index, 1);
@@ -295,45 +303,7 @@ export default {
         ) {
             this.$message.error(`该条数据已被选择`);
             return false;
-        }
-        var addArr = [];
-        addArr.push(a);
-        addArr = addArr.map(item => {
-                          return {
-                            id: item.id,
-                            code: item.code,
-                            drawingCode: item.drawingCode,
-                            name: item.name,
-                            specification: item.specification,
-                            unitEntry: item.unit,
-                            classify: item.classification.name,
-                            inventoryAmount: item.amount,
-                            checkAmount: '',
-                            remark: item.note,
-                            warehouseId: item.warehouse.id
-                          }
-                        })
-        console.log(addArr);
-        this.data = this.data.concat(addArr);
-        // this.data.push(a);
-        console.log(this.data);
-        // let data = {
-        //   transferId: this.$route.params.id,
-        //   transferItemDTO: addArr.map(item => {
-        //               return {
-        //                 classify: item.classify,
-        //                 code: item.code,
-        //                 drawingCode: item.drawingCode,
-        //                 inventoryAmount: item.inventoryAmount,
-        //                 name: item.name,
-        //                 remark: item.remark,
-        //                 specification: item.specification,
-        //                 transferAmount: item.checkAmount,
-        //                 unitEntry: item.unitEntry,
-        //                 warehouseItemId: item.id
-        //               }
-        //          })[0]
-        // }
+        } else {
         let data = {
           transferId: this.$route.params.id,
           warehouseItemId: a.id
@@ -353,10 +323,50 @@ export default {
             result => {
               if (result.data.code === 200) {
                 console.log(result);
+                this.editDetailsId = result.data.data.id
+                var addArr = [];
+                addArr.push(a);
+                addArr = addArr.map(item => {
+                                  return {
+                                    id: this.editDetailsId,
+                                    code: item.code,
+                                    drawingCode: item.drawingCode,
+                                    name: item.name,
+                                    specification: item.specification,
+                                    unitEntry: item.unit,
+                                    classify: item.classification.name,
+                                    inventoryAmount: item.amount,
+                                    checkAmount: '',
+                                    remark: item.note,
+                                    warehouseId: item.warehouse.id
+                                  }
+                                })
+                console.log(addArr);
+                this.data = this.data.concat(addArr);
+                // this.data.push(a);
+                console.log(this.data);
+                // let data = {
+                //   transferId: this.$route.params.id,
+                //   transferItemDTO: addArr.map(item => {
+                //               return {
+                //                 classify: item.classify,
+                //                 code: item.code,
+                //                 drawingCode: item.drawingCode,
+                //                 inventoryAmount: item.inventoryAmount,
+                //                 name: item.name,
+                //                 remark: item.remark,
+                //                 specification: item.specification,
+                //                 transferAmount: item.checkAmount,
+                //                 unitEntry: item.unitEntry,
+                //                 warehouseItemId: item.id
+                //               }
+                //          })[0]
+                // }
               }
             },
             ({ type, info }) => {}
           );
+        }
     },
     onChangeSign(data, dateString) {
       this.signDate = dateString;
@@ -369,12 +379,17 @@ export default {
       const newData = [...this.data];
       const target = newData.filter(item => key === item.id)[0];
       console.log(target);
+      if(target.transferAmount <= 0) {
+        this.$message.error(`数量不能小于等于0`)
+        return false
+      }
       let qs = require("qs");
       let detailsData = qs.stringify({
         id: target.id,
         amount: target.transferAmount,
         remark: target.remark
       });
+      console.log(detailsData);
       this.Axios(
         {
           url: "/api-warehouse/transferItem/update?" + detailsData,
@@ -425,6 +440,29 @@ export default {
         ({ type, info }) => {}
       );
     },
+    getWarehouse(){
+        this.Axios(
+            {
+            url: "/api-warehouse/warehouse/allWarehouse",
+            type: "get",
+            params: {},
+            option: { enableMsg: false }
+            },
+            this
+        ).then(
+            result => {
+            if (result.data.code === 200) {
+                console.log(result);
+                if( result.data.data.length == 0 ) {
+                    this.warehouseArr = [];
+                } else {
+                    this.warehouseArr = result.data.data;
+                }
+            }
+            },
+            ({ type, info }) => {}
+        )
+    },
     findOne(id) {
       this.Axios(
         {
@@ -443,6 +481,7 @@ export default {
             this.detailsMsg = result.data.data.transferDO;
             this.data = result.data.data.transferItemDO;
             this.signDate = this.detailsMsg.transferDate;
+            this.editDetailsId = this.detailsMsg.fromWarehouse.id;
             this.form.setFieldsValue({
               invoicesType: this.detailsMsg.type,
               invoicesNo: this.detailsMsg.transferNo,
@@ -463,11 +502,31 @@ export default {
     save() {
       this.form.validateFieldsAndScroll((err, values) => {
         if (!err) {
-          console.log("Received values of form: ", values);
-          // if (!this.checkedKeys.length) {
-          // 	this.$message.error("请分配角色权限");
-          // 	return false;
-          // }
+          if (this.data.length < 1) {
+              this.$message.error(`请添加物料`);
+          } else if (
+              this.data
+              .map(item => item.transferAmount == null || item.transferAmount == "")
+              .find(item => item == true) != undefined
+          ) {
+              this.$message.error(`请填写物料数量`);
+          } else if (
+              this.data
+              .map(item =>
+                  /^(([1-9][0-9]*)|(([0]\.\d{1,3}|[1-9][0-9]*\.\d{1,3})))$/.test(
+                  item.transferAmount
+                  )
+              )
+              .find(item => item == false) != undefined
+          ) {
+              this.$message.error(`物料数量必须大于0,且只能保留3位小数`);
+          } else if (
+              this.data
+              .map(item => item.transferAmount > item.inventoryAmount)
+              .find(item => item == true) != undefined
+          ) {
+              this.$message.error(`数量不能大于库存数量`);
+          } else {
           let qs = require("qs");
           let data = {
             transferId: this.$route.params.id,
@@ -499,11 +558,13 @@ export default {
             ({ type, info }) => {}
           );
         }
+        }
       });
     }
   },
   created() {
     this.getWareHouseList();
+    this.getWarehouse();
     this.findOne(this.$route.params.id);
   },
   components: {

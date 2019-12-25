@@ -41,14 +41,14 @@
                 :dataSource="data"
                 :pagination="false"
                 >
-                    <template slot="code" slot-scope="text, record">
+                    <!-- <template slot="code" slot-scope="text, record">
                          <a-tooltip>
                             <template slot="title">
                               {{text}}
                             </template>
                             <div class="codeMsg">{{text}}</div>
                         </a-tooltip>
-                    </template>
+                    </template> -->
                     <template slot="caozuo" slot-scope="text, record">
                         <a href="javascript:" @click="showEdit(record.id)">修改</a>
                     </template>

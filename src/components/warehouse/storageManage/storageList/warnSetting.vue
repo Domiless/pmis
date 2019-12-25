@@ -396,5 +396,13 @@ export default {
   .editable-row-operations a {
     margin-right: 8px;
   }
+  .left_case {
+    margin-right: 10px;
+    height: 540px;
+    border: 1px solid #e8e8e8;
+    border-radius: 4px;
+    overflow: auto;
+    padding: 4px 8px;
+  }
 }
 </style>

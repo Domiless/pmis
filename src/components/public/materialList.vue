@@ -76,6 +76,11 @@ const columns = [
   }
 ];
 export default {
+  props: {
+    warehouseId: {
+      default: ''
+    }
+  },
   data() {
     return {
       pagination: {
@@ -165,7 +170,12 @@ export default {
             );
             this.treeData = this.filterArray(this.treeData, code);
             this.defaultChecked.push(this.treeData[0].key);
-            this.getList(this.defaultChecked);
+            if(typeof(this.warehouseId) == "undefined" || this.warehouseId == null || this.warehouseId == ""){
+                this.getList(this.defaultChecked);
+            }else{
+                this.getList2(this.defaultChecked);
+            }
+            
           }
         },
         ({ type, info }) => {}
@@ -215,6 +225,47 @@ export default {
               };
             });
             this.total = result.data.data.length;
+            if ( this.total == 0 ) {
+              this.msg = "msg2"
+            } else {
+              this.msg = "msg"
+            }
+          }
+        },
+        ({ type, info }) => {}
+      );
+    },
+    getList2(selectKey) {
+      console.log(selectKey);
+      this.treeId = selectKey[0];
+      if (selectKey.length === 0) {
+        return false;
+      }
+      this.Axios(
+        {
+          url: "/api-warehouse/warehouseItem/list",
+          type: "get",
+          params: {
+            // page: this.current,
+            // size: this.pageSize,
+            warehouseId: this.warehouseId,
+            classifyId: selectKey[0],
+            keyword: this.keyWords
+          },
+          option: { enableMsg: false }
+        },
+        this
+      ).then(
+        result => {
+          if (result.data.code === 200) {
+            console.log(result);
+            this.data = result.data.data.content.map(item => {
+              return {
+                ...item,
+                warehouseName: item.warehouse.name
+              };
+            });
+            this.total = result.data.data.totalElement;
             if ( this.total == 0 ) {
               this.msg = "msg2"
             } else {

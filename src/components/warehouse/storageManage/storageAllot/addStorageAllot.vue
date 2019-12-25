@@ -26,6 +26,7 @@
 				</a-form-item>
                 <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 12 }" label="调出仓库">
 					<a-select placeholder="请选择" 
+                        @change="setWarehouseId"
                         v-decorator="[
                         'outputWarehouse',
                         {rules: [{ required: true, message: '请选择调出仓库' }]}
@@ -39,7 +40,7 @@
                         'inputWarehouse',
                         {rules: [{ required: true, message: '请选择调入仓库' }]}
                         ]">
-                        <a-select-option v-for="item in warehouseList" :key="item.id" :value="item.id">{{ item.name }}</a-select-option>
+                        <a-select-option v-for="item in warehouseArr" :key="item.id" :value="item.id">{{ item.name }}</a-select-option>
                     </a-select>
 				</a-form-item>
                 <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 12 }" label="调拨日期">
@@ -138,7 +139,7 @@
                 width="800px"
                 centered
                 >
-                <materialList v-on:choisceMsg="choisceMsg"></materialList>
+                <materialList v-on:choisceMsg="choisceMsg" :warehouseId="warehouseId"></materialList>
             </a-modal>
         </a-row>
     </div>
@@ -241,10 +242,16 @@ export default {
             choiceShow: false,
             columns,
             data: [],
-            warehouseList: []
+            warehouseList: [],
+            warehouseArr: [],
+            warehouseId: ''
         }
     },
     methods: {
+        setWarehouseId(value) {
+            this.warehouseId = value;
+            console.log(this.warehouseId);
+        },
         delRow(row, index) {
             console.log(index);
             this.data.splice(index, 1);
@@ -269,8 +276,7 @@ export default {
         onChangeSign(data,dateString) {
             this.signDate = dateString;
         },
-        choiceModalShow(index) {
-            console.log(index);
+        choiceModalShow() {
             this.choiceShow = true;
         },
         handleInputChange(value, key, column) {
@@ -325,24 +331,57 @@ export default {
                 ({ type, info }) => {}
             );
         },
+        getWarehouse(){
+            this.Axios(
+                {
+                url: "/api-warehouse/warehouse/allWarehouse",
+                type: "get",
+                params: {},
+                option: { enableMsg: false }
+                },
+                this
+            ).then(
+                result => {
+                if (result.data.code === 200) {
+                    console.log(result);
+                    if( result.data.data.length == 0 ) {
+                        this.warehouseArr = [];
+                    } else {
+                        this.warehouseArr = result.data.data;
+                    }
+                }
+                },
+                ({ type, info }) => {}
+            )
+        },
         save() {
-            if (
-                this.data
-                    .map(item => {
-                        return item.number != null && item.number != "" && item.number != 0;
-                    })
-                    .find(item => item == false) != undefined
-            ) {
-                    this.$message.error(`数量不能为空或0`);
-                    return false;
-            }
             this.form.validateFieldsAndScroll((err, values) => {
 				if (!err) {
-					console.log("Received values of form: ", values);
-					// if (!this.checkedKeys.length) {
-					// 	this.$message.error("请分配角色权限");
-					// 	return false;
-					// }
+					if (this.data.length < 1) {
+                        this.$message.error(`请添加物料`);
+                    } else if (
+                        this.data
+                        .map(item => item.number == null || item.number == "")
+                        .find(item => item == true) != undefined
+                    ) {
+                        this.$message.error(`请填写物料数量`);
+                    } else if (
+                        this.data
+                        .map(item =>
+                            /^(([1-9][0-9]*)|(([0]\.\d{1,3}|[1-9][0-9]*\.\d{1,3})))$/.test(
+                            item.number
+                            )
+                        )
+                        .find(item => item == false) != undefined
+                    ) {
+                        this.$message.error(`物料数量必须大于0,且只能保留3位小数`);
+                    } else if (
+                        this.data
+                        .map(item => item.number > item.amount)
+                        .find(item => item == true) != undefined
+                    ) {
+                        this.$message.error(`数量不能大于库存数量`);
+                    } else {
 					let data = {
                         fromWarehouseId: values.outputWarehouse,
                         toWareHouseId: values.inputWarehouse,
@@ -386,7 +425,8 @@ export default {
 							}
 						},
 						({ type, info }) => {}
-					);
+                    );
+                    }
 				}
             });
         }
@@ -397,6 +437,7 @@ export default {
     created() {
         this.getCode();
         this.getWareHouseList();
+        this.getWarehouse();
     },
     mounted() {
         this.form.setFieldsValue({

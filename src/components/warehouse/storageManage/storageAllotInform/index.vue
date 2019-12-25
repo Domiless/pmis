@@ -156,7 +156,10 @@ export default {
                 {
                     url: "/api-warehouse/transfer/notice",
                     type: "get",
-                    params: {},
+                    params: {
+                        page: this.current,
+                        size: this.pageSize,
+                    },
                     option: { enableMsg: false }
                 },
                 this
@@ -164,8 +167,8 @@ export default {
                 result => {
                     if (result.data.code === 200) {
                             console.log(result);
-                            this.data = result.data.data;
-                            this.total = result.data.data.length;
+                            this.data = result.data.data.content;
+                            this.total = result.data.data.totalElement;
                         }
                 },
                 ({ type, info }) => {}
