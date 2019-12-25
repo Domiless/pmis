@@ -52,7 +52,7 @@
                     <a-date-picker 
                         style="width:100%;"
                         @change="onChangeSign" 
-                        v-decorator="['stockDate']" 
+                        v-decorator="['stockDate',{rules: [{ required: true, message: '请填写入库日期' }]}]" 
                         format="YYYY/MM/DD"/>
 				</a-form-item>
                 <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 12 }" label="经办人">
@@ -330,23 +330,33 @@ export default {
             );
         },
         save() {
-            if (
-                this.data
-                    .map(item => {
-                        return item.number != null && item.number != "" && item.number != 0;
-                    })
-                    .find(item => item == false) != undefined
-            ) {
-                    this.$message.error(`数量不能为空或0`);
-                    return false;
-            }
             this.form.validateFieldsAndScroll((err, values) => {
 				if (!err) {
-					console.log("Received values of form: ", values);
-					// if (!this.checkedKeys.length) {
-					// 	this.$message.error("请分配角色权限");
-					// 	return false;
-					// }
+                    if (this.data.length < 1) {
+                        this.$message.error(`请添加物料`);
+                    } else if (
+                        this.data
+                        .map(item => item.number == null || item.number == "")
+                        .find(item => item == true) != undefined
+                    ) {
+                        this.$message.error(`请填写物料数量`);
+                    } else if (
+                        this.data
+                        .map(item =>
+                            /^(([1-9][0-9]*)|(([0]\.\d{1,3}|[1-9][0-9]*\.\d{1,3})))$/.test(
+                            item.number
+                            )
+                        )
+                        .find(item => item == false) != undefined
+                    ) {
+                        this.$message.error(`物料数量必须大于0,且只能保留3位小数`);
+                    } else if (
+                        this.data
+                        .map(item => item.number > item.amount)
+                        .find(item => item == true) != undefined
+                    ) {
+                        this.$message.error(`数量不能大于库存数量`);
+                    } else {
 					let data = {
                         code: values.invoicesNo,
                         oldOrderCode: values.originalInvoicesNo,
@@ -386,7 +396,8 @@ export default {
 						},
 						({ type, info }) => {}
 					);
-				}
+                    }
+                } 
             });
         }
     },

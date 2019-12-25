@@ -267,6 +267,7 @@ export default {
   watch: {
 		$route() {
       this.getList();
+      this.selectedRowKeys = [];
 			let a = this.$route.matched.find(item => item.name === "addStorageAllot")
 				? true
 				: false;

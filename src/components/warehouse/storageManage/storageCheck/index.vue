@@ -87,7 +87,9 @@
         style="top:20px" width="1200px" 
         :footer="null"
         :maskClosable="false"
-        @cancel="handleCancel(1)">
+        @cancel="handleCancel(1)"
+        destroyOnClose
+        >
         <Details :sendId="checkDetailsId"></Details>
     </a-modal>
   </div>
@@ -306,6 +308,7 @@ export default {
   watch: {
 		$route() {
       this.getList();
+      this.selectedRowKeys = [];
 			let a = this.$route.matched.find(item => item.name === "addStorageCheck")
 				? true
 				: false;

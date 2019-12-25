@@ -75,7 +75,7 @@
           <a-tree-select
             v-model="record.category"
             allowClear
-            style="width: 100%"
+            class="tree_select"
             :dropdownStyle="{ maxHeight: '400px', overflow: 'auto' }"
             :treeData="treeData"
             placeholder="请选择"
@@ -434,6 +434,12 @@ export default {
     td a {
         color:#999999;
       }
+  }
+  .tree_select {
+    width: 200px;
+    overflow: hidden;
+    text-overflow:ellipsis;
+    white-space: nowrap;
   }
 }
 </style>
