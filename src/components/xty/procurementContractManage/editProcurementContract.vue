@@ -794,7 +794,11 @@ export default {
         result => {
           if (result.data.code === 200) {
 						console.log(result);
-						this.warehouseArr = result.data.data;
+						if( result.data.data.length == 0 ) {
+							this.warehouseArr = [];
+						} else {
+							this.warehouseArr = result.data.data;
+						}
           }
         },
         ({ type, info }) => {}

@@ -44,7 +44,7 @@ export default [{
       permissionCode: 'shopcontract_lookup',
     },
     {
-      menu: '合同管理',
+      menu: '合同模板管理',
       route: '/contractManage',
       key: 'contractManage',
       permissionCode: 'contractmodel_lookup',

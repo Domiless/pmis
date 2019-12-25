@@ -249,9 +249,9 @@ export default {
         console.log(detailsData);
         this.Axios(
               {
-                url: "/api-warehouse/checkItem/del",
+                url: "/api-warehouse/checkItem/del?id=" + detailsData[0],
                 params: {
-                  ids: detailsData
+                  // ids: detailsData
                 },
                 type: "delete",
                 option: { enableMsg: false },
@@ -303,20 +303,20 @@ export default {
         console.log(this.data);
         let data = {
           checkId: this.$route.params.id,
-          checkItemDTOS: addArr.map(item => {
-            return {
-              checkAmount: item.checkAmount,
-              remark: item.remark,
-              warehouseItemID: item.warehouseId
-            }
-          })
+          warehouseItemID: a.id
+          // checkItemDTOS: addArr.map(item => {
+          //   return {
+          //     checkAmount: item.checkAmount,
+          //     remark: item.remark,
+          //     warehouseItemID: item.warehouseId
+          //   }
+          // })
         }
         this.Axios(
             {
               url: "/api-warehouse/checkItem/add",
               params: data,
               type: "post",
-              enableMsg: false,
               option: { enableMsg: false },
               config: {
                 headers: { "Content-Type": "application/json" }
@@ -355,8 +355,7 @@ export default {
               url: "/api-warehouse/checkItem/update?" + detailsData,
               params: {},
               type: "put",
-              enableMsg: false,
-              option: { successMsg: "修改成功！" },
+              option: { enableMsg: false },
               config: {
                 headers: { "Content-Type": "application/json" }
               }

@@ -31,9 +31,7 @@
           </template>
         </a-table>
       </a-col>
-    </a-row>
-    <a-row>
-        <span class="msg">提示：双击可选择物料信息。</span>
+      <span :class="msg">提示：双击可选择物料信息。</span>
     </a-row>
   </div>
 </template>
@@ -102,7 +100,8 @@ export default {
       treeData: [],
       keyWords: "",
       treeId: "",
-      defaultChecked: []
+      defaultChecked: [],
+      msg: "msg"
     };
   },
   methods: {
@@ -216,6 +215,11 @@ export default {
               };
             });
             this.total = result.data.data.length;
+            if ( this.total == 0 ) {
+              this.msg = "msg2"
+            } else {
+              this.msg = "msg"
+            }
           }
         },
         ({ type, info }) => {}
@@ -274,6 +278,11 @@ export default {
   .msg {
     position: absolute;
     bottom: 12px;
+    left: 0px;
+  }
+  .msg2 {
+    position: relative;
+    bottom: 0px;
     left: 0px;
   }
   .ant-table-pagination.ant-pagination {

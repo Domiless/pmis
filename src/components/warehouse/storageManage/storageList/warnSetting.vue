@@ -53,7 +53,7 @@
                          <div class="editable-row-operations">
                           <span v-if="record.editable">
                             <a @click="() => save(record.id)">保存</a>
-                            <a-popconfirm title="Sure to cancel?" @confirm="() => cancel(record.id)">
+                            <a-popconfirm title="确定取消吗?" @confirm="() => cancel(record.id)">
                               <a>取消</a>
                             </a-popconfirm>
                           </span>
@@ -164,6 +164,7 @@ export default {
             defaultChecked: [],
             detailsVisible: false,
             detailsMsg: [],
+            cacheData: []
         }
     },
     methods: {
@@ -300,7 +301,7 @@ export default {
         },
       handleChange(value, key, column) {
         const newData = [...this.data];
-        const target = newData.filter(item => key === item.key)[0];
+        const target = newData.filter(item => key === item.id)[0];
         if (target) {
           target[column] = value;
           this.data = newData;
@@ -308,7 +309,7 @@ export default {
       },
       edit(key) {
         const newData = [...this.data];
-        const target = newData.filter(item => key === item.key)[0];
+        const target = newData.filter(item => key === item.id)[0];
         if (target) {
           target.editable = true;
           this.data = newData;
@@ -317,18 +318,47 @@ export default {
       },
       save(key) {
         const newData = [...this.data];
-        const target = newData.filter(item => key === item.key)[0];
+        const target = newData.filter(item => key === item.id)[0];
         if (target) {
           delete target.editable;
           this.data = newData;
           this.cacheData = newData.map(item => ({ ...item }));
         }
+        console.log(target);
+        let data = {
+            classifyId: target.classification.id,
+            note: target.note,
+            unit: target.unit,
+            warningAmount: target.warningAmount,
+            warehouseItemId: target.id
+        }
+        console.log(data);
+        this.Axios(
+						{
+							url: "/api-warehouse/warehouseItem/update",
+							params: data,
+							type: "post",
+							option: { successMsg: "保存成功！" },
+							config: {
+								headers: { "Content-Type": "application/json" }
+							}
+						},
+						this
+					).then(
+						result => {
+							if (result.data.code === 200) {
+                console.log(result);
+								
+							}
+						},
+						({ type, info }) => {}
+					);
       },
       cancel(key) {
         const newData = [...this.data];
-        const target = newData.filter(item => key === item.key)[0];
+        const target = newData.filter(item => key === item.id)[0];
         if (target) {
-          Object.assign(target, this.cacheData.filter(item => key === item.key)[0]);
+          Object.assign(target, this.cacheData.filter(item => key === item.id)[0]);
           delete target.editable;
           this.data = newData;
         }

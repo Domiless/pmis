@@ -36,6 +36,7 @@
         </template> -->
         <template slot="warehouseUnit" slot-scope="text,record">
           <a-select
+            v-model="record.warehouseUnit"
             style="width: 100%"
             @mouseenter = "getWarehouseUnit(record.id)"
             @change="(value,option) => {
@@ -75,6 +76,7 @@
         </template>
         <template slot="category" slot-scope="text,record">
           <a-tree-select
+            v-model="record.category"
             allowClear
             style="width: 100%"
             :dropdownStyle="{ maxHeight: '400px', overflow: 'auto' }"
@@ -98,8 +100,8 @@
             />
           </div>
         </template>
-        <template slot="ruku" slot-scope="text,record">
-           <a href="javascript:" @click="addStock(record.id)">入库</a>
+        <template slot="ruku" slot-scope="text,record,index">
+           <a href="javascript:" @click="addStock(record.id,index)">入库</a>
         </template>
       </a-table>
     </a-row>
@@ -247,7 +249,14 @@ export default {
 					if (result.data.code === 200) {
             console.log(result);
             this.detailsMsg = result.data.data;
-            this.data = result.data.data.orderItems;
+            this.data = result.data.data.orderItems
+                          .map(item => {
+                              return {
+                                ...item,
+                                category: "",
+                                warehouseUnit: ""
+                              }
+                          });
             this.warehouseName = result.data.data.warehouse.name;
 					}
 				},
@@ -326,7 +335,7 @@ export default {
         ({ type, info }) => {}
       );
     },
-    addStock(id) {
+    addStock(id,index) {
           console.log(id);
           let list = this.data.filter(item => {
             return item.id === id;
@@ -349,6 +358,10 @@ export default {
           console.log(data);
           if ( typeof( data.list[0].amount ) == "undefined" || typeof (data.list[0].classificationId) == "undefined" ) {
             this.$message.error(`请填写数量和分类`);
+            return false
+          }
+          if(data.list[0].amount <= 0) {
+            this.$message.error(`请填写大于0的数量`);
             return false
           }
 					this.Axios(

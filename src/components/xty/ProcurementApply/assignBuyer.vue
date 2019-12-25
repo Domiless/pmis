@@ -38,7 +38,7 @@
                     :disabled="selectedRowKeys.length == 0 || buyerValue.length == 0"
                     type="primary"
                 >
-				提交
+				分配
 			</permission-button>
             </a-col>
         </a-row>
