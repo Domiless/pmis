@@ -27,7 +27,12 @@
           :customRow="(a,b)=>customRow(a,b)"
         >
           <template slot="code" slot-scope="text, record">
-            <div class="codeMsg">{{text}}</div>
+            <a-tooltip>
+              <template slot="title">
+                {{text}}
+              </template>
+              <div class="codeMsg">{{text}}</div>
+            </a-tooltip>
           </template>
         </a-table>
       </a-col>

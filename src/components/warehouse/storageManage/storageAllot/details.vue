@@ -89,8 +89,8 @@ const columns = [
     width: 80
   },
   {
-    dataIndex: "warehouseName",
-    key: "warehouseName",
+    dataIndex: "fromWarehouseName",
+    key: "fromWarehouseName",
     title: "仓库",
     width: 80
   },

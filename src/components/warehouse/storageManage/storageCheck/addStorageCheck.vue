@@ -25,7 +25,8 @@
                     ></a-input>
 				</a-form-item>
                 <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 12 }" label="盘点仓库">
-					<a-select placeholder="请选择" 
+					<a-select placeholder="请选择"
+                        @change="setWarehouseId" 
                         v-decorator="[
                         'storageWarehouse',
                         {rules: [{ required: true, message: '请选择盘点仓库' }]}
@@ -129,7 +130,7 @@
                 width="800px"
                 centered
                 >
-                <materialList v-on:choisceMsg="choisceMsg"></materialList>
+                <materialList v-on:choisceMsg="choisceMsg" :warehouseId="warehouseId"></materialList>
             </a-modal>
         </a-row>
     </div>
@@ -232,10 +233,16 @@ export default {
             choiceShow: false,
             columns,
             data: [],
-            warehouseList: []
+            warehouseList: [],
+            warehouseId: ''
         }
     },
     methods: {
+        setWarehouseId(value) {
+            this.warehouseId = value;
+            this.data = [];
+            console.log(this.warehouseId);
+        },
         delRow(row, index) {
             console.log(index);
             this.data.splice(index, 1);
@@ -334,17 +341,11 @@ export default {
                         .find(item => item == false) != undefined
                     ) {
                         this.$message.error(`物料数量必须大于0,且只能保留3位小数`);
-                    } else if (
-                        this.data
-                        .map(item => item.number > item.amount)
-                        .find(item => item == true) != undefined
-                    ) {
-                        this.$message.error(`数量不能大于库存数量`);
                     } else {
 					let data = {
                        checkItemDTOS: this.data.map(item => {
                                                 return {
-                                                   warehouseItemID: item.id,
+                                                   code: item.code,
                                                    checkAmount: parseInt(item.number),
                                                    remark: item.note
                                                 }

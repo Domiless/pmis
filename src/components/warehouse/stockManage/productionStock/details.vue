@@ -99,13 +99,13 @@ const columns = [
     dataIndex: "outStorage",
     width: 80
   },
-  {
-    title: "库存单位",
-    key: "warehouseUnit",
-    dataIndex: "warehouseUnit",
-    width: 80,
-    scopedSlots: { customRender: "warehouseUnit" }
-  },
+  // {
+  //   title: "库存单位",
+  //   key: "warehouseUnit",
+  //   dataIndex: "warehouseUnit",
+  //   width: 80,
+  //   scopedSlots: { customRender: "warehouseUnit" }
+  // },
   {
     title: "备注",
     key: "note",
