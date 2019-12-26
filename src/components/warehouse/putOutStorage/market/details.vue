@@ -36,9 +36,9 @@
       <!-- <a-col :span="12">
         <span class="label_case">出货仓库：</span>
         <span>{{oneMsg.warehouse.name}}</span>
-      </a-col> -->
+      </a-col>-->
       <a-col :span="12">
-        <span class="label_case">出货日期：</span>
+        <span class="label_case">出库日期：</span>
         <span>{{oneMsg.outDate}}</span>
       </a-col>
       <a-col :span="12">
