@@ -164,7 +164,7 @@ const columns = [
   },
   {
     dataIndex: "goName",
-    title: "退料部门",
+    title: "供应商",
     width: "20%",
     key: "goName",
     scopedSlots: { customRender: "lingyongbumen" }
