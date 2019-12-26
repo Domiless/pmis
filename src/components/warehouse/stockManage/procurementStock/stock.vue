@@ -38,7 +38,7 @@
           <a-select
             v-model="record.warehouseUnit"
             style="width: 100%"
-            @mouseenter = "getWarehouseUnit(record.id)"
+            @focus = "getWarehouseUnit(record.id)"
             @change="(value,option) => {
                   let value1 = value;
                   handleChange(value1, record.id, 'warehouseUnit')

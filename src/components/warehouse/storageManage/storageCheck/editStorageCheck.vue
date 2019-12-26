@@ -28,6 +28,7 @@
         <a-form-item :label-col=" { span: 2 }" :wrapper-col="{ span: 12 }" label="盘点仓库">
           <a-select
             placeholder="请选择"
+            @change="setWarehouseId" 
             v-decorator="[
               'storageWarehouse',
               {rules: [{ required: true, message: '请选择盘点仓库' }]}
@@ -82,7 +83,6 @@
               oninput="if(value.length>10)value=value.slice(0,10)"
               :value="text"
               @change="(e)=>handleInputChange(e.target.value, record.id, 'checkAmount')"
-              @blur="(e)=>editDetails(e.target.value, record.id)"
             ></a-input>
           </template>
           <template slot="remark" slot-scope="text, record, index">
@@ -90,7 +90,6 @@
               maxlength="50"
               :value="text"
               @change="(e)=>handleInputChange(e.target.value, record.id, 'remark')"
-              @blur="(e)=>editDetails(e.target.value, record.id)"
             ></a-input>
           </template>
           <template slot="caozuo" slot-scope="text, record, index">
@@ -131,7 +130,7 @@
           width="800px"
           centered
           >
-          <materialList v-on:choisceMsg="choisceMsg"></materialList>
+          <materialList v-on:choisceMsg="choisceMsg" :warehouseId="warehouseId"></materialList>
       </a-modal>
     </a-row>
   </div>
@@ -238,96 +237,54 @@ export default {
       detailsMsg: [],
       warehouseList: [],
       warehouseName: "",
-      editDetailsId: ""
+      editDetailsId: "",
+      warehouseId: ""
     };
   },
   methods: {
+    setWarehouseId(value) {
+        this.warehouseId = value;
+        this.data = [];
+        console.log(this.warehouseId);
+    },
     delRow(row, index) {
         console.log(row);
         this.data.splice(index, 1);
-        let detailsData = [];
-        detailsData.push(row.id);
-        console.log(detailsData);
-        this.Axios(
-              {
-                url: "/api-warehouse/checkItem/del?id=" + detailsData[0],
-                params: {
-                  // ids: detailsData
-                },
-                type: "delete",
-                option: { enableMsg: false },
-                config: {
-                  headers: { "Content-Type": "application/json" }
-                }
-              },
-              this
-            ).then(
-              result => {
-                if (result.data.code === 200) {
-                  console.log(result);
-                }
-              },
-              ({ type, info }) => {}
-            );
     },
     choisceMsg(a) {
         console.log(a);
         // this.choiceShow = false;
         if (
             this.data.find(item => {
-            return item.id == a.id;
+            return item.code == a.code;
             })
         ) {
             this.$message.error(`该条数据已被选择`);
             return false;
-        } else {
+        }
         
         // this.data.push(a);
+        var addArr = [];
+        addArr.push(a);
+        addArr = addArr.map(item => {
+                          return {
+                            id: item.id,
+                            code: item.code,
+                            drawingNo: item.drawingCode,
+                            name: item.name,
+                            specification: item.specification,
+                            unitEntry: item.unit,
+                            classify: item.classification.name,
+                            inventoryAmount: item.amount,
+                            checkAmount: '',
+                            remark: item.note,
+                            warehouseName: item.warehouse.name
+                          }
+                        })
+        console.log(addArr);
+        this.data = this.data.concat(addArr);
         console.log(this.data);
-        let data = {
-          checkId: this.$route.params.id,
-          warehouseItemID: a.id
-        }
-        this.Axios(
-            {
-              url: "/api-warehouse/checkItem/add",
-              params: data,
-              type: "post",
-              option: { enableMsg: false },
-              config: {
-                headers: { "Content-Type": "application/json" }
-              }
-            },
-            this
-          ).then(
-            result => {
-              if (result.data.code === 200) {
-                console.log(result);
-                this.editDetailsId = result.data.data.id
-                var addArr = [];
-                addArr.push(a);
-                addArr = addArr.map(item => {
-                                  return {
-                                    id: this.editDetailsId,
-                                    code: item.code,
-                                    drawingNo: item.drawingCode,
-                                    name: item.name,
-                                    specification: item.specification,
-                                    unitEntry: item.unit,
-                                    classify: item.classification.name,
-                                    inventoryAmount: item.amount,
-                                    checkAmount: '',
-                                    remark: item.note,
-                                    warehouseId: item.warehouse.id
-                                  }
-                                })
-                console.log(addArr);
-                this.data = this.data.concat(addArr);
-              }
-            },
-            ({ type, info }) => {}
-          );
-        }
+            
     },
     onChangeSign(data, dateString) {
       this.signDate = dateString;
@@ -335,41 +292,6 @@ export default {
     choiceModalShow(index) {
       console.log(index);
       this.choiceShow = true;
-    },
-    editDetails(value, key) {
-      const newData = [...this.data];
-      const target = newData.filter(item => key === item.id)[0];
-      console.log(target);
-      if(target.checkAmount <= 0) {
-        this.$message.error(`数量不能小于等于0`)
-        return false
-      }
-      let qs = require("qs");
-      let detailsData = qs.stringify({
-        checkItemId: this.editDetailsId,
-        checkAmount: target.checkAmount,
-        remark: target.remark
-      });
-      console.log(detailsData);
-      this.Axios(
-            {
-              url: "/api-warehouse/checkItem/update?" + detailsData,
-              params: {},
-              type: "put",
-              option: { enableMsg: false },
-              config: {
-                headers: { "Content-Type": "application/json" }
-              }
-            },
-            this
-          ).then(
-            result => {
-              if (result.data.code === 200) {
-                console.log(result);
-              }
-            },
-            ({ type, info }) => {}
-          );
     },
     handleInputChange(value, key, column) {
       const newData = [...this.data];
@@ -418,6 +340,7 @@ export default {
             this.detailsMsg = result.data.data.checkDO;
             this.data = result.data.data.checkItemDOS;
             this.warehouseName = result.data.data.checkDO.warehouse.name;
+            this.warehouseId = this.detailsMsg.warehouse.id;
             this.signDate = this.detailsMsg.checkDate;
             this.form.setFieldsValue({
               invoicesType: this.detailsMsg.type,
@@ -457,12 +380,6 @@ export default {
               .find(item => item == false) != undefined
           ) {
               this.$message.error(`物料数量必须大于0,且只能保留3位小数`);
-          } else if (
-              this.data
-              .map(item => item.checkAmount > item.inventoryAmount)
-              .find(item => item == true) != undefined
-          ) {
-              this.$message.error(`数量不能大于库存数量`);
           } else {
           let qs = require("qs");
           let data = {
@@ -471,7 +388,15 @@ export default {
             checkDate: this.signDate,
             manager: values.transactor,
             remark: values.remark,
-            warehouseId: values.storageWarehouse
+            type: values.invoicesType,
+            warehouseId: values.storageWarehouse,
+            checkItemDTOS: this.data.map(item => {
+                                  return {
+                                    checkAmount: item.checkAmount,
+                                    remark: item.remark,
+                                    code: item.code
+                                  }
+                                })
           };
           console.log(data);
           this.Axios(

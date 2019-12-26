@@ -250,6 +250,7 @@ export default {
     methods: {
         setWarehouseId(value) {
             this.warehouseId = value;
+            this.data = [];
             console.log(this.warehouseId);
         },
         delRow(row, index) {

@@ -98,7 +98,6 @@
               oninput="if(value.length>10)value=value.slice(0,10)"
               :value="text"
               @change="(e)=>handleInputChange(e.target.value, record.id, 'transferAmount')"
-              @blur="(e)=>editDetails(e.target.value, record.id)"
             ></a-input>
           </template>
           <template slot="remark" slot-scope="text, record, index">
@@ -106,7 +105,6 @@
               maxlength="50"
               :value="text"
               @change="(e)=>handleInputChange(e.target.value, record.id, 'remark')"
-              @blur="(e)=>editDetails(e.target.value, record.id)"
             ></a-input>
           </template>
           <template slot="caozuo" slot-scope="text, record, index">
@@ -202,8 +200,8 @@ const columns = [
     width: 80
   },
   {
-    dataIndex: "warehouseName",
-    key: "warehouseName",
+    dataIndex: "fromWarehouseName",
+    key: "fromWarehouseName",
     title: "仓库",
     width: 80
   },
@@ -268,105 +266,39 @@ export default {
     delRow(row, index) {
       console.log(row);
       this.data.splice(index, 1);
-      let detailsData = [];
-      detailsData.push(row.id);
-      console.log(detailsData);
-      this.Axios(
-            {
-              url: "/api-warehouse/transferItem/del?transferItemId=" + detailsData[0],
-              params: {
-                // ids: detailsData
-              },
-              type: "delete",
-              option: { enableMsg: false },
-              config: {
-                headers: { "Content-Type": "application/json" }
-              }
-            },
-            this
-          ).then(
-            result => {
-              if (result.data.code === 200) {
-                console.log(result);
-              }
-            },
-            ({ type, info }) => {}
-          );
     },
     choisceMsg(a) {
         console.log(a);
         // this.choiceShow = false;
         if (
             this.data.find(item => {
-            return item.id == a.id;
+            return item.code == a.code;
             })
         ) {
             this.$message.error(`该条数据已被选择`);
             return false;
-        } else {
-        let data = {
-          transferId: this.$route.params.id,
-          warehouseItemId: a.id
         }
-        this.Axios(
-            {
-              url: "/api-warehouse/transferItem/add",
-              params: data,
-              type: "post",
-              option: { enableMsg: false },
-              config: {
-                headers: { "Content-Type": "application/json" }
-              }
-            },
-            this
-          ).then(
-            result => {
-              if (result.data.code === 200) {
-                console.log(result);
-                this.editDetailsId = result.data.data.id
-                var addArr = [];
-                addArr.push(a);
-                addArr = addArr.map(item => {
-                                  return {
-                                    id: this.editDetailsId,
-                                    code: item.code,
-                                    drawingCode: item.drawingCode,
-                                    name: item.name,
-                                    specification: item.specification,
-                                    unitEntry: item.unit,
-                                    classify: item.classification.name,
-                                    inventoryAmount: item.amount,
-                                    checkAmount: '',
-                                    remark: item.note,
-                                    warehouseId: item.warehouse.id
-                                  }
-                                })
-                console.log(addArr);
-                this.data = this.data.concat(addArr);
-                // this.data.push(a);
-                console.log(this.data);
-                // let data = {
-                //   transferId: this.$route.params.id,
-                //   transferItemDTO: addArr.map(item => {
-                //               return {
-                //                 classify: item.classify,
-                //                 code: item.code,
-                //                 drawingCode: item.drawingCode,
-                //                 inventoryAmount: item.inventoryAmount,
-                //                 name: item.name,
-                //                 remark: item.remark,
-                //                 specification: item.specification,
-                //                 transferAmount: item.checkAmount,
-                //                 unitEntry: item.unitEntry,
-                //                 warehouseItemId: item.id
-                //               }
-                //          })[0]
-                // }
-              }
-            },
-            ({ type, info }) => {}
-          );
-        }
+        var addArr = [];
+        addArr.push(a);
+        addArr = addArr.map(item => {
+                          return {
+                            id: item.id,
+                            code: item.code,
+                            drawingCode: item.drawingCode,
+                            name: item.name,
+                            specification: item.specification,
+                            unitEntry: item.unit,
+                            classify: item.classification.name,
+                            inventoryAmount: item.amount,
+                            checkAmount: '',
+                            remark: item.note,
+                            fromWarehouseName: item.warehouse.name
+                          }
+                        })
+        console.log(addArr);
+        this.data = this.data.concat(addArr);
+        // this.data.push(a);
+        console.log(this.data);
     },
     onChangeSign(data, dateString) {
       this.signDate = dateString;
@@ -374,41 +306,6 @@ export default {
     choiceModalShow(index) {
       console.log(index);
       this.choiceShow = true;
-    },
-    editDetails(value, key) {
-      const newData = [...this.data];
-      const target = newData.filter(item => key === item.id)[0];
-      console.log(target);
-      if(target.transferAmount <= 0) {
-        this.$message.error(`数量不能小于等于0`)
-        return false
-      }
-      let qs = require("qs");
-      let detailsData = qs.stringify({
-        id: target.id,
-        amount: target.transferAmount,
-        remark: target.remark
-      });
-      console.log(detailsData);
-      this.Axios(
-        {
-          url: "/api-warehouse/transferItem/update?" + detailsData,
-          params: {},
-          type: "put",
-          option: {  enableMsg: false },
-          config: {
-            headers: { "Content-Type": "application/json" }
-          }
-        },
-        this
-      ).then(
-        result => {
-          if (result.data.code === 200) {
-            console.log(result);
-          }
-        },
-        ({ type, info }) => {}
-      );
     },
     handleInputChange(value, key, column) {
       const newData = [...this.data];
@@ -481,7 +378,7 @@ export default {
             this.detailsMsg = result.data.data.transferDO;
             this.data = result.data.data.transferItemDO;
             this.signDate = this.detailsMsg.transferDate;
-            this.editDetailsId = this.detailsMsg.fromWarehouse.id;
+            this.warehouseId = this.detailsMsg.fromWarehouse.id;
             this.form.setFieldsValue({
               invoicesType: this.detailsMsg.type,
               invoicesNo: this.detailsMsg.transferNo,
@@ -533,7 +430,24 @@ export default {
             transferNo: values.invoicesNo,
             transferDate: this.signDate,
             manager: values.transactor,
-            remark: values.remark
+            remark: values.remark,
+            type: values.invoicesType,
+            fromWarehouseId: values.outputWarehouse,
+            toWareHouseId: values.inputWarehouse,
+            transferItemDTOS: this.data.map(item => {
+                                  return {
+                                    classify: item.classify,
+                                    code: item.code,
+                                    drawingCode: item.drawingCode,
+                                    inventoryAmount: item.inventoryAmount,
+                                    name: item.name,
+                                    remark: item.remark,
+                                    specification: item.specification,
+                                    transferAmount: item.transferAmount,
+                                    unitEntry: item.unitEntry,
+                                    warehouseItemId:  item.id
+                                  }
+                              })
           };
           console.log(data);
           this.Axios(

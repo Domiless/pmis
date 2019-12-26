@@ -380,13 +380,7 @@ export default {
                         .find(item => item == false) != undefined
                     ) {
                         this.$message.error(`物料数量必须大于0,且只能保留3位小数`);
-                    } else if (
-                        this.data
-                        .map(item => item.number > item.amount)
-                        .find(item => item == true) != undefined
-                    ) {
-                        this.$message.error(`数量不能大于库存数量`);
-                    } else {
+                    }else {
 					let data = {
                         date: this.signDate,
                         fromName: values.backDepartment,

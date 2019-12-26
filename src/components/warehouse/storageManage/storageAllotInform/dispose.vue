@@ -150,6 +150,7 @@ export default {
           result => {
             if (result.data.code === 200) {
               console.log(result);
+              this.findOne(this.sendId);
             }
           },
           ({ type, info }) => {}
