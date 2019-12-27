@@ -37,6 +37,7 @@
         <template slot="warehouseUnit" slot-scope="text,record">
           <a-select
             v-model="record.warehouseUnit"
+            class="unit_select"
             style="width: 100%"
             @focus = "getWarehouseUnit(record.id)"
             @change="(value,option) => {
@@ -431,6 +432,12 @@ export default {
   }
   .tree_select {
     width: 200px;
+    overflow: hidden;
+    text-overflow:ellipsis;
+    white-space: nowrap;
+  }
+  .unit_select {
+    width: 80px;
     overflow: hidden;
     text-overflow:ellipsis;
     white-space: nowrap;

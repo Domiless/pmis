@@ -2,8 +2,8 @@
   <div class="materia_list">
     <a-row style="padding-bottom:12px;">
       <span>关键字：</span>
-      <a-input v-model="keyWords" placeholder="请输入关键词" maxlength="50" style="width:300px;"></a-input>
-      <a-button type="primary" @click="search" @keyup.enter.native="search">查询</a-button>
+      <a-input v-model="keyWords" @keyup.enter.native="search" placeholder="请输入关键词" maxlength="50" style="width:300px;"></a-input>
+      <a-button type="primary" @click="search" >查询</a-button>
     </a-row>
     <a-row>
       <a-col :span="5">
@@ -11,7 +11,7 @@
           <a-tree
             v-if="treeData.length"
             :treeData="treeData"
-            @select="getList"
+            @select="getList2"
             :defaultSelectedKeys="defaultChecked"
             :defaultExpandedKeys="defaultChecked"
           ></a-tree>
@@ -23,6 +23,7 @@
           :columns="columns"
           :pagination="pagination"
           :dataSource="data"
+          :scroll="{y:300}"
           rowKey="id"
           :customRow="(a,b)=>customRow(a,b)"
         >
@@ -288,9 +289,10 @@ export default {
       }
       this.Axios(
         {
-          url: "/api-warehouse/warehouseItem/selectList",
+          url: "/api-warehouse/warehouseItem/list",
           type: "get",
           params: {
+            warehouseId: this.warehouseId,
             classifyId: this.treeId,
             keyword: this.keyWords
           },
@@ -301,7 +303,12 @@ export default {
         result => {
           if (result.data.code === 200) {
             console.log(result);
-            this.data = result.data.data;
+            this.data = result.data.data.content.map(item => {
+              return {
+                ...item,
+                warehouseName: item.warehouse.name
+              };
+            });
             this.total = result.data.data.length;
           }
         },
