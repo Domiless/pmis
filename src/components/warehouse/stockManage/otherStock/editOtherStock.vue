@@ -333,6 +333,7 @@ export default {
                                             name: item.warehouseItem.name,
                                             specification: item.warehouseItem.specification,
                                             unit: item.warehouseItem.unit,
+                                            warehouseName: item.warehouseItem.warehouse.name,
                                             amount: item.warehouseItem.amount,
                                             number: item.amount,
                                             classification: item.warehouseItem.classification,

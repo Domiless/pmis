@@ -21,7 +21,7 @@
                 v-model="keyWords"
                 @keyup.enter.native="search"
             ></a-input>
-            <a-button @click="search" @keyup.enter.native="search">搜索</a-button>
+            <a-button @click="search">搜索</a-button>
             </a-col>
       </a-row>
       <a-row>
@@ -389,7 +389,7 @@ export default {
               if (result.data.code === 200) {
                 console.log(result);
                 this.data = result.data.data.content;
-                this.total = result.data.data.length;
+                this.total = result.data.data.totalElement;
               }
             },
             ({ type, info }) => {}

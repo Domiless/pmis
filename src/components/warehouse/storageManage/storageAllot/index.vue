@@ -160,9 +160,14 @@ export default {
       console.log(value);
     },
     edit() {
-        this.$router.push({
-            path: "/storageAllot/editStorageAllot/" + this.selectedRowKeys[0]
-        });
+      if ( this.selectedRows[0].state === 1 ) {
+        this.$message.error(`确认入库后的调拨单不可修改`);
+        this.selectedRowKeys = [];
+        return false
+      }
+      this.$router.push({
+          path: "/storageAllot/editStorageAllot/" + this.selectedRowKeys[0]
+      });
     },
     showStock() {
         this.detailsVisible = true;
@@ -230,7 +235,7 @@ export default {
           url: "/api-warehouse/transfer/list",
           type: "get",
           params: {
-            warehouse: this.warehouseId,
+            warehouseId: this.warehouseId,
             page: this.current,
             size: this.pageSize,
             keyword: this.keyWords,

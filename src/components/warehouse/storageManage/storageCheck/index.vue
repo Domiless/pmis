@@ -167,9 +167,14 @@ export default {
       console.log(value);
     },
     edit() {
-        this.$router.push({
-            path: "/storageCheck/editStorageCheck/" + this.selectedRowKeys[0]
-        });
+      if ( this.selectedRows[0].state === 1 ) {
+        this.$message.error(`只能对待审核状态下的单子进行修改`);
+        this.selectedRowKeys = [];
+        return false
+      }
+      this.$router.push({
+          path: "/storageCheck/editStorageCheck/" + this.selectedRowKeys[0]
+      });
     },
     showStock() {
         this.detailsVisible = true;

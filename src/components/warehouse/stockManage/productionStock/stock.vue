@@ -313,7 +313,10 @@ export default {
                     })
           }
           console.log(data);
-          if ( typeof( data.list[0].amount ) == "undefined" || typeof (data.list[0].classificationId) == "undefined" ) {
+          if ( typeof( data.list[0].amount ) == "undefined" || 
+               typeof(data.list[0].classificationId) == "undefined" || 
+               data.list[0].classificationId == null || 
+               data.list[0].classificationId == "" ) {
             this.$message.error(`请填写数量和分类`);
             return false
           }
@@ -438,12 +441,14 @@ export default {
   }
   .tree_select {
     width: 200px;
+    margin: -11px 0px;
     overflow: hidden;
     text-overflow:ellipsis;
     white-space: nowrap;
   }
   .unit_select {
     width: 80px;
+    margin: -11px 0px;
     overflow: hidden;
     text-overflow:ellipsis;
     white-space: nowrap;
