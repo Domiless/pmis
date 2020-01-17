@@ -167,8 +167,14 @@ export default {
                 result => {
                     if (result.data.code === 200) {
                             console.log(result);
-                            this.data = result.data.data.content;
-                            this.total = result.data.data.totalElement;
+                            let listArr = result.data.data;
+                            if( !listArr && typeof(listArr)!='undefined' && listArr!=0 ) {
+                                this.data = [];
+                            } else {
+                                this.data = result.data.data.content;
+                                this.total = result.data.data.totalElement;
+                            }
+                            
                         }
                 },
                 ({ type, info }) => {}

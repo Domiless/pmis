@@ -230,6 +230,9 @@ export default {
       );
     },
     getList() {
+      if( this.warehouseList.length === 0 ) {
+        return false
+      }
       this.Axios(
         {
           url: "/api-warehouse/transfer/list",

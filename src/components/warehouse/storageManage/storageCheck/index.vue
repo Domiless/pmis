@@ -264,13 +264,16 @@ export default {
         result => {
           if (result.data.code === 200) {
             console.log(result);
-            this.warehouseList = result.data.data;
+            this.warehouseList = result.data.data;              
           }
         },
         ({ type, info }) => {}
       );
     },
     getList() {
+      if( this.warehouseList.length === 0 ) {
+        return false
+      }
       this.Axios(
         {
           url: "/api-warehouse/check/list",
@@ -288,6 +291,7 @@ export default {
         this
       ).then(
         result => {
+          console.log(result);
           if (result.data.code === 200) {
             console.log(result);
             this.data = result.data.data.content;
